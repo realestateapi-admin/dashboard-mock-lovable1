@@ -18,8 +18,11 @@ export const RecordUsageBreakdown = ({
   const isMobile = useIsMobile();
   const [chartHeight, setChartHeight] = useState(180);
   const [labelFormat, setLabelFormat] = useState<Function | null>(
-    ({ name, percent }: { name: string; percent: number }) => 
-      `${name} ${(percent * 100).toFixed(0)}%`
+    (props: any) => {
+      if (!props) return '';
+      const { name, percent } = props;
+      return name ? `${name} ${(percent * 100).toFixed(0)}%` : '';
+    }
   );
 
   // Adjust chart size and label format based on screen size
@@ -27,16 +30,39 @@ export const RecordUsageBreakdown = ({
     if (isMobile) {
       setChartHeight(150);
       // On mobile, only show percentages without names to avoid overlap
-      setLabelFormat(({ percent }: { percent: number }) => 
-        `${(percent * 100).toFixed(0)}%`
-      );
+      setLabelFormat((props: any) => {
+        if (!props) return '';
+        const { percent } = props;
+        return percent ? `${(percent * 100).toFixed(0)}%` : '';
+      });
     } else {
       setChartHeight(180);
-      setLabelFormat(({ name, percent }: { name: string; percent: number }) => 
-        `${name} ${(percent * 100).toFixed(0)}%`
-      );
+      setLabelFormat((props: any) => {
+        if (!props) return '';
+        const { name, percent } = props;
+        return name ? `${name} ${(percent * 100).toFixed(0)}%` : '';
+      });
     }
   }, [isMobile]);
+
+  // If data is empty, show an appropriate message
+  if (usageDistributionData?.length === 0 && !isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Record Usage Breakdown</CardTitle>
+          <CardDescription>
+            Distribution of records by endpoint
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex justify-center items-center py-12 text-muted-foreground">
+            No usage data available
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -55,7 +81,7 @@ export const RecordUsageBreakdown = ({
               <ResponsiveContainer width="100%" height={chartHeight}>
                 <PieChart>
                   <Pie
-                    data={usageDistributionData}
+                    data={usageDistributionData || []}
                     cx="50%"
                     cy="50%"
                     innerRadius={isMobile ? 30 : 40}
@@ -65,7 +91,7 @@ export const RecordUsageBreakdown = ({
                     label={labelFormat}
                     labelLine={false}
                   >
-                    {usageDistributionData.map((entry, index) => (
+                    {(usageDistributionData || []).map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.fill} />
                     ))}
                   </Pie>
@@ -82,7 +108,7 @@ export const RecordUsageBreakdown = ({
               </ResponsiveContainer>
             </div>
             <div className="space-y-2 mt-4">
-              {usageDistributionData.map((item) => (
+              {(usageDistributionData || []).map((item) => (
                 <div key={item.name} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.fill }} />

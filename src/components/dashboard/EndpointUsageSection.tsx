@@ -15,7 +15,7 @@ interface EndpointUsageSectionProps {
   isLoading?: boolean;
 }
 
-export const EndpointUsageSection = ({ endpointUsage, isLoading = false }: EndpointUsageSectionProps) => {
+export const EndpointUsageSection = ({ endpointUsage = [], isLoading = false }: EndpointUsageSectionProps) => {
   const isMobile = useIsMobile();
   
   // Helper function to get icon path based on endpoint
@@ -33,6 +33,27 @@ export const EndpointUsageSection = ({ endpointUsage, isLoading = false }: Endpo
     }
     return "";
   };
+
+  // If data is empty, show an appropriate message
+  if (endpointUsage?.length === 0 && !isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Endpoint Usage</CardTitle>
+          </div>
+          <CardDescription>
+            Breakdown by endpoint with credit usage details
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex justify-center items-center py-12 text-muted-foreground">
+            No endpoint usage data available
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -61,7 +82,7 @@ export const EndpointUsageSection = ({ endpointUsage, isLoading = false }: Endpo
           <EndpointUsageSkeleton />
         ) : (
           <>
-            {endpointUsage.map((endpoint) => (
+            {(endpointUsage || []).map((endpoint) => (
               <div key={endpoint.endpoint} className="space-y-2">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
                   <div>

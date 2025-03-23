@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { History, FileDown } from "lucide-react";
 import { ApiUsageSummary } from '@/components/dashboard/ApiUsageSummary';
@@ -12,6 +11,7 @@ import { UsageCharts } from '@/components/dashboard/UsageCharts';
 import { EndpointUsageSection } from '@/components/dashboard/EndpointUsageSection';
 import { RecordUsageBreakdown } from '@/components/dashboard/RecordUsageBreakdown';
 import { CardSkeleton, UsageBreakdownSkeleton, EndpointUsageSkeleton } from '@/components/dashboard/LoadingState';
+import { EndpointUsageItem, UsageDistributionItem } from '@/types/usage';
 
 // Temporary mock data fetching
 const fetchApiUsageData = async () => {
@@ -88,6 +88,18 @@ const ApiUsage = () => {
     queryFn: fetchApiUsageData,
   });
 
+  // Initialize default empty values
+  const safeData = {
+    totalApiCalls: data?.totalApiCalls || 0,
+    totalRecords: data?.totalRecords || 0,
+    recordsLimit: data?.recordsLimit || 0,
+    increasePercentage: data?.increasePercentage || 0,
+    dailyUsageData: data?.dailyUsageData || [],
+    monthlyUsageData: data?.monthlyUsageData || [],
+    endpointUsage: data?.endpointUsage || [],
+    usageDistributionData: data?.usageDistributionData || []
+  };
+
   if (isError) {
     return (
       <div className="space-y-6">
@@ -138,10 +150,10 @@ const ApiUsage = () => {
         </div>
       ) : (
         <ApiUsageSummary
-          totalApiCalls={data.totalApiCalls}
-          totalRecords={data.totalRecords}
-          recordsLimit={data.recordsLimit}
-          increasePercentage={data.increasePercentage}
+          totalApiCalls={safeData.totalApiCalls}
+          totalRecords={safeData.totalRecords}
+          recordsLimit={safeData.recordsLimit}
+          increasePercentage={safeData.increasePercentage}
         />
       )}
 
@@ -166,8 +178,8 @@ const ApiUsage = () => {
             </Card>
           ) : (
             <UsageCharts
-              dailyUsageData={data.dailyUsageData}
-              monthlyUsageData={data.monthlyUsageData}
+              dailyUsageData={safeData.dailyUsageData}
+              monthlyUsageData={safeData.monthlyUsageData}
               isLoading={isLoading}
             />
           )}
@@ -185,7 +197,7 @@ const ApiUsage = () => {
                 <UsageBreakdownSkeleton />
               ) : (
                 <RecordUsageBreakdown 
-                  usageDistributionData={data.usageDistributionData} 
+                  usageDistributionData={safeData.usageDistributionData} 
                   isLoading={isLoading}
                 />
               )}
@@ -207,7 +219,7 @@ const ApiUsage = () => {
               <EndpointUsageSkeleton />
             ) : (
               <EndpointUsageSection 
-                endpointUsage={data.endpointUsage} 
+                endpointUsage={safeData.endpointUsage} 
                 isLoading={isLoading}
               />
             )}
