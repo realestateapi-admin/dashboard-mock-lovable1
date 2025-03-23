@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -279,35 +280,35 @@ const ApiUsage = () => {
                 <tbody>
                   <tr className="border-b">
                     <td className="py-3 px-4 font-mono text-xs">/v2/PropertyDetail</td>
-                    <td className="py-3 px-4">GET</td>
+                    <td className="py-3 px-4">POST</td>
                     <td className="py-3 px-4">42,300</td>
                     <td className="py-3 px-4">99.7%</td>
                     <td className="py-3 px-4">124ms</td>
                   </tr>
                   <tr className="border-b">
                     <td className="py-3 px-4 font-mono text-xs">/v2/PropertySearch</td>
-                    <td className="py-3 px-4">GET</td>
+                    <td className="py-3 px-4">POST</td>
                     <td className="py-3 px-4">21,800</td>
                     <td className="py-3 px-4">99.9%</td>
                     <td className="py-3 px-4">87ms</td>
                   </tr>
                   <tr className="border-b">
                     <td className="py-3 px-4 font-mono text-xs">/v2/PropertyComps</td>
-                    <td className="py-3 px-4">GET</td>
+                    <td className="py-3 px-4">POST</td>
                     <td className="py-3 px-4">15,600</td>
                     <td className="py-3 px-4">99.8%</td>
                     <td className="py-3 px-4">156ms</td>
                   </tr>
                   <tr className="border-b">
                     <td className="py-3 px-4 font-mono text-xs">/v2/PropertyAutocomplete</td>
-                    <td className="py-3 px-4">GET</td>
+                    <td className="py-3 px-4">POST</td>
                     <td className="py-3 px-4">9,800</td>
                     <td className="py-3 px-4">98.5%</td>
                     <td className="py-3 px-4">210ms</td>
                   </tr>
                   <tr>
                     <td className="py-3 px-4 font-mono text-xs">/v2/PropertyMapping</td>
-                    <td className="py-3 px-4">GET</td>
+                    <td className="py-3 px-4">POST</td>
                     <td className="py-3 px-4">7,500</td>
                     <td className="py-3 px-4">99.5%</td>
                     <td className="py-3 px-4">98ms</td>
