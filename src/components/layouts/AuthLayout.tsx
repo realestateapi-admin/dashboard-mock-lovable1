@@ -28,7 +28,7 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
             transition={{ delay: 0.1, duration: 0.5 }}
           >
             <img 
-              src="/realestateapi-logo.svg" 
+              src="https://www.realestateapi.com/assets/img/realestateapi-logo-color.svg?v=08750727ac" 
               alt="RealEstateAPI" 
               className="h-8 w-auto" 
               onError={(e) => {
