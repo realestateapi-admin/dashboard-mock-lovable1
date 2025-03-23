@@ -164,7 +164,7 @@ const addOns = [
 
 const Billing = () => {
   const [selectedPlan, setSelectedPlan] = useState("growth");
-  const [overageHandling, setOverageHandling] = useState("allow");
+  const [overageHandling, setOverageHandling] = useState("stop");
   const [activeAddOns, setActiveAddOns] = useState<string[]>(["premium-avm"]);
   const { toast } = useToast();
   const { isTrialActive, trialDaysLeft, requestTrialExtension } = useTrialAlert();
@@ -231,6 +231,9 @@ const Billing = () => {
   };
 
   const costs = calculateMonthlyCost();
+
+  // Get the selected plan's name for displaying in overage options
+  const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || "selected plan";
 
   return (
     <motion.div 
@@ -366,29 +369,38 @@ const Billing = () => {
                     </p>
                     <RadioGroup value={overageHandling} onValueChange={setOverageHandling} className="space-y-2">
                       <div className="flex items-start space-x-2">
-                        <RadioGroupItem value="allow" id="allow-overages" />
-                        <div className="grid gap-1.5">
-                          <Label htmlFor="allow-overages" className="font-medium">Allow Overages (Pay as you go)</Label>
-                          <p className="text-sm text-muted-foreground">
-                            Continue API access after reaching your plan limits with pay-as-you-go pricing for additional calls.
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-start space-x-2">
-                        <RadioGroupItem value="throttle" id="throttle-overages" />
-                        <div className="grid gap-1.5">
-                          <Label htmlFor="throttle-overages" className="font-medium">Throttle API Access</Label>
-                          <p className="text-sm text-muted-foreground">
-                            Reduce API rate limits when you reach your plan threshold to avoid additional charges.
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-start space-x-2">
                         <RadioGroupItem value="stop" id="stop-overages" />
                         <div className="grid gap-1.5">
                           <Label htmlFor="stop-overages" className="font-medium">Stop API Access</Label>
                           <p className="text-sm text-muted-foreground">
                             Temporarily disable API access when you reach your plan limits until the next billing cycle.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <RadioGroupItem value="allow-125" id="allow-125-overages" />
+                        <div className="grid gap-1.5">
+                          <Label htmlFor="allow-125-overages" className="font-medium">Allow Overages (Pay as you go)</Label>
+                          <p className="text-sm text-muted-foreground">
+                            Continue API access up to 125% of my {selectedPlanName} usage has been reached. Then discontinue access until the next billing cycle.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <RadioGroupItem value="allow-200" id="allow-200-overages" />
+                        <div className="grid gap-1.5">
+                          <Label htmlFor="allow-200-overages" className="font-medium">Allow Overages (Pay as you go)</Label>
+                          <p className="text-sm text-muted-foreground">
+                            Continue API access up to 200% of my {selectedPlanName} usage has been reached. Then discontinue access until the next billing cycle.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <RadioGroupItem value="allow-unlimited" id="allow-unlimited-overages" />
+                        <div className="grid gap-1.5">
+                          <Label htmlFor="allow-unlimited-overages" className="font-medium">Allow Overages (Pay as you go)</Label>
+                          <p className="text-sm text-muted-foreground">
+                            Continue API access without limits. Do not restrict my API access, no matter how much volume is generated.
                           </p>
                         </div>
                       </div>
