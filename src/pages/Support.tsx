@@ -496,15 +496,6 @@ const Support = () => {
                 </div>
                 <Separator />
                 <div className="space-y-2">
-                  <h3 className="text-base font-medium">What is your refund policy?</h3>
-                  <p className="text-sm text-muted-foreground">
-                    We offer a 14-day money-back guarantee for all subscription plans. 
-                    If you're not satisfied with our service, you can request a refund 
-                    within 14 days of your initial purchase.
-                  </p>
-                </div>
-                <Separator />
-                <div className="space-y-2">
                   <h3 className="text-base font-medium">How can I get additional API credits?</h3>
                   <p className="text-sm text-muted-foreground">
                     If you need additional API credits beyond your current plan, you can 
