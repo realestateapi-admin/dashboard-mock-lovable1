@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, AlertCircle } from "lucide-react";
@@ -15,8 +14,9 @@ import { UsageCharts } from "@/components/dashboard/UsageCharts";
 import { EndpointUsageSection } from "@/components/dashboard/EndpointUsageSection";
 import { RecordUsageBreakdown } from "@/components/dashboard/RecordUsageBreakdown";
 import { ApiAccessSection } from "@/components/dashboard/ApiAccessSection";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { CardSkeleton } from "@/components/dashboard/LoadingState";
 
-// Mock data for usage charts with differentiation between calls and records
 const dailyUsageData = [
   { date: "Mon", calls: 1423, records: 762 },
   { date: "Tue", calls: 1842, records: 985 },
@@ -42,7 +42,6 @@ const monthlyUsageData = [
   { date: "Dec", calls: 86500, records: 47200 },
 ];
 
-// Updated endpoint usage data with differentiation between calls and records
 const endpointUsage = [
   { 
     endpoint: "/v2/PropertyDetail", 
@@ -86,14 +85,12 @@ const endpointUsage = [
   },
 ];
 
-// Pie chart data for usage breakdown
 const usageDistributionData = [
   { name: 'Property Details', value: 2456, fill: '#04c8c8' },
   { name: 'Property Search', value: 534, fill: '#5014d0' },
   { name: 'Property Comps', value: 146, fill: '#a78bfa' },
 ];
 
-// Updated recent activity data with distinction between calls and records
 const recentActivity = [
   { 
     id: 1, 
@@ -153,28 +150,37 @@ const recentActivity = [
 
 const Dashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const { isTrialActive, trialDaysLeft, requestTrialExtension } = useTrialAlert();
 
+  useEffect(() => {
+    const loadingTimer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1200);
+    
+    return () => clearTimeout(loadingTimer);
+  }, []);
+
   const handleRefresh = async () => {
     setIsRefreshing(true);
+    setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsRefreshing(false);
+    setIsLoading(false);
     toast({
       title: "Dashboard refreshed",
       description: "Your data has been updated with the latest information.",
     });
   };
 
-  // Calculate totals for summary cards
   const totalApiCalls = dailyUsageData.reduce((sum, day) => sum + day.calls, 0);
   const totalRecords = dailyUsageData.reduce((sum, day) => sum + day.records, 0);
-  const recordsPercentage = (totalRecords / 10000) * 100; // Assuming 10,000 is the daily limit
-  
-  // Calculate monthly totals
+  const recordsPercentage = (totalRecords / 10000) * 100;
+
   const monthlyApiCalls = monthlyUsageData.reduce((sum, month) => sum + month.calls, 0);
   const monthlyRecords = monthlyUsageData.reduce((sum, month) => sum + month.records, 0);
-  const monthlyRecordsPercentage = (monthlyRecords / 300000) * 100; // Assuming 300,000 is the monthly limit
+  const monthlyRecordsPercentage = (monthlyRecords / 300000) * 100;
 
   return (
     <motion.div 
@@ -200,7 +206,7 @@ const Dashboard = () => {
           <AlertCircle className="h-4 w-4 text-[#04c8c8]" />
           <AlertTitle className="text-[#04c8c8] font-medium">Trial Mode Active</AlertTitle>
           <AlertDescription className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div>
+            <div className="flex-1">
               <p>You have <span className="font-medium text-[#04c8c8]">{trialDaysLeft} days</span> left in your trial period.</p>
               <Progress value={(14 - trialDaysLeft) / 14 * 100} className="h-2 mt-2 bg-[#e2e8f0]" indicatorClassName="bg-[#04c8c8]" />
             </div>
@@ -216,7 +222,6 @@ const Dashboard = () => {
         </Alert>
       )}
       
-      {/* Dashboard Summary Cards */}
       <DashboardSummary 
         totalApiCalls={totalApiCalls}
         totalRecords={totalRecords}
@@ -226,6 +231,7 @@ const Dashboard = () => {
         monthlyRecordsPercentage={monthlyRecordsPercentage}
         isTrialActive={isTrialActive}
         trialDaysLeft={trialDaysLeft}
+        isLoading={isLoading}
       />
       
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
@@ -237,7 +243,8 @@ const Dashboard = () => {
         >
           <UsageCharts 
             dailyUsageData={dailyUsageData} 
-            monthlyUsageData={monthlyUsageData} 
+            monthlyUsageData={monthlyUsageData}
+            isLoading={isLoading}
           />
         </motion.div>
         
@@ -254,7 +261,10 @@ const Dashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="px-0">
-              <RecentActivityList activities={recentActivity} />
+              <RecentActivityList 
+                activities={recentActivity}
+                isLoading={isLoading} 
+              />
             </CardContent>
           </Card>
         </motion.div>
@@ -267,7 +277,10 @@ const Dashboard = () => {
           transition={{ delay: 0.7, duration: 0.3 }}
           className="lg:col-span-2"
         >
-          <EndpointUsageSection endpointUsage={endpointUsage} />
+          <EndpointUsageSection 
+            endpointUsage={endpointUsage}
+            isLoading={isLoading}
+          />
         </motion.div>
         
         <motion.div 
@@ -275,7 +288,10 @@ const Dashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.3 }}
         >
-          <RecordUsageBreakdown usageDistributionData={usageDistributionData} />
+          <RecordUsageBreakdown 
+            usageDistributionData={usageDistributionData}
+            isLoading={isLoading}
+          />
         </motion.div>
       </div>
       
@@ -284,13 +300,13 @@ const Dashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9, duration: 0.3 }}
       >
-        <ApiAccessSection isTrialActive={isTrialActive} />
+        <ApiAccessSection 
+          isTrialActive={isTrialActive}
+          isLoading={isLoading}
+        />
       </motion.div>
     </motion.div>
   );
 };
-
-// Import missing Card components to avoid errors
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default Dashboard;
