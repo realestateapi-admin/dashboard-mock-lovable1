@@ -21,11 +21,11 @@ export const StepOne = ({
   handleContinue
 }: StepOneProps) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <RadioGroup 
         value={selectedPlan} 
         onValueChange={setSelectedPlan} 
-        className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-2"
+        className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 pt-4"
       >
         {plans.map((plan) => (
           <PlanCard 
@@ -38,8 +38,9 @@ export const StepOne = ({
       
       <Button
         onClick={handleContinue}
-        className="w-full mt-6"
+        className="w-full mt-8"
         disabled={isLoading}
+        size="lg"
       >
         {isLoading ? (
           "Processing..."
