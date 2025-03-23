@@ -26,6 +26,26 @@ export function MainNav() {
         API Usage
       </NavLink>
       <NavLink
+        to="/dashboard/api-keys"
+        className={({ isActive }) =>
+          `transition-colors hover:text-foreground ${
+            isActive ? "text-foreground" : "text-muted-foreground"
+          }`
+        }
+      >
+        API Keys
+      </NavLink>
+      <NavLink
+        to="/dashboard/billing"
+        className={({ isActive }) =>
+          `transition-colors hover:text-foreground ${
+            isActive ? "text-foreground" : "text-muted-foreground"
+          }`
+        }
+      >
+        Billing
+      </NavLink>
+      <NavLink
         to="/dashboard/support"
         className={({ isActive }) =>
           `transition-colors hover:text-foreground ${

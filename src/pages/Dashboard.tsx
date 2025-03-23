@@ -4,13 +4,17 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart, AreaChart, XAxis, YAxis, Bar, Area, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { Copy, ExternalLink, Info, RefreshCw, Users, FileText, BarChart2, Code } from "lucide-react";
+import { Copy, ExternalLink, Info, RefreshCw, Users, FileText, BarChart2, Code, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
+import { Link } from "react-router-dom";
+import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 // Mock data for usage charts
 const dailyUsageData = [
@@ -38,47 +42,56 @@ const monthlyUsageData = [
   { date: "Dec", value: 86500 },
 ];
 
+// Mock endpoint usage data
+const endpointUsage = [
+  { endpoint: "/v2/PropertyDetail", calls: 2456, percentage: 50.2 },
+  { endpoint: "/v2/PropertySearch", calls: 1534, percentage: 31.4 },
+  { endpoint: "/v2/PropertyComps", calls: 543, percentage: 11.1 },
+  { endpoint: "/v2/PropertyAutocomplete", calls: 320, percentage: 6.5 },
+  { endpoint: "/v2/PropertyMapping", calls: 39, percentage: 0.8 },
+];
+
 // Mock recent activity data
 const recentActivity = [
   { 
     id: 1, 
     type: "api_call", 
-    endpoint: "/properties/search",
+    endpoint: "/v2/PropertyDetail",
     timestamp: "2 minutes ago", 
     status: "success" 
   },
   { 
     id: 2, 
     type: "api_call", 
-    endpoint: "/properties/details/123456",
+    endpoint: "/v2/PropertySearch",
     timestamp: "15 minutes ago", 
     status: "success" 
   },
   { 
     id: 3, 
     type: "rate_limit", 
-    endpoint: "/properties/valuation",
+    endpoint: "/v2/PropertyDetail",
     timestamp: "24 minutes ago", 
     status: "warning" 
   },
   { 
     id: 4, 
     type: "api_call", 
-    endpoint: "/market/trends",
+    endpoint: "/v2/PropertyComps",
     timestamp: "1 hour ago", 
     status: "success" 
   },
   { 
     id: 5, 
     type: "api_call", 
-    endpoint: "/properties/search",
+    endpoint: "/v2/PropertySearch",
     timestamp: "2 hours ago", 
     status: "success" 
   },
   { 
     id: 6, 
     type: "error", 
-    endpoint: "/properties/valuation",
+    endpoint: "/v2/PropertyDetail",
     timestamp: "3 hours ago", 
     status: "error" 
   },
@@ -87,6 +100,7 @@ const recentActivity = [
 const Dashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
+  const { isTrialActive, trialDaysLeft, requestTrialExtension } = useTrialAlert();
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -99,7 +113,7 @@ const Dashboard = () => {
   };
 
   const handleCopyAPIKey = () => {
-    navigator.clipboard.writeText("k6ftg5s7d8v9t3f2r1o9p8m7n6b5v4c3x2");
+    navigator.clipboard.writeText("test_k6ftg5s7d8v9t3f2r1o9p8m7n6b5v4c3x2");
     toast({
       title: "API key copied",
       description: "Your API key has been copied to the clipboard.",
@@ -125,6 +139,27 @@ const Dashboard = () => {
         </Button>
       </div>
       
+      {isTrialActive && (
+        <Alert className="bg-primary-teal/10 border-primary-teal">
+          <AlertCircle className="h-4 w-4 text-primary-teal" />
+          <AlertTitle className="text-primary-teal font-medium">Trial Mode Active</AlertTitle>
+          <AlertDescription className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div>
+              <p>You have <span className="font-medium text-primary-teal">{trialDaysLeft} days</span> left in your trial period.</p>
+              <Progress value={(14 - trialDaysLeft) / 14 * 100} className="h-2 mt-2" />
+            </div>
+            <div className="flex gap-2 mt-2 sm:mt-0">
+              <Button size="sm" asChild>
+                <Link to="/dashboard/billing">Upgrade Now</Link>
+              </Button>
+              <Button size="sm" variant="outline" onClick={requestTrialExtension}>
+                Request Extension
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -143,7 +178,7 @@ const Dashboard = () => {
               </p>
               <div className="mt-4 h-1 w-full bg-secondary">
                 <div
-                  className="h-1 bg-primary"
+                  className="h-1 bg-primary-teal"
                   style={{ width: "48.9%" }}
                 />
               </div>
@@ -169,7 +204,7 @@ const Dashboard = () => {
               </p>
               <div className="mt-4 h-1 w-full bg-secondary">
                 <div
-                  className="h-1 bg-primary"
+                  className="h-1 bg-primary-teal"
                   style={{ width: "28.7%" }}
                 />
               </div>
@@ -195,9 +230,9 @@ const Dashboard = () => {
               </p>
               <div className="mt-4 flex items-center gap-1">
                 <div className="flex -space-x-2">
-                  <div className="h-7 w-7 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-xs font-medium">JD</div>
-                  <div className="h-7 w-7 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-xs font-medium">AR</div>
-                  <div className="h-7 w-7 rounded-full border-2 border-background bg-primary/20 flex items-center justify-center text-xs font-medium">TM</div>
+                  <div className="h-7 w-7 rounded-full border-2 border-background bg-primary-teal/20 flex items-center justify-center text-xs font-medium">JD</div>
+                  <div className="h-7 w-7 rounded-full border-2 border-background bg-primary-teal/20 flex items-center justify-center text-xs font-medium">AR</div>
+                  <div className="h-7 w-7 rounded-full border-2 border-background bg-primary-teal/20 flex items-center justify-center text-xs font-medium">TM</div>
                 </div>
                 <Button variant="outline" size="sm" className="h-7 rounded-full">
                   <Plus className="h-3 w-3" />
@@ -218,12 +253,16 @@ const Dashboard = () => {
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$99.00</div>
+              <div className="text-2xl font-bold">{isTrialActive ? "Free Trial" : "$99.00"}</div>
               <p className="text-xs text-muted-foreground">
-                Next payment on Nov 1, 2023
+                {isTrialActive 
+                  ? `Ends in ${trialDaysLeft} days` 
+                  : "Next payment on Mar 1, 2024"}
               </p>
               <div className="mt-4">
-                <Badge variant="outline" className="bg-primary/5 text-primary">Professional Plan</Badge>
+                <Badge variant="outline" className="bg-primary-teal/5 text-primary-teal">
+                  {isTrialActive ? "Trial" : "Professional Plan"}
+                </Badge>
               </div>
             </CardContent>
           </Card>
@@ -262,7 +301,7 @@ const Dashboard = () => {
                           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                         }} 
                       />
-                      <Bar dataKey="value" fill="hsl(var(--primary))" radius={4} />
+                      <Bar dataKey="value" fill="#04c8c8" radius={4} />
                     </BarChart>
                   </ResponsiveContainer>
                 </TabsContent>
@@ -280,7 +319,7 @@ const Dashboard = () => {
                           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                         }} 
                       />
-                      <Area type="monotone" dataKey="value" fill="hsl(var(--primary) / 0.2)" stroke="hsl(var(--primary))" />
+                      <Area type="monotone" dataKey="value" fill="#04c8c8" fillOpacity={0.2} stroke="#04c8c8" />
                     </AreaChart>
                   </ResponsiveContainer>
                 </TabsContent>
@@ -309,7 +348,7 @@ const Dashboard = () => {
                       key={activity.id}
                       className="flex items-start gap-4 pb-4 border-b border-border last:border-0 last:pb-0"
                     >
-                      <div className={`mt-1 h-2 w-2 rounded-full ${
+                      <div className={`mt-1.5 h-2 w-2 rounded-full ${
                         activity.status === "success" ? "bg-green-500" :
                         activity.status === "warning" ? "bg-yellow-500" :
                         "bg-red-500"
@@ -342,6 +381,62 @@ const Dashboard = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7, duration: 0.3 }}
+      >
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Endpoint Usage</CardTitle>
+              <TooltipProvider>
+                <UITooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Info className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p className="text-xs">Usage breakdown by endpoint. Each endpoint has different credit costs and rate limits.</p>
+                  </TooltipContent>
+                </UITooltip>
+              </TooltipProvider>
+            </div>
+            <CardDescription>
+              Breakdown of your API usage by endpoint
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {endpointUsage.map((endpoint) => (
+              <div key={endpoint.endpoint} className="space-y-2">
+                <div className="flex justify-between">
+                  <p className="text-sm font-medium">{endpoint.endpoint}</p>
+                  <div className="flex gap-2">
+                    <p className="text-sm">{endpoint.calls.toLocaleString()} calls</p>
+                    <p className="text-sm text-muted-foreground">{endpoint.percentage}%</p>
+                  </div>
+                </div>
+                <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-primary-teal rounded-full"
+                    style={{ width: `${endpoint.percentage}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+            
+            <div className="pt-2">
+              <Button variant="outline" className="w-full" asChild>
+                <Link to="/dashboard/usage">
+                  View Detailed Usage Analytics
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+      
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8, duration: 0.3 }}
       >
         <Card>
           <CardHeader>
@@ -379,7 +474,19 @@ const Dashboard = () => {
                 </Button>
               </div>
               <div className="flex h-10 items-center rounded-md border bg-muted px-4 text-sm font-mono">
-                k6ftg5s7d8v9t3f2r1o9p8m7n6b5v4c3x2
+                {isTrialActive ? "test_" : "prod_"}k6ftg5s7d8v9t3f2r1o9p8m7n6b5v4c3x2
+              </div>
+              <div className="flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs"
+                  asChild
+                >
+                  <Link to="/dashboard/api-keys">
+                    Manage API Keys
+                  </Link>
+                </Button>
               </div>
             </div>
             

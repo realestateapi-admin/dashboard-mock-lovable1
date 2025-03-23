@@ -12,7 +12,10 @@ import Onboarding from "./pages/Onboarding";
 import { DashboardLayout } from "./components/layouts/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import ApiUsage from "./pages/ApiUsage";
+import ApiKeys from "./pages/ApiKeys";
+import Billing from "./pages/Billing";
 import Support from "./pages/Support";
+import { TrialAlertProvider } from "./contexts/TrialAlertContext";
 
 // Initialize the query client for data fetching
 const queryClient = new QueryClient();
@@ -20,28 +23,31 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<Navigate to="/sign-in" replace />} />
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/onboarding" element={<Onboarding />} />
-          
-          {/* Dashboard routes */}
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="usage" element={<ApiUsage />} />
-            <Route path="support" element={<Support />} />
-            {/* Additional dashboard routes can be added here */}
-          </Route>
-          
-          {/* Fallback for unknown routes */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <TrialAlertProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+            
+            {/* Dashboard routes */}
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="usage" element={<ApiUsage />} />
+              <Route path="api-keys" element={<ApiKeys />} />
+              <Route path="billing" element={<Billing />} />
+              <Route path="support" element={<Support />} />
+            </Route>
+            
+            {/* Fallback for unknown routes */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TrialAlertProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
