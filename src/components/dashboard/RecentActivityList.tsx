@@ -17,6 +17,22 @@ interface RecentActivityListProps {
   activities: ActivityItem[];
 }
 
+// Helper function to get icon path based on endpoint
+const getEndpointIcon = (endpoint: string) => {
+  if (endpoint.includes("Autocomplete")) {
+    return "/icons/address-auto.svg";
+  } else if (endpoint.includes("Comps")) {
+    return "/icons/ps3.svg";
+  } else if (endpoint.includes("Search")) {
+    return "/icons/ps.svg";
+  } else if (endpoint.includes("Detail")) {
+    return "/icons/ps2.svg";
+  } else if (endpoint.includes("Count") || endpoint.includes("Pin")) {
+    return "/icons/map-pin.svg";
+  }
+  return "";
+};
+
 export const RecentActivityList = ({ activities }: RecentActivityListProps) => {
   return (
     <ScrollArea className="h-[240px] px-6">
@@ -31,10 +47,19 @@ export const RecentActivityList = ({ activities }: RecentActivityListProps) => {
               activity.status === "warning" ? "bg-yellow-500" :
               "bg-red-500"
             }`} />
-            <div className="space-y-1">
-              <p className="text-sm font-medium leading-none">
-                {activity.endpoint}
-              </p>
+            <div className="flex-1 space-y-1">
+              <div className="flex items-center gap-2">
+                {getEndpointIcon(activity.endpoint) && (
+                  <img 
+                    src={getEndpointIcon(activity.endpoint)} 
+                    alt={activity.endpoint} 
+                    className="h-5 w-5" 
+                  />
+                )}
+                <p className="text-sm font-medium leading-none">
+                  {activity.endpoint}
+                </p>
+              </div>
               <p className="text-xs text-muted-foreground">
                 {activity.timestamp}
               </p>
