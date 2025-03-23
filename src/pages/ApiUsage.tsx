@@ -1,325 +1,231 @@
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  BarChart, AreaChart, PieChart, XAxis, YAxis, Bar, Area, Pie, Cell, 
-  Tooltip, Legend, ResponsiveContainer, CartesianGrid 
-} from "recharts";
-import { DownloadIcon, FilterIcon, RefreshCw } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { useToast } from "@/components/ui/use-toast";
+import { History, FileDown } from "lucide-react";
+import { ApiUsageSummary } from '@/components/dashboard/ApiUsageSummary';
+import { UsageCharts } from '@/components/dashboard/UsageCharts';
+import { EndpointUsageSection } from '@/components/dashboard/EndpointUsageSection';
+import { RecordUsageBreakdown } from '@/components/dashboard/RecordUsageBreakdown';
+import { CardSkeleton, UsageBreakdownSkeleton, EndpointUsageSkeleton } from '@/components/dashboard/LoadingState';
 
-const apiUsageByEndpoint = [
-  { name: "/v2/PropertyDetail", value: 42300 },
-  { name: "/v2/PropertySearch", value: 21800 },
-  { name: "/v2/PropertyComps", value: 15600 },
-  { name: "/v2/PropertyAutocomplete", value: 9800 },
-  { name: "/v2/PropertyMapping", value: 7500 },
-];
-
-const dailyApiUsage = [
-  { date: "Oct 1", successful: 3200, failed: 120 },
-  { date: "Oct 2", successful: 3500, failed: 90 },
-  { date: "Oct 3", successful: 3700, failed: 110 },
-  { date: "Oct 4", successful: 3600, failed: 85 },
-  { date: "Oct 5", successful: 4100, failed: 105 },
-  { date: "Oct 6", successful: 4300, failed: 95 },
-  { date: "Oct 7", successful: 4150, failed: 100 },
-  { date: "Oct 8", successful: 4400, failed: 120 },
-  { date: "Oct 9", successful: 4600, failed: 110 },
-  { date: "Oct 10", successful: 4500, failed: 95 },
-  { date: "Oct 11", successful: 4800, failed: 140 },
-  { date: "Oct 12", successful: 5100, failed: 130 },
-  { date: "Oct 13", successful: 5300, failed: 125 },
-  { date: "Oct 14", successful: 5200, failed: 115 },
-];
-
-const monthlyApiUsage = [
-  { month: "Jan", value: 120000 },
-  { month: "Feb", value: 135000 },
-  { month: "Mar", value: 148000 },
-  { month: "Apr", value: 162000 },
-  { month: "May", value: 175000 },
-  { month: "Jun", value: 190000 },
-  { month: "Jul", value: 205000 },
-  { month: "Aug", value: 220000 },
-  { month: "Sep", value: 237000 },
-  { month: "Oct", value: 254000 },
-  { month: "Nov", value: 0 },
-  { month: "Dec", value: 0 },
-];
-
-const COLORS = ['#04c8c8', '#00afaf', '#1c3238', '#212e48', '#5014d0'];
+// Temporary mock data fetching
+const fetchApiUsageData = async () => {
+  // Simulate API call
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  return {
+    totalApiCalls: 14285,
+    totalRecords: 8340,
+    recordsLimit: 10000,
+    increasePercentage: 12,
+    dailyUsageData: [
+      { date: '2023-06-01', calls: 420, records: 290 },
+      { date: '2023-06-02', calls: 380, records: 250 },
+      { date: '2023-06-03', calls: 300, records: 200 },
+      { date: '2023-06-04', calls: 350, records: 220 },
+      { date: '2023-06-05', calls: 410, records: 280 },
+      { date: '2023-06-06', calls: 490, records: 320 },
+      { date: '2023-06-07', calls: 520, records: 370 },
+    ],
+    monthlyUsageData: [
+      { date: 'Jan', calls: 9000, records: 6200 },
+      { date: 'Feb', calls: 8500, records: 5800 },
+      { date: 'Mar', calls: 9800, records: 6700 },
+      { date: 'Apr', calls: 10200, records: 7100 },
+      { date: 'May', calls: 11500, records: 7800 },
+      { date: 'Jun', calls: 13200, records: 8200 },
+    ],
+    endpointUsage: [
+      {
+        name: 'Property Search',
+        description: 'Search for properties by location, price, features, etc.',
+        requestCount: 6428,
+        percentage: 45,
+        trend: 'up',
+        icon: 'ps'
+      },
+      {
+        name: 'Property Detail',
+        description: 'Get detailed information about a specific property',
+        requestCount: 3572,
+        percentage: 25,
+        trend: 'up',
+        icon: 'ps2'
+      },
+      {
+        name: 'Property Comps',
+        description: 'Get comparable properties for a given property',
+        requestCount: 2143,
+        percentage: 15,
+        trend: 'down',
+        icon: 'ps3'
+      },
+      {
+        name: 'Autocomplete',
+        description: 'Get address suggestions as the user types',
+        requestCount: 2142,
+        percentage: 15,
+        trend: 'stable',
+        icon: 'address-auto'
+      },
+    ],
+    recordUsageBreakdown: [
+      { name: 'Property Search', value: 4820, color: '#1d4ed8' },
+      { name: 'Property Detail', value: 2340, color: '#047857' },
+      { name: 'Property Comps', value: 1180, color: '#b45309' },
+    ]
+  };
+};
 
 const ApiUsage = () => {
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const { toast } = useToast();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['apiUsage'],
+    queryFn: fetchApiUsageData,
+  });
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsRefreshing(false);
-    toast({
-      title: "Usage data refreshed",
-      description: "Your API usage data has been updated.",
-    });
-  };
+  if (isError) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">API Usage</h2>
+            <p className="text-muted-foreground">
+              Monitor your API usage and consumption
+            </p>
+          </div>
+        </div>
 
-  const handleDownload = () => {
-    toast({
-      title: "Report downloaded",
-      description: "Your API usage report has been downloaded.",
-    });
-  };
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Error:</strong>
+          <span className="block sm:inline"> Failed to load API usage data. Please try again later.</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className="space-y-6"
-    >
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-[#1c3238]">API Usage</h1>
-          <p className="text-muted-foreground mt-1">
-            Detailed analytics of your API calls and usage patterns
+          <h2 className="text-2xl font-bold tracking-tight">API Usage</h2>
+          <p className="text-muted-foreground">
+            Monitor your API usage and consumption
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-2 self-stretch sm:self-auto">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className="justify-start text-left font-normal w-full sm:w-[240px]"
-              >
-                <FilterIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "MMMM yyyy") : "Select month"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                defaultMonth={date}
-                showOutsideDays={false}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-          <Button onClick={handleRefresh} disabled={isRefreshing}>
-            <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
-            Refresh
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <Button variant="outline" asChild className="w-full sm:w-auto">
+            <Link to="/dashboard/usage/history">
+              <History className="mr-2 h-4 w-4" />
+              Usage History
+            </Link>
+          </Button>
+          <Button variant="outline" className="w-full sm:w-auto">
+            <FileDown className="mr-2 h-4 w-4" />
+            Export Data
           </Button>
         </div>
       </div>
-      
+
+      {isLoading ? (
+        <div className="grid gap-6 sm:grid-cols-2">
+          <CardSkeleton />
+          <CardSkeleton />
+        </div>
+      ) : (
+        <ApiUsageSummary
+          totalApiCalls={data.totalApiCalls}
+          totalRecords={data.totalRecords}
+          recordsLimit={data.recordsLimit}
+          increasePercentage={data.increasePercentage}
+        />
+      )}
+
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.3 }}
-          className="lg:col-span-2"
-        >
+        <div className="lg:col-span-2">
+          {isLoading ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Usage Analytics</CardTitle>
+                <CardDescription>
+                  API calls vs. property records used
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="daily">
+                  <TabsList>
+                    <TabsTrigger value="daily">Daily</TabsTrigger>
+                    <TabsTrigger value="monthly">Monthly</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </CardContent>
+            </Card>
+          ) : (
+            <UsageCharts
+              dailyUsageData={data.dailyUsageData}
+              monthlyUsageData={data.monthlyUsageData}
+              isLoading={isLoading}
+            />
+          )}
+        </div>
+        <div>
           <Card className="h-full">
-            <CardHeader className="pb-3">
-              <CardTitle>Usage Over Time</CardTitle>
+            <CardHeader>
+              <CardTitle>Record Usage Breakdown</CardTitle>
               <CardDescription>
-                Track your API usage trends over time
+                Distribution by endpoint
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="daily" className="mt-1">
-                <TabsList>
-                  <TabsTrigger value="daily">Daily (Last 14 Days)</TabsTrigger>
-                  <TabsTrigger value="monthly">Monthly (This Year)</TabsTrigger>
-                </TabsList>
-                <TabsContent value="daily" className="pt-4 h-[380px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={dailyApiUsage} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
-                      <XAxis dataKey="date" tick={{ fontSize: 12 }} stroke="var(--muted-foreground)" />
-                      <YAxis tick={{ fontSize: 12 }} stroke="var(--muted-foreground)" />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'var(--background)', 
-                          borderColor: 'var(--border)',
-                          borderRadius: 'var(--radius)',
-                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                        }} 
-                      />
-                      <Legend />
-                      <Bar dataKey="successful" name="Successful" stackId="a" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="failed" name="Failed" stackId="a" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </TabsContent>
-                <TabsContent value="monthly" className="pt-4 h-[380px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={monthlyApiUsage} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
-                      <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="var(--muted-foreground)" />
-                      <YAxis tick={{ fontSize: 12 }} stroke="var(--muted-foreground)" />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'var(--background)', 
-                          borderColor: 'var(--border)',
-                          borderRadius: 'var(--radius)',
-                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                        }} 
-                      />
-                      <Area 
-                        type="monotone" 
-                        dataKey="value" 
-                        name="API Calls" 
-                        fill="hsl(var(--primary) / 0.2)" 
-                        stroke="hsl(var(--primary))" 
-                        activeDot={{ r: 6 }} 
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </TabsContent>
-              </Tabs>
+              {isLoading ? (
+                <UsageBreakdownSkeleton />
+              ) : (
+                <RecordUsageBreakdown data={data.recordUsageBreakdown} />
+              )}
             </CardContent>
           </Card>
-        </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.3 }}
-        >
-          <Card className="h-full">
-            <CardHeader className="pb-3">
-              <CardTitle>Usage by Endpoint</CardTitle>
-              <CardDescription>
-                Distribution of API calls across endpoints
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[380px] w-full flex flex-col">
-                <div className="flex-1">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={apiUsageByEndpoint}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={100}
-                        paddingAngle={2}
-                        dataKey="value"
-                        labelLine={false}
-                        label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
-                      >
-                        {apiUsageByEndpoint.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'var(--background)', 
-                          borderColor: 'var(--border)',
-                          borderRadius: 'var(--radius)',
-                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                        }} 
-                        formatter={(value: number) => [`${value.toLocaleString()} calls`, 'Calls']}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="border-t pt-4">
-                  <Button 
-                    variant="outline" 
-                    className="w-full flex items-center justify-center"
-                    onClick={handleDownload}
-                  >
-                    <DownloadIcon className="h-4 w-4 mr-2" />
-                    Download Report
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+        </div>
       </div>
-      
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.3 }}
-      >
+
+      <div>
         <Card>
           <CardHeader>
-            <CardTitle>Usage Details</CardTitle>
+            <CardTitle>Endpoint Usage Details</CardTitle>
             <CardDescription>
-              Detailed breakdown of your API usage
+              Request breakdown by API endpoints
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="border-b">
-                    <th className="py-3 px-4 text-left font-medium text-muted-foreground">Endpoint</th>
-                    <th className="py-3 px-4 text-left font-medium text-muted-foreground">Method</th>
-                    <th className="py-3 px-4 text-left font-medium text-muted-foreground">Calls</th>
-                    <th className="py-3 px-4 text-left font-medium text-muted-foreground">Success Rate</th>
-                    <th className="py-3 px-4 text-left font-medium text-muted-foreground">Avg. Response Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b">
-                    <td className="py-3 px-4 font-mono text-xs">/v2/PropertyDetail</td>
-                    <td className="py-3 px-4">POST</td>
-                    <td className="py-3 px-4">42,300</td>
-                    <td className="py-3 px-4">99.7%</td>
-                    <td className="py-3 px-4">124ms</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-3 px-4 font-mono text-xs">/v2/PropertySearch</td>
-                    <td className="py-3 px-4">POST</td>
-                    <td className="py-3 px-4">21,800</td>
-                    <td className="py-3 px-4">99.9%</td>
-                    <td className="py-3 px-4">87ms</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-3 px-4 font-mono text-xs">/v2/PropertyComps</td>
-                    <td className="py-3 px-4">POST</td>
-                    <td className="py-3 px-4">15,600</td>
-                    <td className="py-3 px-4">99.8%</td>
-                    <td className="py-3 px-4">156ms</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-3 px-4 font-mono text-xs">/v2/PropertyAutocomplete</td>
-                    <td className="py-3 px-4">POST</td>
-                    <td className="py-3 px-4">9,800</td>
-                    <td className="py-3 px-4">98.5%</td>
-                    <td className="py-3 px-4">210ms</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-mono text-xs">/v2/PropertyMapping</td>
-                    <td className="py-3 px-4">POST</td>
-                    <td className="py-3 px-4">7,500</td>
-                    <td className="py-3 px-4">99.5%</td>
-                    <td className="py-3 px-4">98ms</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            {isLoading ? (
+              <EndpointUsageSkeleton />
+            ) : (
+              <EndpointUsageSection endpoints={data.endpointUsage} />
+            )}
           </CardContent>
         </Card>
-      </motion.div>
-    </motion.div>
+      </div>
+
+      <div className="bg-muted/20 border rounded-lg p-4 space-y-2">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <h3 className="text-sm font-medium">Need more detailed usage analytics?</h3>
+            <p className="text-sm text-muted-foreground">
+              View your detailed API usage history with advanced filtering options.
+            </p>
+          </div>
+          <Button asChild variant="default" className="bg-[#5014d0] hover:bg-[#5014d0]/90 w-full sm:w-auto">
+            <Link to="/dashboard/usage/history">
+              <History className="mr-2 h-4 w-4" />
+              View Full Usage History
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -99,3 +99,80 @@ export const EndpointUsageSkeleton = () => {
     </div>
   );
 };
+
+export const TableSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-10 w-full rounded-md" />
+      <div className="space-y-2">
+        <div className="flex gap-4 items-center py-3 border-b">
+          {Array(6).fill(0).map((_, i) => (
+            <Skeleton key={i} className="h-5 w-20" />
+          ))}
+        </div>
+        {Array(10).fill(0).map((_, i) => (
+          <div key={i} className="flex gap-4 items-center py-4 border-b last:border-0">
+            {Array(6).fill(0).map((_, j) => (
+              <Skeleton key={j} className="h-4 w-24" />
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-center">
+        <Skeleton className="h-10 w-64" />
+      </div>
+    </div>
+  );
+};
+
+export const FiltersSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-8 w-48" />
+      <div className="flex flex-wrap gap-4">
+        <Skeleton className="h-10 w-64" />
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-10 w-48" />
+      </div>
+    </div>
+  );
+};
+
+export const LoadingPage = () => {
+  return (
+    <div className="container mx-auto px-4 py-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-64" />
+        </div>
+        <Skeleton className="h-10 w-32" />
+      </div>
+      
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-6 w-32" />
+          <Skeleton className="h-4 w-48" />
+        </CardHeader>
+        <CardContent>
+          <FiltersSkeleton />
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardHeader className="flex flex-row justify-between items-center">
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+          <Skeleton className="h-8 w-32" />
+        </CardHeader>
+        <CardContent>
+          <TableSkeleton />
+        </CardContent>
+      </Card>
+    </div>
+  );
+};

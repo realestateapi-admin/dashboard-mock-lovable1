@@ -12,6 +12,7 @@ import Onboarding from "./pages/Onboarding";
 import { DashboardLayout } from "./components/layouts/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import ApiUsage from "./pages/ApiUsage";
+import UsageHistory from "./pages/UsageHistory";
 import ApiKeys from "./pages/ApiKeys";
 import Billing from "./pages/Billing";
 import Support from "./pages/Support";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<Dashboard />} />
               <Route path="usage" element={<ApiUsage />} />
+              <Route path="usage/history" element={<UsageHistory />} />
               <Route path="api-keys" element={<ApiKeys />} />
               <Route path="billing" element={<Billing />} />
               <Route path="support" element={<Support />} />
