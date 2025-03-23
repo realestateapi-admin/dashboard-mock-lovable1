@@ -42,42 +42,42 @@ const fetchApiUsageData = async () => {
     ],
     endpointUsage: [
       {
-        name: 'Property Search',
+        endpoint: 'Property Search',
         description: 'Search for properties by location, price, features, etc.',
-        requestCount: 6428,
+        calls: 6428,
+        records: 6428,
         percentage: 45,
-        trend: 'up',
-        icon: 'ps'
+        creditCost: "1 credit per record"
       },
       {
-        name: 'Property Detail',
+        endpoint: 'Property Detail',
         description: 'Get detailed information about a specific property',
-        requestCount: 3572,
+        calls: 3572,
+        records: 3572,
         percentage: 25,
-        trend: 'up',
-        icon: 'ps2'
+        creditCost: "1 credit per record"
       },
       {
-        name: 'Property Comps',
+        endpoint: 'Property Comps',
         description: 'Get comparable properties for a given property',
-        requestCount: 2143,
+        calls: 2143,
+        records: 2143,
         percentage: 15,
-        trend: 'down',
-        icon: 'ps3'
+        creditCost: "1 credit per record"
       },
       {
-        name: 'Autocomplete',
+        endpoint: 'Autocomplete',
         description: 'Get address suggestions as the user types',
-        requestCount: 2142,
-        percentage: 15,
-        trend: 'stable',
-        icon: 'address-auto'
+        calls: 2142,
+        records: 0,
+        percentage: 0,
+        creditCost: "Free"
       },
     ],
-    recordUsageBreakdown: [
-      { name: 'Property Search', value: 4820, color: '#1d4ed8' },
-      { name: 'Property Detail', value: 2340, color: '#047857' },
-      { name: 'Property Comps', value: 1180, color: '#b45309' },
+    usageDistributionData: [
+      { name: 'Property Search', value: 4820, fill: '#1d4ed8' },
+      { name: 'Property Detail', value: 2340, fill: '#047857' },
+      { name: 'Property Comps', value: 1180, fill: '#b45309' },
     ]
   };
 };
@@ -184,7 +184,10 @@ const ApiUsage = () => {
               {isLoading ? (
                 <UsageBreakdownSkeleton />
               ) : (
-                <RecordUsageBreakdown data={data.recordUsageBreakdown} />
+                <RecordUsageBreakdown 
+                  usageDistributionData={data.usageDistributionData} 
+                  isLoading={isLoading}
+                />
               )}
             </CardContent>
           </Card>
@@ -203,7 +206,10 @@ const ApiUsage = () => {
             {isLoading ? (
               <EndpointUsageSkeleton />
             ) : (
-              <EndpointUsageSection endpoints={data.endpointUsage} />
+              <EndpointUsageSection 
+                endpointUsage={data.endpointUsage} 
+                isLoading={isLoading}
+              />
             )}
           </CardContent>
         </Card>

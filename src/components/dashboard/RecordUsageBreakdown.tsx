@@ -4,12 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { UsageBreakdownSkeleton } from "./LoadingState";
-
-interface UsageDistributionItem {
-  name: string;
-  value: number;
-  fill: string;
-}
+import { UsageDistributionItem } from "@/types/usage";
 
 interface RecordUsageBreakdownProps {
   usageDistributionData: UsageDistributionItem[];

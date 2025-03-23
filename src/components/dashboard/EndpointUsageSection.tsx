@@ -8,18 +8,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { EndpointUsageSkeleton } from "./LoadingState";
-
-interface EndpointUsage {
-  endpoint: string;
-  calls: number;
-  records: number;
-  percentage: number;
-  description: string;
-  creditCost: string;
-}
+import { EndpointUsageItem } from "@/types/usage";
 
 interface EndpointUsageSectionProps {
-  endpointUsage: EndpointUsage[];
+  endpointUsage: EndpointUsageItem[];
   isLoading?: boolean;
 }
 

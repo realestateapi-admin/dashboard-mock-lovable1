@@ -231,7 +231,6 @@ const Dashboard = () => {
         monthlyRecordsPercentage={monthlyRecordsPercentage}
         isTrialActive={isTrialActive}
         trialDaysLeft={trialDaysLeft}
-        isLoading={isLoading}
       />
       
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
