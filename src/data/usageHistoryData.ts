@@ -14,18 +14,24 @@ const generateSampleData = (): UsageHistoryEntry[] => {
   
   const statuses = ["Success", "Error", "Warning"];
   
+  // Updated requests with both GET and POST methods
   const requests = [
-    "GET /properties?location=New+York&bedrooms=2",
+    "POST /properties/search",
     "GET /properties/123456",
-    "GET /properties/123456/comps",
+    "POST /properties/123456/comps",
     "GET /autocomplete?q=123+Main+St",
-    "GET /property-map?lat=37.7749&lng=-122.4194",
-    "GET /properties?location=Los+Angeles&bedrooms=3",
+    "POST /property-maps",
+    "POST /properties/search",
     "GET /properties/789012",
-    "GET /properties/345678/comps",
+    "POST /properties/789012/comps",
     "GET /autocomplete?q=456+Oak+Ave",
-    "GET /property-map?lat=34.0522&lng=-118.2437"
+    "POST /property-boundaries",
+    "GET /properties/345678"
   ];
+  
+  // HTTP methods to use based on endpoint types
+  const getMethodEndpoints = ["Property Detail", "Autocomplete"];
+  const postMethodEndpoints = ["Property Search", "Property Comps", "Mapping"];
   
   const result: UsageHistoryEntry[] = [];
   
@@ -41,7 +47,22 @@ const generateSampleData = (): UsageHistoryEntry[] => {
       date.setSeconds(Math.floor(Math.random() * 60));
       
       const endpoint = endpoints[Math.floor(Math.random() * endpoints.length)];
-      const requestPath = requests[Math.floor(Math.random() * requests.length)];
+      
+      // Select requests that match the endpoint type (GET or POST based on endpoint)
+      const isGetMethod = getMethodEndpoints.includes(endpoint);
+      const isPostMethod = postMethodEndpoints.includes(endpoint);
+      
+      // Filter requests by HTTP method
+      const filteredRequests = requests.filter(req => {
+        if (isGetMethod && req.startsWith("GET")) return true;
+        if (isPostMethod && req.startsWith("POST")) return true;
+        // Fallback for any new endpoints
+        return !isGetMethod && !isPostMethod;
+      });
+      
+      const requestPath = filteredRequests.length > 0 
+        ? filteredRequests[Math.floor(Math.random() * filteredRequests.length)]
+        : requests[Math.floor(Math.random() * requests.length)];
       
       // Credits based on endpoint type
       let credits = 0;
