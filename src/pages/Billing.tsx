@@ -61,7 +61,7 @@ const Billing = () => {
     // Extract numeric price from base plan (removing $ and /mo)
     const basePrice = parseInt(basePlan.price.replace(/\$|,/g, ""));
     
-    // Calculate add-on costs
+    // Calculate add-on costs - only include monthly subscription add-ons
     let addOnTotal = 0;
     activeAddOns.forEach(addonId => {
       const addon = addOns.find(a => a.id === addonId);
@@ -70,7 +70,7 @@ const Billing = () => {
       const priceStr = addon.prices[selectedPlan as keyof typeof addon.prices];
       if (priceStr === "Included") return;
       
-      // Only add monthly costs (ignoring "each" pricing for usage-based services)
+      // Only add monthly costs (checking for /month in the price)
       if (priceStr.includes("/month")) {
         const price = parseInt(priceStr.replace(/\$|,|\/month/g, ""));
         addOnTotal += price;

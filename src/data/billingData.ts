@@ -116,7 +116,8 @@ export const addOns: AddOnData[] = [
       growth: "$500",
       pro: "$1,000",
       enterprise: "$2,500",
-    }
+    },
+    billingType: 'subscription'
   },
   {
     id: "lien-search",
@@ -127,7 +128,8 @@ export const addOns: AddOnData[] = [
       growth: "$0.75 each",
       pro: "$0.50 each",
       enterprise: "$0.40 each",
-    }
+    },
+    billingType: 'metered'
   },
   {
     id: "tech-support",
@@ -138,6 +140,7 @@ export const addOns: AddOnData[] = [
       growth: "Included",
       pro: "Included",
       enterprise: "Included",
-    }
+    },
+    billingType: 'subscription'
   }
 ];

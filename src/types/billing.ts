@@ -16,6 +16,8 @@ export interface AddOnData {
   prices: {
     [key: string]: string;
   };
+  // Add billing type to clarify which add-ons are metered vs subscription
+  billingType?: 'metered' | 'subscription';
 }
 
 export interface InvoiceData {

@@ -55,7 +55,7 @@ export const SubscriptionSummary = ({
               return (
                 <div key={addonId} className="flex justify-between items-baseline pl-4">
                   <span className="text-sm">{addon.name}</span>
-                  <span className="text-sm">{price === "Included" ? "Included" : price}</span>
+                  <span className="text-sm">{price}</span>
                 </div>
               );
             })}
