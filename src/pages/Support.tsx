@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -62,8 +61,16 @@ const kbArticles = [
   },
 ];
 
+// Define the Message type more strictly
+type Message = {
+  id: number;
+  role: "user" | "system";
+  content: string;
+  timestamp: string;
+};
+
 // Mock chat messages for AI support
-const initialMessages = [
+const initialMessages: Message[] = [
   {
     id: 1,
     role: "system",
@@ -71,13 +78,6 @@ const initialMessages = [
     timestamp: new Date(Date.now() - 1000 * 60 * 2).toISOString(),
   },
 ];
-
-type Message = {
-  id: number;
-  role: "user" | "system";
-  content: string;
-  timestamp: string;
-};
 
 const Support = () => {
   const [searchQuery, setSearchQuery] = useState("");
