@@ -44,7 +44,7 @@ export const BillingPlans = ({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
           {plans.map((plan) => (
             <div key={plan.id} className="relative">
               {plan.popular && (
@@ -53,7 +53,7 @@ export const BillingPlans = ({
                 </div>
               )}
               <div
-                className={`p-4 border rounded-lg transition-all hover:border-primary cursor-pointer ${
+                className={`p-4 border rounded-lg transition-all hover:border-primary cursor-pointer h-full flex flex-col ${
                   selectedPlan === plan.id
                     ? "ring-2 ring-primary ring-offset-2 border-primary"
                     : "border-border"
@@ -80,6 +80,22 @@ export const BillingPlans = ({
                 <div className="mb-4 flex items-center gap-2">
                   <span className="text-xs font-medium">Records:</span>
                   <span className="text-xs">{plan.records}/mo</span>
+                </div>
+                <div className="mt-auto">
+                  <span className="text-xs font-medium block mb-2">Features:</span>
+                  <ul className="text-xs space-y-1">
+                    {plan.features.slice(0, 3).map((feature, i) => (
+                      <li key={i} className="flex items-center gap-1">
+                        <CheckCircle className="h-3 w-3 text-primary/70" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                    {plan.features.length > 3 && (
+                      <li className="text-xs text-muted-foreground">
+                        +{plan.features.length - 3} more features
+                      </li>
+                    )}
+                  </ul>
                 </div>
               </div>
             </div>

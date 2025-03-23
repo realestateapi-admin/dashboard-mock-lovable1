@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -14,8 +13,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Check, ArrowRight, Plus, Minus } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { Check, ArrowRight } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
 
 const plans = [
@@ -192,17 +191,17 @@ const Onboarding = () => {
         
         {step === 1 ? (
           <div className="space-y-4">
-            <RadioGroup value={selectedPlan} onValueChange={setSelectedPlan} className="gap-4 pt-2">
+            <RadioGroup value={selectedPlan} onValueChange={setSelectedPlan} className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pt-2">
               {plans.map((plan) => (
                 <div key={plan.id} className="relative">
                   {plan.popular && (
-                    <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-medium px-2 py-0.5 rounded-full">
+                    <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-medium px-2 py-0.5 rounded-full z-10">
                       Popular
                     </div>
                   )}
                   <Label
                     htmlFor={plan.id}
-                    className={`flex flex-col p-4 border rounded-lg cursor-pointer transition-all hover:border-primary ${
+                    className={`flex flex-col h-full p-4 border rounded-lg cursor-pointer transition-all hover:border-primary ${
                       selectedPlan === plan.id
                         ? "ring-2 ring-primary ring-offset-2 border-primary"
                         : "border-border"
