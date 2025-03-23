@@ -14,61 +14,138 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, Plus, Minus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Switch } from "@/components/ui/switch";
 
 const plans = [
   {
     id: "starter",
     name: "Starter",
     description: "Perfect for indie developers and startups",
-    price: "$49",
+    price: "$599",
     priceDescription: "per month",
+    records: "30,000",
     features: [
-      "100,000 API calls per month",
-      "Property data for 10 major cities",
-      "Standard support",
-      "Basic analytics dashboard",
+      "Auto-Complete (unlimited)",
+      "Property Search",
+      "Property Detail",
+      "Comps"
     ],
   },
   {
-    id: "pro",
-    name: "Professional",
+    id: "growth",
+    name: "Growth",
     description: "For growing companies and small teams",
-    price: "$99",
+    price: "$1,200",
     priceDescription: "per month",
+    records: "150,000",
     features: [
-      "500,000 API calls per month",
-      "Property data for 50 major cities",
-      "Priority support",
-      "Advanced analytics dashboard",
-      "Custom webhooks",
+      "Auto-Complete (unlimited)",
+      "Property Search",
+      "Property Detail",
+      "Comps",
+      "CSV Generator",
+      "Parcel Boundary",
+      "Address Verification",
+      "Mapping pins (unlimited)"
     ],
     popular: true,
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    description: "For established companies with higher volume needs",
+    price: "$2,500",
+    priceDescription: "per month",
+    records: "250,000",
+    features: [
+      "Auto-Complete (unlimited)",
+      "Property Search",
+      "Property Detail",
+      "Comps",
+      "CSV Generator",
+      "Parcel Boundary",
+      "Address Verification",
+      "Address Verification Bulk",
+      "Mapping pins (unlimited)",
+      "Saved Search"
+    ],
   },
   {
     id: "enterprise",
     name: "Enterprise",
     description: "For large organizations with complex needs",
-    price: "Contact us",
-    priceDescription: "for custom pricing",
+    price: "$10,000",
+    priceDescription: "per month",
+    records: "5,000,000",
     features: [
-      "Unlimited API calls",
-      "Property data for all available locations",
-      "24/7 dedicated support",
-      "Enterprise-grade analytics",
-      "Custom data integration",
-      "Service level agreement",
+      "Auto-Complete (unlimited)",
+      "Property Search",
+      "Property Detail",
+      "Property Detail Bulk",
+      "Comps",
+      "CSV Generator",
+      "Parcel Boundary",
+      "Address Verification",
+      "Address Verification Bulk",
+      "Mapping pins (unlimited)",
+      "Saved Search"
     ],
   },
+];
+
+const addOns = [
+  {
+    id: "premium-avm",
+    name: "Premium AVM",
+    description: "Advanced automated valuation model for more accurate property estimates",
+    prices: {
+      starter: "$250",
+      growth: "$500",
+      pro: "$1,000",
+      enterprise: "$2,500",
+    }
+  },
+  {
+    id: "lien-search",
+    name: "Involuntary Lien Search",
+    description: "Search for liens against properties",
+    prices: {
+      starter: "$1 each",
+      growth: "$0.75 each",
+      pro: "$0.50 each",
+      enterprise: "$0.40 each",
+    }
+  },
+  {
+    id: "tech-support",
+    name: "Tech Support",
+    description: "Premium technical support package",
+    prices: {
+      starter: "$250/month",
+      growth: "Included",
+      pro: "Included",
+      enterprise: "Included",
+    }
+  }
 ];
 
 const Onboarding = () => {
   const [selectedPlan, setSelectedPlan] = useState("starter");
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const toggleAddOn = (addOnId: string) => {
+    setSelectedAddOns(prev => 
+      prev.includes(addOnId) 
+        ? prev.filter(id => id !== addOnId)
+        : [...prev, addOnId]
+    );
+  };
 
   const handleContinue = async () => {
     setIsLoading(true);
@@ -83,7 +160,7 @@ const Onboarding = () => {
         // In a real app, handle subscription creation here
         toast({
           title: "Your trial is ready!",
-          description: `You've selected the ${selectedPlan} plan. Your free trial has started.`,
+          description: `You've selected the ${plans.find(p => p.id === selectedPlan)?.name} plan with ${selectedAddOns.length} add-ons. Your free trial has started.`,
         });
         
         navigate("/dashboard");
@@ -153,6 +230,11 @@ const Onboarding = () => {
                         {plan.priceDescription}
                       </span>
                     </div>
+                    <div className="mb-4 flex items-center gap-2">
+                      <span className="text-sm font-medium">Records:</span>
+                      <span className="text-sm">{plan.records} per month</span>
+                    </div>
+                    <div className="font-medium text-sm mb-2">Included Endpoints:</div>
                     <ul className="text-sm space-y-2 mt-auto">
                       {plan.features.map((feature, i) => (
                         <li key={i} className="flex items-center gap-2">
@@ -188,10 +270,42 @@ const Onboarding = () => {
           >
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle>Confirm your selection</CardTitle>
+                <CardTitle>Add premium features</CardTitle>
                 <CardDescription>
-                  You've selected the {plans.find(p => p.id === selectedPlan)?.name} plan
+                  Enhance your {plans.find(p => p.id === selectedPlan)?.name} plan with add-ons
                 </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {addOns.map(addon => {
+                  const addonPrice = addon.prices[selectedPlan as keyof typeof addon.prices];
+                  const isIncluded = addonPrice === "Included";
+                  
+                  return (
+                    <div key={addon.id} className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">{addon.name}</p>
+                        <p className="text-sm text-muted-foreground">{addon.description}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {isIncluded ? (
+                          <span className="text-sm text-primary font-medium">Included</span>
+                        ) : (
+                          <>
+                            <span className="text-sm font-medium">{addonPrice}</span>
+                            <Switch 
+                              checked={selectedAddOns.includes(addon.id)}
+                              onCheckedChange={() => toggleAddOn(addon.id)}
+                              disabled={isIncluded}
+                            />
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </CardContent>
+              <CardHeader className="pb-3 border-t pt-6">
+                <CardTitle>Plan Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 pb-6">
                 <div className="flex justify-between items-baseline">
@@ -199,7 +313,7 @@ const Onboarding = () => {
                   <span>{plans.find(p => p.id === selectedPlan)?.name}</span>
                 </div>
                 <div className="flex justify-between items-baseline">
-                  <span className="text-sm font-medium">Price</span>
+                  <span className="text-sm font-medium">Base Price</span>
                   <div className="flex gap-1 items-baseline">
                     <span>{plans.find(p => p.id === selectedPlan)?.price}</span>
                     <span className="text-xs text-muted-foreground">
@@ -207,10 +321,24 @@ const Onboarding = () => {
                     </span>
                   </div>
                 </div>
-                <div className="flex justify-between items-baseline">
-                  <span className="text-sm font-medium">Trial Period</span>
-                  <span>14 days</span>
-                </div>
+                
+                {selectedAddOns.length > 0 && (
+                  <>
+                    <div className="h-px bg-border my-2"></div>
+                    <div className="font-medium">Selected Add-ons:</div>
+                    {selectedAddOns.map(addonId => {
+                      const addon = addOns.find(a => a.id === addonId);
+                      if (!addon) return null;
+                      return (
+                        <div key={addonId} className="flex justify-between items-baseline pl-4">
+                          <span className="text-sm">{addon.name}</span>
+                          <span className="text-sm">{addon.prices[selectedPlan as keyof typeof addon.prices]}</span>
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+                
                 <div className="h-px bg-border my-2" />
                 <div className="flex justify-between items-baseline text-primary font-medium">
                   <span>First payment due</span>
