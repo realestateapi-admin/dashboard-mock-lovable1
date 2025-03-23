@@ -42,7 +42,7 @@ const monthlyUsageData = [
   { date: "Dec", value: 86500 },
 ];
 
-// Mock endpoint usage data
+// Updated endpoint usage data with real endpoint names
 const endpointUsage = [
   { endpoint: "/v2/PropertyDetail", calls: 2456, percentage: 50.2 },
   { endpoint: "/v2/PropertySearch", calls: 1534, percentage: 31.4 },
@@ -51,7 +51,7 @@ const endpointUsage = [
   { endpoint: "/v2/PropertyMapping", calls: 39, percentage: 0.8 },
 ];
 
-// Mock recent activity data
+// Updated recent activity data with real endpoint names
 const recentActivity = [
   { 
     id: 1, 
@@ -128,7 +128,7 @@ const Dashboard = () => {
       className="space-y-6"
     >
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-[#1c3238]">Dashboard</h1>
         <Button 
           variant="outline" 
           onClick={handleRefresh}
@@ -140,19 +140,19 @@ const Dashboard = () => {
       </div>
       
       {isTrialActive && (
-        <Alert className="bg-primary-teal/10 border-primary-teal">
-          <AlertCircle className="h-4 w-4 text-primary-teal" />
-          <AlertTitle className="text-primary-teal font-medium">Trial Mode Active</AlertTitle>
+        <Alert className="bg-[#04c8c8]/10 border-[#04c8c8]">
+          <AlertCircle className="h-4 w-4 text-[#04c8c8]" />
+          <AlertTitle className="text-[#04c8c8] font-medium">Trial Mode Active</AlertTitle>
           <AlertDescription className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div>
-              <p>You have <span className="font-medium text-primary-teal">{trialDaysLeft} days</span> left in your trial period.</p>
-              <Progress value={(14 - trialDaysLeft) / 14 * 100} className="h-2 mt-2" />
+              <p>You have <span className="font-medium text-[#04c8c8]">{trialDaysLeft} days</span> left in your trial period.</p>
+              <Progress value={(14 - trialDaysLeft) / 14 * 100} className="h-2 mt-2 bg-[#e2e8f0]" indicatorClassName="bg-[#04c8c8]" />
             </div>
             <div className="flex gap-2 mt-2 sm:mt-0">
-              <Button size="sm" asChild>
+              <Button size="sm" className="bg-[#5014d0] hover:bg-[#5014d0]/90" asChild>
                 <Link to="/dashboard/billing">Upgrade Now</Link>
               </Button>
-              <Button size="sm" variant="outline" onClick={requestTrialExtension}>
+              <Button size="sm" variant="outline" className="text-[#5014d0] border-[#5014d0] hover:bg-[#5014d0]/10" onClick={requestTrialExtension}>
                 Request Extension
               </Button>
             </div>
@@ -415,7 +415,7 @@ const Dashboard = () => {
                 </div>
                 <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-primary-teal rounded-full"
+                    className="h-full bg-[#04c8c8] rounded-full"
                     style={{ width: `${endpoint.percentage}%` }}
                   />
                 </div>

@@ -8,8 +8,8 @@ export function MainNav() {
       <NavLink
         to="/dashboard"
         className={({ isActive }) =>
-          `transition-colors hover:text-foreground ${
-            isActive ? "text-foreground" : "text-muted-foreground"
+          `transition-colors hover:text-[#04c8c8] ${
+            isActive ? "text-[#04c8c8]" : "text-muted-foreground"
           }`
         }
       >
@@ -18,8 +18,8 @@ export function MainNav() {
       <NavLink
         to="/dashboard/usage"
         className={({ isActive }) =>
-          `transition-colors hover:text-foreground ${
-            isActive ? "text-foreground" : "text-muted-foreground"
+          `transition-colors hover:text-[#04c8c8] ${
+            isActive ? "text-[#04c8c8]" : "text-muted-foreground"
           }`
         }
       >
@@ -28,8 +28,8 @@ export function MainNav() {
       <NavLink
         to="/dashboard/api-keys"
         className={({ isActive }) =>
-          `transition-colors hover:text-foreground ${
-            isActive ? "text-foreground" : "text-muted-foreground"
+          `transition-colors hover:text-[#04c8c8] ${
+            isActive ? "text-[#04c8c8]" : "text-muted-foreground"
           }`
         }
       >
@@ -38,8 +38,8 @@ export function MainNav() {
       <NavLink
         to="/dashboard/billing"
         className={({ isActive }) =>
-          `transition-colors hover:text-foreground ${
-            isActive ? "text-foreground" : "text-muted-foreground"
+          `transition-colors hover:text-[#04c8c8] ${
+            isActive ? "text-[#04c8c8]" : "text-muted-foreground"
           }`
         }
       >
@@ -48,8 +48,8 @@ export function MainNav() {
       <NavLink
         to="/dashboard/support"
         className={({ isActive }) =>
-          `transition-colors hover:text-foreground ${
-            isActive ? "text-foreground" : "text-muted-foreground"
+          `transition-colors hover:text-[#04c8c8] ${
+            isActive ? "text-[#04c8c8]" : "text-muted-foreground"
           }`
         }
       >

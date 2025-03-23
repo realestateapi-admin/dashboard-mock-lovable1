@@ -11,9 +11,9 @@ const Index = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-radial from-primary-teal/10 to-transparent">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-radial from-[#04c8c8]/10 to-transparent">
       <div className="text-center animate-pulse">
-        <h1 className="text-2xl font-medium">Redirecting to RealEstateAPI Dashboard...</h1>
+        <h1 className="text-2xl font-medium text-[#212e48]">Redirecting to RealEstateAPI Dashboard...</h1>
       </div>
     </div>
   );

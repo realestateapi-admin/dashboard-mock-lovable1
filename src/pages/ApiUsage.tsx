@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,16 +15,14 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 
-// Mock data for API usage by endpoint
 const apiUsageByEndpoint = [
-  { name: "/properties/search", value: 42300 },
-  { name: "/properties/details", value: 21800 },
-  { name: "/market/trends", value: 15600 },
-  { name: "/properties/valuation", value: 9800 },
-  { name: "/agents/nearby", value: 7500 },
+  { name: "/v2/PropertyDetail", value: 42300 },
+  { name: "/v2/PropertySearch", value: 21800 },
+  { name: "/v2/PropertyComps", value: 15600 },
+  { name: "/v2/PropertyAutocomplete", value: 9800 },
+  { name: "/v2/PropertyMapping", value: 7500 },
 ];
 
-// Mock data for daily API usage
 const dailyApiUsage = [
   { date: "Oct 1", successful: 3200, failed: 120 },
   { date: "Oct 2", successful: 3500, failed: 90 },
@@ -43,7 +40,6 @@ const dailyApiUsage = [
   { date: "Oct 14", successful: 5200, failed: 115 },
 ];
 
-// Mock data for monthly API usage
 const monthlyApiUsage = [
   { month: "Jan", value: 120000 },
   { month: "Feb", value: 135000 },
@@ -59,8 +55,7 @@ const monthlyApiUsage = [
   { month: "Dec", value: 0 },
 ];
 
-// Chart colors
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A569BD'];
+const COLORS = ['#04c8c8', '#00afaf', '#1c3238', '#212e48', '#5014d0'];
 
 const ApiUsage = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -93,7 +88,7 @@ const ApiUsage = () => {
     >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight">API Usage</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-[#1c3238]">API Usage</h1>
           <p className="text-muted-foreground mt-1">
             Detailed analytics of your API calls and usage patterns
           </p>
@@ -283,35 +278,35 @@ const ApiUsage = () => {
                 </thead>
                 <tbody>
                   <tr className="border-b">
-                    <td className="py-3 px-4 font-mono text-xs">/properties/search</td>
+                    <td className="py-3 px-4 font-mono text-xs">/v2/PropertyDetail</td>
                     <td className="py-3 px-4">GET</td>
                     <td className="py-3 px-4">42,300</td>
                     <td className="py-3 px-4">99.7%</td>
                     <td className="py-3 px-4">124ms</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="py-3 px-4 font-mono text-xs">/properties/details</td>
+                    <td className="py-3 px-4 font-mono text-xs">/v2/PropertySearch</td>
                     <td className="py-3 px-4">GET</td>
                     <td className="py-3 px-4">21,800</td>
                     <td className="py-3 px-4">99.9%</td>
                     <td className="py-3 px-4">87ms</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="py-3 px-4 font-mono text-xs">/market/trends</td>
+                    <td className="py-3 px-4 font-mono text-xs">/v2/PropertyComps</td>
                     <td className="py-3 px-4">GET</td>
                     <td className="py-3 px-4">15,600</td>
                     <td className="py-3 px-4">99.8%</td>
                     <td className="py-3 px-4">156ms</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="py-3 px-4 font-mono text-xs">/properties/valuation</td>
-                    <td className="py-3 px-4">POST</td>
+                    <td className="py-3 px-4 font-mono text-xs">/v2/PropertyAutocomplete</td>
+                    <td className="py-3 px-4">GET</td>
                     <td className="py-3 px-4">9,800</td>
                     <td className="py-3 px-4">98.5%</td>
                     <td className="py-3 px-4">210ms</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-mono text-xs">/agents/nearby</td>
+                    <td className="py-3 px-4 font-mono text-xs">/v2/PropertyMapping</td>
                     <td className="py-3 px-4">GET</td>
                     <td className="py-3 px-4">7,500</td>
                     <td className="py-3 px-4">99.5%</td>

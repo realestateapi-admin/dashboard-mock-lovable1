@@ -58,11 +58,11 @@ export const DashboardSidebar = () => {
       <SidebarContent className="pt-6">
         <div className="flex items-center px-4 mb-6">
           <img 
-            src="/logo.svg" 
+            src="/realestateapi-logo.svg" 
             alt="RealEstateAPI" 
-            className="h-6 w-auto" 
+            className="h-8 w-auto" 
             onError={(e) => {
-              e.currentTarget.src = "https://via.placeholder.com/120x30?text=RealEstateAPI";
+              e.currentTarget.src = "https://via.placeholder.com/160x40?text=RealEstateAPI";
             }}
           />
         </div>
@@ -77,7 +77,7 @@ export const DashboardSidebar = () => {
                     <NavLink 
                       to={item.href}
                       className={({ isActive }) => 
-                        isActive ? "text-primary font-medium" : "text-foreground/70 hover:text-foreground"
+                        isActive ? "text-[#5014d0] font-medium" : "text-foreground/70 hover:text-foreground"
                       }
                     >
                       <item.icon className="h-5 w-5" />
@@ -100,7 +100,7 @@ export const DashboardSidebar = () => {
                     <NavLink 
                       to={item.href}
                       className={({ isActive }) => 
-                        isActive ? "text-primary font-medium" : "text-foreground/70 hover:text-foreground"
+                        isActive ? "text-[#5014d0] font-medium" : "text-foreground/70 hover:text-foreground"
                       }
                     >
                       <item.icon className="h-5 w-5" />
@@ -116,7 +116,7 @@ export const DashboardSidebar = () => {
       
       <SidebarFooter className="pt-2 pb-4">
         <div className="px-3">
-          <Button className="w-full justify-start" variant="outline">
+          <Button className="w-full justify-start bg-[#5014d0] hover:bg-[#5014d0]/90" variant="default">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
