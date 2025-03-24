@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { EndpointUsageSkeleton } from "./LoadingState";
 import { EndpointUsageItem } from "@/types/usage";
-import { Switch } from "@/components/ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface EndpointUsageSectionProps {
   endpointUsage: EndpointUsageItem[];
@@ -102,31 +102,18 @@ export const EndpointUsageSection = ({ endpointUsage = [], isLoading = false }: 
           </TooltipProvider>
         </div>
         
-        <div className="flex flex-wrap gap-4 mt-2">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="mtd-toggle"
-              checked={timePeriod === 'mtd'}
-              onCheckedChange={() => setTimePeriod('mtd')}
-            />
-            <label htmlFor="mtd-toggle" className="text-sm cursor-pointer">Month to Date</label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="ytd-toggle"
-              checked={timePeriod === 'ytd'}
-              onCheckedChange={() => setTimePeriod('ytd')}
-            />
-            <label htmlFor="ytd-toggle" className="text-sm cursor-pointer">Year to Date</label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="all-toggle"
-              checked={timePeriod === 'all'}
-              onCheckedChange={() => setTimePeriod('all')}
-            />
-            <label htmlFor="all-toggle" className="text-sm cursor-pointer">All Time</label>
-          </div>
+        <div className="flex justify-start mt-2">
+          <ToggleGroup type="single" value={timePeriod} onValueChange={(value) => value && setTimePeriod(value as TimePeriod)}>
+            <ToggleGroupItem value="mtd" aria-label="Month to Date">
+              Month to Date
+            </ToggleGroupItem>
+            <ToggleGroupItem value="ytd" aria-label="Year to Date">
+              Year to Date
+            </ToggleGroupItem>
+            <ToggleGroupItem value="all" aria-label="All Time">
+              All Time
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -206,3 +193,4 @@ export const EndpointUsageSection = ({ endpointUsage = [], isLoading = false }: 
     </Card>
   );
 };
+
