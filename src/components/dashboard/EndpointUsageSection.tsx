@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,14 +9,18 @@ import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { EndpointUsageSkeleton } from "./LoadingState";
 import { EndpointUsageItem } from "@/types/usage";
+import { Switch } from "@/components/ui/switch";
 
 interface EndpointUsageSectionProps {
   endpointUsage: EndpointUsageItem[];
   isLoading?: boolean;
 }
 
+type TimePeriod = 'mtd' | 'ytd' | 'all';
+
 export const EndpointUsageSection = ({ endpointUsage = [], isLoading = false }: EndpointUsageSectionProps) => {
   const isMobile = useIsMobile();
+  const [timePeriod, setTimePeriod] = useState<TimePeriod>('mtd');
   
   // Helper function to get icon path based on endpoint
   const getEndpointIcon = (endpoint: string) => {
@@ -34,8 +38,27 @@ export const EndpointUsageSection = ({ endpointUsage = [], isLoading = false }: 
     return "";
   };
 
+  // Calculate total records for correct percentage calculations
+  const totalRecords = endpointUsage.reduce((sum, endpoint) => sum + endpoint.records, 0);
+
+  // Update percentages based on the total
+  const endpointUsageWithCorrectPercentages = endpointUsage.map(endpoint => ({
+    ...endpoint,
+    percentage: totalRecords > 0 ? Math.round((endpoint.records / totalRecords) * 100 * 10) / 10 : 0
+  }));
+
+  // Get time period display text
+  const getTimePeriodText = () => {
+    switch (timePeriod) {
+      case 'mtd': return 'Month to Date';
+      case 'ytd': return 'Year to Date';
+      case 'all': return 'All Time';
+      default: return 'Month to Date';
+    }
+  };
+
   // If data is empty, show an appropriate message
-  if (endpointUsage?.length === 0 && !isLoading) {
+  if (endpointUsageWithCorrectPercentages?.length === 0 && !isLoading) {
     return (
       <Card>
         <CardHeader>
@@ -59,7 +82,12 @@ export const EndpointUsageSection = ({ endpointUsage = [], isLoading = false }: 
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Endpoint Usage</CardTitle>
+          <div>
+            <CardTitle>Endpoint Usage</CardTitle>
+            <CardDescription>
+              Breakdown by endpoint with credit usage details ({getTimePeriodText()})
+            </CardDescription>
+          </div>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -73,16 +101,40 @@ export const EndpointUsageSection = ({ endpointUsage = [], isLoading = false }: 
             </Tooltip>
           </TooltipProvider>
         </div>
-        <CardDescription>
-          Breakdown by endpoint with credit usage details
-        </CardDescription>
+        
+        <div className="flex flex-wrap gap-4 mt-2">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="mtd-toggle"
+              checked={timePeriod === 'mtd'}
+              onCheckedChange={() => setTimePeriod('mtd')}
+            />
+            <label htmlFor="mtd-toggle" className="text-sm cursor-pointer">Month to Date</label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="ytd-toggle"
+              checked={timePeriod === 'ytd'}
+              onCheckedChange={() => setTimePeriod('ytd')}
+            />
+            <label htmlFor="ytd-toggle" className="text-sm cursor-pointer">Year to Date</label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="all-toggle"
+              checked={timePeriod === 'all'}
+              onCheckedChange={() => setTimePeriod('all')}
+            />
+            <label htmlFor="all-toggle" className="text-sm cursor-pointer">All Time</label>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {isLoading ? (
           <EndpointUsageSkeleton />
         ) : (
           <>
-            {(endpointUsage || []).map((endpoint) => (
+            {(endpointUsageWithCorrectPercentages || []).map((endpoint) => (
               <div key={endpoint.endpoint} className="space-y-2">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
                   <div>

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,14 +13,64 @@ import { RecordUsageBreakdown } from '@/components/dashboard/RecordUsageBreakdow
 import { CardSkeleton, UsageBreakdownSkeleton, EndpointUsageSkeleton } from '@/components/dashboard/LoadingState';
 import { EndpointUsageItem, UsageDistributionItem } from '@/types/usage';
 
-// Temporary mock data fetching
+// Temporary mock data fetching with corrected total counts
 const fetchApiUsageData = async () => {
   // Simulate API call
   await new Promise(resolve => setTimeout(resolve, 1000));
   
+  // Define endpoint usage first to derive other values from it
+  const endpointUsage = [
+    {
+      endpoint: 'Property Search',
+      description: 'Search for properties by location, price, features, etc.',
+      calls: 6428,
+      records: 4238,
+      percentage: 50.8,
+      creditCost: "1 credit per record"
+    },
+    {
+      endpoint: 'Property Detail',
+      description: 'Get detailed information about a specific property',
+      calls: 3572,
+      records: 3136,
+      percentage: 37.6,
+      creditCost: "1 credit per record"
+    },
+    {
+      endpoint: 'Property Comps',
+      description: 'Get comparable properties for a given property',
+      calls: 2143,
+      records: 966,
+      percentage: 11.6,
+      creditCost: "1 credit per record"
+    },
+    {
+      endpoint: 'Autocomplete',
+      description: 'Get address suggestions as the user types',
+      calls: 2142,
+      records: 0,
+      percentage: 0,
+      creditCost: "Free"
+    },
+  ];
+  
+  // Calculate total records based on the endpoint data for consistency
+  const totalRecords = endpointUsage.reduce((sum, endpoint) => sum + endpoint.records, 0);
+  const totalApiCalls = endpointUsage.reduce((sum, endpoint) => sum + endpoint.calls, 0);
+  
+  // Generate usage distribution data from endpoint data
+  const usageDistributionData = endpointUsage
+    .filter(endpoint => endpoint.records > 0)
+    .map((endpoint) => ({
+      name: endpoint.endpoint,
+      value: endpoint.records,
+      fill: endpoint.endpoint === 'Property Search' ? '#1d4ed8' : 
+            endpoint.endpoint === 'Property Detail' ? '#047857' : '#b45309'
+    }));
+  
   return {
-    totalApiCalls: 14285,
-    totalRecords: 8340,
+    totalApiCalls,
+    totalRecords,
     recordsLimit: 10000,
     increasePercentage: 12,
     dailyUsageData: [
@@ -40,45 +90,8 @@ const fetchApiUsageData = async () => {
       { date: 'May', calls: 11500, records: 7800 },
       { date: 'Jun', calls: 13200, records: 8200 },
     ],
-    endpointUsage: [
-      {
-        endpoint: 'Property Search',
-        description: 'Search for properties by location, price, features, etc.',
-        calls: 6428,
-        records: 6428,
-        percentage: 45,
-        creditCost: "1 credit per record"
-      },
-      {
-        endpoint: 'Property Detail',
-        description: 'Get detailed information about a specific property',
-        calls: 3572,
-        records: 3572,
-        percentage: 25,
-        creditCost: "1 credit per record"
-      },
-      {
-        endpoint: 'Property Comps',
-        description: 'Get comparable properties for a given property',
-        calls: 2143,
-        records: 2143,
-        percentage: 15,
-        creditCost: "1 credit per record"
-      },
-      {
-        endpoint: 'Autocomplete',
-        description: 'Get address suggestions as the user types',
-        calls: 2142,
-        records: 0,
-        percentage: 0,
-        creditCost: "Free"
-      },
-    ],
-    usageDistributionData: [
-      { name: 'Property Search', value: 4820, fill: '#1d4ed8' },
-      { name: 'Property Detail', value: 2340, fill: '#047857' },
-      { name: 'Property Comps', value: 1180, fill: '#b45309' },
-    ]
+    endpointUsage,
+    usageDistributionData
   };
 };
 
@@ -207,24 +220,10 @@ const ApiUsage = () => {
       </div>
 
       <div>
-        <Card>
-          <CardHeader>
-            <CardTitle>Endpoint Usage Details</CardTitle>
-            <CardDescription>
-              Request breakdown by API endpoints
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <EndpointUsageSkeleton />
-            ) : (
-              <EndpointUsageSection 
-                endpointUsage={safeData.endpointUsage} 
-                isLoading={isLoading}
-              />
-            )}
-          </CardContent>
-        </Card>
+        <EndpointUsageSection 
+          endpointUsage={safeData.endpointUsage} 
+          isLoading={isLoading}
+        />
       </div>
 
       <div className="bg-muted/20 border rounded-lg p-4 space-y-2">
