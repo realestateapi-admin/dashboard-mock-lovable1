@@ -5,24 +5,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart, AreaChart, XAxis, YAxis, Bar, Area, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChartSkeleton } from "./LoadingState";
-
-interface UsageData {
-  date: string;
-  calls: number;
-  records: number;
-}
+import { useDashboard } from "@/contexts/DashboardContext";
 
 interface UsageChartsProps {
-  dailyUsageData: UsageData[];
-  monthlyUsageData: UsageData[];
   isLoading?: boolean;
 }
 
 export const UsageCharts = ({ 
-  dailyUsageData, 
-  monthlyUsageData, 
   isLoading = false 
 }: UsageChartsProps) => {
+  const { dailyUsageData, monthlyUsageData } = useDashboard();
   const isMobile = useIsMobile();
   const [chartHeight, setChartHeight] = useState(240);
   

@@ -1,22 +1,12 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { RefreshCw, AlertCircle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Progress } from "@/components/ui/progress";
-import { Link } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
-import { useTrialAlert } from "@/contexts/TrialAlertContext";
-import { ApiUsageSummary } from "@/components/dashboard/ApiUsageSummary";
-import { RecentActivityList } from "@/components/dashboard/RecentActivityList";
-import { DashboardSummary } from "@/components/dashboard/DashboardSummary";
-import { UsageCharts } from "@/components/dashboard/UsageCharts";
-import { EndpointUsageSection } from "@/components/dashboard/EndpointUsageSection";
-import { RecordUsageBreakdown } from "@/components/dashboard/RecordUsageBreakdown";
-import { ApiAccessSection } from "@/components/dashboard/ApiAccessSection";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { CardSkeleton } from "@/components/dashboard/LoadingState";
 
+import { motion } from "framer-motion";
+import { useTrialAlert } from "@/contexts/TrialAlertContext";
+import { DashboardProvider } from "@/contexts/DashboardContext";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { TrialBanner } from "@/components/dashboard/TrialBanner";
+import { DashboardContent } from "@/components/dashboard/DashboardContent";
+
+// Sample data - this would typically come from an API
 const dailyUsageData = [
   { date: "Mon", calls: 1423, records: 762 },
   { date: "Tue", calls: 1842, records: 985 },
@@ -149,39 +139,8 @@ const recentActivity = [
 ];
 
 const Dashboard = () => {
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
   const { isTrialActive, trialDaysLeft, requestTrialExtension } = useTrialAlert();
-
-  useEffect(() => {
-    const loadingTimer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
-    
-    return () => clearTimeout(loadingTimer);
-  }, []);
-
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsRefreshing(false);
-    setIsLoading(false);
-    toast({
-      title: "Dashboard refreshed",
-      description: "Your data has been updated with the latest information.",
-    });
-  };
-
-  const totalApiCalls = dailyUsageData.reduce((sum, day) => sum + day.calls, 0);
-  const totalRecords = dailyUsageData.reduce((sum, day) => sum + day.records, 0);
-  const recordsPercentage = (totalRecords / 10000) * 100;
-
-  const monthlyApiCalls = monthlyUsageData.reduce((sum, month) => sum + month.calls, 0);
-  const monthlyRecords = monthlyUsageData.reduce((sum, month) => sum + month.records, 0);
-  const monthlyRecordsPercentage = (monthlyRecords / 300000) * 100;
-
+  
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -189,121 +148,23 @@ const Dashboard = () => {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-semibold tracking-tight text-[#1c3238]">Dashboard</h1>
-        <Button 
-          variant="outline" 
-          onClick={handleRefresh}
-          disabled={isRefreshing}
-        >
-          <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
-          Refresh
-        </Button>
-      </div>
-      
-      {isTrialActive && (
-        <Alert className="bg-[#04c8c8]/10 border-[#04c8c8]">
-          <AlertCircle className="h-4 w-4 text-[#04c8c8]" />
-          <AlertTitle className="text-[#04c8c8] font-medium">Trial Mode Active</AlertTitle>
-          <AlertDescription className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="flex-1">
-              <p>You have <span className="font-medium text-[#04c8c8]">{trialDaysLeft} days</span> left in your trial period.</p>
-              <Progress value={(14 - trialDaysLeft) / 14 * 100} className="h-2 mt-2 bg-[#e2e8f0]" indicatorClassName="bg-[#04c8c8]" />
-            </div>
-            <div className="flex gap-2 mt-2 sm:mt-0">
-              <Button size="sm" className="bg-[#5014d0] hover:bg-[#5014d0]/90" asChild>
-                <Link to="/dashboard/billing">Upgrade Now</Link>
-              </Button>
-              <Button size="sm" variant="outline" className="text-[#5014d0] border-[#5014d0] hover:bg-[#5014d0]/10" onClick={requestTrialExtension}>
-                Request Extension
-              </Button>
-            </div>
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      <DashboardSummary 
-        totalApiCalls={totalApiCalls}
-        totalRecords={totalRecords}
-        recordsPercentage={recordsPercentage}
-        monthlyApiCalls={monthlyApiCalls}
-        monthlyRecords={monthlyRecords}
-        monthlyRecordsPercentage={monthlyRecordsPercentage}
-        isTrialActive={isTrialActive}
-        trialDaysLeft={trialDaysLeft}
-      />
-      
-      <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.3 }}
-          className="lg:col-span-2"
-        >
-          <UsageCharts 
-            dailyUsageData={dailyUsageData} 
-            monthlyUsageData={monthlyUsageData}
-            isLoading={isLoading}
-          />
-        </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.3 }}
-        >
-          <Card className="h-full">
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>
-                Latest API calls and record usage
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="px-0">
-              <RecentActivityList 
-                activities={recentActivity}
-                isLoading={isLoading} 
-              />
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-      
-      <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.3 }}
-          className="lg:col-span-2"
-        >
-          <EndpointUsageSection 
-            endpointUsage={endpointUsage}
-            isLoading={isLoading}
-          />
-        </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.3 }}
-        >
-          <RecordUsageBreakdown 
-            usageDistributionData={usageDistributionData}
-            isLoading={isLoading}
-          />
-        </motion.div>
-      </div>
-      
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9, duration: 0.3 }}
+      <DashboardProvider 
+        dailyUsageData={dailyUsageData}
+        monthlyUsageData={monthlyUsageData}
+        endpointUsage={endpointUsage}
+        recentActivity={recentActivity}
+        usageDistributionData={usageDistributionData}
       >
-        <ApiAccessSection 
-          isTrialActive={isTrialActive}
-          isLoading={isLoading}
+        <DashboardContent 
+          trialBanner={
+            <TrialBanner 
+              isTrialActive={isTrialActive}
+              trialDaysLeft={trialDaysLeft}
+              requestTrialExtension={requestTrialExtension}
+            />
+          }
         />
-      </motion.div>
+      </DashboardProvider>
     </motion.div>
   );
 };
