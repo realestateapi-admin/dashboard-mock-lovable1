@@ -1,3 +1,4 @@
+
 import { Home, BarChart, Users, FileText, LifeBuoy, Settings } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
@@ -53,7 +54,7 @@ export const DashboardSidebar = () => {
   ];
 
   return (
-    <Sidebar className="border-r">
+    <Sidebar className="border-r bg-[#1e1e2e]">
       <SidebarContent className="pt-6">
         <div className="flex items-center px-4 mb-6">
           <img 
