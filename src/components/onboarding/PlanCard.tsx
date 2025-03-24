@@ -35,9 +35,9 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
             className="sr-only"
           />
           
-          <div className="flex justify-between items-start mb-4">
+          <div className="flex justify-between items-start mb-6">
             <div>
-              <h3 className="text-xl font-bold">{plan.name}</h3>
+              <h3 className="text-2xl font-bold">{plan.name}</h3>
               <p className="text-sm text-muted-foreground mt-1">
                 {plan.description}
               </p>
@@ -47,27 +47,33 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
             </div>
           </div>
           
-          <div className="flex gap-1 items-baseline mb-5">
-            <span className="text-3xl font-bold">{plan.price}</span>
-            <span className="text-sm text-muted-foreground">
-              per month
-            </span>
+          <div className="mb-6">
+            <div className="flex items-baseline gap-1">
+              <span className="text-4xl font-bold">{plan.price}</span>
+              <span className="text-sm text-muted-foreground">
+                per month
+              </span>
+            </div>
           </div>
           
-          <div className="mb-4 py-2 border-t border-b flex items-center gap-2">
-            <span className="text-sm font-medium">Records:</span>
-            <span className="text-sm font-semibold">{plan.records} per month</span>
+          <div className="mb-6 py-3 px-2 bg-muted/50 rounded-md">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Records:</span>
+              <span className="text-sm font-semibold">{plan.records} per month</span>
+            </div>
           </div>
           
-          <div className="font-medium text-sm mb-3">Included Endpoints:</div>
-          <ul className="text-sm space-y-2 mt-auto">
-            {plan.features.map((feature, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-auto">
+            <div className="font-medium text-sm mb-3">Included Endpoints:</div>
+            <ul className="text-sm space-y-3">
+              {plan.features.map((feature, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </Label>
       </Card>
     </div>

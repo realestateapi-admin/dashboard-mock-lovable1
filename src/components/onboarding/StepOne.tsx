@@ -25,7 +25,7 @@ export const StepOne = ({
       <RadioGroup 
         value={selectedPlan} 
         onValueChange={setSelectedPlan} 
-        className="grid grid-cols-1 lg:grid-cols-4 gap-4 pt-4 mx-auto max-w-6xl"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pt-4 mx-auto"
       >
         {plans.map((plan) => (
           <PlanCard 
