@@ -1,99 +1,14 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { History, FileDown } from "lucide-react";
 import { ApiUsageSummary } from '@/components/dashboard/ApiUsageSummary';
-import { UsageCharts } from '@/components/dashboard/UsageCharts';
+import { CardSkeleton } from '@/components/dashboard/LoadingState';
 import { EndpointUsageSection } from '@/components/dashboard/EndpointUsageSection';
-import { RecordUsageBreakdown } from '@/components/dashboard/RecordUsageBreakdown';
-import { CardSkeleton, UsageBreakdownSkeleton, EndpointUsageSkeleton } from '@/components/dashboard/LoadingState';
-import { EndpointUsageItem, UsageDistributionItem } from '@/types/usage';
-
-// Temporary mock data fetching with corrected total counts
-const fetchApiUsageData = async () => {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Define endpoint usage first to derive other values from it
-  const endpointUsage = [
-    {
-      endpoint: 'Property Search',
-      description: 'Search for properties by location, price, features, etc.',
-      calls: 6428,
-      records: 4238,
-      percentage: 50.8,
-      creditCost: "1 credit per record"
-    },
-    {
-      endpoint: 'Property Detail',
-      description: 'Get detailed information about a specific property',
-      calls: 3572,
-      records: 3136,
-      percentage: 37.6,
-      creditCost: "1 credit per record"
-    },
-    {
-      endpoint: 'Property Comps',
-      description: 'Get comparable properties for a given property',
-      calls: 2143,
-      records: 966,
-      percentage: 11.6,
-      creditCost: "1 credit per record"
-    },
-    {
-      endpoint: 'Autocomplete',
-      description: 'Get address suggestions as the user types',
-      calls: 2142,
-      records: 0,
-      percentage: 0,
-      creditCost: "Free"
-    },
-  ];
-  
-  // Calculate total records based on the endpoint data for consistency
-  const totalRecords = endpointUsage.reduce((sum, endpoint) => sum + endpoint.records, 0);
-  const totalApiCalls = endpointUsage.reduce((sum, endpoint) => sum + endpoint.calls, 0);
-  
-  // Generate usage distribution data from endpoint data
-  const usageDistributionData = endpointUsage
-    .filter(endpoint => endpoint.records > 0)
-    .map((endpoint) => ({
-      name: endpoint.endpoint,
-      value: endpoint.records,
-      fill: endpoint.endpoint === 'Property Search' ? '#1d4ed8' : 
-            endpoint.endpoint === 'Property Detail' ? '#047857' : '#b45309'
-    }));
-  
-  return {
-    totalApiCalls,
-    totalRecords,
-    recordsLimit: 10000,
-    increasePercentage: 12,
-    dailyUsageData: [
-      { date: '2023-06-01', calls: 420, records: 290 },
-      { date: '2023-06-02', calls: 380, records: 250 },
-      { date: '2023-06-03', calls: 300, records: 200 },
-      { date: '2023-06-04', calls: 350, records: 220 },
-      { date: '2023-06-05', calls: 410, records: 280 },
-      { date: '2023-06-06', calls: 490, records: 320 },
-      { date: '2023-06-07', calls: 520, records: 370 },
-    ],
-    monthlyUsageData: [
-      { date: 'Jan', calls: 9000, records: 6200 },
-      { date: 'Feb', calls: 8500, records: 5800 },
-      { date: 'Mar', calls: 9800, records: 6700 },
-      { date: 'Apr', calls: 10200, records: 7100 },
-      { date: 'May', calls: 11500, records: 7800 },
-      { date: 'Jun', calls: 13200, records: 8200 },
-    ],
-    endpointUsage,
-    usageDistributionData
-  };
-};
+import { ApiUsageHeader } from '@/components/api-usage/ApiUsageHeader';
+import { ApiUsageError } from '@/components/api-usage/ApiUsageError';
+import { ApiUsageCharts } from '@/components/api-usage/ApiUsageCharts';
+import { ApiUsageFooter } from '@/components/api-usage/ApiUsageFooter';
+import { fetchApiUsageData } from '@/components/api-usage/ApiUsageService';
 
 const ApiUsage = () => {
   const { data, isLoading, isError } = useQuery({
@@ -116,45 +31,15 @@ const ApiUsage = () => {
   if (isError) {
     return (
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">API Usage</h2>
-            <p className="text-muted-foreground">
-              Monitor your API usage and consumption
-            </p>
-          </div>
-        </div>
-
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Error:</strong>
-          <span className="block sm:inline"> Failed to load API usage data. Please try again later.</span>
-        </div>
+        <ApiUsageHeader />
+        <ApiUsageError />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">API Usage</h2>
-          <p className="text-muted-foreground">
-            Monitor your API usage and consumption
-          </p>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-          <Button variant="outline" asChild className="w-full sm:w-auto">
-            <Link to="/dashboard/usage/history">
-              <History className="mr-2 h-4 w-4" />
-              Usage History
-            </Link>
-          </Button>
-          <Button variant="outline" className="w-full sm:w-auto">
-            <FileDown className="mr-2 h-4 w-4" />
-            Export Data
-          </Button>
-        </div>
-      </div>
+      <ApiUsageHeader />
 
       {isLoading ? (
         <div className="grid gap-6 sm:grid-cols-2">
@@ -170,54 +55,12 @@ const ApiUsage = () => {
         />
       )}
 
-      <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          {isLoading ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>Usage Analytics</CardTitle>
-                <CardDescription>
-                  API calls vs. property records used
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Tabs defaultValue="daily">
-                  <TabsList>
-                    <TabsTrigger value="daily">Daily</TabsTrigger>
-                    <TabsTrigger value="monthly">Monthly</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </CardContent>
-            </Card>
-          ) : (
-            <UsageCharts
-              dailyUsageData={safeData.dailyUsageData}
-              monthlyUsageData={safeData.monthlyUsageData}
-              isLoading={isLoading}
-            />
-          )}
-        </div>
-        <div>
-          <Card className="h-full">
-            <CardHeader>
-              <CardTitle>Record Usage Breakdown</CardTitle>
-              <CardDescription>
-                Distribution by endpoint
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <UsageBreakdownSkeleton />
-              ) : (
-                <RecordUsageBreakdown 
-                  usageDistributionData={safeData.usageDistributionData} 
-                  isLoading={isLoading}
-                />
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <ApiUsageCharts 
+        dailyUsageData={safeData.dailyUsageData}
+        monthlyUsageData={safeData.monthlyUsageData}
+        usageDistributionData={safeData.usageDistributionData}
+        isLoading={isLoading}
+      />
 
       <div>
         <EndpointUsageSection 
@@ -226,22 +69,7 @@ const ApiUsage = () => {
         />
       </div>
 
-      <div className="bg-muted/20 border rounded-lg p-4 space-y-2">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <div>
-            <h3 className="text-sm font-medium">Need more detailed usage analytics?</h3>
-            <p className="text-sm text-muted-foreground">
-              View your detailed API usage history with advanced filtering options.
-            </p>
-          </div>
-          <Button asChild variant="default" className="bg-[#5014d0] hover:bg-[#5014d0]/90 w-full sm:w-auto">
-            <Link to="/dashboard/usage/history">
-              <History className="mr-2 h-4 w-4" />
-              View Full Usage History
-            </Link>
-          </Button>
-        </div>
-      </div>
+      <ApiUsageFooter />
     </div>
   );
 };
