@@ -24,7 +24,7 @@ export const ApiUsageSummary = ({
     <div className="grid gap-6 sm:grid-cols-2">
       <Card className="h-full">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium">API Calls</CardTitle>
+          <CardTitle className="text-sm font-medium">Today's API Calls</CardTitle>
           <Activity className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
@@ -50,7 +50,7 @@ export const ApiUsageSummary = ({
 
       <Card className="h-full">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium">Property Records Used</CardTitle>
+          <CardTitle className="text-sm font-medium">Today's Property Records Used</CardTitle>
           <Database className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
@@ -64,7 +64,7 @@ export const ApiUsageSummary = ({
               style={{ width: `${recordsPercentage}%` }}
             />
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">{recordsPercentage.toFixed(1)}% of daily limit</p>
+          <p className="mt-2 text-xs text-muted-foreground">{recordsPercentage.toFixed(1)}% of monthly limit used MTD</p>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
