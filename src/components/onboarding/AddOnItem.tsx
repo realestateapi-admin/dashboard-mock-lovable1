@@ -20,18 +20,18 @@ export const AddOnItem = ({
   const isIncluded = addonPrice === "Included";
   
   return (
-    <Card className="p-4">
+    <Card className="p-5 hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between">
-        <div>
-          <p className="font-medium">{addon.name}</p>
+        <div className="flex-1">
+          <p className="font-medium text-base">{addon.name}</p>
           <p className="text-sm text-muted-foreground mt-1">{addon.description}</p>
           {addon.billingType && (
-            <span className="inline-block mt-1 text-xs bg-slate-100 px-2 py-0.5 rounded-full">
+            <span className="inline-block mt-2 text-xs bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
               {addon.billingType === 'metered' ? 'Usage-based' : 'Monthly subscription'}
             </span>
           )}
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6 flex-shrink-0">
           {isIncluded ? (
             <span className="text-sm text-primary font-medium">Included</span>
           ) : (
