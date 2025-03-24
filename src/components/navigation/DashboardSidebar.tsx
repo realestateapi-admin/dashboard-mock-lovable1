@@ -58,7 +58,7 @@ export const DashboardSidebar = () => {
       <SidebarContent className="pt-6">
         <div className="flex items-center px-4 mb-6">
           <img 
-            src="https://www.realestateapi.com/assets/img/realestateapi-logo-color.svg?v=08750727ac" 
+            src="/realestateapi-logo-white.svg" 
             alt="RealEstateAPI" 
             className="h-8 w-auto" 
             onError={(e) => {
