@@ -60,20 +60,16 @@ const ApiUsage = () => {
           </>
         ) : (
           <>
-            <div className="lg:col-span-1">
-              <ApiUsageSummary
-                totalApiCalls={safeData.totalApiCalls}
-                totalRecords={safeData.totalRecords}
-                recordsLimit={safeData.recordsLimit}
-                increasePercentage={safeData.increasePercentage}
-              />
-            </div>
-            <div className="lg:col-span-1">
-              <ActiveEndUsersCard 
-                activeEndUsers={endUserData?.activeEndUsers || null}
-                isLoading={isEndUserLoading}
-              />
-            </div>
+            <ApiUsageSummary
+              totalApiCalls={safeData.totalApiCalls}
+              totalRecords={safeData.totalRecords}
+              recordsLimit={safeData.recordsLimit}
+              increasePercentage={safeData.increasePercentage}
+            />
+            <ActiveEndUsersCard 
+              activeEndUsers={endUserData?.activeEndUsers || null}
+              isLoading={isEndUserLoading}
+            />
           </>
         )}
       </div>
