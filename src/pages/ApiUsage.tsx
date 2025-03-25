@@ -9,11 +9,21 @@ import { ApiUsageError } from '@/components/api-usage/ApiUsageError';
 import { ApiUsageCharts } from '@/components/api-usage/ApiUsageCharts';
 import { ApiUsageFooter } from '@/components/api-usage/ApiUsageFooter';
 import { fetchApiUsageData } from '@/components/api-usage/ApiUsageService';
+import { fetchEndUserAnalytics } from '@/components/api-usage/EndUserAnalyticsService';
+import { ActiveEndUsersCard } from '@/components/api-usage/ActiveEndUsersCard';
 
 const ApiUsage = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['apiUsage'],
     queryFn: fetchApiUsageData,
+  });
+
+  const { 
+    data: endUserData, 
+    isLoading: isEndUserLoading 
+  } = useQuery({
+    queryKey: ['endUserAnalytics'],
+    queryFn: fetchEndUserAnalytics,
   });
 
   // Initialize default empty values
@@ -41,19 +51,32 @@ const ApiUsage = () => {
     <div className="space-y-6">
       <ApiUsageHeader />
 
-      {isLoading ? (
-        <div className="grid gap-6 sm:grid-cols-2">
-          <CardSkeleton />
-          <CardSkeleton />
-        </div>
-      ) : (
-        <ApiUsageSummary
-          totalApiCalls={safeData.totalApiCalls}
-          totalRecords={safeData.totalRecords}
-          recordsLimit={safeData.recordsLimit}
-          increasePercentage={safeData.increasePercentage}
-        />
-      )}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {isLoading ? (
+          <>
+            <CardSkeleton />
+            <CardSkeleton />
+            <CardSkeleton />
+          </>
+        ) : (
+          <>
+            <div className="lg:col-span-1">
+              <ApiUsageSummary
+                totalApiCalls={safeData.totalApiCalls}
+                totalRecords={safeData.totalRecords}
+                recordsLimit={safeData.recordsLimit}
+                increasePercentage={safeData.increasePercentage}
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <ActiveEndUsersCard 
+                activeEndUsers={endUserData?.activeEndUsers || null}
+                isLoading={isEndUserLoading}
+              />
+            </div>
+          </>
+        )}
+      </div>
 
       <ApiUsageCharts 
         dailyUsageData={safeData.dailyUsageData}
