@@ -22,3 +22,14 @@ export interface EndpointUsageItem {
   description: string;
   creditCost: string;
 }
+
+export interface UsageReport {
+  _id: string;
+  account_id: number;
+  billing_period_start: string;
+  billing_period_end: string;
+  last_update_date: string;
+  organization: string;
+  property_usage: number;
+  skiptrace_usage: number;
+}

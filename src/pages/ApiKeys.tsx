@@ -12,6 +12,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
 import { ApiKeyScopes } from "@/components/dashboard/ApiKeyScopes";
+import UsageTracking from "@/components/dashboard/UsageTracking";
+import { useUsageData } from "@/hooks/useUsageData";
 
 const ApiKeys = () => {
   const [isRotating, setIsRotating] = useState(false);
@@ -23,11 +25,14 @@ const ApiKeys = () => {
   const { toast } = useToast();
   const { isTrialActive, trialDaysLeft } = useTrialAlert();
 
-  // Example scopes for test and production keys
-  const [testKeyScopes, setTestKeyScopes] = useState<string[]>([]);
-  const [prodKeyScopes, setProdKeyScopes] = useState<string[]>([]);
+  const { 
+    currentUsage,
+    usageHistory,
+    isLoading: isLoadingUsage,
+    error: usageError,
+    refetch: refetchUsageData
+  } = useUsageData();
 
-  // Fixed: Changed useState to useEffect for running code on component mount
   useEffect(() => {
     setTimeout(() => {
       setTestKeyScopes([
@@ -66,7 +71,6 @@ const ApiKeys = () => {
     setIsRotating(true);
     
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       if (type === "test") {
@@ -114,6 +118,14 @@ const ApiKeys = () => {
           </AlertDescription>
         </Alert>
       )}
+      
+      <UsageTracking
+        currentUsage={currentUsage}
+        usageHistory={usageHistory}
+        isLoading={isLoadingUsage}
+        error={usageError}
+        onRefresh={refetchUsageData}
+      />
       
       <Tabs defaultValue="test" className="w-full">
         <TabsList className="mb-4">
