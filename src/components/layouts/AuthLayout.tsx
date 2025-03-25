@@ -2,12 +2,16 @@
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
+import { useLocation } from "react-router-dom";
 
 interface AuthLayoutProps {
   children: ReactNode;
 }
 
 export const AuthLayout = ({ children }: AuthLayoutProps) => {
+  const location = useLocation();
+  const isSignUp = location.pathname === "/sign-up";
+  
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 sm:p-6 md:p-8">
       <div className="absolute inset-0 z-0 overflow-hidden">
@@ -23,13 +27,13 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
         className="relative z-10 w-full max-w-5xl mx-auto"
       >
         <div className="glass-card rounded-xl p-6 sm:p-8">
-          <div className="flex flex-col md:flex-row">
+          <div className={`flex flex-col ${isSignUp ? "md:flex-row" : ""}`}>
             {/* Left Side - Form */}
             <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="md:w-1/2 md:pr-6"
+              className={isSignUp ? "md:w-1/2 md:pr-6" : "w-full"}
             >
               <div className="flex justify-center mb-8">
                 <motion.div
@@ -51,56 +55,61 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
               {children}
             </motion.div>
             
-            {/* Separator */}
-            <div className="hidden md:flex justify-center my-4 md:my-0">
-              <Separator orientation="vertical" className="mx-4" />
-            </div>
-            <Separator className="md:hidden my-6" />
-            
-            {/* Right Side - Social Proof */}
-            <motion.div
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="md:w-1/2 md:pl-6 flex flex-col items-center justify-center"
-            >
-              <div className="text-center mb-6">
-                <h2 className="text-xl font-semibold">We don't like to brag...</h2>
-                <p className="text-lg font-medium">But our users do.</p>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center mb-8">
-                <img 
-                  src="/lovable-uploads/ce477b0d-ae2b-4f6a-a079-023a229fafd1.png" 
-                  alt="G2 Easiest To Do Business With Winter 2025" 
-                  className="h-28 w-auto"
-                />
-                <img 
-                  src="/lovable-uploads/25b45e9d-d768-4b1c-81ff-e8262cd8f87e.png" 
-                  alt="G2 High Performer Winter 2025" 
-                  className="h-28 w-auto"
-                />
-                <img 
-                  src="/lovable-uploads/1d9d9516-9460-4b44-9a33-41d3365e783f.png" 
-                  alt="G2 Best Support Winter 2025" 
-                  className="h-28 w-auto sm:col-span-2"
-                />
-              </div>
-              
-              <div className="mt-4 text-center">
-                <p className="text-base font-medium">TRUSTED BY +25,000 BUSINESSES</p>
-                <div className="flex justify-center items-center gap-8 mt-4">
-                  <div className="w-20 h-6 bg-foreground/80 rounded opacity-70"></div>
-                  <div className="w-20 h-6 bg-foreground/80 rounded opacity-70"></div>
-                  <div className="w-20 h-6 bg-foreground/80 rounded opacity-70"></div>
+            {/* Only show separator and social proof for sign-up page */}
+            {isSignUp && (
+              <>
+                {/* Separator */}
+                <div className="hidden md:flex justify-center my-4 md:my-0">
+                  <Separator orientation="vertical" className="mx-4" />
                 </div>
-              </div>
-              
-              <div className="mt-8 glass-card rounded-xl p-4 text-center w-full">
-                <p className="text-sm font-medium">Join thousands of real estate professionals who trust our API</p>
-                <p className="text-xs text-muted-foreground mt-1">⭐⭐⭐⭐⭐ 4.9/5 average rating on G2</p>
-              </div>
-            </motion.div>
+                <Separator className="md:hidden my-6" />
+                
+                {/* Right Side - Social Proof */}
+                <motion.div
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                  className="md:w-1/2 md:pl-6 flex flex-col items-center justify-center"
+                >
+                  <div className="text-center mb-6">
+                    <h2 className="text-xl font-semibold">We don't like to brag...</h2>
+                    <p className="text-lg font-medium">But our users do.</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center mb-8">
+                    <img 
+                      src="/lovable-uploads/ce477b0d-ae2b-4f6a-a079-023a229fafd1.png" 
+                      alt="G2 Easiest To Do Business With Winter 2025" 
+                      className="h-28 w-auto"
+                    />
+                    <img 
+                      src="/lovable-uploads/25b45e9d-d768-4b1c-81ff-e8262cd8f87e.png" 
+                      alt="G2 High Performer Winter 2025" 
+                      className="h-28 w-auto"
+                    />
+                    <img 
+                      src="/lovable-uploads/1d9d9516-9460-4b44-9a33-41d3365e783f.png" 
+                      alt="G2 Best Support Winter 2025" 
+                      className="h-28 w-auto sm:col-span-2"
+                    />
+                  </div>
+                  
+                  <div className="mt-4 text-center">
+                    <p className="text-base font-medium">TRUSTED BY +25,000 BUSINESSES</p>
+                    <div className="flex justify-center items-center gap-8 mt-4">
+                      <div className="w-20 h-6 bg-foreground/80 rounded opacity-70"></div>
+                      <div className="w-20 h-6 bg-foreground/80 rounded opacity-70"></div>
+                      <div className="w-20 h-6 bg-foreground/80 rounded opacity-70"></div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8 glass-card rounded-xl p-4 text-center w-full">
+                    <p className="text-sm font-medium">Join thousands of real estate professionals who trust our API</p>
+                    <p className="text-xs text-muted-foreground mt-1">⭐⭐⭐⭐⭐ 4.9/5 average rating on G2</p>
+                  </div>
+                </motion.div>
+              </>
+            )}
           </div>
         </div>
       </motion.div>
