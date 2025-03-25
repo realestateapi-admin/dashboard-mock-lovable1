@@ -33,26 +33,28 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className={isSignUp ? "md:w-1/2 md:pr-6" : "w-full"}
+              className={isSignUp ? "md:w-1/2 md:pr-6" : "w-full flex justify-center"}
             >
-              <div className="flex justify-center mb-8">
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.1, duration: 0.5 }}
-                >
-                  <img 
-                    src="https://www.realestateapi.com/assets/img/realestateapi-logo-color.svg?v=08750727ac" 
-                    alt="RealEstateAPI" 
-                    className="h-8 w-auto" 
-                    onError={(e) => {
-                      e.currentTarget.src = "https://via.placeholder.com/160x40?text=RealEstateAPI";
-                    }}
-                  />
-                </motion.div>
+              <div className={isSignUp ? "w-full" : "w-full max-w-md"}>
+                <div className="flex justify-center mb-8">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.1, duration: 0.5 }}
+                  >
+                    <img 
+                      src="https://www.realestateapi.com/assets/img/realestateapi-logo-color.svg?v=08750727ac" 
+                      alt="RealEstateAPI" 
+                      className="h-8 w-auto" 
+                      onError={(e) => {
+                        e.currentTarget.src = "https://via.placeholder.com/160x40?text=RealEstateAPI";
+                      }}
+                    />
+                  </motion.div>
+                </div>
+                
+                {children}
               </div>
-              
-              {children}
             </motion.div>
             
             {/* Only show separator and social proof for sign-up page */}
@@ -116,7 +118,7 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
       
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={{  opacity: 1 }}
         transition={{ delay: 0.5, duration: 0.5 }}
         className="mt-8 text-sm text-muted-foreground text-center"
       >
