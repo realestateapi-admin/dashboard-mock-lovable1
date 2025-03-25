@@ -1,0 +1,237 @@
+
+# API Recommendations for Dashboard Data Integration
+
+Based on your mocked dashboard UI, here's a document outlining the specific API calls needed to pull real data into your interface. I've referenced MongoDB collections and data objects where possible.
+
+## 1. Dashboard Summary Cards
+
+### API: `/api/dashboard/summary`
+**MongoDB Collection**: `usage_reports`, `subscriptions`
+**Purpose**: Fetch aggregate data for the summary cards at the top of the dashboard
+
+**Response Structure**:
+```typescript
+{
+  totalApiCalls: number;              // Total API calls made
+  totalRecords: number;               // Total property records used
+  recordsPercentage: number;          // Percentage of plan limit used
+  monthlyApiCalls: number;            // API calls this month
+  monthlyRecords: number;             // Records used this month
+  monthlyRecordsPercentage: number;   // Percentage of monthly limit used
+  isTrialActive: boolean;             // Whether user is on trial
+  trialDaysLeft: number;              // Days left in trial
+}
+```
+
+**Implementation Notes**:
+- Aggregate usage_reports to calculate totals
+- Compare against subscription.usage_amount for percentages
+- Check subscription.trial_end_date to determine trial status
+
+## 2. Usage Analytics Charts
+
+### API: `/api/usage/daily`
+**MongoDB Collection**: `usage_reports`, `usage_history`
+**Purpose**: Get daily usage data for charts
+
+**Response Structure**:
+```typescript
+{
+  data: Array<{
+    date: string;       // Format: "Mon", "Tue", etc. or ISO date string
+    calls: number;      // API calls for that day
+    records: number;    // Records used that day
+  }>
+}
+```
+
+### API: `/api/usage/monthly`
+**MongoDB Collection**: `usage_reports`
+**Purpose**: Get monthly usage data for charts
+
+**Response Structure**:
+```typescript
+{
+  data: Array<{
+    date: string;       // Format: "Jan", "Feb", etc.
+    calls: number;      // API calls for that month
+    records: number;    // Records used that month
+  }>
+}
+```
+
+**Implementation Notes**:
+- Create a more granular collection to track daily usage
+- Aggregate usage_reports by month for monthly view
+
+## 3. Recent Activity List
+
+### API: `/api/activity/recent`
+**MongoDB Collection**: New `activity_logs` collection needed
+**Purpose**: Fetch recent API activity
+
+**Response Structure**:
+```typescript
+{
+  activities: Array<{
+    id: string;
+    type: string;             // "api_call", "rate_limit", "error"
+    endpoint: string;         // "/v2/PropertyDetail", etc.
+    timestamp: string;        // ISO date string
+    status: string;           // "success", "warning", "error"
+    recordsFetched: number;
+    creditCost: number;
+  }>
+}
+```
+
+**Implementation Notes**:
+- Create a new MongoDB collection to log each API call
+- Include endpoint, status, and record count information
+- Store timestamp to allow for filtering by time period
+
+## 4. Endpoint Usage Section
+
+### API: `/api/usage/endpoints`
+**MongoDB Collection**: New `endpoint_usage` collection needed
+**Purpose**: Get usage breakdown by endpoint
+
+**Response Structure**:
+```typescript
+{
+  endpointUsage: Array<{
+    endpoint: string;           // "Property Search", etc.
+    calls: number;              // Total calls to this endpoint
+    records: number;            // Records fetched from this endpoint
+    percentage: number;         // Percentage of total records
+    description: string;        // Description of endpoint
+    creditCost: string;         // Credit cost description
+  }>
+}
+```
+
+**Implementation Notes**:
+- Create a new MongoDB collection to track usage by endpoint
+- Update it whenever an API call is made
+- Calculate percentages based on total records used
+
+## 5. Record Usage Breakdown
+
+### API: `/api/usage/distribution`
+**MongoDB Collection**: Same as endpoint_usage above
+**Purpose**: Get data for the pie chart showing usage distribution
+
+**Response Structure**:
+```typescript
+{
+  usageDistributionData: Array<{
+    name: string;       // "Property Search", etc.
+    value: number;      // Number of records
+    fill: string;       // Color for the chart segment
+  }>
+}
+```
+
+**Implementation Notes**:
+- Derive from the same endpoint_usage collection
+- Filter to include only endpoints with record usage > 0
+- Add consistent color values for each endpoint type
+
+## 6. Subscription Data
+
+### API: `/api/subscription`
+**MongoDB Collection**: `subscriptions`
+**Purpose**: Fetch current subscription details
+
+**Response Structure**:
+```typescript
+{
+  _id: string;
+  account_id: number;
+  subscription_id: string;
+  customer_name: string;
+  contract_start_date: string;
+  contract_end_date: string;
+  plan_name: string;
+  plan_id: number;
+  plan_type: string;
+  usage_amount: number;
+  minimum_bill_amount: number;
+  unit_price: number;
+  credit: number;
+  trial_begin_date: string;
+  trial_end_date: string;
+}
+```
+
+**Implementation Notes**:
+- This should match your existing subscription model
+- Expose only the necessary fields for the frontend
+
+## 7. Usage History Tracking
+
+### API: `/api/usage/history`
+**MongoDB Collection**: `usage_reports`, new `usage_history` collection
+**Purpose**: Get detailed usage history for the UsageHistoryTable component
+
+**Response Structure**:
+```typescript
+{
+  history: Array<{
+    timestamp: string;         // ISO date string
+    endpoint: string;          // Endpoint name
+    request: string;           // Request details/query
+    credits: number;           // Credits used
+    status: string;            // "success", "error", "warning"
+    responseTime: number;      // Response time in milliseconds
+  }>
+}
+```
+
+**Implementation Notes**:
+- Create a new collection for detailed request logging
+- Store request details, response status, and timing information
+- Allow filtering by date range
+
+## MongoDB Schema Recommendations
+
+Based on your current data model and UI requirements, I recommend the following MongoDB collections:
+
+1. **subscriptions**: Already exists, stores plan and billing information
+2. **usage_reports**: Already exists, stores aggregate usage by billing period
+3. **activity_logs** (new): Detailed logs of every API request
+   ```
+   {
+     _id: ObjectId,
+     account_id: Number,
+     endpoint: String,
+     request_details: String,
+     timestamp: Date,
+     status: String,
+     records_fetched: Number,
+     credit_cost: Number,
+     response_time: Number
+   }
+   ```
+
+4. **endpoint_usage** (new): Aggregated usage by endpoint
+   ```
+   {
+     _id: ObjectId,
+     account_id: Number,
+     billing_period_start: Date,
+     billing_period_end: Date,
+     endpoint: String,
+     total_calls: Number,
+     total_records: Number,
+     last_updated: Date
+   }
+   ```
+
+## Implementation Strategy
+
+1. **Phase 1**: Create MongoDB collections and backend APIs
+2. **Phase 2**: Modify the frontend to fetch real data instead of mock data
+3. **Phase 3**: Implement real-time logging of API usage and activity
+
+This approach will give you a complete picture of usage across your system while maintaining the excellent UI you've already designed.
