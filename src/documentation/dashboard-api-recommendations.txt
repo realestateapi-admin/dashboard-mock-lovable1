@@ -10,7 +10,7 @@ Based on your mocked dashboard UI, here's a document outlining the specific API 
 **Purpose**: Fetch aggregate data for the summary cards at the top of the dashboard
 
 **Response Structure**:
-```typescript
+```
 {
   totalApiCalls: number;              // Total API calls made
   totalRecords: number;               // Total property records used
@@ -35,7 +35,7 @@ Based on your mocked dashboard UI, here's a document outlining the specific API 
 **Purpose**: Get daily usage data for charts
 
 **Response Structure**:
-```typescript
+```
 {
   data: Array<{
     date: string;       // Format: "Mon", "Tue", etc. or ISO date string
@@ -50,7 +50,7 @@ Based on your mocked dashboard UI, here's a document outlining the specific API 
 **Purpose**: Get monthly usage data for charts
 
 **Response Structure**:
-```typescript
+```
 {
   data: Array<{
     date: string;       // Format: "Jan", "Feb", etc.
@@ -71,7 +71,7 @@ Based on your mocked dashboard UI, here's a document outlining the specific API 
 **Purpose**: Fetch recent API activity
 
 **Response Structure**:
-```typescript
+```
 {
   activities: Array<{
     id: string;
@@ -97,7 +97,7 @@ Based on your mocked dashboard UI, here's a document outlining the specific API 
 **Purpose**: Get usage breakdown by endpoint
 
 **Response Structure**:
-```typescript
+```
 {
   endpointUsage: Array<{
     endpoint: string;           // "Property Search", etc.
@@ -122,7 +122,7 @@ Based on your mocked dashboard UI, here's a document outlining the specific API 
 **Purpose**: Get data for the pie chart showing usage distribution
 
 **Response Structure**:
-```typescript
+```
 {
   usageDistributionData: Array<{
     name: string;       // "Property Search", etc.
@@ -144,7 +144,7 @@ Based on your mocked dashboard UI, here's a document outlining the specific API 
 **Purpose**: Fetch current subscription details
 
 **Response Structure**:
-```typescript
+```
 {
   _id: string;
   account_id: number;
@@ -175,7 +175,7 @@ Based on your mocked dashboard UI, here's a document outlining the specific API 
 **Purpose**: Get detailed usage history for the UsageHistoryTable component
 
 **Response Structure**:
-```typescript
+```
 {
   history: Array<{
     timestamp: string;         // ISO date string
