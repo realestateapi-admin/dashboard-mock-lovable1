@@ -54,6 +54,19 @@ const SignUp = () => {
           </p>
         </div>
         
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+          className="flex justify-center"
+        >
+          <img 
+            src="/lovable-uploads/1d9d9516-9460-4b44-9a33-41d3365e783f.png" 
+            alt="G2 Best Support Winter 2025 Badge" 
+            className="h-24 w-auto"
+          />
+        </motion.div>
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
