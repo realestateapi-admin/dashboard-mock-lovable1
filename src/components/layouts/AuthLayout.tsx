@@ -38,6 +38,24 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
           </motion.div>
         </div>
         
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+          className="flex justify-center space-x-4 mb-6"
+        >
+          <img 
+            src="/lovable-uploads/ce477b0d-ae2b-4f6a-a079-023a229fafd1.png" 
+            alt="G2 Easiest To Do Business With Winter 2025" 
+            className="h-20 w-auto"
+          />
+          <img 
+            src="/lovable-uploads/25b45e9d-d768-4b1c-81ff-e8262cd8f87e.png" 
+            alt="G2 High Performer Winter 2025" 
+            className="h-20 w-auto"
+          />
+        </motion.div>
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
