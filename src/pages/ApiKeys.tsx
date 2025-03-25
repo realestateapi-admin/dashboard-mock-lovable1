@@ -4,7 +4,7 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
 import { useUsageData } from "@/hooks/useUsageData";
-import { UsageTracking } from "@/components/dashboard/UsageTracking";
+import UsageTracking from "@/components/dashboard/UsageTracking";
 import { ApiKeyTabs } from "@/components/api-keys/ApiKeyTabs";
 import { ApiConfiguration } from "@/components/api-keys/ApiConfiguration";
 
