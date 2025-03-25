@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Recommendations for Dashboard Data Integration</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #2563eb;
+      margin-top: 30px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #4b5563;
+      margin-top: 24px;
+    }
+    h3 {
+      color: #4b5563;
+      margin-top: 20px;
+    }
+    pre {
+      background-color: #f1f5f9;
+      padding: 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    code {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 14px;
+    }
+    p {
+      margin: 16px 0;
+    }
+    ul {
+      margin: 16px 0;
+      padding-left: 24px;
+    }
+    li {
+      margin: 8px 0;
+    }
+    .collection-name {
+      color: #047857;
+      font-weight: bold;
+    }
+    .api-endpoint {
+      color: #b45309;
+      font-weight: bold;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>API Recommendations for Dashboard Data Integration</h1>
+  <p>Based on your mocked dashboard UI, here's a document outlining the specific API calls needed to pull real data into your interface. I've referenced MongoDB collections and data objects where possible.</p>
+
+  <div class="section">
+    <h2>1. Dashboard Summary Cards</h2>
+    <h3>API: <span class="api-endpoint">/api/dashboard/summary</span></h3>
+    <p><strong>MongoDB Collection</strong>: <span class="collection-name">usage_reports</span>, <span class="collection-name">subscriptions</span></p>
+    <p><strong>Purpose</strong>: Fetch aggregate data for the summary cards at the top of the dashboard</p>
+
+    <p><strong>Response Structure</strong>:</p>
+    <pre><code>
+{
+  totalApiCalls: number;              // Total API calls made
+  totalRecords: number;               // Total property records used
+  recordsPercentage: number;          // Percentage of plan limit used
+  monthlyApiCalls: number;            // API calls this month
+  monthlyRecords: number;             // Records used this month
+  monthlyRecordsPercentage: number;   // Percentage of monthly limit used
+  isTrialActive: boolean;             // Whether user is on trial
+  trialDaysLeft: number;              // Days left in trial
+}
+    </code></pre>
+
+    <p><strong>Implementation Notes</strong>:</p>
+    <ul>
+      <li>Aggregate usage_reports to calculate totals</li>
+      <li>Compare against subscription.usage_amount for percentages</li>
+      <li>Check subscription.trial_end_date to determine trial status</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>2. Usage Analytics Charts</h2>
+    <h3>API: <span class="api-endpoint">/api/usage/daily</span></h3>
+    <p><strong>MongoDB Collection</strong>: <span class="collection-name">usage_reports</span>, <span class="collection-name">usage_history</span></p>
+    <p><strong>Purpose</strong>: Get daily usage data for charts</p>
+
+    <p><strong>Response Structure</strong>:</p>
+    <pre><code>
+{
+  data: Array<{
+    date: string;       // Format: "Mon", "Tue", etc. or ISO date string
+    calls: number;      // API calls for that day
+    records: number;    // Records used that day
+  }>
+}
+    </code></pre>
+
+    <h3>API: <span class="api-endpoint">/api/usage/monthly</span></h3>
+    <p><strong>MongoDB Collection</strong>: <span class="collection-name">usage_reports</span></p>
+    <p><strong>Purpose</strong>: Get monthly usage data for charts</p>
+
+    <p><strong>Response Structure</strong>:</p>
+    <pre><code>
+{
+  data: Array<{
+    date: string;       // Format: "Jan", "Feb", etc.
+    calls: number;      // API calls for that month
+    records: number;    // Records used that month
+  }>
+}
+    </code></pre>
+
+    <p><strong>Implementation Notes</strong>:</p>
+    <ul>
+      <li>Create a more granular collection to track daily usage</li>
+      <li>Aggregate usage_reports by month for monthly view</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>3. Recent Activity List</h2>
+    <h3>API: <span class="api-endpoint">/api/activity/recent</span></h3>
+    <p><strong>MongoDB Collection</strong>: New <span class="collection-name">activity_logs</span> collection needed</p>
+    <p><strong>Purpose</strong>: Fetch recent API activity</p>
+
+    <p><strong>Response Structure</strong>:</p>
+    <pre><code>
+{
+  activities: Array<{
+    id: string;
+    type: string;             // "api_call", "rate_limit", "error"
+    endpoint: string;         // "/v2/PropertyDetail", etc.
+    timestamp: string;        // ISO date string
+    status: string;           // "success", "warning", "error"
+    recordsFetched: number;
+    creditCost: number;
+  }>
+}
+    </code></pre>
+
+    <p><strong>Implementation Notes</strong>:</p>
+    <ul>
+      <li>Create a new MongoDB collection to log each API call</li>
+      <li>Include endpoint, status, and record count information</li>
+      <li>Store timestamp to allow for filtering by time period</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>4. Endpoint Usage Section</h2>
+    <h3>API: <span class="api-endpoint">/api/usage/endpoints</span></h3>
+    <p><strong>MongoDB Collection</strong>: New <span class="collection-name">endpoint_usage</span> collection needed</p>
+    <p><strong>Purpose</strong>: Get usage breakdown by endpoint</p>
+
+    <p><strong>Response Structure</strong>:</p>
+    <pre><code>
+{
+  endpointUsage: Array<{
+    endpoint: string;           // "Property Search", etc.
+    calls: number;              // Total calls to this endpoint
+    records: number;            // Records fetched from this endpoint
+    percentage: number;         // Percentage of total records
+    description: string;        // Description of endpoint
+    creditCost: string;         // Credit cost description
+  }>
+}
+    </code></pre>
+
+    <p><strong>Implementation Notes</strong>:</p>
+    <ul>
+      <li>Create a new MongoDB collection to track usage by endpoint</li>
+      <li>Update it whenever an API call is made</li>
+      <li>Calculate percentages based on total records used</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>5. Record Usage Breakdown</h2>
+    <h3>API: <span class="api-endpoint">/api/usage/distribution</span></h3>
+    <p><strong>MongoDB Collection</strong>: Same as endpoint_usage above</p>
+    <p><strong>Purpose</strong>: Get data for the pie chart showing usage distribution</p>
+
+    <p><strong>Response Structure</strong>:</p>
+    <pre><code>
+{
+  usageDistributionData: Array<{
+    name: string;       // "Property Search", etc.
+    value: number;      // Number of records
+    fill: string;       // Color for the chart segment
+  }>
+}
+    </code></pre>
+
+    <p><strong>Implementation Notes</strong>:</p>
+    <ul>
+      <li>Derive from the same endpoint_usage collection</li>
+      <li>Filter to include only endpoints with record usage > 0</li>
+      <li>Add consistent color values for each endpoint type</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>6. Subscription Data</h2>
+    <h3>API: <span class="api-endpoint">/api/subscription</span></h3>
+    <p><strong>MongoDB Collection</strong>: <span class="collection-name">subscriptions</span></p>
+    <p><strong>Purpose</strong>: Fetch current subscription details</p>
+
+    <p><strong>Response Structure</strong>:</p>
+    <pre><code>
+{
+  _id: string;
+  account_id: number;
+  subscription_id: string;
+  customer_name: string;
+  contract_start_date: string;
+  contract_end_date: string;
+  plan_name: string;
+  plan_id: number;
+  plan_type: string;
+  usage_amount: number;
+  minimum_bill_amount: number;
+  unit_price: number;
+  credit: number;
+  trial_begin_date: string;
+  trial_end_date: string;
+}
+    </code></pre>
+
+    <p><strong>Implementation Notes</strong>:</p>
+    <ul>
+      <li>This should match your existing subscription model</li>
+      <li>Expose only the necessary fields for the frontend</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>7. Usage History Tracking</h2>
+    <h3>API: <span class="api-endpoint">/api/usage/history</span></h3>
+    <p><strong>MongoDB Collection</strong>: <span class="collection-name">usage_reports</span>, new <span class="collection-name">usage_history</span> collection</p>
+    <p><strong>Purpose</strong>: Get detailed usage history for the UsageHistoryTable component</p>
+
+    <p><strong>Response Structure</strong>:</p>
+    <pre><code>
+{
+  history: Array<{
+    timestamp: string;         // ISO date string
+    endpoint: string;          // Endpoint name
+    request: string;           // Request details/query
+    credits: number;           // Credits used
+    status: string;            // "success", "error", "warning"
+    responseTime: number;      // Response time in milliseconds
+  }>
+}
+    </code></pre>
+
+    <p><strong>Implementation Notes</strong>:</p>
+    <ul>
+      <li>Create a new collection for detailed request logging</li>
+      <li>Store request details, response status, and timing information</li>
+      <li>Allow filtering by date range</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>MongoDB Schema Recommendations</h2>
+    <p>Based on your current data model and UI requirements, I recommend the following MongoDB collections:</p>
+
+    <ol>
+      <li><strong>subscriptions</strong>: Already exists, stores plan and billing information</li>
+      <li><strong>usage_reports</strong>: Already exists, stores aggregate usage by billing period</li>
+      <li><strong>activity_logs</strong> (new): Detailed logs of every API request
+        <pre><code>
+{
+  _id: ObjectId,
+  account_id: Number,
+  endpoint: String,
+  request_details: String,
+  timestamp: Date,
+  status: String,
+  records_fetched: Number,
+  credit_cost: Number,
+  response_time: Number
+}
+        </code></pre>
+      </li>
+      <li><strong>endpoint_usage</strong> (new): Aggregated usage by endpoint
+        <pre><code>
+{
+  _id: ObjectId,
+  account_id: Number,
+  billing_period_start: Date,
+  billing_period_end: Date,
+  endpoint: String,
+  total_calls: Number,
+  total_records: Number,
+  last_updated: Date
+}
+        </code></pre>
+      </li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2>Implementation Strategy</h2>
+    <ol>
+      <li><strong>Phase 1</strong>: Create MongoDB collections and backend APIs</li>
+      <li><strong>Phase 2</strong>: Modify the frontend to fetch real data instead of mock data</li>
+      <li><strong>Phase 3</strong>: Implement real-time logging of API usage and activity</li>
+    </ol>
+    <p>This approach will give you a complete picture of usage across your system while maintaining the excellent UI you've already designed.</p>
+  </div>
+</body>
+</html>
