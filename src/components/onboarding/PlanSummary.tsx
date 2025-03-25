@@ -1,36 +1,67 @@
 
-import { PlanData, AddOnData } from "@/types/billing";
+import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
+import { formatDistanceToNow } from "date-fns";
 
 interface PlanSummaryProps {
   selectedPlan: string;
   selectedAddOns: string[];
   plans: PlanData[];
   addOns: AddOnData[];
+  subscription?: SubscriptionData | null;
 }
 
 export const PlanSummary = ({ 
   selectedPlan, 
   selectedAddOns,
   plans,
-  addOns
+  addOns,
+  subscription
 }: PlanSummaryProps) => {
   const currentPlan = plans.find(p => p.id === selectedPlan);
   
+  const formatCurrency = (amount: number) => {
+    return `$${amount.toLocaleString()}`;
+  };
+  
   return (
     <div className="space-y-4 pb-6">
-      <div className="flex justify-between items-baseline">
-        <span className="text-sm font-medium">Plan</span>
-        <span>{currentPlan?.name}</span>
-      </div>
-      <div className="flex justify-between items-baseline">
-        <span className="text-sm font-medium">Base Price</span>
-        <div className="flex gap-1 items-baseline">
-          <span>{currentPlan?.price}</span>
-          <span className="text-xs text-muted-foreground">
-            per month
-          </span>
-        </div>
-      </div>
+      {subscription ? (
+        <>
+          <div className="flex justify-between items-baseline">
+            <span className="text-sm font-medium">Plan</span>
+            <span>{subscription.plan_name}</span>
+          </div>
+          <div className="flex justify-between items-baseline">
+            <span className="text-sm font-medium">Base Price</span>
+            <div className="flex gap-1 items-baseline">
+              <span>{formatCurrency(subscription.minimum_bill_amount)}</span>
+              <span className="text-xs text-muted-foreground">
+                per month
+              </span>
+            </div>
+          </div>
+          <div className="flex justify-between items-baseline">
+            <span className="text-sm font-medium">Records</span>
+            <span>{subscription.usage_amount.toLocaleString()}</span>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="flex justify-between items-baseline">
+            <span className="text-sm font-medium">Plan</span>
+            <span>{currentPlan?.name}</span>
+          </div>
+          <div className="flex justify-between items-baseline">
+            <span className="text-sm font-medium">Base Price</span>
+            <div className="flex gap-1 items-baseline">
+              <span>{currentPlan?.price}</span>
+              <span className="text-xs text-muted-foreground">
+                per month
+              </span>
+            </div>
+          </div>
+        </>
+      )}
       
       {selectedAddOns.length > 0 && (
         <>

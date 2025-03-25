@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,12 +16,29 @@ import { TrialAlert } from "@/components/billing/TrialAlert";
 // Import data
 import { plans, addOns, invoices } from "@/data/billingData";
 
+// Import hooks
+import { useUsageData } from "@/hooks/useUsageData";
+import { useSubscriptionData } from "@/hooks/useSubscriptionData";
+
 const Billing = () => {
   const [selectedPlan, setSelectedPlan] = useState("growth");
   const [overageHandling, setOverageHandling] = useState("stop");
   const [activeAddOns, setActiveAddOns] = useState<string[]>(["premium-avm"]);
   const { toast } = useToast();
   const { isTrialActive, trialDaysLeft, requestTrialExtension } = useTrialAlert();
+  
+  // Fetch usage data
+  const { 
+    currentUsage,
+    usageHistory,
+    isLoading: isLoadingUsage
+  } = useUsageData();
+  
+  // Fetch subscription data
+  const {
+    subscription,
+    isLoading: isLoadingSubscription
+  } = useSubscriptionData();
 
   const handleSaveBillingPreferences = () => {
     toast({
@@ -53,7 +70,7 @@ const Billing = () => {
     });
   };
 
-  // Calculate estimated monthly cost
+  // Calculate estimated monthly cost for UI purposes when no subscription is available
   const calculateMonthlyCost = () => {
     const basePlan = plans.find(p => p.id === selectedPlan);
     if (!basePlan) return { basePrice: "$0", totalAddOns: "$0", total: "$0" };
@@ -91,6 +108,20 @@ const Billing = () => {
   };
 
   const costs = calculateMonthlyCost();
+
+  // If we have a subscription, set the selected plan to match
+  useEffect(() => {
+    if (subscription) {
+      // Find the plan that matches the subscription plan_name
+      const planId = plans.find(p => 
+        p.name.toLowerCase() === subscription.plan_name.toLowerCase()
+      )?.id;
+      
+      if (planId) {
+        setSelectedPlan(planId);
+      }
+    }
+  }, [subscription]);
 
   return (
     <motion.div 
@@ -145,6 +176,8 @@ const Billing = () => {
                 activeAddOns={activeAddOns}
                 addOns={addOns}
                 costs={costs}
+                subscription={subscription}
+                isLoading={isLoadingSubscription}
               />
             </div>
           </div>
