@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,8 +27,8 @@ const ApiKeys = () => {
   const [testKeyScopes, setTestKeyScopes] = useState<string[]>([]);
   const [prodKeyScopes, setProdKeyScopes] = useState<string[]>([]);
 
-  // Simulate loading scopes data
-  useState(() => {
+  // Fixed: Changed useState to useEffect for running code on component mount
+  useEffect(() => {
     setTimeout(() => {
       setTestKeyScopes([
         "PropertySearch",
@@ -53,7 +52,7 @@ const ApiKeys = () => {
       
       setIsLoadingScopes(false);
     }, 1500);
-  }, []);
+  }, []); // Empty dependency array means this effect runs once on mount
 
   const handleCopyApiKey = (key: string, type: string) => {
     navigator.clipboard.writeText(key);
