@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -22,6 +23,8 @@ const ApiKeys = () => {
   const [isConfirmingRotation, setIsConfirmingRotation] = useState(false);
   const [xUserIdRequired, setXUserIdRequired] = useState(true);
   const [isLoadingScopes, setIsLoadingScopes] = useState(true);
+  const [testKeyScopes, setTestKeyScopes] = useState<string[]>([]);
+  const [prodKeyScopes, setProdKeyScopes] = useState<string[]>([]);
   const { toast } = useToast();
   const { isTrialActive, trialDaysLeft } = useTrialAlert();
 
