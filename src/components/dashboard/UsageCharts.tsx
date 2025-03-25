@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDashboard } from "@/contexts/DashboardContext";
@@ -12,7 +12,19 @@ interface UsageChartsProps {
 export const UsageCharts = ({ 
   isLoading = false 
 }: UsageChartsProps) => {
-  const { dailyUsageData, monthlyUsageData } = useDashboard();
+  const { 
+    dailyUsageData, 
+    monthlyUsageData, 
+    currentTimePeriod, 
+    setCurrentTimePeriod 
+  } = useDashboard();
+
+  // Handle tabs change and update context
+  const handleTabsChange = (value: string) => {
+    if (value === 'daily' || value === 'monthly') {
+      setCurrentTimePeriod(value);
+    }
+  };
 
   return (
     <Card className="h-full">
@@ -21,7 +33,12 @@ export const UsageCharts = ({
         <CardDescription>
           API calls vs. property records used
         </CardDescription>
-        <Tabs defaultValue="daily" className="mt-3">
+        <Tabs 
+          defaultValue={currentTimePeriod} 
+          value={currentTimePeriod}
+          onValueChange={handleTabsChange}
+          className="mt-3"
+        >
           <TabsList>
             <TabsTrigger value="daily">Daily</TabsTrigger>
             <TabsTrigger value="monthly">Monthly</TabsTrigger>

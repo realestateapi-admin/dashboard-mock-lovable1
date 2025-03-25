@@ -17,6 +17,8 @@ interface DashboardContextType {
   monthlyApiCalls: number;
   monthlyRecords: number;
   monthlyRecordsPercentage: number;
+  currentTimePeriod: 'daily' | 'monthly';
+  setCurrentTimePeriod: (period: 'daily' | 'monthly') => void;
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
@@ -28,6 +30,7 @@ interface DashboardProviderProps {
   endpointUsage: any[];
   recentActivity: any[];
   usageDistributionData: any[];
+  onTimePeriodChange?: (period: 'daily' | 'monthly') => void;
 }
 
 export const DashboardProvider: React.FC<DashboardProviderProps> = ({ 
@@ -36,9 +39,18 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = ({
   monthlyUsageData, 
   endpointUsage, 
   recentActivity,
-  usageDistributionData
+  usageDistributionData,
+  onTimePeriodChange
 }) => {
   const { isLoading, isRefreshing, handleRefresh } = useDashboardRefresh();
+  const [currentTimePeriod, setCurrentTimePeriod] = useState<'daily' | 'monthly'>('daily');
+  
+  // Notify parent component when time period changes
+  useEffect(() => {
+    if (onTimePeriodChange) {
+      onTimePeriodChange(currentTimePeriod);
+    }
+  }, [currentTimePeriod, onTimePeriodChange]);
   
   // Calculate derived values
   const totalApiCalls = dailyUsageData.reduce((sum, day) => sum + day.calls, 0);
@@ -64,7 +76,9 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = ({
       recordsPercentage,
       monthlyApiCalls,
       monthlyRecords,
-      monthlyRecordsPercentage
+      monthlyRecordsPercentage,
+      currentTimePeriod,
+      setCurrentTimePeriod
     }}>
       {children}
     </DashboardContext.Provider>

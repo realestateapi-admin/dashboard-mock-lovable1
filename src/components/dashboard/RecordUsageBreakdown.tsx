@@ -5,15 +5,18 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { UsageBreakdownSkeleton } from "./LoadingState";
 import { UsageDistributionItem } from "@/types/usage";
+import { Badge } from "@/components/ui/badge";
 
 interface RecordUsageBreakdownProps {
   usageDistributionData: UsageDistributionItem[];
   isLoading?: boolean;
+  timePeriod?: 'daily' | 'monthly';
 }
 
 export const RecordUsageBreakdown = ({ 
   usageDistributionData, 
-  isLoading = false 
+  isLoading = false,
+  timePeriod = 'daily'
 }: RecordUsageBreakdownProps) => {
   const isMobile = useIsMobile();
   const [chartHeight, setChartHeight] = useState(180);
@@ -24,6 +27,9 @@ export const RecordUsageBreakdown = ({
       return name ? `${name} ${(percent * 100).toFixed(0)}%` : '';
     }
   );
+
+  // Format the time period display text
+  const timeText = timePeriod === 'daily' ? 'today' : 'this month';
 
   // Adjust chart size and label format based on screen size
   useEffect(() => {
@@ -68,8 +74,11 @@ export const RecordUsageBreakdown = ({
     <Card>
       <CardHeader>
         <CardTitle>Record Usage Breakdown</CardTitle>
-        <CardDescription>
+        <CardDescription className="flex items-center gap-2">
           Distribution of records by endpoint
+          <Badge variant="outline" className="bg-primary-50 text-primary border-primary-200">
+            {timePeriod === 'daily' ? 'Daily' : 'Monthly'}
+          </Badge>
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -117,6 +126,9 @@ export const RecordUsageBreakdown = ({
                   <span className="text-sm">{item.value.toLocaleString()} records</span>
                 </div>
               ))}
+            </div>
+            <div className="mt-4 text-xs text-muted-foreground text-center">
+              Showing record distribution for {timeText}
             </div>
           </>
         )}
