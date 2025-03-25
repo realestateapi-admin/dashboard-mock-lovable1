@@ -22,23 +22,6 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
         transition={{ duration: 0.5 }}
         className="relative z-10 w-full max-w-5xl mx-auto"
       >
-        <div className="flex justify-center mb-8">
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-          >
-            <img 
-              src="https://www.realestateapi.com/assets/img/realestateapi-logo-color.svg?v=08750727ac" 
-              alt="RealEstateAPI" 
-              className="h-8 w-auto" 
-              onError={(e) => {
-                e.currentTarget.src = "https://via.placeholder.com/160x40?text=RealEstateAPI";
-              }}
-            />
-          </motion.div>
-        </div>
-        
         <div className="glass-card rounded-xl p-6 sm:p-8">
           <div className="flex flex-col md:flex-row">
             {/* Left Side - Form */}
@@ -48,6 +31,23 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
               transition={{ delay: 0.2, duration: 0.5 }}
               className="md:w-1/2 md:pr-6"
             >
+              <div className="flex justify-center mb-8">
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.1, duration: 0.5 }}
+                >
+                  <img 
+                    src="https://www.realestateapi.com/assets/img/realestateapi-logo-color.svg?v=08750727ac" 
+                    alt="RealEstateAPI" 
+                    className="h-8 w-auto" 
+                    onError={(e) => {
+                      e.currentTarget.src = "https://via.placeholder.com/160x40?text=RealEstateAPI";
+                    }}
+                  />
+                </motion.div>
+              </div>
+              
               {children}
             </motion.div>
             
