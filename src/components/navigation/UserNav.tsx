@@ -1,55 +1,85 @@
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Link } from "react-router-dom";
+import { useAuth, UserRole } from "@/contexts/AuthContext";
+import { Badge } from "@/components/ui/badge";
 
 export function UserNav() {
+  const { currentRole, setCurrentRole } = useAuth();
+  
+  const userRoleBadgeColors: Record<UserRole, string> = {
+    admin: "bg-red-100 text-red-800",
+    billing: "bg-purple-100 text-purple-800",
+    developer: "bg-blue-100 text-blue-800",
+    viewer: "bg-gray-100 text-gray-800"
+  };
+
+  const getRoleLabel = (role: UserRole): string => {
+    const roleLabels: Record<UserRole, string> = {
+      admin: "Admin",
+      billing: "Billing",
+      developer: "Developer",
+      viewer: "Viewer"
+    };
+    return roleLabels[role];
+  };
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="rounded-full hover:ring-2 hover:ring-ring hover:ring-offset-2 hover:ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>SC</AvatarFallback>
-        </Avatar>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src="https://github.com/shadcn.png" alt="Avatar" />
+            <AvatarFallback>SC</AvatarFallback>
+          </Avatar>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Your Company</p>
+            <p className="text-sm font-medium leading-none">John Doe</p>
             <p className="text-xs leading-none text-muted-foreground">
-              admin@yourcompany.com
+              john@example.com
             </p>
+            <Badge className={`mt-2 w-fit ${userRoleBadgeColors[currentRole as UserRole]}`}>
+              {getRoleLabel(currentRole as UserRole)}
+            </Badge>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link to="/dashboard/settings">
-            Settings
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/dashboard/settings">
-            Profile
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/dashboard/billing">
-            Billing
-          </Link>
-        </DropdownMenuItem>
+        
+        {/* Demo Role Switcher - would be removed in production */}
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Switch Role (Demo)</DropdownMenuLabel>
+          <DropdownMenuRadioGroup 
+            value={currentRole} 
+            onValueChange={(value) => setCurrentRole(value as UserRole)}
+          >
+            <DropdownMenuRadioItem value="admin">Admin</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="billing">Billing</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="developer">Developer</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="viewer">Viewer</DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuGroup>
+        
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link to="/logout">
-            Log out
-          </Link>
-        </DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem>Settings</DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

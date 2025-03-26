@@ -4,12 +4,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import UserRolesManagement from './UserRolesManagement';
 import { ApiConfiguration } from '@/components/api-keys/ApiConfiguration';
+import RoleBasedAccessControl from './RoleBasedAccessControl';
+import { Shield } from 'lucide-react';
 
 const SettingsPage = () => {
   return (
     <Tabs defaultValue="user-roles" className="w-full">
       <TabsList className="mb-6">
         <TabsTrigger value="user-roles">User Roles</TabsTrigger>
+        <TabsTrigger value="access-control">Access Control</TabsTrigger>
         <TabsTrigger value="account">Account</TabsTrigger>
         <TabsTrigger value="notifications">Notifications</TabsTrigger>
         <TabsTrigger value="api-settings">API Settings</TabsTrigger>
@@ -18,6 +21,13 @@ const SettingsPage = () => {
         <Card>
           <CardContent className="p-6">
             <UserRolesManagement />
+          </CardContent>
+        </Card>
+      </TabsContent>
+      <TabsContent value="access-control">
+        <Card>
+          <CardContent className="p-6">
+            <RoleBasedAccessControl />
           </CardContent>
         </Card>
       </TabsContent>

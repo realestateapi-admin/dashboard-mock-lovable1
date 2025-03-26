@@ -1,60 +1,60 @@
 
 import * as React from "react";
 import { NavLink } from "react-router-dom";
+import { useAuth, UserRole } from "@/contexts/AuthContext";
 
 export function MainNav() {
+  const { currentRole } = useAuth();
+
+  // Define navigation items with role-based access
+  const navItems = [
+    {
+      title: "Overview",
+      href: "/dashboard",
+      allowedRoles: ['admin', 'billing', 'developer', 'viewer'],
+    },
+    {
+      title: "API Usage",
+      href: "/dashboard/usage",
+      allowedRoles: ['admin', 'billing', 'developer'],
+    },
+    {
+      title: "API Keys",
+      href: "/dashboard/api-keys",
+      allowedRoles: ['admin', 'developer'],
+    },
+    {
+      title: "Billing",
+      href: "/dashboard/billing",
+      allowedRoles: ['admin', 'billing'],
+    },
+    {
+      title: "Support",
+      href: "/dashboard/support",
+      allowedRoles: ['admin', 'billing', 'developer', 'viewer'],
+    },
+  ];
+
+  // Filter items based on the user's role
+  const filteredNavItems = navItems.filter(item => 
+    item.allowedRoles.includes(currentRole as UserRole)
+  );
+
   return (
     <nav className="flex items-center space-x-6 text-sm font-medium">
-      <NavLink
-        to="/dashboard"
-        className={({ isActive }) =>
-          `transition-colors hover:text-[#04c8c8] ${
-            isActive ? "text-[#04c8c8]" : "text-muted-foreground"
-          }`
-        }
-      >
-        Overview
-      </NavLink>
-      <NavLink
-        to="/dashboard/usage"
-        className={({ isActive }) =>
-          `transition-colors hover:text-[#04c8c8] ${
-            isActive ? "text-[#04c8c8]" : "text-muted-foreground"
-          }`
-        }
-      >
-        API Usage
-      </NavLink>
-      <NavLink
-        to="/dashboard/api-keys"
-        className={({ isActive }) =>
-          `transition-colors hover:text-[#04c8c8] ${
-            isActive ? "text-[#04c8c8]" : "text-muted-foreground"
-          }`
-        }
-      >
-        API Keys
-      </NavLink>
-      <NavLink
-        to="/dashboard/billing"
-        className={({ isActive }) =>
-          `transition-colors hover:text-[#04c8c8] ${
-            isActive ? "text-[#04c8c8]" : "text-muted-foreground"
-          }`
-        }
-      >
-        Billing
-      </NavLink>
-      <NavLink
-        to="/dashboard/support"
-        className={({ isActive }) =>
-          `transition-colors hover:text-[#04c8c8] ${
-            isActive ? "text-[#04c8c8]" : "text-muted-foreground"
-          }`
-        }
-      >
-        Support
-      </NavLink>
+      {filteredNavItems.map((item) => (
+        <NavLink
+          key={item.title}
+          to={item.href}
+          className={({ isActive }) =>
+            `transition-colors hover:text-[#04c8c8] ${
+              isActive ? "text-[#04c8c8]" : "text-muted-foreground"
+            }`
+          }
+        >
+          {item.title}
+        </NavLink>
+      ))}
     </nav>
   );
 }
