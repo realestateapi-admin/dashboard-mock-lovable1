@@ -1,5 +1,5 @@
 
-import { Home, BarChart, Users, FileText, LifeBuoy, Settings } from "lucide-react";
+import { Home, BarChart, Users, FileText, LifeBuoy, Settings, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -54,6 +54,12 @@ export const DashboardSidebar = () => {
 
   // Secondary navigation items
   const secondaryNavItems = [
+    {
+      title: "Profile",
+      href: "/dashboard/profile",
+      icon: User,
+      allowedRoles: ['admin', 'billing', 'developer', 'viewer'],
+    },
     {
       title: "Support",
       href: "/dashboard/support",

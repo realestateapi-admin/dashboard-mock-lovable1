@@ -17,6 +17,7 @@ import ApiKeys from "./pages/ApiKeys";
 import Billing from "./pages/Billing";
 import Support from "./pages/Support";
 import Settings from "./pages/Settings";
+import Profile from "./pages/Profile"; // Add import for the new Profile page
 import SettingsPage from "./components/settings/SettingsPage";
 import { TrialAlertProvider } from "./contexts/TrialAlertContext";
 import { AuthProvider, ProtectedRoute } from "./contexts/AuthContext";
@@ -77,6 +78,9 @@ const App = () => (
                 
                 {/* Support - accessible to all roles */}
                 <Route path="support" element={<Support />} />
+                
+                {/* Profile - accessible to all roles */}
+                <Route path="profile" element={<Profile />} />
                 
                 {/* Settings - accessible to admins only */}
                 <Route path="settings" element={

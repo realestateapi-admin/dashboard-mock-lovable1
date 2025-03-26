@@ -82,8 +82,8 @@ export function UserNav() {
         
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>Profile</DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate("/dashboard/settings")}>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
