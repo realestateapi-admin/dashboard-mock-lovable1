@@ -30,18 +30,18 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link to="/dashboard/settings/profile">
-            Profile
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/dashboard/settings/billing">
-            Billing
+          <Link to="/dashboard/settings">
+            Settings
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/dashboard/settings">
-            Settings
+            Profile
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/dashboard/billing">
+            Billing
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

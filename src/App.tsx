@@ -16,6 +16,8 @@ import UsageHistory from "./pages/UsageHistory";
 import ApiKeys from "./pages/ApiKeys";
 import Billing from "./pages/Billing";
 import Support from "./pages/Support";
+import Settings from "./pages/Settings";
+import SettingsPage from "./components/settings/SettingsPage";
 import { TrialAlertProvider } from "./contexts/TrialAlertContext";
 
 // Initialize the query client for data fetching
@@ -43,6 +45,9 @@ const App = () => (
               <Route path="api-keys" element={<ApiKeys />} />
               <Route path="billing" element={<Billing />} />
               <Route path="support" element={<Support />} />
+              <Route path="settings" element={<Settings />}>
+                <Route index element={<SettingsPage />} />
+              </Route>
             </Route>
             
             {/* Fallback for unknown routes */}
