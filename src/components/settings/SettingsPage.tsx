@@ -3,6 +3,7 @@ import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import UserRolesManagement from './UserRolesManagement';
+import { ApiConfiguration } from '@/components/api-keys/ApiConfiguration';
 
 const SettingsPage = () => {
   return (
@@ -37,7 +38,7 @@ const SettingsPage = () => {
       <TabsContent value="api-settings">
         <Card>
           <CardContent className="p-6">
-            <p className="text-lg font-medium">API configuration settings will be added here.</p>
+            <ApiConfiguration />
           </CardContent>
         </Card>
       </TabsContent>
