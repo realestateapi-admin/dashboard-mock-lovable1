@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
 const SignIn = () => {
@@ -16,7 +16,7 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { setCurrentRole } = useAuth();
+  const { setIsAuthenticated, setCurrentRole } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,9 +26,8 @@ const SignIn = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Mock authentication - in a real app, validate credentials here
-      // Set authentication state in localStorage
-      localStorage.setItem('isAuthenticated', 'true');
+      // Set authentication state directly with the Auth context
+      setIsAuthenticated(true);
       
       // For demo purposes, set the role (using the email to determine the role)
       let role = 'admin'; // Default role
@@ -43,11 +42,17 @@ const SignIn = () => {
       // Set the role in context
       setCurrentRole(role as any);
       
+      // Store in localStorage (now redundant since the context handles this,
+      // but kept for backward compatibility)
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('userRole', role);
+      
       toast({
         title: "Signed in successfully",
         description: "Welcome back to RealEstateAPI dashboard",
       });
       
+      // Navigate to dashboard after authentication is set
       navigate("/dashboard");
     } catch (error) {
       toast({
