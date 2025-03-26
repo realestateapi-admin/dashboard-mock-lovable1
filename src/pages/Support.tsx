@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { 
   Search, Send, FileText, LifeBuoy, MessageSquare, ExternalLink, ChevronRight,
-  ArrowRight, BookOpen, Mail 
+  ArrowRight, BookOpen, Mail, Calendar 
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -168,10 +168,11 @@ const Support = () => {
       </div>
       
       <Tabs defaultValue="knowledge-base" className="space-y-6">
-        <TabsList className="grid grid-cols-3 max-w-md">
+        <TabsList className="grid grid-cols-4 max-w-md">
           <TabsTrigger value="knowledge-base">Knowledge Base</TabsTrigger>
           <TabsTrigger value="ai-assistant">AI Assistant</TabsTrigger>
           <TabsTrigger value="contact">Contact Us</TabsTrigger>
+          <TabsTrigger value="schedule-call">Schedule Call</TabsTrigger>
         </TabsList>
         
         <TabsContent value="knowledge-base" className="space-y-6">
@@ -509,6 +510,40 @@ const Support = () => {
               <Button variant="link" className="text-primary gap-1">
                 View all FAQs <ExternalLink className="h-3.5 w-3.5" />
               </Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="schedule-call" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Schedule a Support Call</CardTitle>
+              <CardDescription>
+                Book a one-on-one call with our customer success team
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-start mb-6 text-sm text-muted-foreground">
+                <Calendar className="h-4 w-4 mr-2" />
+                <span>Select a convenient time for your call</span>
+              </div>
+              
+              <div className="calendly-embed rounded-lg border overflow-hidden" style={{ height: "630px" }}>
+                <iframe
+                  src="https://calendly.com/lukas_the_devtrepreneur/customer-success-call"
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  title="Schedule a call with our support team"
+                ></iframe>
+              </div>
+            </CardContent>
+            <CardFooter className="flex flex-col items-start gap-2 border-t p-4 bg-muted/50">
+              <h4 className="text-sm font-medium">Why schedule a call?</h4>
+              <p className="text-sm text-muted-foreground">
+                Our customer success team can help you with complex integration questions, custom solutions, 
+                or any other challenges you're facing with our API.
+              </p>
             </CardFooter>
           </Card>
         </TabsContent>
