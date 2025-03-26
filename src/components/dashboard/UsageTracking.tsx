@@ -108,8 +108,7 @@ const UsageTracking: React.FC<UsageTrackingProps> = ({
       </Tabs>
       
       <CardFooter className="border-t pt-4 text-sm text-muted-foreground">
-        <div className="w-full flex justify-between items-center">
-          <span>Organization: {currentUsage?.organization || 'Unknown'}</span>
+        <div className="w-full flex justify-end">
           <span>Account ID: {currentUsage?.account_id || 'Unknown'}</span>
         </div>
       </CardFooter>
