@@ -1,4 +1,3 @@
-
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
 import { formatDistanceToNow } from "date-fns";
 
@@ -65,6 +64,20 @@ export const PlanSummary = ({
   
   const payment = calculateEstimatedPayment();
   
+  // Format price string to consistently show "/month"
+  const formatPriceString = (priceString: string): string => {
+    if (priceString === "Included") return priceString;
+    
+    // If it's a metered add-on with price per item
+    if (priceString.includes("each")) return priceString;
+    
+    // If it already has "/month", return as is
+    if (priceString.includes("/month")) return priceString;
+    
+    // Otherwise add "/month"
+    return `${priceString}/month`;
+  };
+  
   return (
     <div className="space-y-4 pb-6">
       {subscription ? (
@@ -96,10 +109,7 @@ export const PlanSummary = ({
           <div className="flex justify-between items-baseline">
             <span className="text-sm font-medium">Base Price</span>
             <div className="flex gap-1 items-baseline">
-              <span>{currentPlan?.price}</span>
-              <span className="text-xs text-muted-foreground">
-                per month
-              </span>
+              <span>{formatPriceString(currentPlan?.price || '')}</span>
             </div>
           </div>
         </>
@@ -120,7 +130,7 @@ export const PlanSummary = ({
               <div key={addonId} className="flex justify-between items-baseline pl-4">
                 <span className="text-sm">{addon.name}</span>
                 <div className="flex items-center gap-1">
-                  <span className="text-sm">{priceString}</span>
+                  <span className="text-sm">{formatPriceString(priceString)}</span>
                   {isMetered && (
                     <span className="text-xs text-muted-foreground italic">
                       (usage-based)
