@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 
@@ -9,6 +10,7 @@ type AuthContextType = {
   currentRole: UserRole;
   setCurrentRole: (role: UserRole) => void;
   isAuthenticated: boolean;
+  setIsAuthenticated: (value: boolean) => void;
   logout: () => void;
 };
 
@@ -17,6 +19,7 @@ const defaultContext: AuthContextType = {
   currentRole: 'viewer',
   setCurrentRole: () => {},
   isAuthenticated: false,
+  setIsAuthenticated: () => {},
   logout: () => {},
 };
 
@@ -48,6 +51,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.setItem('userRole', currentRole);
   }, [currentRole]);
 
+  // Update local storage when authentication changes
+  useEffect(() => {
+    localStorage.setItem('isAuthenticated', isAuthenticated ? 'true' : 'false');
+  }, [isAuthenticated]);
+
   // Logout function
   const logout = () => {
     setIsAuthenticated(false);
@@ -60,6 +68,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     currentRole,
     setCurrentRole,
     isAuthenticated,
+    setIsAuthenticated,
     logout,
   };
 

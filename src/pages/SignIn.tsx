@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { setCurrentRole } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +27,22 @@ const SignIn = () => {
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Mock authentication - in a real app, validate credentials here
+      // Set authentication state in localStorage
+      localStorage.setItem('isAuthenticated', 'true');
+      
+      // For demo purposes, set the role (using the email to determine the role)
+      let role = 'admin'; // Default role
+      if (email.includes('billing')) {
+        role = 'billing';
+      } else if (email.includes('developer')) {
+        role = 'developer';
+      } else if (email.includes('viewer')) {
+        role = 'viewer';
+      }
+      
+      // Set the role in context
+      setCurrentRole(role as any);
+      
       toast({
         title: "Signed in successfully",
         description: "Welcome back to RealEstateAPI dashboard",

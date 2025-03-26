@@ -14,9 +14,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth, UserRole } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
 export function UserNav() {
-  const { currentRole, setCurrentRole } = useAuth();
+  const { currentRole, setCurrentRole, logout } = useAuth();
+  const navigate = useNavigate();
   
   const userRoleBadgeColors: Record<UserRole, string> = {
     admin: "bg-red-100 text-red-800",
@@ -33,6 +35,11 @@ export function UserNav() {
       viewer: "Viewer"
     };
     return roleLabels[role];
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/sign-in");
   };
 
   return (
@@ -75,11 +82,11 @@ export function UserNav() {
         
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <DropdownMenuItem onClick={() => navigate("/dashboard/settings")}>Settings</DropdownMenuItem>
           <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Log out</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -41,7 +41,11 @@ const App = () => (
               <Route path="/onboarding" element={<Onboarding />} />
               
               {/* Dashboard routes */}
-              <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route path="/dashboard" element={
+                <ProtectedRoute allowedRoles={['admin', 'billing', 'developer', 'viewer']}>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }>
                 <Route index element={<Dashboard />} />
                 <Route path="access-denied" element={<AccessDenied />} />
                 
