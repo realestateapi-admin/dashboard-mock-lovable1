@@ -54,10 +54,10 @@ export const CurrentUsageTab = ({
         
         <UsageProgressBar
           usage={currentUsage.skiptrace_usage}
-          limit={limits.skiptrace}
           label="Skiptrace Records"
           icon={<Database className="h-4 w-4 text-indigo-500" />}
           color="indigo-500"
+          isMetered={true}
         />
       </div>
       
@@ -66,7 +66,7 @@ export const CurrentUsageTab = ({
         <div>
           <p className="text-sm font-medium">Usage Information</p>
           <p className="text-sm text-muted-foreground mt-1">
-            These usage statistics show your consumption for the current billing period. Property records include all property search, detail, and comps API calls. Skiptrace records include all person and contact lookups.
+            These usage statistics show your consumption for the current billing period. Property records include all property search, detail, and comps API calls. Skiptrace records are metered and billed based on actual usage.
           </p>
           <Button 
             variant="link" 
