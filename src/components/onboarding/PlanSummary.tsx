@@ -22,6 +22,48 @@ export const PlanSummary = ({
   const formatCurrency = (amount: number) => {
     return `$${amount.toLocaleString()}`;
   };
+
+  // Calculate the estimated monthly payment (base plan + fixed add-ons)
+  const calculateEstimatedPayment = () => {
+    if (!currentPlan) return { total: 0, fixedAddOns: 0, hasMeteredAddOns: false };
+    
+    // Parse the base plan price (removing $ and commas)
+    const basePlanPrice = parseInt(currentPlan.price.replace(/\$|,/g, ""));
+    
+    let fixedAddOnsTotal = 0;
+    let hasMeteredAddOns = false;
+    
+    // Calculate costs for selected add-ons
+    selectedAddOns.forEach(addonId => {
+      const addon = addOns.find(a => a.id === addonId);
+      if (!addon) return;
+      
+      const priceString = addon.prices[selectedPlan as keyof typeof addon.prices];
+      
+      // Check if this is a metered add-on
+      if (addon.billingType === 'metered') {
+        hasMeteredAddOns = true;
+        return; // Don't add metered add-ons to the total
+      }
+      
+      // Skip if it's included in the plan
+      if (priceString === "Included") return;
+      
+      // Parse the price - handle different formats like "$250", "$250/month"
+      const numericPrice = parseInt(priceString.replace(/\$|,|\/month/g, ""));
+      if (!isNaN(numericPrice)) {
+        fixedAddOnsTotal += numericPrice;
+      }
+    });
+    
+    return { 
+      total: basePlanPrice + fixedAddOnsTotal,
+      fixedAddOns: fixedAddOnsTotal,
+      hasMeteredAddOns
+    };
+  };
+  
+  const payment = calculateEstimatedPayment();
   
   return (
     <div className="space-y-4 pb-6">
@@ -70,14 +112,45 @@ export const PlanSummary = ({
           {selectedAddOns.map(addonId => {
             const addon = addOns.find(a => a.id === addonId);
             if (!addon) return null;
+            
+            const priceString = addon.prices[selectedPlan as keyof typeof addon.prices];
+            const isMetered = addon.billingType === 'metered';
+            
             return (
               <div key={addonId} className="flex justify-between items-baseline pl-4">
                 <span className="text-sm">{addon.name}</span>
-                <span className="text-sm">{addon.prices[selectedPlan as keyof typeof addon.prices]}</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-sm">{priceString}</span>
+                  {isMetered && (
+                    <span className="text-xs text-muted-foreground italic">
+                      (usage-based)
+                    </span>
+                  )}
+                </div>
               </div>
             );
           })}
+          
+          {payment.fixedAddOns > 0 && (
+            <div className="flex justify-between items-baseline pt-2">
+              <span className="text-sm font-medium pl-4">Add-ons Subtotal</span>
+              <span>${payment.fixedAddOns.toLocaleString()}/month</span>
+            </div>
+          )}
         </>
+      )}
+      
+      <div className="h-px bg-border my-2" />
+      
+      <div className="flex justify-between items-baseline text-primary font-medium">
+        <span>Estimated Monthly Payment</span>
+        <span>${payment.total.toLocaleString()}/month</span>
+      </div>
+      
+      {payment.hasMeteredAddOns && (
+        <div className="text-xs text-muted-foreground italic">
+          *Plus usage-based charges for metered services
+        </div>
       )}
       
       <div className="h-px bg-border my-2" />
