@@ -8,9 +8,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscriptionData } from "@/hooks/useSubscriptionData";
 import { format } from "date-fns";
+import { InfoCircle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const ApiConfiguration = () => {
-  const [xUserIdRequired, setXUserIdRequired] = useState(true);
   const [overageHandling, setOverageHandling] = useState("allow-125");
   const [previousOverageHandling, setPreviousOverageHandling] = useState("");
   const [changeDate, setChangeDate] = useState<string | null>(null);
@@ -58,18 +59,17 @@ export const ApiConfiguration = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-0.5">
-            <Label htmlFor="x-user-id-toggle">Require X-User-ID Header</Label>
-            <p className="text-sm text-muted-foreground">
-              Track behavior of your end users with a unique identifier
-            </p>
+        <div className="p-4 bg-amber-50 border border-amber-200 rounded-md">
+          <div className="flex gap-2">
+            <InfoCircle className="h-5 w-5 text-amber-600" />
+            <div>
+              <h4 className="font-medium text-amber-800">X-User-ID Header Required</h4>
+              <p className="text-sm text-amber-700">
+                All API requests must include an X-User-ID header to identify your end users. 
+                This helps track usage patterns and enables detailed analytics.
+              </p>
+            </div>
           </div>
-          <Switch 
-            id="x-user-id-toggle" 
-            checked={xUserIdRequired}
-            onCheckedChange={setXUserIdRequired}
-          />
         </div>
         
         <div className="flex items-center justify-between">
