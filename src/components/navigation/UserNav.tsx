@@ -7,8 +7,6 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -17,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 
 export function UserNav() {
-  const { currentRole, setCurrentRole, logout } = useAuth();
+  const { currentRole, logout } = useAuth();
   const navigate = useNavigate();
   
   const userRoleBadgeColors: Record<UserRole, string> = {
@@ -66,21 +64,6 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         
-        {/* Demo Role Switcher - would be removed in production */}
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>Switch Role (Demo)</DropdownMenuLabel>
-          <DropdownMenuRadioGroup 
-            value={currentRole} 
-            onValueChange={(value) => setCurrentRole(value as UserRole)}
-          >
-            <DropdownMenuRadioItem value="admin">Admin</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="billing">Billing</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="developer">Developer</DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="viewer">Viewer</DropdownMenuRadioItem>
-          </DropdownMenuRadioGroup>
-        </DropdownMenuGroup>
-        
-        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>Profile</DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate("/dashboard/settings")}>Settings</DropdownMenuItem>
