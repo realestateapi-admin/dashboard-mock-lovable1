@@ -1,19 +1,48 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
+import { useSubscriptionData } from "@/hooks/useSubscriptionData";
+import { format } from "date-fns";
 
 export const ApiConfiguration = () => {
   const [xUserIdRequired, setXUserIdRequired] = useState(true);
   const [overageHandling, setOverageHandling] = useState("allow-125");
+  const [previousOverageHandling, setPreviousOverageHandling] = useState("");
+  const [changeDate, setChangeDate] = useState<string | null>(null);
   const { toast } = useToast();
+  const { subscription } = useSubscriptionData();
+
+  // Initialize from the subscription when it loads
+  useEffect(() => {
+    if (subscription) {
+      // This is where you would fetch the current overage handling setting from the backend
+      // For now, we'll use the default value
+      const currentSetting = "allow-125"; // This would come from the subscription data
+      setOverageHandling(currentSetting);
+      setPreviousOverageHandling(currentSetting);
+    }
+  }, [subscription]);
 
   const handleSaveConfig = () => {
-    // In a real app, this would save to the backend
+    // Only track the change if the overage handling was actually changed
+    if (overageHandling !== previousOverageHandling) {
+      const now = new Date();
+      const formattedDate = format(now, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+      setChangeDate(formattedDate);
+      setPreviousOverageHandling(overageHandling);
+      
+      // In a real application, you would send this information to your backend
+      console.log(`Overage handling changed from ${previousOverageHandling} to ${overageHandling} at ${formattedDate}`);
+      
+      // This data would be used for prorated billing calculations
+    }
+
+    // Notify the user that settings were saved
     toast({
       title: "Settings saved",
       description: "Your API configuration has been updated successfully.",
@@ -102,6 +131,16 @@ export const ApiConfiguration = () => {
               </div>
             </div>
           </RadioGroup>
+          
+          {changeDate && (
+            <p className="text-xs text-muted-foreground mt-1">
+              Last changed: {format(new Date(changeDate), "MMMM d, yyyy 'at' h:mm a")}
+            </p>
+          )}
+          
+          <div className="text-xs text-amber-500 mt-1">
+            Note: Changes to overage handling settings will be prorated for the remainder of your billing cycle.
+          </div>
         </div>
 
         <div className="flex items-center justify-between">
