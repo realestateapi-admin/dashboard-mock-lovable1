@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { plans, addOns } from "@/data/billingData";
 import { StepOne } from "@/components/onboarding/StepOne";
 import { StepTwo } from "@/components/onboarding/StepTwo";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Onboarding = () => {
   const [selectedPlan, setSelectedPlan] = useState("starter");
@@ -14,6 +15,7 @@ const Onboarding = () => {
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { setIsAuthenticated, setCurrentRole } = useAuth();
 
   const toggleAddOn = (addOnId: string) => {
     setSelectedAddOns(prev => 
@@ -34,6 +36,11 @@ const Onboarding = () => {
         setStep(2);
       } else {
         // In a real app, handle subscription creation here
+        
+        // Set authentication state
+        setIsAuthenticated(true);
+        setCurrentRole('admin'); // Default role for new signups
+        
         toast({
           title: "Your trial is ready!",
           description: `You've selected the ${plans.find(p => p.id === selectedPlan)?.name} plan with ${selectedAddOns.length} add-ons. Your free trial has started.`,
