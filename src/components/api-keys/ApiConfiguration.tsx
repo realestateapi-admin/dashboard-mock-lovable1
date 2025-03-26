@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscriptionData } from "@/hooks/useSubscriptionData";
 import { format } from "date-fns";
-import { InfoCircle } from "lucide-react";
+import { Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const ApiConfiguration = () => {
@@ -61,7 +61,7 @@ export const ApiConfiguration = () => {
       <CardContent className="space-y-6">
         <div className="p-4 bg-amber-50 border border-amber-200 rounded-md">
           <div className="flex gap-2">
-            <InfoCircle className="h-5 w-5 text-amber-600" />
+            <Info className="h-5 w-5 text-amber-600" />
             <div>
               <h4 className="font-medium text-amber-800">X-User-ID Header Required</h4>
               <p className="text-sm text-amber-700">
