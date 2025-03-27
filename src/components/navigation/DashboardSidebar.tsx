@@ -1,4 +1,5 @@
-import { Home, BarChart, Users, FileText, LifeBuoy, Settings, User } from "lucide-react";
+
+import { Home, BarChart, FileText, LifeBuoy, Settings, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -9,9 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
 import { useAuth, UserRole } from "@/contexts/AuthContext";
 
 export const DashboardSidebar = () => {
@@ -136,31 +135,6 @@ export const DashboardSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      
-      {currentRole === 'admin' && (
-        <SidebarFooter className="pt-2 pb-4">
-          <div className="px-3">
-            <Button className="w-full justify-start bg-[#5014d0] hover:bg-[#5014d0]/90" variant="default">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="mr-2 h-4 w-4"
-              >
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
-              Invite Team
-            </Button>
-          </div>
-        </SidebarFooter>
-      )}
     </Sidebar>
   );
 };
