@@ -69,11 +69,6 @@ export function UserNav() {
             Profile
           </DropdownMenuItem>
           {currentRole === 'admin' && (
-            <DropdownMenuItem onClick={() => navigate("/dashboard/settings/profile")}>
-              Profile Settings
-            </DropdownMenuItem>
-          )}
-          {currentRole === 'admin' && (
             <DropdownMenuItem onClick={() => navigate("/dashboard/settings")}>
               Settings
             </DropdownMenuItem>
