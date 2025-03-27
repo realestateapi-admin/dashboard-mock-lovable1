@@ -69,7 +69,7 @@ export const DashboardSidebar = () => {
   // New internal navigation items
   const internalNavItems = [
     {
-      title: "Implementation Notes on Demo",
+      title: "Implementation Guide",
       href: "/dashboard/implementation-notes",
       icon: BookOpen,
       allowedRoles: ['admin', 'billing', 'developer', 'viewer'],
@@ -150,7 +150,7 @@ export const DashboardSidebar = () => {
         </SidebarGroup>
         
         <SidebarGroup className="mt-6">
-          <SidebarGroupLabel>Internal</SidebarGroupLabel>
+          <SidebarGroupLabel>Demo Notes</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {filteredInternalNavItems.map((item) => (

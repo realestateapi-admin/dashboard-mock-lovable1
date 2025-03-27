@@ -10,7 +10,6 @@ const ImplementationNotes = () => {
   useEffect(() => {
     const fetchDocumentation = async () => {
       try {
-        // Fetch the HTML content directly with the corrected path
         const response = await fetch('/documentation/dashboard-api-recommendations.html');
         
         if (!response.ok) {
@@ -52,7 +51,7 @@ const ImplementationNotes = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Implementation Notes on Demo</h1>
+      <h1 className="text-3xl font-bold mb-6">Implementation Guide</h1>
       <Card className="p-0 overflow-hidden">
         <div 
           dangerouslySetInnerHTML={{ __html: content }} 
