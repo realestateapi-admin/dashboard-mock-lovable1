@@ -53,11 +53,9 @@ const ImplementationNotes = () => {
     <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Implementation Notes on Demo</h1>
       <Card className="p-0 overflow-hidden">
-        <iframe
-          srcDoc={content}
-          title="Implementation Notes"
-          className="w-full min-h-[80vh] border-0"
-          sandbox="allow-same-origin"
+        <div 
+          dangerouslySetInnerHTML={{ __html: content }} 
+          className="p-6"
         />
       </Card>
     </div>
