@@ -1,5 +1,5 @@
 
-import { Home, BarChart, FileText, LifeBuoy, Settings, User, BookOpen, FileCode } from "lucide-react";
+import { Home, BarChart, FileText, LifeBuoy, Settings, User, BookOpen } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
