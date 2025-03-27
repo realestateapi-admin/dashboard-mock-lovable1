@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 export const ApiDocumentationLink = () => {
-  // Function to generate and download PDF
+  // Function to handle downloading the documentation
   const downloadPdf = () => {
     // Create a link element
     const link = document.createElement('a');
@@ -22,6 +22,9 @@ export const ApiDocumentationLink = () => {
     document.body.removeChild(link);
   };
 
+  // The browser path should be absolute from the root
+  const documentationPath = "/documentation/dashboard-api-recommendations.html";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,10 +34,10 @@ export const ApiDocumentationLink = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem asChild>
-          <Link to="/documentation/dashboard-api-recommendations.html" target="_blank">
+        <DropdownMenuItem>
+          <a href={documentationPath} target="_blank" rel="noopener noreferrer" className="flex w-full items-center">
             View in Browser
-          </Link>
+          </a>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={downloadPdf}>
           <Download className="h-4 w-4 mr-2" />
