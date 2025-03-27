@@ -1,5 +1,5 @@
 
-import { Home, BarChart, FileText, LifeBuoy, Settings, User } from "lucide-react";
+import { Home, BarChart, FileText, LifeBuoy, Settings, User, BookOpen } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -63,6 +63,12 @@ export const DashboardSidebar = () => {
       href: "/dashboard/settings",
       icon: Settings,
       allowedRoles: ['admin'],
+    },
+    {
+      title: "Implementation Notes on Demo",
+      href: "/dashboard/implementation-notes",
+      icon: BookOpen,
+      allowedRoles: ['admin', 'billing', 'developer', 'viewer'],
     },
   ];
 

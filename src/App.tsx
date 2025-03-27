@@ -23,6 +23,7 @@ import ProfileSettings from "./components/settings/ProfileSettings";
 import { TrialAlertProvider } from "./contexts/TrialAlertContext";
 import { AuthProvider, ProtectedRoute } from "./contexts/AuthContext";
 import AccessDenied from "./pages/AccessDenied";
+import ImplementationNotes from "./pages/ImplementationNotes";
 
 // Initialize the query client for data fetching
 const queryClient = new QueryClient();
@@ -82,6 +83,9 @@ const App = () => (
                 
                 {/* Profile - accessible to all roles */}
                 <Route path="profile" element={<Profile />} />
+                
+                {/* Implementation Notes - accessible to all roles */}
+                <Route path="implementation-notes" element={<ImplementationNotes />} />
                 
                 {/* Settings - accessible to admins only */}
                 <Route path="settings" element={
