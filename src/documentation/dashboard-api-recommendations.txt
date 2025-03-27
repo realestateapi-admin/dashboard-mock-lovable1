@@ -140,7 +140,7 @@ Based on your mocked dashboard UI, here's a document outlining the specific API 
 ## 6. Subscription Data
 
 ### API: `/api/subscription`
-**MongoDB Collection**: `subscriptions`
+**MongoDB Collection**: `account_plans`
 **Purpose**: Fetch current subscription details
 
 **Response Structure**:
@@ -197,8 +197,8 @@ Based on your mocked dashboard UI, here's a document outlining the specific API 
 
 Based on your current data model and UI requirements, I recommend the following MongoDB collections:
 
-1. **subscriptions**: Already exists, stores plan and billing information
-2. **usage_reports**: Already exists, stores aggregate usage by billing period
+1. **account_plans**: Stores plan and billing information
+2. **usage_reports**: Stores aggregate usage by billing period
 3. **activity_logs** (new): Detailed logs of every API request
    ```
    {
@@ -227,6 +227,9 @@ Based on your current data model and UI requirements, I recommend the following 
      last_updated: Date
    }
    ```
+
+5. **account_balance**: Stores customer balance information
+6. **accounts**: Main account information collection
 
 ## Implementation Strategy
 

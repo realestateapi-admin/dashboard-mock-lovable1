@@ -217,7 +217,7 @@
   <div class="section">
     <h2>6. Subscription Data</h2>
     <h3>API: <span class="api-endpoint">/api/subscription</span></h3>
-    <p><strong>MongoDB Collection</strong>: <span class="collection-name">subscriptions</span></p>
+    <p><strong>MongoDB Collection</strong>: <span class="collection-name">account_plans</span></p>
     <p><strong>Purpose</strong>: Fetch current subscription details</p>
 
     <p><strong>Response Structure</strong>:</p>
@@ -281,8 +281,8 @@
     <p>Based on your current data model and UI requirements, I recommend the following MongoDB collections:</p>
 
     <ol>
-      <li><strong>subscriptions</strong>: Already exists, stores plan and billing information</li>
-      <li><strong>usage_reports</strong>: Already exists, stores aggregate usage by billing period</li>
+      <li><strong>account_plans</strong>: Stores plan and billing information</li>
+      <li><strong>usage_reports</strong>: Stores aggregate usage by billing period</li>
       <li><strong>activity_logs</strong> (new): Detailed logs of every API request
         <pre><code>
 {
@@ -312,6 +312,8 @@
 }
         </code></pre>
       </li>
+      <li><strong>account_balance</strong>: Stores customer balance information</li>
+      <li><strong>accounts</strong>: Main account information collection</li>
     </ol>
   </div>
 

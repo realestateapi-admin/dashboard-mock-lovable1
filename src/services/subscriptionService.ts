@@ -24,6 +24,6 @@ export const fetchSubscription = async (accountId?: number): Promise<Subscriptio
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 500));
   
-  // In a real app, we would fetch from an API using the accountId
+  // In a real app, we would fetch from the account_plans collection using the accountId
   return mockSubscription;
 };
