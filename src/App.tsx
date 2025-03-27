@@ -17,8 +17,9 @@ import ApiKeys from "./pages/ApiKeys";
 import Billing from "./pages/Billing";
 import Support from "./pages/Support";
 import Settings from "./pages/Settings";
-import Profile from "./pages/Profile"; // Add import for the new Profile page
+import Profile from "./pages/Profile";
 import SettingsPage from "./components/settings/SettingsPage";
+import ProfileSettings from "./components/settings/ProfileSettings";
 import { TrialAlertProvider } from "./contexts/TrialAlertContext";
 import { AuthProvider, ProtectedRoute } from "./contexts/AuthContext";
 import AccessDenied from "./pages/AccessDenied";
@@ -89,6 +90,7 @@ const App = () => (
                   </ProtectedRoute>
                 }>
                   <Route index element={<SettingsPage />} />
+                  <Route path="profile" element={<ProfileSettings />} />
                 </Route>
               </Route>
               

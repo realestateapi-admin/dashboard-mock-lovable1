@@ -68,9 +68,16 @@ export function UserNav() {
           <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/dashboard/settings")}>
-            Settings
-          </DropdownMenuItem>
+          {currentRole === 'admin' && (
+            <DropdownMenuItem onClick={() => navigate("/dashboard/settings/profile")}>
+              Profile Settings
+            </DropdownMenuItem>
+          )}
+          {currentRole === 'admin' && (
+            <DropdownMenuItem onClick={() => navigate("/dashboard/settings")}>
+              Settings
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
