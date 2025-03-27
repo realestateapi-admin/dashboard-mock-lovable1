@@ -1,5 +1,5 @@
 
-import { Home, BarChart, FileText, LifeBuoy, Settings, User, BookOpen } from "lucide-react";
+import { Home, BarChart, FileText, LifeBuoy, Settings, User, BookOpen, FileCode } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -64,6 +64,10 @@ export const DashboardSidebar = () => {
       icon: Settings,
       allowedRoles: ['admin'],
     },
+  ];
+  
+  // New internal navigation items
+  const internalNavItems = [
     {
       title: "Implementation Notes on Demo",
       href: "/dashboard/implementation-notes",
@@ -78,6 +82,10 @@ export const DashboardSidebar = () => {
   );
 
   const filteredSecondaryNavItems = secondaryNavItems.filter(item => 
+    item.allowedRoles.includes(currentRole as UserRole)
+  );
+  
+  const filteredInternalNavItems = internalNavItems.filter(item => 
     item.allowedRoles.includes(currentRole as UserRole)
   );
 
@@ -123,6 +131,29 @@ export const DashboardSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               {filteredSecondaryNavItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink 
+                      to={item.href}
+                      className={({ isActive }) => 
+                        isActive ? "text-[#5014d0] font-medium" : "text-foreground/70 hover:text-foreground"
+                      }
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.title}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        
+        <SidebarGroup className="mt-6">
+          <SidebarGroupLabel>Internal</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {filteredInternalNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink 

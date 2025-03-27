@@ -10,7 +10,7 @@ const ImplementationNotes = () => {
   useEffect(() => {
     const fetchDocumentation = async () => {
       try {
-        // Fetch the HTML content
+        // Fetch the HTML content directly with the corrected path
         const response = await fetch('/documentation/dashboard-api-recommendations.html');
         
         if (!response.ok) {
@@ -18,6 +18,7 @@ const ImplementationNotes = () => {
         }
         
         const htmlContent = await response.text();
+        console.log("Content length:", htmlContent.length);
         setContent(htmlContent);
         setLoading(false);
       } catch (err) {
