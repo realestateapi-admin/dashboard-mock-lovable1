@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -89,7 +90,7 @@ const Billing = () => {
     // Calculate add-on costs - only include subscription add-ons (not metered)
     let addOnTotal = 0;
     activeAddOns.forEach(addOnId => {
-      const addon = addOns.find(a => a.id === addonId);
+      const addon = addOns.find(a => a.id === addOnId);
       if (!addon) return;
       
       const priceStr = addon.prices[selectedPlan as keyof typeof addon.prices];
