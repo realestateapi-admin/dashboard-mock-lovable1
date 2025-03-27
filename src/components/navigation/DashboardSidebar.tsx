@@ -1,4 +1,3 @@
-
 import { Home, BarChart, FileText, LifeBuoy, Settings, User, BookOpen } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
@@ -66,8 +65,8 @@ export const DashboardSidebar = () => {
     },
   ];
   
-  // New internal navigation items
-  const internalNavItems = [
+  // Demo notes navigation items
+  const demoNavItems = [
     {
       title: "Implementation Guide",
       href: "/dashboard/implementation-notes",
@@ -85,7 +84,7 @@ export const DashboardSidebar = () => {
     item.allowedRoles.includes(currentRole as UserRole)
   );
   
-  const filteredInternalNavItems = internalNavItems.filter(item => 
+  const filteredDemoNavItems = demoNavItems.filter(item => 
     item.allowedRoles.includes(currentRole as UserRole)
   );
 
@@ -153,7 +152,7 @@ export const DashboardSidebar = () => {
           <SidebarGroupLabel>Demo Notes</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {filteredInternalNavItems.map((item) => (
+              {filteredDemoNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink 

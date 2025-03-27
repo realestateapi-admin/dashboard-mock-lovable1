@@ -107,7 +107,7 @@ export const ApiAccessSection = ({ isTrialActive, isLoading = false }: ApiAccess
             <div className="space-y-2">
               <Label className="text-sm font-medium">Documentation</Label>
               <Button variant="outline" className="w-full justify-start text-sm group" asChild>
-                <a href="#" target="_blank" rel="noopener noreferrer">
+                <a href="https://developer.realestateapi.com/reference/welcome-to-realestateapi" target="_blank" rel="noopener noreferrer">
                   <Code className="h-4 w-4 mr-2 transition-transform group-hover:scale-110" />
                   View API Documentation
                   <ExternalLink className="h-4 w-4 ml-auto" />
