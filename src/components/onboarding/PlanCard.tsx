@@ -1,9 +1,10 @@
 
-import { Check } from "lucide-react";
+import { Check, Phone } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { PlanData } from "@/types/billing";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface PlanCardProps {
   plan: PlanData;
@@ -48,12 +49,23 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
               </div>
             </div>
             
-            <div className="flex gap-1 items-baseline mb-4">
-              <span className="text-3xl font-bold">{plan.price}</span>
-              <span className="text-sm text-muted-foreground">
-                per month
-              </span>
-            </div>
+            {plan.id === "enterprise" ? (
+              <div className="mb-6 text-center">
+                <Button variant="outline" size="sm" className="w-full mt-2 border-primary text-primary">
+                  <Phone className="h-4 w-4 mr-1" /> Contact Sales
+                </Button>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Custom pricing for your enterprise needs
+                </p>
+              </div>
+            ) : (
+              <div className="flex gap-1 items-baseline mb-4">
+                <span className="text-3xl font-bold">{plan.price}</span>
+                <span className="text-sm text-muted-foreground">
+                  per month
+                </span>
+              </div>
+            )}
             
             <div className="mb-4 py-2 px-3 bg-muted/50 rounded-md flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Records:</span>

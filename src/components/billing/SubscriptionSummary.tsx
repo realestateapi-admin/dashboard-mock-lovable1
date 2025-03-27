@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
 import { formatDistanceToNow } from "date-fns";
-import { Loader2 } from "lucide-react";
+import { Loader2, Phone } from "lucide-react";
 
 interface SubscriptionSummaryProps {
   selectedPlan: string;
@@ -45,6 +45,7 @@ export const SubscriptionSummary = ({
 
   // Get current selected plan
   const currentPlan = plans.find(p => p.id === selectedPlan);
+  const isEnterprisePlan = selectedPlan === "enterprise";
 
   return (
     <Card>
@@ -78,6 +79,23 @@ export const SubscriptionSummary = ({
               <span>{getRemainingTime(subscription.contract_end_date)}</span>
             </div>
           </>
+        ) : isEnterprisePlan ? (
+          <>
+            <div className="flex justify-between items-baseline">
+              <span className="text-sm font-medium">Base Plan</span>
+              <span className="font-medium">{currentPlan?.name}</span>
+            </div>
+            <div className="flex justify-between items-baseline">
+              <span className="text-sm">Records</span>
+              <span>{currentPlan?.records}/month</span>
+            </div>
+            <div className="my-4 p-3 bg-primary/10 rounded-md text-center">
+              <p className="text-sm text-primary font-medium mb-2">Custom Enterprise Plan</p>
+              <Button variant="outline" size="sm" className="w-full border-primary text-primary">
+                <Phone className="h-4 w-4 mr-1" /> Contact Sales
+              </Button>
+            </div>
+          </>
         ) : (
           <>
             <div className="flex justify-between items-baseline">
@@ -95,7 +113,7 @@ export const SubscriptionSummary = ({
           </>
         )}
         
-        {activeAddOns.length > 0 && (
+        {activeAddOns.length > 0 && !isEnterprisePlan && (
           <>
             <div className="h-px bg-border my-2"></div>
             <div className="font-medium">Active Add-ons:</div>
@@ -119,15 +137,19 @@ export const SubscriptionSummary = ({
           </>
         )}
         
-        <div className="h-px bg-border my-2"></div>
-        <div className="flex justify-between items-baseline text-primary font-medium">
-          <span>Estimated Monthly Total</span>
-          <span>
-            {subscription && !currentPlan
-              ? formatCurrency(subscription.minimum_bill_amount)
-              : costs.total}/month
-          </span>
-        </div>
+        {!isEnterprisePlan && (
+          <>
+            <div className="h-px bg-border my-2"></div>
+            <div className="flex justify-between items-baseline text-primary font-medium">
+              <span>Estimated Monthly Total</span>
+              <span>
+                {subscription && !currentPlan
+                  ? formatCurrency(subscription.minimum_bill_amount)
+                  : costs.total}/month
+              </span>
+            </div>
+          </>
+        )}
         
         <div className="mt-4">
           <Button variant="outline" className="w-full" onClick={onSubmit}>
@@ -138,4 +160,3 @@ export const SubscriptionSummary = ({
     </Card>
   );
 };
-

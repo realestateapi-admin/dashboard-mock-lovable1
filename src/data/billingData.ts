@@ -87,9 +87,9 @@ export const plans: PlanData[] = [
   {
     id: "enterprise",
     name: "Enterprise",
-    price: "$10,000",
+    price: "Custom",
     description: "For large organizations with complex needs",
-    records: "5,000,000",
+    records: "5,000,000+",
     features: [
       "Auto-Complete (unlimited)",
       "Property Search",
@@ -101,7 +101,10 @@ export const plans: PlanData[] = [
       "Address Verification",
       "Address Verification Bulk",
       "Mapping pins (unlimited)",
-      "Saved Search"
+      "Saved Search",
+      "Custom API quotas",
+      "Dedicated support team",
+      "SLA guarantees"
     ],
   },
 ];

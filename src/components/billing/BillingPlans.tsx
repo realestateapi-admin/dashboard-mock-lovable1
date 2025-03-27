@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Phone } from "lucide-react";
 import { PlanData, AddOnData } from "@/types/billing";
 import { useToast } from "@/hooks/use-toast";
 
@@ -52,52 +52,103 @@ export const BillingPlans = ({
                   Popular
                 </div>
               )}
-              <div
-                className={`p-4 border rounded-lg transition-all hover:border-primary cursor-pointer h-full flex flex-col ${
-                  selectedPlan === plan.id
-                    ? "ring-2 ring-primary ring-offset-2 border-primary"
-                    : "border-border"
-                }`}
-                onClick={() => onPlanChange(plan.id)}
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="font-medium">{plan.name}</h3>
-                    <p className="text-xs text-muted-foreground">
-                      {plan.description}
+              {plan.id === "enterprise" ? (
+                <div
+                  className={`p-4 border rounded-lg transition-all hover:border-primary cursor-pointer h-full flex flex-col ${
+                    selectedPlan === plan.id
+                      ? "ring-2 ring-primary ring-offset-2 border-primary"
+                      : "border-border"
+                  }`}
+                  onClick={() => onPlanChange(plan.id)}
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="font-medium">{plan.name}</h3>
+                      <p className="text-xs text-muted-foreground">
+                        {plan.description}
+                      </p>
+                    </div>
+                    <div className={selectedPlan === plan.id ? "text-primary" : "text-muted-foreground"}>
+                      <CheckCircle className={`h-5 w-5 ${selectedPlan === plan.id ? "opacity-100" : "opacity-0"}`} />
+                    </div>
+                  </div>
+                  <div className="mb-6 text-center">
+                    <Button variant="outline" size="sm" className="w-full mt-2 border-primary text-primary">
+                      <Phone className="h-4 w-4 mr-1" /> Contact Sales
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Custom pricing for your enterprise needs
                     </p>
                   </div>
-                  <div className={selectedPlan === plan.id ? "text-primary" : "text-muted-foreground"}>
-                    <CheckCircle className={`h-5 w-5 ${selectedPlan === plan.id ? "opacity-100" : "opacity-0"}`} />
+                  <div className="mb-4 flex items-center gap-2">
+                    <span className="text-xs font-medium">Records:</span>
+                    <span className="text-xs">{plan.records}/mo</span>
+                  </div>
+                  <div className="mt-auto">
+                    <span className="text-xs font-medium block mb-2">Features:</span>
+                    <ul className="text-xs space-y-1">
+                      {plan.features.slice(0, 3).map((feature, i) => (
+                        <li key={i} className="flex items-center gap-1">
+                          <CheckCircle className="h-3 w-3 text-primary/70" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                      {plan.features.length > 3 && (
+                        <li className="text-xs text-muted-foreground">
+                          +{plan.features.length - 3} more features
+                        </li>
+                      )}
+                    </ul>
                   </div>
                 </div>
-                <div className="flex gap-1 items-baseline mb-4">
-                  <span className="text-xl font-semibold">{plan.price}</span>
-                  <span className="text-xs text-muted-foreground">
-                    /month
-                  </span>
+              ) : (
+                <div
+                  className={`p-4 border rounded-lg transition-all hover:border-primary cursor-pointer h-full flex flex-col ${
+                    selectedPlan === plan.id
+                      ? "ring-2 ring-primary ring-offset-2 border-primary"
+                      : "border-border"
+                  }`}
+                  onClick={() => onPlanChange(plan.id)}
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="font-medium">{plan.name}</h3>
+                      <p className="text-xs text-muted-foreground">
+                        {plan.description}
+                      </p>
+                    </div>
+                    <div className={selectedPlan === plan.id ? "text-primary" : "text-muted-foreground"}>
+                      <CheckCircle className={`h-5 w-5 ${selectedPlan === plan.id ? "opacity-100" : "opacity-0"}`} />
+                    </div>
+                  </div>
+                  <div className="flex gap-1 items-baseline mb-4">
+                    <span className="text-xl font-semibold">{plan.price}</span>
+                    <span className="text-xs text-muted-foreground">
+                      /month
+                    </span>
+                  </div>
+                  <div className="mb-4 flex items-center gap-2">
+                    <span className="text-xs font-medium">Records:</span>
+                    <span className="text-xs">{plan.records}/mo</span>
+                  </div>
+                  <div className="mt-auto">
+                    <span className="text-xs font-medium block mb-2">Features:</span>
+                    <ul className="text-xs space-y-1">
+                      {plan.features.slice(0, 3).map((feature, i) => (
+                        <li key={i} className="flex items-center gap-1">
+                          <CheckCircle className="h-3 w-3 text-primary/70" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                      {plan.features.length > 3 && (
+                        <li className="text-xs text-muted-foreground">
+                          +{plan.features.length - 3} more features
+                        </li>
+                      )}
+                    </ul>
+                  </div>
                 </div>
-                <div className="mb-4 flex items-center gap-2">
-                  <span className="text-xs font-medium">Records:</span>
-                  <span className="text-xs">{plan.records}/mo</span>
-                </div>
-                <div className="mt-auto">
-                  <span className="text-xs font-medium block mb-2">Features:</span>
-                  <ul className="text-xs space-y-1">
-                    {plan.features.slice(0, 3).map((feature, i) => (
-                      <li key={i} className="flex items-center gap-1">
-                        <CheckCircle className="h-3 w-3 text-primary/70" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                    {plan.features.length > 3 && (
-                      <li className="text-xs text-muted-foreground">
-                        +{plan.features.length - 3} more features
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </div>
+              )}
             </div>
           ))}
         </div>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -75,12 +74,21 @@ const Billing = () => {
     const basePlan = plans.find(p => p.id === selectedPlan);
     if (!basePlan) return { basePrice: "$0", totalAddOns: "$0", total: "$0" };
     
+    // For Enterprise plan, we don't show pricing
+    if (selectedPlan === "enterprise") {
+      return {
+        basePrice: "Custom",
+        totalAddOns: "Custom",
+        total: "Custom pricing"
+      };
+    }
+    
     // Extract numeric price from base plan (removing $ and ,)
     const basePrice = parseInt(basePlan.price.replace(/\$|,/g, ""));
     
     // Calculate add-on costs - only include subscription add-ons (not metered)
     let addOnTotal = 0;
-    activeAddOns.forEach(addonId => {
+    activeAddOns.forEach(addOnId => {
       const addon = addOns.find(a => a.id === addonId);
       if (!addon) return;
       
