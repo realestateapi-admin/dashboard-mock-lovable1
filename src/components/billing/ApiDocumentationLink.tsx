@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { FileText, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -22,8 +21,8 @@ export const ApiDocumentationLink = () => {
     document.body.removeChild(link);
   };
 
-  // The browser path should be absolute from the root
-  const documentationPath = "/documentation/dashboard-api-recommendations.html";
+  // Serve documentation from public folder instead of a route that could be protected
+  const documentationPath = process.env.PUBLIC_URL + "/documentation/dashboard-api-recommendations.html";
 
   return (
     <DropdownMenu>
@@ -35,7 +34,17 @@ export const ApiDocumentationLink = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <a href={documentationPath} target="_blank" rel="noopener noreferrer" className="flex w-full items-center">
+          <a 
+            href={documentationPath} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="flex w-full items-center"
+            onClick={(e) => {
+              e.preventDefault();
+              // Open the file directly using the window.open method
+              window.open(documentationPath, '_blank');
+            }}
+          >
             View in Browser
           </a>
         </DropdownMenuItem>

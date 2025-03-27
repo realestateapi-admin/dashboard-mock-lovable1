@@ -6,7 +6,12 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to sign-in page
+    // Check if the URL includes documentation path and avoid redirect in that case
+    if (window.location.pathname.includes('/documentation/')) {
+      return; // Don't redirect if accessing documentation
+    }
+    
+    // Redirect to sign-in page for other routes
     navigate("/sign-in");
   }, [navigate]);
 
