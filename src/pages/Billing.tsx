@@ -178,6 +178,7 @@ const Billing = () => {
                 costs={costs}
                 subscription={subscription}
                 isLoading={isLoadingSubscription}
+                onSubmit={handleSaveBillingPreferences}
               />
             </div>
           </div>

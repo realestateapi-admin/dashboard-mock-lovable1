@@ -17,6 +17,7 @@ interface SubscriptionSummaryProps {
   };
   subscription?: SubscriptionData | null;
   isLoading?: boolean;
+  onSubmit?: () => void;
 }
 
 export const SubscriptionSummary = ({
@@ -27,6 +28,7 @@ export const SubscriptionSummary = ({
   costs,
   subscription,
   isLoading = false,
+  onSubmit
 }: SubscriptionSummaryProps) => {
   const formatCurrency = (amount: number) => {
     return `$${amount.toLocaleString()}`;
@@ -41,6 +43,9 @@ export const SubscriptionSummary = ({
     }
   };
 
+  // Get current selected plan
+  const currentPlan = plans.find(p => p.id === selectedPlan);
+
   return (
     <Card>
       <CardHeader>
@@ -54,7 +59,7 @@ export const SubscriptionSummary = ({
           <div className="flex justify-center items-center py-6">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
           </div>
-        ) : subscription ? (
+        ) : subscription && !currentPlan ? (
           <>
             <div className="flex justify-between items-baseline">
               <span className="text-sm font-medium">Base Plan</span>
@@ -77,7 +82,7 @@ export const SubscriptionSummary = ({
           <>
             <div className="flex justify-between items-baseline">
               <span className="text-sm font-medium">Base Plan</span>
-              <span className="font-medium">{plans.find(p => p.id === selectedPlan)?.name}</span>
+              <span className="font-medium">{currentPlan?.name}</span>
             </div>
             <div className="flex justify-between items-baseline">
               <span className="text-sm">Base Price</span>
@@ -85,7 +90,7 @@ export const SubscriptionSummary = ({
             </div>
             <div className="flex justify-between items-baseline">
               <span className="text-sm">Records</span>
-              <span>{plans.find(p => p.id === selectedPlan)?.records}/month</span>
+              <span>{currentPlan?.records}/month</span>
             </div>
           </>
         )}
@@ -118,18 +123,19 @@ export const SubscriptionSummary = ({
         <div className="flex justify-between items-baseline text-primary font-medium">
           <span>Estimated Monthly Total</span>
           <span>
-            {subscription 
+            {subscription && !currentPlan
               ? formatCurrency(subscription.minimum_bill_amount)
               : costs.total}/month
           </span>
         </div>
         
         <div className="mt-4">
-          <Button variant="outline" className="w-full">
-            Change Billing Cycle
+          <Button variant="outline" className="w-full" onClick={onSubmit}>
+            Submit
           </Button>
         </div>
       </CardContent>
     </Card>
   );
 };
+
