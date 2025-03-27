@@ -1,4 +1,3 @@
-
 import { Home, BarChart, Users, FileText, LifeBuoy, Settings, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
@@ -37,12 +36,6 @@ export const DashboardSidebar = () => {
       href: "/dashboard/api-keys",
       icon: FileText,
       allowedRoles: ['admin', 'developer'],
-    },
-    {
-      title: "Team",
-      href: "/dashboard/team",
-      icon: Users,
-      allowedRoles: ['admin'],
     },
     {
       title: "Billing",
