@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth, UserRole } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function UserNav() {
   const { currentRole, logout } = useAuth();
@@ -65,8 +65,12 @@ export function UserNav() {
         <DropdownMenuSeparator />
         
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>Profile</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/dashboard/settings")}>Settings</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>
+            Profile
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/dashboard/settings")}>
+            Settings
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
