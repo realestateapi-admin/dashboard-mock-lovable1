@@ -1,17 +1,12 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreditCard, CreditCardIcon, Wallet } from "lucide-react";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 // Import components
-import { BillingPlans } from "@/components/billing/BillingPlans";
-import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
-import { PaymentMethods } from "@/components/billing/PaymentMethods";
-import { InvoiceHistory } from "@/components/billing/InvoiceHistory";
 import { TrialAlert } from "@/components/billing/TrialAlert";
+import { BillingTabs } from "@/components/billing/BillingTabs";
 
 // Import data
 import { plans, addOns, invoices } from "@/data/billingData";
@@ -19,11 +14,9 @@ import { plans, addOns, invoices } from "@/data/billingData";
 // Import hooks
 import { useUsageData } from "@/hooks/useUsageData";
 import { useSubscriptionData } from "@/hooks/useSubscriptionData";
+import { useSubscriptionCalculator } from "@/hooks/useSubscriptionCalculator";
 
 const Billing = () => {
-  const [selectedPlan, setSelectedPlan] = useState("growth");
-  const [overageHandling, setOverageHandling] = useState("stop");
-  const [activeAddOns, setActiveAddOns] = useState<string[]>(["premium-avm"]);
   const { toast } = useToast();
   const { isTrialActive, trialDaysLeft, requestTrialExtension } = useTrialAlert();
   
@@ -40,6 +33,19 @@ const Billing = () => {
     isLoading: isLoadingSubscription
   } = useSubscriptionData();
 
+  // Use the subscription calculator hook
+  const {
+    selectedPlan,
+    setSelectedPlan,
+    overageHandling,
+    setOverageHandling,
+    activeAddOns,
+    toggleAddOn,
+    calculateMonthlyCost
+  } = useSubscriptionCalculator(plans, addOns, subscription);
+
+  const costs = calculateMonthlyCost();
+
   const handleSaveBillingPreferences = () => {
     toast({
       title: "Billing preferences updated",
@@ -55,82 +61,12 @@ const Billing = () => {
     });
   };
 
-  const toggleAddOn = (addOnId: string) => {
-    setActiveAddOns(prev => 
-      prev.includes(addOnId) 
-        ? prev.filter(id => id !== addOnId)
-        : [...prev, addOnId]
-    );
-  };
-
   const handleDownloadInvoice = (invoiceId: string) => {
     toast({
       title: "Invoice download started",
       description: `Invoice ${invoiceId} is being downloaded.`,
     });
   };
-
-  // Calculate estimated monthly cost for UI purposes when no subscription is available
-  const calculateMonthlyCost = () => {
-    const basePlan = plans.find(p => p.id === selectedPlan);
-    if (!basePlan) return { basePrice: "$0", totalAddOns: "$0", total: "$0" };
-    
-    // For Enterprise plan, we don't show pricing
-    if (selectedPlan === "enterprise") {
-      return {
-        basePrice: "Custom",
-        totalAddOns: "Custom",
-        total: "Custom pricing"
-      };
-    }
-    
-    // Extract numeric price from base plan (removing $ and ,)
-    const basePrice = parseInt(basePlan.price.replace(/\$|,/g, ""));
-    
-    // Calculate add-on costs - only include subscription add-ons (not metered)
-    let addOnTotal = 0;
-    activeAddOns.forEach(addOnId => {
-      const addon = addOns.find(a => a.id === addOnId);
-      if (!addon) return;
-      
-      const priceStr = addon.prices[selectedPlan as keyof typeof addon.prices];
-      if (priceStr === "Included") return;
-      
-      // Only include subscription add-ons and parse their price
-      if (addon.billingType === 'subscription') {
-        // Handle both formats: "$X/month" or just "$X"
-        const numericPrice = parseInt(priceStr.replace(/\$|,|\/month/g, ""));
-        if (!isNaN(numericPrice)) {
-          addOnTotal += numericPrice;
-        }
-      }
-    });
-    
-    // Calculate total (base + add-ons)
-    const total = basePrice + addOnTotal;
-    
-    return {
-      basePrice: `$${basePrice.toLocaleString()}`,
-      totalAddOns: `$${addOnTotal.toLocaleString()}`,
-      total: `$${total.toLocaleString()}`
-    };
-  };
-
-  const costs = calculateMonthlyCost();
-
-  // If we have a subscription, set the selected plan to match
-  useEffect(() => {
-    if (subscription) {
-      // Find the plan that matches the subscription plan_name
-      const planId = plans.find(p => 
-        p.name.toLowerCase() === subscription.plan_name.toLowerCase()
-      )?.id;
-      
-      if (planId) {
-        setSelectedPlan(planId);
-      }
-    }
-  }, [subscription]);
 
   return (
     <motion.div 
@@ -149,61 +85,22 @@ const Billing = () => {
         requestTrialExtension={requestTrialExtension} 
       />
       
-      <Tabs defaultValue="subscription" className="w-full">
-        <TabsList className="mb-4">
-          <TabsTrigger value="subscription" className="flex items-center gap-2">
-            <Wallet className="h-4 w-4" /> Subscription
-          </TabsTrigger>
-          <TabsTrigger value="payment" className="flex items-center gap-2">
-            <CreditCardIcon className="h-4 w-4" /> Payment Methods
-          </TabsTrigger>
-          <TabsTrigger value="invoices" className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4" /> Invoices
-          </TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="subscription">
-          <div className="grid gap-6 md:grid-cols-3">
-            <div className="md:col-span-2">
-              <BillingPlans 
-                plans={plans}
-                addOns={addOns}
-                selectedPlan={selectedPlan}
-                activeAddOns={activeAddOns}
-                overageHandling={overageHandling}
-                onPlanChange={handlePlanChange}
-                onToggleAddOn={toggleAddOn}
-                onOverageHandlingChange={setOverageHandling}
-                onSaveBillingPreferences={handleSaveBillingPreferences}
-              />
-            </div>
-            
-            <div className="md:col-span-1">
-              <SubscriptionSummary 
-                selectedPlan={selectedPlan}
-                plans={plans}
-                activeAddOns={activeAddOns}
-                addOns={addOns}
-                costs={costs}
-                subscription={subscription}
-                isLoading={isLoadingSubscription}
-                onSubmit={handleSaveBillingPreferences}
-              />
-            </div>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="payment">
-          <PaymentMethods />
-        </TabsContent>
-        
-        <TabsContent value="invoices">
-          <InvoiceHistory 
-            invoices={invoices} 
-            onDownloadInvoice={handleDownloadInvoice} 
-          />
-        </TabsContent>
-      </Tabs>
+      <BillingTabs 
+        plans={plans}
+        addOns={addOns}
+        invoices={invoices}
+        selectedPlan={selectedPlan}
+        activeAddOns={activeAddOns}
+        overageHandling={overageHandling}
+        costs={costs}
+        subscription={subscription}
+        isLoadingSubscription={isLoadingSubscription}
+        onPlanChange={handlePlanChange}
+        onToggleAddOn={toggleAddOn}
+        onOverageHandlingChange={setOverageHandling}
+        onSaveBillingPreferences={handleSaveBillingPreferences}
+        onDownloadInvoice={handleDownloadInvoice}
+      />
     </motion.div>
   );
 };
