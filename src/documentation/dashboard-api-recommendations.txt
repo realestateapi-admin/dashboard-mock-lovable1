@@ -6,7 +6,7 @@ Based on your mocked dashboard UI, here's a document outlining the specific API 
 ## 1. Dashboard Summary Cards
 
 ### API: `/api/dashboard/summary`
-**MongoDB Collection**: `usage_reports`, `subscriptions`
+**MongoDB Collection**: `usage_reports`, `account_plans`
 **Purpose**: Fetch aggregate data for the summary cards at the top of the dashboard
 
 **Response Structure**:
@@ -25,8 +25,8 @@ Based on your mocked dashboard UI, here's a document outlining the specific API 
 
 **Implementation Notes**:
 - Aggregate usage_reports to calculate totals
-- Compare against subscription.usage_amount for percentages
-- Check subscription.trial_end_date to determine trial status
+- Compare against account_plans.usage_amount for percentages
+- Check account_plans.trial_end_date to determine trial status
 
 ## 2. Usage Analytics Charts
 

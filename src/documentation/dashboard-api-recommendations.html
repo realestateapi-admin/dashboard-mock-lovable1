@@ -68,7 +68,7 @@
   <div class="section">
     <h2>1. Dashboard Summary Cards</h2>
     <h3>API: <span class="api-endpoint">/api/dashboard/summary</span></h3>
-    <p><strong>MongoDB Collection</strong>: <span class="collection-name">usage_reports</span>, <span class="collection-name">subscriptions</span></p>
+    <p><strong>MongoDB Collection</strong>: <span class="collection-name">usage_reports</span>, <span class="collection-name">account_plans</span></p>
     <p><strong>Purpose</strong>: Fetch aggregate data for the summary cards at the top of the dashboard</p>
 
     <p><strong>Response Structure</strong>:</p>
@@ -88,8 +88,8 @@
     <p><strong>Implementation Notes</strong>:</p>
     <ul>
       <li>Aggregate usage_reports to calculate totals</li>
-      <li>Compare against subscription.usage_amount for percentages</li>
-      <li>Check subscription.trial_end_date to determine trial status</li>
+      <li>Compare against account_plans.usage_amount for percentages</li>
+      <li>Check account_plans.trial_end_date to determine trial status</li>
     </ul>
   </div>
 
