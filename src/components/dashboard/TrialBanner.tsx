@@ -29,7 +29,7 @@ export const TrialBanner = ({
       <AlertDescription className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex-1">
           <p>You have <span className="font-medium text-[#04c8c8]">{trialDaysLeft} days</span> left in your free period.</p>
-          <Progress value={(7 - trialDaysLeft) / 7 * 100} className="h-2 mt-2 bg-[#e2e8f0]" indicatorClassName="bg-[#04c8c8]" />
+          <Progress value={(14 - trialDaysLeft) / 14 * 100} className="h-2 mt-2 bg-[#e2e8f0]" indicatorClassName="bg-[#04c8c8]" />
         </div>
         <div className="flex gap-2 mt-2 sm:mt-0">
           <Button size="sm" className="bg-[#5014d0] hover:bg-[#5014d0]/90" asChild>

@@ -26,7 +26,7 @@ interface TrialAlertProviderProps {
 }
 
 export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
-  const [trialDaysLeft, setTrialDaysLeft] = useState<number>(7); // Changed from 14 to 7 days for free plan
+  const [trialDaysLeft, setTrialDaysLeft] = useState<number>(14); // Changed from 7 to 14 days for free plan
   const [trialStartDate, setTrialStartDate] = useState<Date | null>(null);
   const [isFreeUser, setIsFreeUser] = useState<boolean>(true); // Default to true for demo purposes
   const { toast } = useToast();
@@ -45,7 +45,7 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
         
         setTrialStartDate(mockStartDate);
         const daysElapsed = Math.floor((Date.now() - mockStartDate.getTime()) / (1000 * 60 * 60 * 24));
-        setTrialDaysLeft(7 - daysElapsed); // 7 days for free plan
+        setTrialDaysLeft(14 - daysElapsed); // Changed from 7 to 14 days for free plan
         
         // This would come from your backend to determine if user is on free plan
         setIsFreeUser(true); // Demo purposes - would be based on user's subscription
@@ -63,16 +63,16 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
     if (!isFreeUser) return;
     
     // Show alerts on specific days
-    if (trialDaysLeft === 4) {
+    if (trialDaysLeft === 7) { // Updated from 4 to 7 days
       toast({
         title: "Free Plan Update",
-        description: "You have 4 days left in your free plan. Explore all our features!",
+        description: "You have 7 days left in your free plan. Explore all our features!",
         duration: 6000,
       });
-    } else if (trialDaysLeft === 2) {
+    } else if (trialDaysLeft === 3) { // Updated from 2 to 3 days
       toast({
         title: "Free Plan Update",
-        description: "Only 2 days left in your free plan. Consider upgrading to continue accessing all features.",
+        description: "Only 3 days left in your free plan. Consider upgrading to continue accessing all features.",
         duration: 6000,
       });
     } else if (trialDaysLeft === 1) {
