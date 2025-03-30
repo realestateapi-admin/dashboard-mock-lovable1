@@ -24,7 +24,7 @@ export const StepOne = ({
   const isMobile = useIsMobile();
   
   return (
-    <div className="container space-y-8 w-full max-w-full">
+    <div className="container w-full">
       <div className={`${isMobile ? "overflow-x-auto pb-4" : ""}`}>
         <RadioGroup 
           value={selectedPlan} 
