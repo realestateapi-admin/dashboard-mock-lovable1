@@ -162,12 +162,6 @@ export const PlanSummary = ({
           *Plus usage-based charges for metered services
         </div>
       )}
-      
-      <div className="h-px bg-border my-2" />
-      <div className="flex justify-between items-baseline text-primary font-medium">
-        <span>First payment due</span>
-        <span>In 14 days</span>
-      </div>
     </div>
   );
 };
