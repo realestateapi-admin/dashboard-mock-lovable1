@@ -10,6 +10,7 @@ import { EndpointUsageSection } from "@/components/dashboard/EndpointUsageSectio
 import { RecordUsageBreakdown } from "@/components/dashboard/RecordUsageBreakdown";
 import { ApiAccessSection } from "@/components/dashboard/ApiAccessSection";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 interface DashboardContentProps {
   trialBanner: ReactNode;
@@ -31,7 +32,7 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
     usageDistributionData
   } = useDashboard();
 
-  const { isTrialActive, trialDaysLeft } = useTrialAlert();
+  const { isTrialActive, trialDaysLeft, isFreeUser } = useTrialAlert();
 
   return (
     <>
@@ -120,10 +121,10 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
         <ApiAccessSection 
           isTrialActive={isTrialActive}
           isLoading={isLoading}
+          isFreeUser={isFreeUser}
+          trialDaysLeft={trialDaysLeft}
         />
       </motion.div>
     </>
   );
 };
-
-import { useTrialAlert } from "@/contexts/TrialAlertContext";

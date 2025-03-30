@@ -12,9 +12,15 @@ interface ApiAccessSectionProps {
   isTrialActive: boolean;
   isLoading?: boolean;
   isFreeUser?: boolean;
+  trialDaysLeft?: number; // Add trialDaysLeft as an optional prop
 }
 
-export const ApiAccessSection = ({ isTrialActive, isLoading = false, isFreeUser = false }: ApiAccessSectionProps) => {
+export const ApiAccessSection = ({ 
+  isTrialActive, 
+  isLoading = false, 
+  isFreeUser = false,
+  trialDaysLeft = 0 // Provide default value
+}: ApiAccessSectionProps) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
 
@@ -130,7 +136,7 @@ export const ApiAccessSection = ({ isTrialActive, isLoading = false, isFreeUser 
                   <ul className="mt-1 list-disc pl-5 space-y-1">
                     <li>Limited to 5,000 records per month</li>
                     <li>Only basic endpoints available</li>
-                    <li>Expires in {isTrialActive ? trialDaysLeft : 0} days</li>
+                    <li>Expires in {trialDaysLeft} days</li>
                   </ul>
                 </div>
                 <Button variant="default" size="sm" className="w-full mt-3" asChild>
