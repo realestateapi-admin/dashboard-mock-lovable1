@@ -9,7 +9,7 @@ import { ApiKeyTabs } from "@/components/api-keys/ApiKeyTabs";
 import { ApiConfiguration } from "@/components/api-keys/ApiConfiguration";
 
 const ApiKeys = () => {
-  const { isTrialActive, trialDaysLeft } = useTrialAlert();
+  const { isTrialActive, trialDaysLeft, isOnPaidPlan } = useTrialAlert();
   const { 
     currentUsage,
     usageHistory,
@@ -17,6 +17,9 @@ const ApiKeys = () => {
     error: usageError,
     refetch: refetchUsageData
   } = useUsageData();
+
+  // Only show trial banner if trial is active AND user is not on a paid plan
+  const shouldShowTrialBanner = isTrialActive && !isOnPaidPlan;
 
   return (
     <motion.div 
@@ -29,7 +32,7 @@ const ApiKeys = () => {
         <h1 className="text-3xl font-semibold tracking-tight">API Keys</h1>
       </div>
       
-      {isTrialActive && (
+      {shouldShowTrialBanner && (
         <Alert className="bg-primary-teal/10 border-primary-teal">
           <AlertCircle className="h-4 w-4 text-primary-teal" />
           <AlertTitle className="text-primary-teal">Trial Mode Active</AlertTitle>

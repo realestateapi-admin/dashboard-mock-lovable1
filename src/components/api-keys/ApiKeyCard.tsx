@@ -60,6 +60,8 @@ export const ApiKeyCard = ({
   };
 
   const isProdKey = title.toLowerCase().includes('production');
+  // Only restrict if it's a production key AND trial is active (not on paid plan)
+  const isRestricted = isProdKey && isTrialActive;
   
   return (
     <Card>
@@ -101,14 +103,14 @@ export const ApiKeyCard = ({
             variant="outline" 
             className="flex items-center gap-2"
             onClick={() => setIsConfirmingRotation(true)}
-            disabled={isTrialActive && isProdKey || isRotating}
+            disabled={isRestricted || isRotating}
           >
             {isRotating ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
             Rotate Key
           </Button>
         </div>
         
-        {isConfirmingRotation && (!isTrialActive || !isProdKey) && (
+        {isConfirmingRotation && !isRestricted && (
           <Alert variant="destructive" className="mt-4">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Confirm Key Rotation</AlertTitle>
@@ -136,7 +138,7 @@ export const ApiKeyCard = ({
           </Alert>
         )}
         
-        {isTrialActive && isProdKey && (
+        {isRestricted && (
           <Alert className="mt-4">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Trial Restriction</AlertTitle>

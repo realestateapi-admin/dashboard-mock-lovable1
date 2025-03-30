@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Key, Shield } from "lucide-react";
 import { ApiKeyCard } from "./ApiKeyCard";
 import { ApiKeyScopes } from "@/components/dashboard/ApiKeyScopes";
+import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 interface ApiKeyTabsProps {
   isTrialActive: boolean;
@@ -16,6 +17,9 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
   const [isLoadingScopes, setIsLoadingScopes] = useState(true);
   const [testKeyScopes, setTestKeyScopes] = useState<string[]>([]);
   const [prodKeyScopes, setProdKeyScopes] = useState<string[]>([]);
+  
+  // Get isOnPaidPlan from context to determine if production keys should be restricted
+  const { isOnPaidPlan } = useTrialAlert();
 
   useEffect(() => {
     setTimeout(() => {
@@ -91,7 +95,7 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
             description="Use this key for your live applications. API calls made with this key will count towards your usage limits."
             keyValue={prodApiKey}
             icon={<Shield className="h-5 w-5 text-primary-teal" />}
-            isTrialActive={isTrialActive}
+            isTrialActive={isTrialActive && !isOnPaidPlan}
             trialDaysLeft={trialDaysLeft}
             onRotateKey={handleRotateProductionKey}
           />
