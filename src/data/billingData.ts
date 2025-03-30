@@ -43,7 +43,7 @@ export const plans: PlanData[] = [
     features: [
       "Auto-Complete (limited)",
       "Property Search (limited)",
-      "7-day access"
+      "Property Detail"
     ],
     isFree: true,
   },

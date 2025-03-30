@@ -87,7 +87,9 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
             
             <div className="mb-4 py-2 px-3 bg-muted/50 rounded-md flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Records:</span>
-              <span className="text-sm font-semibold">{plan.records} per month</span>
+              <span className="text-sm font-semibold">
+                {plan.isFree ? "5,000" : `${plan.records} per month`}
+              </span>
             </div>
             
             <div className="mt-4">
@@ -116,4 +118,3 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
     </div>
   );
 };
-
