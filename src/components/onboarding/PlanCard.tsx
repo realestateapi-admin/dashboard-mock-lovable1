@@ -13,19 +13,19 @@ interface PlanCardProps {
 
 export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
   return (
-    <div className="relative">
+    <div className="relative h-full">
       {plan.popular && (
-        <div className="absolute -top-3 right-4 bg-primary text-primary-foreground text-xs font-medium px-4 py-1 rounded-full z-10">
+        <div className="absolute -top-3 left-0 right-0 mx-auto w-max bg-primary text-primary-foreground text-xs font-medium px-4 py-1 rounded-full z-10">
           Most Popular
         </div>
       )}
       {plan.isFree && (
-        <div className="absolute -top-3 right-4 bg-amber-500 text-white text-xs font-medium px-4 py-1 rounded-full z-10">
+        <div className="absolute -top-3 left-0 right-0 mx-auto w-max bg-amber-500 text-white text-xs font-medium px-4 py-1 rounded-full z-10">
           Temporary
         </div>
       )}
       <Card 
-        className={`transition-all border-2 ${
+        className={`h-full transition-all border-2 ${
           isSelected 
             ? "border-primary ring-2 ring-primary ring-offset-2" 
             : "border-transparent hover:border-primary/50"
@@ -33,7 +33,7 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
       >
         <Label
           htmlFor={plan.id}
-          className="flex cursor-pointer p-6 rounded-lg"
+          className="flex flex-col h-full cursor-pointer p-4"
         >
           <RadioGroupItem
             value={plan.id}
@@ -41,11 +41,11 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
             className="sr-only"
           />
           
-          <div className="w-full">
+          <div className="flex flex-col h-full">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="text-xl font-bold">{plan.name}</h3>
-                <p className="text-sm text-muted-foreground mt-1">
+                <h3 className="text-lg font-bold">{plan.name}</h3>
+                <p className="text-xs text-muted-foreground mt-1">
                   {plan.description}
                 </p>
               </div>
@@ -55,19 +55,19 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
             </div>
             
             {plan.id === "enterprise" ? (
-              <div className="mb-6 text-center">
+              <div className="mb-4 text-center">
                 <Button variant="outline" size="sm" className="w-full mt-2 border-primary text-primary">
-                  <Phone className="h-4 w-4 mr-1" /> Contact Sales
+                  <Phone className="h-3 w-3 mr-1" /> Contact Sales
                 </Button>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Custom pricing for your enterprise needs
+                <p className="text-xs text-muted-foreground mt-2">
+                  Custom pricing for enterprise
                 </p>
               </div>
             ) : plan.isFree ? (
               <div className="flex gap-1 items-baseline mb-4">
-                <span className="text-3xl font-bold">{plan.price}</span>
+                <span className="text-2xl font-bold">{plan.price}</span>
                 <div className="flex flex-col">
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs text-muted-foreground">
                     Limited access
                   </span>
                   <div className="flex items-center text-amber-500 text-xs">
@@ -78,37 +78,39 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
               </div>
             ) : (
               <div className="flex gap-1 items-baseline mb-4">
-                <span className="text-3xl font-bold">{plan.price}</span>
-                <span className="text-sm text-muted-foreground">
+                <span className="text-2xl font-bold">{plan.price}</span>
+                <span className="text-xs text-muted-foreground">
                   per month
                 </span>
               </div>
             )}
             
-            <div className="mb-4 py-2 px-3 bg-muted/50 rounded-md flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Records:</span>
-              <span className="text-sm font-semibold">
-                {plan.isFree ? "5,000" : `${plan.records} per month`}
+            <div className="mb-3 py-1 px-2 bg-muted/50 rounded-md flex items-center gap-1">
+              <span className="text-xs text-muted-foreground">Records:</span>
+              <span className="text-xs font-semibold">
+                {plan.isFree ? "5,000" : `${plan.records}`}
               </span>
             </div>
             
-            <div className="mt-4">
-              <div className="font-medium text-sm mb-2">Included Endpoints:</div>
-              <ul className="text-sm space-y-2">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>{feature}</span>
+            <div className="mt-2 flex-grow">
+              <div className="text-xs font-medium mb-1">Included:</div>
+              <ul className="text-xs space-y-1.5">
+                {plan.features.slice(0, 5).map((feature, i) => (
+                  <li key={i} className="flex items-start gap-1.5">
+                    <Check className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="leading-tight">{feature}</span>
                   </li>
                 ))}
+                {plan.features.length > 5 && (
+                  <li className="text-xs text-muted-foreground">+{plan.features.length - 5} more</li>
+                )}
               </ul>
             </div>
             
             {plan.isFree && (
-              <div className="mt-6 pt-4 border-t text-sm">
-                <p className="text-muted-foreground">
-                  <strong>Note:</strong> Credit card required for ID verification only. 
-                  You won't be charged during the free period.
+              <div className="mt-3 pt-2 border-t">
+                <p className="text-xs text-muted-foreground">
+                  <strong>Note:</strong> Credit card for verification only.
                 </p>
               </div>
             )}
