@@ -1,5 +1,5 @@
 
-import { Check, Phone } from "lucide-react";
+import { Check, Phone, Clock } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { PlanData } from "@/types/billing";
@@ -17,6 +17,11 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
       {plan.popular && (
         <div className="absolute -top-3 right-4 bg-primary text-primary-foreground text-xs font-medium px-4 py-1 rounded-full z-10">
           Most Popular
+        </div>
+      )}
+      {plan.isFree && (
+        <div className="absolute -top-3 right-4 bg-amber-500 text-white text-xs font-medium px-4 py-1 rounded-full z-10">
+          Temporary
         </div>
       )}
       <Card 
@@ -58,6 +63,19 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
                   Custom pricing for your enterprise needs
                 </p>
               </div>
+            ) : plan.isFree ? (
+              <div className="flex gap-1 items-baseline mb-4">
+                <span className="text-3xl font-bold">{plan.price}</span>
+                <div className="flex flex-col">
+                  <span className="text-sm text-muted-foreground">
+                    Limited access
+                  </span>
+                  <div className="flex items-center text-amber-500 text-xs">
+                    <Clock className="h-3 w-3 mr-1" />
+                    <span>7 days only</span>
+                  </div>
+                </div>
+              </div>
             ) : (
               <div className="flex gap-1 items-baseline mb-4">
                 <span className="text-3xl font-bold">{plan.price}</span>
@@ -83,6 +101,15 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
                 ))}
               </ul>
             </div>
+            
+            {plan.isFree && (
+              <div className="mt-6 pt-4 border-t text-sm">
+                <p className="text-muted-foreground">
+                  <strong>Note:</strong> Credit card required for ID verification only. 
+                  You won't be charged during the free period.
+                </p>
+              </div>
+            )}
           </div>
         </Label>
       </Card>

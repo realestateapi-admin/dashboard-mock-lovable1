@@ -7,6 +7,7 @@ export interface PlanData {
   records: string;
   features: string[];
   popular?: boolean;
+  isFree?: boolean;
 }
 
 export interface AddOnData {
@@ -44,4 +45,5 @@ export interface SubscriptionData {
   credit: number;
   trial_begin_date?: string;
   trial_end_date?: string;
+  isFree?: boolean;
 }

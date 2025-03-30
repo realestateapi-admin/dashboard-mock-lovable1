@@ -11,14 +11,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface ApiAccessSectionProps {
   isTrialActive: boolean;
   isLoading?: boolean;
+  isFreeUser?: boolean;
 }
 
-export const ApiAccessSection = ({ isTrialActive, isLoading = false }: ApiAccessSectionProps) => {
+export const ApiAccessSection = ({ isTrialActive, isLoading = false, isFreeUser = false }: ApiAccessSectionProps) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
 
   const handleCopyAPIKey = () => {
-    navigator.clipboard.writeText("test_k6ftg5s7d8v9t3f2r1o9p8m7n6b5v4c3x2");
+    const apiKey = isFreeUser 
+      ? "free_k6ftg5s7d8v9t3f2r1o9p8m7n6b5v4c3x2" 
+      : (isTrialActive ? "test_" : "prod_") + "k6ftg5s7d8v9t3f2r1o9p8m7n6b5v4c3x2";
+      
+    navigator.clipboard.writeText(apiKey);
     setCopied(true);
     
     toast({
@@ -88,7 +93,10 @@ export const ApiAccessSection = ({ isTrialActive, isLoading = false }: ApiAccess
                 </Button>
               </div>
               <div className="flex h-10 items-center rounded-md border bg-muted px-4 text-sm font-mono overflow-x-auto">
-                {isTrialActive ? "test_" : "prod_"}k6ftg5s7d8v9t3f2r1o9p8m7n6b5v4c3x2
+                {isFreeUser 
+                  ? "free_" 
+                  : (isTrialActive ? "test_" : "prod_")
+                }k6ftg5s7d8v9t3f2r1o9p8m7n6b5v4c3x2
               </div>
               <div className="flex justify-end">
                 <Button
@@ -114,6 +122,24 @@ export const ApiAccessSection = ({ isTrialActive, isLoading = false }: ApiAccess
                 </a>
               </Button>
             </div>
+            
+            {isFreeUser && (
+              <div className="mt-4 pt-4 border-t">
+                <div className="text-sm text-amber-600">
+                  <p className="font-semibold">Free Plan Limitations:</p>
+                  <ul className="mt-1 list-disc pl-5 space-y-1">
+                    <li>Limited to 5,000 records per month</li>
+                    <li>Only basic endpoints available</li>
+                    <li>Expires in {isTrialActive ? trialDaysLeft : 0} days</li>
+                  </ul>
+                </div>
+                <Button variant="default" size="sm" className="w-full mt-3" asChild>
+                  <Link to="/dashboard/billing">
+                    Upgrade for Full Access
+                  </Link>
+                </Button>
+              </div>
+            )}
           </>
         )}
       </CardContent>

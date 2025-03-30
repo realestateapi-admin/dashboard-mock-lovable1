@@ -10,19 +10,26 @@ interface TrialBannerProps {
   isTrialActive: boolean;
   trialDaysLeft: number;
   requestTrialExtension: () => void;
+  isFreeUser?: boolean;
 }
 
-export const TrialBanner = ({ isTrialActive, trialDaysLeft, requestTrialExtension }: TrialBannerProps) => {
-  if (!isTrialActive) return null;
+export const TrialBanner = ({ 
+  isTrialActive, 
+  trialDaysLeft, 
+  requestTrialExtension,
+  isFreeUser = true
+}: TrialBannerProps) => {
+  // Only show this banner for free plan users
+  if (!isTrialActive || !isFreeUser) return null;
   
   return (
     <Alert className="bg-[#04c8c8]/10 border-[#04c8c8]">
       <AlertCircle className="h-4 w-4 text-[#04c8c8]" />
-      <AlertTitle className="text-[#04c8c8] font-medium">Trial Mode Active</AlertTitle>
+      <AlertTitle className="text-[#04c8c8] font-medium">Free Plan Active</AlertTitle>
       <AlertDescription className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex-1">
-          <p>You have <span className="font-medium text-[#04c8c8]">{trialDaysLeft} days</span> left in your trial period.</p>
-          <Progress value={(14 - trialDaysLeft) / 14 * 100} className="h-2 mt-2 bg-[#e2e8f0]" indicatorClassName="bg-[#04c8c8]" />
+          <p>You have <span className="font-medium text-[#04c8c8]">{trialDaysLeft} days</span> left in your free period.</p>
+          <Progress value={(7 - trialDaysLeft) / 7 * 100} className="h-2 mt-2 bg-[#e2e8f0]" indicatorClassName="bg-[#04c8c8]" />
         </div>
         <div className="flex gap-2 mt-2 sm:mt-0">
           <Button size="sm" className="bg-[#5014d0] hover:bg-[#5014d0]/90" asChild>

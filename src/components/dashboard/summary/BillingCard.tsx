@@ -10,11 +10,13 @@ import { Link } from "react-router-dom";
 interface BillingCardProps {
   isTrialActive: boolean;
   trialDaysLeft: number;
+  isFreeUser?: boolean;
 }
 
 export const BillingCard = ({
   isTrialActive,
-  trialDaysLeft
+  trialDaysLeft,
+  isFreeUser = false
 }: BillingCardProps) => {
   return (
     <motion.div
@@ -28,21 +30,37 @@ export const BillingCard = ({
           <FileText className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{isTrialActive ? "Free Trial" : "$99.00"}</div>
+          <div className="text-2xl font-bold">
+            {isFreeUser ? "$0.00" : (isTrialActive ? "Free Trial" : "$99.00")}
+          </div>
           <p className="text-xs text-muted-foreground">
-            {isTrialActive 
-              ? `Ends in ${trialDaysLeft} days` 
-              : "Next payment on Mar 1, 2024"}
+            {isFreeUser 
+              ? `Free plan expires in ${trialDaysLeft} days` 
+              : (isTrialActive 
+                ? `Ends in ${trialDaysLeft} days` 
+                : "Next payment on Mar 1, 2024")
+            }
           </p>
           <div className="mt-4">
-            <Badge variant="outline" className="bg-primary-teal/5 text-primary-teal">
-              {isTrialActive ? "Trial" : "Professional Plan"}
+            <Badge variant="outline" className={isFreeUser 
+              ? "bg-amber-500/10 text-amber-600"
+              : "bg-primary-teal/5 text-primary-teal"
+            }>
+              {isFreeUser 
+                ? "Free Plan" 
+                : (isTrialActive ? "Trial" : "Professional Plan")
+              }
             </Badge>
           </div>
           <div className="mt-2">
-            <Button variant="outline" size="sm" className="w-full" asChild>
+            <Button 
+              variant={isFreeUser ? "default" : "outline"} 
+              size="sm" 
+              className="w-full" 
+              asChild
+            >
               <Link to="/dashboard/billing">
-                {isTrialActive ? "Choose a Plan" : "Manage Subscription"}
+                {isFreeUser ? "Upgrade Now" : (isTrialActive ? "Choose a Plan" : "Manage Subscription")}
               </Link>
             </Button>
           </div>

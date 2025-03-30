@@ -9,7 +9,7 @@ import { StepTwo } from "@/components/onboarding/StepTwo";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Onboarding = () => {
-  const [selectedPlan, setSelectedPlan] = useState("starter");
+  const [selectedPlan, setSelectedPlan] = useState("free");
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
@@ -41,10 +41,18 @@ const Onboarding = () => {
         setIsAuthenticated(true);
         setCurrentRole('admin'); // Default role for new signups
         
-        toast({
-          title: "Your trial is ready!",
-          description: `You've selected the ${plans.find(p => p.id === selectedPlan)?.name} plan with ${selectedAddOns.length} add-ons. Your free trial has started.`,
-        });
+        // Different messaging depending on selected plan
+        if (selectedPlan === 'free') {
+          toast({
+            title: "Your free plan is ready!",
+            description: "You have 7 days to explore our API features. Add a payment method to continue after the free period.",
+          });
+        } else {
+          toast({
+            title: "Your account is ready!",
+            description: `You've selected the ${plans.find(p => p.id === selectedPlan)?.name} plan with ${selectedAddOns.length} add-ons.`,
+          });
+        }
         
         navigate("/dashboard");
       }
@@ -68,7 +76,7 @@ const Onboarding = () => {
           </h1>
           <p className="text-sm text-muted-foreground">
             {step === 1 
-              ? "Start with a 14-day free trial. No credit card required." 
+              ? "Start with a free plan or choose a paid option with more features" 
               : "Just a few more steps to get you started."}
           </p>
         </div>

@@ -35,6 +35,19 @@ export const invoices: InvoiceData[] = [
 
 export const plans: PlanData[] = [
   {
+    id: "free",
+    name: "Free",
+    price: "$0",
+    description: "Try our API before committing",
+    records: "5,000",
+    features: [
+      "Auto-Complete (limited)",
+      "Property Search (limited)",
+      "7-day access"
+    ],
+    isFree: true,
+  },
+  {
     id: "starter",
     name: "Starter",
     price: "$599",
