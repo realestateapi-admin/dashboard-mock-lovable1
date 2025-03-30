@@ -30,20 +30,21 @@ export const DashboardSummary = ({
 }: DashboardSummaryProps) => {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Cards reordered as requested: Property Records, Monthly Usage, API Calls, Billing */}
       <PropertyRecordsCard 
         totalRecords={totalRecords} 
         recordsPercentage={recordsPercentage} 
-      />
-      
-      <ApiCallsCard 
-        totalApiCalls={totalApiCalls} 
-        increasePercentage={18.2} 
       />
       
       <MonthlyUsageCard 
         monthlyApiCalls={monthlyApiCalls}
         monthlyRecords={monthlyRecords}
         monthlyRecordsPercentage={monthlyRecordsPercentage}
+      />
+      
+      <ApiCallsCard 
+        totalApiCalls={totalApiCalls} 
+        increasePercentage={18.2} 
       />
       
       <BillingCard 

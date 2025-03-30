@@ -22,7 +22,10 @@ export const TrialBanner = ({
   isOnPaidPlan = false
 }: TrialBannerProps) => {
   // Don't show banner if user is on a paid plan
-  if (isOnPaidPlan || (!isTrialActive || !isFreeUser)) return null;
+  if (isOnPaidPlan) return null;
+  
+  // Don't show if trial is not active or user is not on free plan
+  if (!isTrialActive || !isFreeUser) return null;
   
   return (
     <Alert className="bg-[#04c8c8]/10 border-[#04c8c8]">

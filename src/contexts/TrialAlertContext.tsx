@@ -1,6 +1,7 @@
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { useToast } from "@/components/ui/use-toast";
+import { isPaidPlan } from '@/services/subscriptionService';
 
 interface TrialContextType {
   trialDaysLeft: number;
@@ -49,13 +50,10 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
         const daysElapsed = Math.floor((Date.now() - mockStartDate.getTime()) / (1000 * 60 * 60 * 24));
         setTrialDaysLeft(14 - daysElapsed);
         
-        // This would come from your backend to determine if user is on free plan
-        // For demo, let's assume they're on a free plan initially
-        setIsFreeUser(true);
-        
-        // Check if user has a paid subscription (would come from backend)
-        // For demo, this is false initially
-        setIsOnPaidPlan(false);
+        // For demo purposes, let's assume user is on a paid plan (Starter)
+        // This will hide the Free Plan banner
+        setIsFreeUser(false);
+        setIsOnPaidPlan(true);
       } catch (error) {
         console.error("Failed to load trial data:", error);
       }
