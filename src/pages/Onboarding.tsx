@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthLayout } from "@/components/layouts/AuthLayout";
@@ -69,7 +68,7 @@ const Onboarding = () => {
 
   return (
     <AuthLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 w-full">
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">
             {step === 1 ? "Choose your plan" : "Complete your setup"}
@@ -106,4 +105,3 @@ const Onboarding = () => {
 };
 
 export default Onboarding;
-

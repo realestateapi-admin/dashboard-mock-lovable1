@@ -14,7 +14,7 @@ interface PlanCardProps {
 
 export const PlanCard = ({ plan, isSelected, className = "" }: PlanCardProps) => {
   return (
-    <div className={`relative h-full ${className}`}>
+    <div className={`relative ${className}`}>
       {plan.popular && (
         <div className="absolute -top-3 left-0 right-0 mx-auto w-max bg-primary text-primary-foreground text-xs font-medium px-4 py-1 rounded-full z-10">
           Most Popular
