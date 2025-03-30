@@ -24,22 +24,31 @@ export const StepOne = ({
   const isMobile = useIsMobile();
   
   return (
-    <div className="container w-full">
+    <div className="w-full">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold mb-2">Choose your plan</h1>
+        <p className="text-muted-foreground">
+          Start with a free plan or choose a paid option with more features
+        </p>
+      </div>
+      
       <div className={`${isMobile ? "overflow-x-auto pb-4" : ""}`}>
-        <RadioGroup 
-          value={selectedPlan} 
-          onValueChange={setSelectedPlan} 
-          className="plan-grid"
-        >
-          {plans.map((plan) => (
-            <PlanCard 
-              key={plan.id} 
-              plan={plan} 
-              isSelected={selectedPlan === plan.id} 
-              className="h-full"
-            />
-          ))}
-        </RadioGroup>
+        <div className="max-w-[1200px] mx-auto">
+          <RadioGroup 
+            value={selectedPlan} 
+            onValueChange={setSelectedPlan} 
+            className="grid grid-cols-1 md:grid-cols-5 gap-6"
+          >
+            {plans.map((plan) => (
+              <PlanCard 
+                key={plan.id} 
+                plan={plan} 
+                isSelected={selectedPlan === plan.id} 
+                className="h-full"
+              />
+            ))}
+          </RadioGroup>
+        </div>
       </div>
       
       <div className="max-w-md mx-auto">

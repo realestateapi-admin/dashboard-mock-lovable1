@@ -1,5 +1,5 @@
 
-import { Check, Phone, Clock } from "lucide-react";
+import { Check, Phone, Clock, ArrowRight } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { PlanData } from "@/types/billing";
@@ -43,67 +43,68 @@ export const PlanCard = ({ plan, isSelected, className = "" }: PlanCardProps) =>
           />
           
           <div className="flex flex-col h-full">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-lg font-bold">{plan.name}</h3>
-                <p className="text-xs text-muted-foreground mt-1 h-12 overflow-hidden">
-                  {plan.description}
-                </p>
-              </div>
+            <div className="flex justify-between items-start">
+              <h3 className="text-xl font-bold">{plan.name}</h3>
               <div className={`flex-shrink-0 ${isSelected ? "text-primary" : "text-muted-foreground"}`}>
                 <Check className={`h-5 w-5 ${isSelected ? "opacity-100" : "opacity-0"}`} />
               </div>
             </div>
             
+            <p className="text-xs text-muted-foreground mt-1 mb-4">
+              {plan.description}
+            </p>
+            
             {plan.id === "enterprise" ? (
-              <div className="mb-4 text-center">
-                <Button variant="outline" size="sm" className="w-full mt-2 border-primary text-primary">
-                  <Phone className="h-3 w-3 mr-1" /> Contact Sales
+              <div className="mb-4">
+                <Button variant="outline" size="sm" className="border-primary text-primary">
+                  Contact <ArrowRight className="h-3 w-3 ml-1" /> Sales
                 </Button>
-                <p className="text-xs text-muted-foreground mt-2">
-                  Custom pricing for enterprise
+                <p className="text-sm mt-2">
+                  Custom pricing
                 </p>
               </div>
             ) : plan.isFree ? (
-              <div className="flex gap-1 items-baseline mb-4">
-                <span className="text-2xl font-bold">{plan.price}</span>
-                <div className="flex flex-col">
-                  <span className="text-xs text-muted-foreground">
-                    Limited access
-                  </span>
-                  <div className="flex items-center text-amber-500 text-xs">
-                    <Clock className="h-3 w-3 mr-1" />
-                    <span>14 days only</span>
-                  </div>
+              <div className="mb-4">
+                <div className="flex items-baseline">
+                  <span className="text-3xl font-bold">{plan.price}</span>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Limited access
+                </div>
+                <div className="flex items-center text-amber-500 text-xs mt-1">
+                  <Clock className="h-3 w-3 mr-1" />
+                  <span>14 days only</span>
                 </div>
               </div>
             ) : (
-              <div className="flex gap-1 items-baseline mb-4">
-                <span className="text-2xl font-bold">{plan.price}</span>
-                <span className="text-xs text-muted-foreground">
-                  per month
-                </span>
+              <div className="mb-4">
+                <div className="flex items-baseline">
+                  <span className="text-3xl font-bold">{plan.price}</span>
+                  <span className="text-xs text-muted-foreground ml-1">
+                    per month
+                  </span>
+                </div>
               </div>
             )}
             
-            <div className="mb-3 py-1 px-2 bg-muted/50 rounded-md flex items-center gap-1">
-              <span className="text-xs text-muted-foreground">Records:</span>
-              <span className="text-xs font-semibold">
-                {plan.records}
-              </span>
-            </div>
+            {plan.records && (
+              <div className="mb-3 text-sm">
+                <span className="text-muted-foreground">Records:</span>{" "}
+                <span className="font-semibold">{plan.records}</span>
+              </div>
+            )}
             
             <div className="mt-2 flex-grow">
-              <div className="text-xs font-medium mb-1">Included:</div>
-              <ul className="text-xs space-y-1.5">
-                {plan.features.slice(0, 5).map((feature, i) => (
-                  <li key={i} className="flex items-start gap-1.5">
-                    <Check className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="leading-tight">{feature}</span>
+              <div className="text-sm mb-1">Includes:</div>
+              <ul className="text-sm space-y-2">
+                {plan.features.slice(0, 4).map((feature, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>{feature}</span>
                   </li>
                 ))}
-                {plan.features.length > 5 && (
-                  <li className="text-xs text-muted-foreground">+{plan.features.length - 5} more</li>
+                {plan.features.length > 4 && (
+                  <li className="text-sm text-muted-foreground">+{plan.features.length - 4} more</li>
                 )}
               </ul>
             </div>

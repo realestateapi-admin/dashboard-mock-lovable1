@@ -142,12 +142,6 @@
     margin: 0 auto;
     padding: 24px;
   }
-  
-  .plan-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
-  }
 }
 
 /* For Inter font variable */
