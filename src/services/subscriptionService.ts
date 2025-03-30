@@ -1,6 +1,5 @@
 
 import { SubscriptionData } from "@/types/billing";
-import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 // Mock billing subscription data based on the MongoDB document
 const mockSubscription: SubscriptionData = {

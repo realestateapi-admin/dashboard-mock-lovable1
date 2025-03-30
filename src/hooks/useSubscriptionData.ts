@@ -2,13 +2,30 @@
 import { useState, useEffect, useCallback } from 'react';
 import { SubscriptionData } from '@/types/billing';
 import { fetchSubscription } from '@/services/subscriptionService';
-import { useTrialAlert } from '@/contexts/TrialAlertContext';
+
+// Import useTrialAlert conditionally
+let useTrialAlert: any;
+try {
+  // Try to import the hook, but don't throw if it fails
+  useTrialAlert = require('@/contexts/TrialAlertContext').useTrialAlert;
+} catch (e) {
+  // Create a fallback if the import fails
+  useTrialAlert = () => ({ isOnPaidPlan: false });
+}
 
 export function useSubscriptionData(accountId?: number) {
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const { isOnPaidPlan: contextIsOnPaidPlan } = useTrialAlert();
+  
+  // We need to handle the case where the context might not be available
+  let contextIsOnPaidPlan = false;
+  try {
+    const context = useTrialAlert();
+    contextIsOnPaidPlan = context.isOnPaidPlan;
+  } catch (e) {
+    console.warn("TrialAlertContext not available, defaulting to not on paid plan");
+  }
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
