@@ -9,11 +9,12 @@ import { Button } from "@/components/ui/button";
 interface PlanCardProps {
   plan: PlanData;
   isSelected: boolean;
+  className?: string;
 }
 
-export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
+export const PlanCard = ({ plan, isSelected, className = "" }: PlanCardProps) => {
   return (
-    <div className="relative h-full">
+    <div className={`relative h-full ${className}`}>
       {plan.popular && (
         <div className="absolute -top-3 left-0 right-0 mx-auto w-max bg-primary text-primary-foreground text-xs font-medium px-4 py-1 rounded-full z-10">
           Most Popular
@@ -45,7 +46,7 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-lg font-bold">{plan.name}</h3>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-muted-foreground mt-1 h-12 overflow-hidden">
                   {plan.description}
                 </p>
               </div>
@@ -88,7 +89,7 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
             <div className="mb-3 py-1 px-2 bg-muted/50 rounded-md flex items-center gap-1">
               <span className="text-xs text-muted-foreground">Records:</span>
               <span className="text-xs font-semibold">
-                {plan.isFree ? "5,000" : `${plan.records}`}
+                {plan.records}
               </span>
             </div>
             

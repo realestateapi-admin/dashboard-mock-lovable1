@@ -4,6 +4,7 @@ import { RadioGroup } from "@/components/ui/radio-group";
 import { ArrowRight } from "lucide-react";
 import { PlanCard } from "./PlanCard";
 import { PlanData } from "@/types/billing";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface StepOneProps {
   plans: PlanData[];
@@ -20,18 +21,21 @@ export const StepOne = ({
   isLoading,
   handleContinue
 }: StepOneProps) => {
+  const isMobile = useIsMobile();
+  
   return (
     <div className="space-y-8">
       <RadioGroup 
         value={selectedPlan} 
         onValueChange={setSelectedPlan} 
-        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-4"
+        className="grid grid-cols-1 lg:grid-cols-5 gap-4 pt-4 overflow-x-auto"
       >
-        {plans.map((plan) => (
+        {plans.map((plan, index) => (
           <PlanCard 
             key={plan.id} 
             plan={plan} 
             isSelected={selectedPlan === plan.id} 
+            className={`${!isMobile ? "w-full" : "min-w-[250px]"}`}
           />
         ))}
       </RadioGroup>
