@@ -29,7 +29,14 @@ export const useSubscriptionCalculator = (
   const [activeAddOns, setActiveAddOns] = useState<string[]>(["premium-avm"]);
   
   // Get access to the trial context
-  const { isOnPaidPlan } = useTrialAlert();
+  let trialContext;
+  try {
+    trialContext = useTrialAlert();
+  } catch (e) {
+    console.warn("TrialAlertContext not available, using default values");
+    trialContext = { isOnPaidPlan: false };
+  }
+  const { isOnPaidPlan } = trialContext;
 
   const toggleAddOn = (addOnId: string) => {
     setActiveAddOns(prev => 
@@ -54,7 +61,7 @@ export const useSubscriptionCalculator = (
     }
     
     // Extract numeric price from base plan (removing $ and ,)
-    const basePrice = parseInt(basePlan.price.replace(/\$|,/g, ""));
+    const basePrice = parseInt((basePlan.price || "$0").replace(/\$|,/g, ""));
     
     // Calculate add-on costs - only include subscription add-ons (not metered)
     let addOnTotal = 0;
@@ -63,7 +70,8 @@ export const useSubscriptionCalculator = (
       if (!addon) return;
       
       const priceStr = addon.prices[selectedPlan as keyof typeof addon.prices];
-      if (priceStr === "Included") return;
+      // Skip if price is not defined or is "Included"
+      if (!priceStr || priceStr === "Included") return;
       
       // Only include subscription add-ons and parse their price
       if (addon.billingType === 'subscription') {
