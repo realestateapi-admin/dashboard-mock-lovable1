@@ -45,7 +45,7 @@ const Onboarding = () => {
         if (selectedPlan === 'free') {
           toast({
             title: "Your free plan is ready!",
-            description: "You have 7 days to explore our API features. Add a payment method to continue after the free period.",
+            description: "You have 14 days to explore our API features. Add a payment method to continue after the free period.",
           });
         } else {
           toast({
@@ -106,3 +106,4 @@ const Onboarding = () => {
 };
 
 export default Onboarding;
+

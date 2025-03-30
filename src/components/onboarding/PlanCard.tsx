@@ -72,7 +72,7 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
                   </span>
                   <div className="flex items-center text-amber-500 text-xs">
                     <Clock className="h-3 w-3 mr-1" />
-                    <span>7 days only</span>
+                    <span>14 days only</span>
                   </div>
                 </div>
               </div>
@@ -116,3 +116,4 @@ export const PlanCard = ({ plan, isSelected }: PlanCardProps) => {
     </div>
   );
 };
+
