@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
@@ -15,10 +15,12 @@ import { plans, addOns, invoices } from "@/data/billingData";
 import { useUsageData } from "@/hooks/useUsageData";
 import { useSubscriptionData } from "@/hooks/useSubscriptionData";
 import { useSubscriptionCalculator } from "@/hooks/useSubscriptionCalculator";
+import { isPaidPlan } from "@/services/subscriptionService";
 
 const Billing = () => {
   const { toast } = useToast();
-  const { isTrialActive, trialDaysLeft, requestTrialExtension } = useTrialAlert();
+  const { isTrialActive, trialDaysLeft, requestTrialExtension, isOnPaidPlan } = useTrialAlert();
+  const [localIsOnPaidPlan, setLocalIsOnPaidPlan] = useState(false);
   
   // Fetch usage data
   const { 
@@ -46,6 +48,14 @@ const Billing = () => {
 
   const costs = calculateMonthlyCost();
 
+  // Check if user is on a paid plan when subscription data loads
+  useEffect(() => {
+    if (subscription) {
+      const onPaidPlan = isPaidPlan(subscription.plan_name);
+      setLocalIsOnPaidPlan(onPaidPlan);
+    }
+  }, [subscription]);
+
   const handleSaveBillingPreferences = () => {
     toast({
       title: "Billing preferences updated",
@@ -68,6 +78,9 @@ const Billing = () => {
     });
   };
 
+  // Determine if we should hide trial banners based on subscription
+  const shouldHideTrialBanners = localIsOnPaidPlan || isOnPaidPlan;
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -83,6 +96,7 @@ const Billing = () => {
         isTrialActive={isTrialActive} 
         trialDaysLeft={trialDaysLeft} 
         requestTrialExtension={requestTrialExtension} 
+        isOnPaidPlan={shouldHideTrialBanners}
       />
       
       <BillingTabs 

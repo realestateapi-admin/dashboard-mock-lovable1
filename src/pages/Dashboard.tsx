@@ -139,7 +139,7 @@ const recentActivity = [
 ];
 
 const Dashboard = () => {
-  const { isTrialActive, trialDaysLeft, requestTrialExtension } = useTrialAlert();
+  const { isTrialActive, trialDaysLeft, requestTrialExtension, isFreeUser, isOnPaidPlan } = useTrialAlert();
   
   return (
     <motion.div 
@@ -161,6 +161,8 @@ const Dashboard = () => {
               isTrialActive={isTrialActive}
               trialDaysLeft={trialDaysLeft}
               requestTrialExtension={requestTrialExtension}
+              isFreeUser={isFreeUser}
+              isOnPaidPlan={isOnPaidPlan}
             />
           }
         />

@@ -7,14 +7,17 @@ interface TrialAlertProps {
   isTrialActive: boolean;
   trialDaysLeft: number;
   requestTrialExtension: () => void;
+  isOnPaidPlan?: boolean;
 }
 
 export const TrialAlert = ({ 
   isTrialActive, 
   trialDaysLeft, 
-  requestTrialExtension 
+  requestTrialExtension,
+  isOnPaidPlan = false
 }: TrialAlertProps) => {
-  if (!isTrialActive) return null;
+  // Don't show alert if user is on a paid plan
+  if (isOnPaidPlan || !isTrialActive) return null;
 
   return (
     <Alert className="bg-primary-teal/10 border-primary-teal">

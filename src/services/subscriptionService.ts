@@ -1,5 +1,6 @@
 
 import { SubscriptionData } from "@/types/billing";
+import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 // Mock billing subscription data based on the MongoDB document
 const mockSubscription: SubscriptionData = {
@@ -26,4 +27,13 @@ export const fetchSubscription = async (accountId?: number): Promise<Subscriptio
   
   // In a real app, we would fetch from the account_plans collection using the accountId
   return mockSubscription;
+};
+
+// Helper function to detect if a plan is a paid plan
+export const isPaidPlan = (planName?: string): boolean => {
+  if (!planName) return false;
+  
+  // Check if the plan name matches any of our paid plans
+  const paidPlans = ["Starter", "Growth", "Pro", "Enterprise"];
+  return paidPlans.includes(planName);
 };

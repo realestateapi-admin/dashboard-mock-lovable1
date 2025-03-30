@@ -32,7 +32,7 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
     usageDistributionData
   } = useDashboard();
 
-  const { isTrialActive, trialDaysLeft, isFreeUser } = useTrialAlert();
+  const { isTrialActive, trialDaysLeft, isFreeUser, isOnPaidPlan } = useTrialAlert();
 
   return (
     <>
@@ -52,6 +52,7 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
         monthlyRecordsPercentage={monthlyRecordsPercentage}
         isTrialActive={isTrialActive}
         trialDaysLeft={trialDaysLeft}
+        isOnPaidPlan={isOnPaidPlan}
       />
       
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">

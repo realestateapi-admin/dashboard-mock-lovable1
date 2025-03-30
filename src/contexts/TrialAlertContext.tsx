@@ -9,6 +9,7 @@ interface TrialContextType {
   requestTrialExtension: () => void;
   trialStartDate: Date | null;
   isFreeUser: boolean;
+  isOnPaidPlan: boolean;
 }
 
 const TrialAlertContext = createContext<TrialContextType | undefined>(undefined);
@@ -26,9 +27,10 @@ interface TrialAlertProviderProps {
 }
 
 export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
-  const [trialDaysLeft, setTrialDaysLeft] = useState<number>(14); // Changed from 7 to 14 days for free plan
+  const [trialDaysLeft, setTrialDaysLeft] = useState<number>(14);
   const [trialStartDate, setTrialStartDate] = useState<Date | null>(null);
-  const [isFreeUser, setIsFreeUser] = useState<boolean>(true); // Default to true for demo purposes
+  const [isFreeUser, setIsFreeUser] = useState<boolean>(true);
+  const [isOnPaidPlan, setIsOnPaidPlan] = useState<boolean>(false);
   const { toast } = useToast();
 
   // Mock loading trial data
@@ -45,10 +47,15 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
         
         setTrialStartDate(mockStartDate);
         const daysElapsed = Math.floor((Date.now() - mockStartDate.getTime()) / (1000 * 60 * 60 * 24));
-        setTrialDaysLeft(14 - daysElapsed); // Changed from 7 to 14 days for free plan
+        setTrialDaysLeft(14 - daysElapsed);
         
         // This would come from your backend to determine if user is on free plan
-        setIsFreeUser(true); // Demo purposes - would be based on user's subscription
+        // For demo, let's assume they're on a free plan initially
+        setIsFreeUser(true);
+        
+        // Check if user has a paid subscription (would come from backend)
+        // For demo, this is false initially
+        setIsOnPaidPlan(false);
       } catch (error) {
         console.error("Failed to load trial data:", error);
       }
@@ -59,17 +66,17 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
 
   // Check for trial alerts
   useEffect(() => {
-    // Only show alerts for free users
-    if (!isFreeUser) return;
+    // Only show alerts for free users who are not on a paid plan
+    if (!isFreeUser || isOnPaidPlan) return;
     
     // Show alerts on specific days
-    if (trialDaysLeft === 7) { // Updated from 4 to 7 days
+    if (trialDaysLeft === 7) {
       toast({
         title: "Free Plan Update",
         description: "You have 7 days left in your free plan. Explore all our features!",
         duration: 6000,
       });
-    } else if (trialDaysLeft === 3) { // Updated from 2 to 3 days
+    } else if (trialDaysLeft === 3) {
       toast({
         title: "Free Plan Update",
         description: "Only 3 days left in your free plan. Consider upgrading to continue accessing all features.",
@@ -83,7 +90,7 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
         duration: 8000,
       });
     }
-  }, [trialDaysLeft, toast, isFreeUser]);
+  }, [trialDaysLeft, toast, isFreeUser, isOnPaidPlan]);
 
   const requestTrialExtension = () => {
     // In a real app, this would call your API
@@ -100,6 +107,7 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
     requestTrialExtension,
     trialStartDate,
     isFreeUser,
+    isOnPaidPlan,
   };
 
   return (

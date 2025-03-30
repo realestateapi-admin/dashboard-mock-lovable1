@@ -14,6 +14,7 @@ interface DashboardSummaryProps {
   monthlyRecordsPercentage: number;
   isTrialActive: boolean;
   trialDaysLeft: number;
+  isOnPaidPlan?: boolean;
 }
 
 export const DashboardSummary = ({
@@ -24,7 +25,8 @@ export const DashboardSummary = ({
   monthlyRecords,
   monthlyRecordsPercentage,
   isTrialActive,
-  trialDaysLeft
+  trialDaysLeft,
+  isOnPaidPlan = false
 }: DashboardSummaryProps) => {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -47,6 +49,7 @@ export const DashboardSummary = ({
       <BillingCard 
         isTrialActive={isTrialActive}
         trialDaysLeft={trialDaysLeft}
+        isOnPaidPlan={isOnPaidPlan}
       />
     </div>
   );

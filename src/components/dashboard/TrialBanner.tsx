@@ -11,16 +11,18 @@ interface TrialBannerProps {
   trialDaysLeft: number;
   requestTrialExtension: () => void;
   isFreeUser?: boolean;
+  isOnPaidPlan?: boolean;
 }
 
 export const TrialBanner = ({ 
   isTrialActive, 
   trialDaysLeft, 
   requestTrialExtension,
-  isFreeUser = true
+  isFreeUser = true,
+  isOnPaidPlan = false
 }: TrialBannerProps) => {
-  // Only show this banner for free plan users
-  if (!isTrialActive || !isFreeUser) return null;
+  // Don't show banner if user is on a paid plan
+  if (isOnPaidPlan || (!isTrialActive || !isFreeUser)) return null;
   
   return (
     <Alert className="bg-[#04c8c8]/10 border-[#04c8c8]">

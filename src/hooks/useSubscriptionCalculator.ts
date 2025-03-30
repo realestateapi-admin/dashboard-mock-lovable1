@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from "react";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
+import { isPaidPlan } from "@/services/subscriptionService";
+import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 interface SubscriptionCalculatorReturn {
   selectedPlan: string;
@@ -25,6 +27,9 @@ export const useSubscriptionCalculator = (
   const [selectedPlan, setSelectedPlan] = useState("growth");
   const [overageHandling, setOverageHandling] = useState("stop");
   const [activeAddOns, setActiveAddOns] = useState<string[]>(["premium-avm"]);
+  
+  // Get access to the trial context
+  const { isOnPaidPlan } = useTrialAlert();
 
   const toggleAddOn = (addOnId: string) => {
     setActiveAddOns(prev => 

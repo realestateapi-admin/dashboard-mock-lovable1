@@ -11,12 +11,14 @@ interface BillingCardProps {
   isTrialActive: boolean;
   trialDaysLeft: number;
   isFreeUser?: boolean;
+  isOnPaidPlan?: boolean;
 }
 
 export const BillingCard = ({
   isTrialActive,
   trialDaysLeft,
-  isFreeUser = false
+  isFreeUser = false,
+  isOnPaidPlan = false
 }: BillingCardProps) => {
   return (
     <motion.div
@@ -31,36 +33,45 @@ export const BillingCard = ({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {isFreeUser ? "$0.00" : (isTrialActive ? "Free Trial" : "$99.00")}
+            {isOnPaidPlan ? "$99.00" : (isFreeUser ? "$0.00" : (isTrialActive ? "Free Trial" : "$99.00"))}
           </div>
           <p className="text-xs text-muted-foreground">
-            {isFreeUser 
-              ? `Free plan expires in ${trialDaysLeft} days` 
-              : (isTrialActive 
-                ? `Ends in ${trialDaysLeft} days` 
-                : "Next payment on Mar 1, 2024")
+            {isOnPaidPlan 
+              ? "Next payment on Mar 1, 2024"
+              : (isFreeUser 
+                ? `Free plan expires in ${trialDaysLeft} days` 
+                : (isTrialActive 
+                  ? `Ends in ${trialDaysLeft} days` 
+                  : "Next payment on Mar 1, 2024")
+              )
             }
           </p>
           <div className="mt-4">
-            <Badge variant="outline" className={isFreeUser 
-              ? "bg-amber-500/10 text-amber-600"
-              : "bg-primary-teal/5 text-primary-teal"
+            <Badge variant="outline" className={isOnPaidPlan
+              ? "bg-primary-teal/5 text-primary-teal"
+              : (isFreeUser 
+                ? "bg-amber-500/10 text-amber-600"
+                : "bg-primary-teal/5 text-primary-teal"
+              )
             }>
-              {isFreeUser 
-                ? "Free Plan" 
-                : (isTrialActive ? "Trial" : "Professional Plan")
+              {isOnPaidPlan 
+                ? "Professional Plan"
+                : (isFreeUser 
+                  ? "Free Plan" 
+                  : (isTrialActive ? "Trial" : "Professional Plan")
+                )
               }
             </Badge>
           </div>
           <div className="mt-2">
             <Button 
-              variant={isFreeUser ? "default" : "outline"} 
+              variant={isFreeUser || isTrialActive ? "default" : "outline"} 
               size="sm" 
               className="w-full" 
               asChild
             >
               <Link to="/dashboard/billing">
-                {isFreeUser ? "Upgrade Now" : (isTrialActive ? "Choose a Plan" : "Manage Subscription")}
+                {isFreeUser || isTrialActive ? "Upgrade Now" : (isOnPaidPlan ? "Manage Subscription" : "Choose a Plan")}
               </Link>
             </Button>
           </div>
@@ -69,4 +80,3 @@ export const BillingCard = ({
     </motion.div>
   );
 };
-
