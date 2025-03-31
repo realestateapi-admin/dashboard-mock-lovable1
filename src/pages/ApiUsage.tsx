@@ -60,11 +60,13 @@ const ApiUsage = () => {
           </>
         ) : (
           <>
+            {/* Reordered cards: Property Records, API Calls, Active End Users */}
             <ApiUsageSummary
               totalApiCalls={safeData.totalApiCalls}
               totalRecords={safeData.totalRecords}
               recordsLimit={safeData.recordsLimit}
               increasePercentage={safeData.increasePercentage}
+              displayPropertyRecordsFirst={true}
             />
             <ActiveEndUsersCard 
               activeEndUsers={endUserData?.activeEndUsers || null}
