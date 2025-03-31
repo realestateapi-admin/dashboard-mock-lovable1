@@ -26,7 +26,7 @@ export const AccountExecutiveWidget = () => {
       <Card className="overflow-hidden border border-border bg-card text-card-foreground animate-in slide-in-from-right">
         <CardHeader className="p-4 pb-2 bg-gradient-to-r from-[#9b87f5] to-[#7E69AB]">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-white text-lg">Meet Your Account Executive</CardTitle>
+            <CardTitle className="text-white text-lg">Meet Your Solutions Engineer</CardTitle>
             <Button 
               size="icon" 
               variant="ghost" 
@@ -46,7 +46,7 @@ export const AccountExecutiveWidget = () => {
             </Avatar>
             <div>
               <h3 className="font-medium text-lg">{ae.name}</h3>
-              <p className="text-sm text-muted-foreground">Account Executive</p>
+              <p className="text-sm text-muted-foreground">Solutions Engineer</p>
             </div>
           </div>
           

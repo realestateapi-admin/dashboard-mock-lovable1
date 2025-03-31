@@ -14,7 +14,7 @@ export const NeedHelpButton = () => {
       size="icon"
     >
       <HelpCircle className="h-5 w-5" />
-      <span className="sr-only">Need Help?</span>
+      <span className="sr-only">Need Help from your Solutions Engineer?</span>
     </Button>
   );
 };

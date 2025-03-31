@@ -1,7 +1,7 @@
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
-// Define the Account Executive type
+// Define the Solutions Engineer type
 export interface AccountExecutive {
   name: string;
   email: string;
@@ -42,7 +42,7 @@ export const AccountExecutiveProvider = ({
   // State for the widget visibility
   const [isWidgetVisible, setIsWidgetVisible] = useState(initialVisibility);
   
-  // Mocked AE data - in a real app, this would come from the user object or API
+  // Mocked SE data - in a real app, this would come from the user object or API
   const [ae, setAe] = useState<AccountExecutive | null>({
     name: 'Alex Grant',
     email: 'alex@realestateapi.com',
@@ -50,7 +50,7 @@ export const AccountExecutiveProvider = ({
     photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces&q=80',
   });
 
-  // Check if the AE should be shown automatically (based on user record threshold or showAE flag)
+  // Check if the SE should be shown automatically (based on user record threshold or showAE flag)
   useEffect(() => {
     // Mock checking user state for showAE flag
     // In a real app, this would use actual user data
@@ -72,7 +72,7 @@ export const AccountExecutiveProvider = ({
           setIsWidgetVisible(true);
         }
       } catch (error) {
-        console.error("Failed to check AE display triggers:", error);
+        console.error("Failed to check SE display triggers:", error);
       }
     };
     
