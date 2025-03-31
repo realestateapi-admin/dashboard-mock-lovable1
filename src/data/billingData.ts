@@ -83,7 +83,7 @@ export const plans: PlanData[] = [
     name: "Pro",
     price: "$2,500",
     description: "For established companies with higher volume needs",
-    records: "250,000",
+    records: "400,000",
     features: [
       "Auto-Complete (unlimited)",
       "Property Search",
