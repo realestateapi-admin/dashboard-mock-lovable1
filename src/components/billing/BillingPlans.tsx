@@ -1,13 +1,10 @@
 
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { CheckCircle, Phone } from "lucide-react";
 import { PlanData, AddOnData } from "@/types/billing";
-import { useToast } from "@/hooks/use-toast";
+import { PlansList } from "./PlansList";
+import { AddOnsList } from "./AddOnsList";
+import { OverageHandling } from "./OverageHandling";
 
 interface BillingPlansProps {
   plans: PlanData[];
@@ -44,195 +41,30 @@ export const BillingPlans = ({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
-          {plans.map((plan) => (
-            <div key={plan.id} className="relative">
-              {plan.popular && (
-                <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-medium px-2 py-0.5 rounded-full">
-                  Popular
-                </div>
-              )}
-              {plan.id === "enterprise" ? (
-                <div
-                  className={`p-4 border rounded-lg transition-all hover:border-primary cursor-pointer h-full flex flex-col ${
-                    selectedPlan === plan.id
-                      ? "ring-2 ring-primary ring-offset-2 border-primary"
-                      : "border-border"
-                  }`}
-                  onClick={() => onPlanChange(plan.id)}
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h3 className="font-medium">{plan.name}</h3>
-                      <p className="text-xs text-muted-foreground">
-                        {plan.description}
-                      </p>
-                    </div>
-                    <div className={selectedPlan === plan.id ? "text-primary" : "text-muted-foreground"}>
-                      <CheckCircle className={`h-5 w-5 ${selectedPlan === plan.id ? "opacity-100" : "opacity-0"}`} />
-                    </div>
-                  </div>
-                  <div className="mb-6 text-center">
-                    <Button variant="outline" size="sm" className="w-full mt-2 border-primary text-primary">
-                      <Phone className="h-4 w-4 mr-1" /> Contact Sales
-                    </Button>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Custom pricing for your enterprise needs
-                    </p>
-                  </div>
-                  <div className="mb-4 flex items-center gap-2">
-                    <span className="text-xs font-medium">Records:</span>
-                    <span className="text-xs">{plan.records}/mo</span>
-                  </div>
-                  <div className="mt-auto">
-                    <span className="text-xs font-medium block mb-2">Features:</span>
-                    <ul className="text-xs space-y-1">
-                      {plan.features.slice(0, 3).map((feature, i) => (
-                        <li key={i} className="flex items-center gap-1">
-                          <CheckCircle className="h-3 w-3 text-primary/70" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                      {plan.features.length > 3 && (
-                        <li className="text-xs text-muted-foreground">
-                          +{plan.features.length - 3} more features
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-              ) : (
-                <div
-                  className={`p-4 border rounded-lg transition-all hover:border-primary cursor-pointer h-full flex flex-col ${
-                    selectedPlan === plan.id
-                      ? "ring-2 ring-primary ring-offset-2 border-primary"
-                      : "border-border"
-                  }`}
-                  onClick={() => onPlanChange(plan.id)}
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h3 className="font-medium">{plan.name}</h3>
-                      <p className="text-xs text-muted-foreground">
-                        {plan.description}
-                      </p>
-                    </div>
-                    <div className={selectedPlan === plan.id ? "text-primary" : "text-muted-foreground"}>
-                      <CheckCircle className={`h-5 w-5 ${selectedPlan === plan.id ? "opacity-100" : "opacity-0"}`} />
-                    </div>
-                  </div>
-                  <div className="flex gap-1 items-baseline mb-4">
-                    <span className="text-xl font-semibold">{plan.price}</span>
-                    <span className="text-xs text-muted-foreground">
-                      /month
-                    </span>
-                  </div>
-                  <div className="mb-4 flex items-center gap-2">
-                    <span className="text-xs font-medium">Records:</span>
-                    <span className="text-xs">{plan.records}/mo</span>
-                  </div>
-                  <div className="mt-auto">
-                    <span className="text-xs font-medium block mb-2">Features:</span>
-                    <ul className="text-xs space-y-1">
-                      {plan.features.slice(0, 3).map((feature, i) => (
-                        <li key={i} className="flex items-center gap-1">
-                          <CheckCircle className="h-3 w-3 text-primary/70" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                      {plan.features.length > 3 && (
-                        <li className="text-xs text-muted-foreground">
-                          +{plan.features.length - 3} more features
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+        {/* Plans Section */}
+        <PlansList 
+          plans={plans} 
+          selectedPlan={selectedPlan} 
+          onPlanChange={onPlanChange} 
+        />
+        
+        <div className="mt-6">
+          {/* Add-Ons Section */}
+          <AddOnsList
+            addOns={addOns}
+            selectedPlan={selectedPlan}
+            activeAddOns={activeAddOns}
+            onToggleAddOn={onToggleAddOn}
+          />
         </div>
         
-        <div className="mt-6 space-y-4">
-          <h3 className="text-lg font-medium">Add-Ons</h3>
-          <p className="text-sm text-muted-foreground">
-            Enhance your subscription with premium features
-          </p>
-          
-          <div className="space-y-4">
-            {addOns.map(addon => {
-              const addonPrice = addon.prices[selectedPlan as keyof typeof addon.prices];
-              const isIncluded = addonPrice === "Included";
-              
-              return (
-                <div key={addon.id} className="flex items-center justify-between border-b pb-3">
-                  <div>
-                    <p className="font-medium">{addon.name}</p>
-                    <p className="text-sm text-muted-foreground">{addon.description}</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {isIncluded ? (
-                      <span className="text-sm text-primary font-medium">Included with plan</span>
-                    ) : (
-                      <>
-                        <span className="text-sm font-medium">{addonPrice}</span>
-                        <Switch 
-                          checked={activeAddOns.includes(addon.id)}
-                          onCheckedChange={() => onToggleAddOn(addon.id)}
-                          disabled={isIncluded}
-                        />
-                      </>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        
-        <div className="mt-6 space-y-4">
-          <h3 className="text-lg font-medium">Overage Handling</h3>
-          <p className="text-sm text-muted-foreground">
-            Choose how to handle API calls that exceed your plan limits
-          </p>
-          <RadioGroup value={overageHandling} onValueChange={onOverageHandlingChange} className="space-y-2">
-            <div className="flex items-start space-x-2">
-              <RadioGroupItem value="stop" id="stop-overages" />
-              <div className="grid gap-1.5">
-                <Label htmlFor="stop-overages" className="font-medium">Stop API Access</Label>
-                <p className="text-sm text-muted-foreground">
-                  Temporarily disable API access when you reach your plan limits until the next billing cycle.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-2">
-              <RadioGroupItem value="allow-125" id="allow-125-overages" />
-              <div className="grid gap-1.5">
-                <Label htmlFor="allow-125-overages" className="font-medium">Allow Overages (Pay as you go)</Label>
-                <p className="text-sm text-muted-foreground">
-                  Continue API access up to 125% of my {selectedPlanName} usage has been reached. Then discontinue access until the next billing cycle.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-2">
-              <RadioGroupItem value="allow-200" id="allow-200-overages" />
-              <div className="grid gap-1.5">
-                <Label htmlFor="allow-200-overages" className="font-medium">Allow Overages (Pay as you go)</Label>
-                <p className="text-sm text-muted-foreground">
-                  Continue API access up to 200% of my {selectedPlanName} usage has been reached. Then discontinue access until the next billing cycle.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-2">
-              <RadioGroupItem value="allow-unlimited" id="allow-unlimited-overages" />
-              <div className="grid gap-1.5">
-                <Label htmlFor="allow-unlimited-overages" className="font-medium">Allow Overages (Pay as you go)</Label>
-                <p className="text-sm text-muted-foreground">
-                  Continue API access without limits. Do not restrict my API access, no matter how much volume is generated.
-                </p>
-              </div>
-            </div>
-          </RadioGroup>
+        <div className="mt-6">
+          {/* Overage Handling Section */}
+          <OverageHandling 
+            selectedPlanName={selectedPlanName}
+            overageHandling={overageHandling}
+            onOverageHandlingChange={onOverageHandlingChange}
+          />
         </div>
       </CardContent>
       <CardFooter>
