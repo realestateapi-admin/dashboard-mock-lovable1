@@ -13,6 +13,9 @@ import { DashboardSidebar } from "@/components/navigation/DashboardSidebar";
 import { UserNav } from "@/components/navigation/UserNav";
 import { Button } from "@/components/ui/button";
 import { Bell } from "lucide-react";
+import { AccountExecutiveProvider } from "@/contexts/AccountExecutiveContext";
+import { AccountExecutiveWidget } from "@/components/support/AccountExecutiveWidget";
+import { NeedHelpButton } from "@/components/support/NeedHelpButton";
 
 export const DashboardLayout = () => {
   const [mounted, setMounted] = useState(false);
@@ -26,31 +29,37 @@ export const DashboardLayout = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
-        <DashboardSidebar />
-        
-        <div className="flex flex-col flex-1 min-h-screen">
-          <header className="sticky top-0 z-40 border-b backdrop-blur-sm bg-background/80">
-            <div className="container flex items-center justify-between h-16 px-4">
-              <div className="flex items-center gap-4">
-                <SidebarTrigger />
-                <MainNav />
+    <AccountExecutiveProvider>
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full bg-background">
+          <DashboardSidebar />
+          
+          <div className="flex flex-col flex-1 min-h-screen">
+            <header className="sticky top-0 z-40 border-b backdrop-blur-sm bg-background/80">
+              <div className="container flex items-center justify-between h-16 px-4">
+                <div className="flex items-center gap-4">
+                  <SidebarTrigger />
+                  <MainNav />
+                </div>
+                <div className="flex items-center gap-4">
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Bell className="h-5 w-5" />
+                    <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary" />
+                  </Button>
+                  <UserNav />
+                </div>
               </div>
-              <div className="flex items-center gap-4">
-                <Button variant="ghost" size="icon" className="relative">
-                  <Bell className="h-5 w-5" />
-                  <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary" />
-                </Button>
-                <UserNav />
-              </div>
-            </div>
-          </header>
-          <main className="flex-1 container px-4 py-6">
-            <Outlet />
-          </main>
+            </header>
+            <main className="flex-1 container px-4 py-6">
+              <Outlet />
+            </main>
+          </div>
+          
+          {/* Account Executive components */}
+          <NeedHelpButton />
+          <AccountExecutiveWidget />
         </div>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    </AccountExecutiveProvider>
   );
 };
