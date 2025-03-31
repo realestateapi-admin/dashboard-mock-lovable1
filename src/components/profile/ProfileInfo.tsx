@@ -5,13 +5,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Camera, Upload, X } from 'lucide-react';
+import { Camera, Upload, X, Briefcase } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
 const ProfileInfo = () => {
   const { toast } = useToast();
   const [name, setName] = useState('John Doe');
   const [email, setEmail] = useState('john@example.com');
+  const [companyName, setCompanyName] = useState('Acme Inc.');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -147,6 +148,18 @@ const ProfileInfo = () => {
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             placeholder="Your email"
+          />
+        </div>
+        <div className="space-y-2 md:col-span-2">
+          <Label htmlFor="company" className="flex items-center gap-1">
+            <Briefcase className="h-4 w-4" />
+            Company Name
+          </Label>
+          <Input 
+            id="company" 
+            value={companyName} 
+            onChange={(e) => setCompanyName(e.target.value)} 
+            placeholder="Your company name"
           />
         </div>
       </div>
