@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
+import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -16,6 +18,7 @@ const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { ae } = useAccountExecutive();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +27,23 @@ const SignUp = () => {
     // Simulate account creation
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // In a real app, we would create the user account here
+      // and associate the Solutions Engineer with the user account
+      
+      const userMetadata = {
+        name,
+        companyName,
+        email,
+        solutionsEngineer: {
+          id: ae?.name.toLowerCase().replace(' ', '-'),
+          name: ae?.name,
+          email: ae?.email,
+          calendly: ae?.calendly,
+        }
+      };
+      
+      console.log("User registered with metadata:", userMetadata);
       
       // Mock registration - in a real app, create the account here
       toast({

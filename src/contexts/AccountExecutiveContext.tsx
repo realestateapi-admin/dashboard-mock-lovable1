@@ -16,6 +16,7 @@ interface AccountExecutiveContextType {
   showWidget: () => void;
   hideWidget: () => void;
   toggleWidget: () => void;
+  setAe: (ae: AccountExecutive | null) => void;
 }
 
 // Create the context with default values
@@ -59,6 +60,9 @@ export const AccountExecutiveProvider = ({
         // Simulate API call to check user state
         await new Promise(resolve => setTimeout(resolve, 500));
         
+        // In a real app, we would check for user.metadata.solutionsEngineer
+        // If user has a solutions engineer assigned, we would setAe with that data
+        
         // For demo purposes, let's assume showAE is false
         const mockShowAE = false;
         
@@ -91,7 +95,8 @@ export const AccountExecutiveProvider = ({
         isWidgetVisible,
         showWidget,
         hideWidget,
-        toggleWidget
+        toggleWidget,
+        setAe
       }}
     >
       {children}

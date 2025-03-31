@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthLayout } from "@/components/layouts/AuthLayout";
@@ -6,6 +7,7 @@ import { plans, addOns } from "@/data/billingData";
 import { StepOne } from "@/components/onboarding/StepOne";
 import { StepTwo } from "@/components/onboarding/StepTwo";
 import { useAuth } from "@/contexts/AuthContext";
+import { AccountExecutive, useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 
 const Onboarding = () => {
   const [selectedPlan, setSelectedPlan] = useState("free");
@@ -15,6 +17,7 @@ const Onboarding = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { setIsAuthenticated, setCurrentRole } = useAuth();
+  const { ae } = useAccountExecutive();
 
   const toggleAddOn = (addOnId: string) => {
     setSelectedAddOns(prev => 
@@ -35,6 +38,21 @@ const Onboarding = () => {
         setStep(2);
       } else {
         // In a real app, handle subscription creation here
+        // This is where we would also associate the Solutions Engineer with the user account
+        
+        // For a real implementation, we would store the SE data in the user metadata
+        const userMetadata = {
+          solutionsEngineer: {
+            id: ae?.name.toLowerCase().replace(' ', '-'),
+            name: ae?.name,
+            email: ae?.email,
+            calendly: ae?.calendly,
+          },
+          plan: selectedPlan,
+          addOns: selectedAddOns,
+        };
+        
+        console.log("User onboarding completed with metadata:", userMetadata);
         
         // Set authentication state
         setIsAuthenticated(true);
