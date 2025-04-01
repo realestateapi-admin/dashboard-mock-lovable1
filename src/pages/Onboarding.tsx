@@ -99,33 +99,28 @@ const Onboarding = () => {
               <p className="text-lg font-medium">But our users do.</p>
             </div>
             
-            <Carousel className="w-full mb-8">
-              <CarouselContent>
-                <CarouselItem>
-                  <div className="grid grid-cols-2 gap-4 justify-items-center">
-                    <img 
-                      src="/lovable-uploads/ce477b0d-ae2b-4f6a-a079-023a229fafd1.png" 
-                      alt="G2 Easiest To Do Business With Winter 2025" 
-                      className="h-28 w-auto"
-                    />
-                    <img 
-                      src="/lovable-uploads/25b45e9d-d768-4b1c-81ff-e8262cd8f87e.png" 
-                      alt="G2 High Performer Winter 2025" 
-                      className="h-28 w-auto"
-                    />
-                  </div>
-                </CarouselItem>
-                <CarouselItem>
-                  <div className="flex justify-center">
-                    <img 
-                      src="/lovable-uploads/1d9d9516-9460-4b44-9a33-41d3365e783f.png" 
-                      alt="G2 Best Support Winter 2025" 
-                      className="h-28 w-auto"
-                    />
-                  </div>
-                </CarouselItem>
-              </CarouselContent>
-            </Carousel>
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              <img 
+                src="/lovable-uploads/be315e6a-52ff-476d-9da2-a17bd28d5a50.png" 
+                alt="G2 Easiest To Do Business With Winter 2025" 
+                className="h-28 w-auto"
+              />
+              <img 
+                src="/lovable-uploads/7056603f-fc89-4cdc-8044-e8d1703e42b3.png" 
+                alt="G2 High Performer Winter 2025" 
+                className="h-28 w-auto"
+              />
+              <img 
+                src="/lovable-uploads/a3dafc7a-6f43-4b35-8e74-361e8b0cf22e.png" 
+                alt="G2 Best Support Winter 2025" 
+                className="h-28 w-auto col-span-2 mx-auto"
+              />
+              <img 
+                src="/lovable-uploads/26151f0c-9d1c-45ad-9cca-ded8ba7703ef.png" 
+                alt="G2 Users Love Us" 
+                className="h-28 w-auto col-span-2 mx-auto"
+              />
+            </div>
             
             <Separator className="my-6" />
             
