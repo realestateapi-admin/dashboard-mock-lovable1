@@ -60,7 +60,7 @@ const Onboarding = () => {
                   </li>
                   <li className="flex items-start">
                     <span className="mr-2 mt-0.5">✓</span>
-                    <span>No credit card required to start</span>
+                    <span>Credit card required for identification purposes only</span>
                   </li>
                 </ul>
               </div>
