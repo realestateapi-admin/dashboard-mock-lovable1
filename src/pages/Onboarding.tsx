@@ -131,7 +131,7 @@ const Onboarding = () => {
                   <img 
                     src="https://sourceforge.net/cdn/syndication/badge_img/3819142/customers-love-us-white?&variant_id=sf&r=https://sourceforge.net/s/realestateapi/admin/ext/commercial_badges/" 
                     alt="SourceForge Badge"
-                    width="250"
+                    width="125"
                     height="auto"
                   />
                 </a>
@@ -148,10 +148,6 @@ const Onboarding = () => {
                   </p>
                   <p className="text-right mt-3 font-medium">— Satisfied Customer</p>
                 </div>
-              </div>
-              
-              <div className="text-center mt-4">
-                <p className="text-base font-medium">TRUSTED BY +25,000 BUSINESSES</p>
               </div>
             </motion.div>
           </div>
