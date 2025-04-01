@@ -1,140 +1,45 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { useTrialAlert } from "@/contexts/TrialAlertContext";
-import { useAuth } from "@/contexts/AuthContext";
-
-type IndustryOption = "real-estate" | "proptech" | "fintech" | "home-services" | "lead-generation" | "e-commerce" | "other";
-type VolumeOption = "under-2k" | "2k-30k" | "30k-150k" | "150k-400k" | "400k-plus";
-type ReferralOption = "google" | "reddit" | "sourceforgeg2" | "podcast" | "industry-magazine" | "friend" | "other";
-
-interface WizardData {
-  industry: IndustryOption | null;
-  volume: VolumeOption | null;
-  referralSource: ReferralOption | null;
-}
-
-const industryOptions = [
-  { value: "real-estate", label: "Real Estate" },
-  { value: "proptech", label: "PropTech" },
-  { value: "fintech", label: "FinTech" },
-  { value: "home-services", label: "Home Services" },
-  { value: "lead-generation", label: "Lead Generation" },
-  { value: "e-commerce", label: "E-Commerce" },
-  { value: "other", label: "Other" },
-];
-
-const volumeOptions = [
-  { value: "under-2k", label: "Under 2,000" },
-  { value: "2k-30k", label: "2,000 - 30,000" },
-  { value: "30k-150k", label: "30,000 - 150,000" },
-  { value: "150k-400k", label: "150,000 - 400,000" },
-  { value: "400k-plus", label: "400,000+" },
-];
-
-const referralOptions = [
-  { value: "google", label: "Google" },
-  { value: "reddit", label: "Reddit" },
-  { value: "sourceforgeg2", label: "SourceForge / G2" },
-  { value: "podcast", label: "Podcast" },
-  { value: "industry-magazine", label: "Industry Magazine" },
-  { value: "friend", label: "A Friend" },
-  { value: "other", label: "Other" },
-];
+import { useOnboardingState } from "./hooks/useOnboardingState";
+import IndustryStep from "./wizard/IndustryStep";
+import VolumeStep from "./wizard/VolumeStep";
+import ReferralStep from "./wizard/ReferralStep";
+import WizardFooter from "./wizard/WizardFooter";
+import WizardProgress from "./wizard/WizardProgress";
+import { WizardStep } from "./types/OnboardingTypes";
 
 const OnboardingWizard = () => {
-  const [step, setStep] = useState(0);
-  const [data, setData] = useState<WizardData>({
-    industry: null,
-    volume: null,
-    referralSource: null,
-  });
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const { setIsFreeUser, setIsOnPaidPlan, startFreeTrial } = useTrialAlert();
-  const { setIsAuthenticated, setCurrentRole } = useAuth();
+  const { step, data, handleNext, handleBack, updateField } = useOnboardingState();
   
-  const steps = [
+  const steps: WizardStep[] = [
     {
       title: "What industry are you in?",
       description: "This helps us personalize your experience",
-      field: "industry" as const,
-      options: industryOptions,
+      field: "industry",
     },
     {
       title: "How many property addresses do you need data for monthly?",
       description: "We'll recommend the right plan for your needs",
-      field: "volume" as const,
-      options: volumeOptions,
+      field: "volume",
     },
     {
       title: "How did you hear about us?",
       description: "We're always looking to improve our outreach",
-      field: "referralSource" as const,
-      options: referralOptions,
+      field: "referralSource",
     },
   ];
 
   const currentStep = steps[step];
-  
-  const handleNext = () => {
-    if (step < steps.length - 1) {
-      setStep(step + 1);
-    } else {
-      handleComplete();
-    }
-  };
-  
-  const handleBack = () => {
-    if (step > 0) {
-      setStep(step - 1);
-    }
-  };
-  
-  const handleComplete = () => {
-    console.log("Form data submitted:", data);
-    
-    if (startFreeTrial) {
-      startFreeTrial();
-    } else {
-      setIsFreeUser(true);
-      setIsOnPaidPlan(false);
-      localStorage.setItem('isFreeUser', 'true');
-      localStorage.setItem('isOnPaidPlan', 'false');
-      localStorage.setItem('trialStartDate', new Date().toISOString());
-    }
-    
-    setIsAuthenticated(true);
-    setCurrentRole('admin');
-    
-    localStorage.setItem('isAuthenticated', 'true');
-    localStorage.setItem('userRole', 'admin');
-    localStorage.setItem('hasCompletedOnboarding', 'true');
-    
-    toast({
-      title: "Account setup complete!",
-      description: "Welcome to your free trial. Your dashboard is ready.",
-    });
-    
-    navigate("/dashboard");
-  };
-  
-  const updateField = (field: keyof WizardData, value: any) => {
-    setData({
-      ...data,
-      [field]: value,
-    });
-  };
-
   const isCurrentStepValid = !!data[currentStep.field];
-  const progress = ((step + 1) / steps.length) * 100;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -156,85 +61,40 @@ const OnboardingWizard = () => {
               </div>
             </div>
             
-            <div className="w-full h-2 bg-gray-200 rounded-full mt-4">
-              <div 
-                className="h-full bg-[#04c8c8] rounded-full transition-all duration-500"
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
+            <WizardProgress step={step} totalSteps={steps.length} />
           </CardHeader>
           
           <CardContent className="py-4">
-            {currentStep.field === "industry" && (
-              <RadioGroup
-                value={data.industry || ""}
-                onValueChange={(value) => updateField("industry", value as IndustryOption)}
-                className="space-y-3"
-              >
-                {industryOptions.map((option) => (
-                  <div key={option.value} className="flex items-center space-x-2 border rounded-md p-3 hover:bg-muted/50 transition-colors">
-                    <RadioGroupItem value={option.value} id={option.value} />
-                    <Label htmlFor={option.value} className="flex-grow cursor-pointer">{option.label}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
+            {step === 0 && (
+              <IndustryStep 
+                industry={data.industry} 
+                updateField={updateField}
+              />
             )}
             
-            {currentStep.field === "volume" && (
-              <RadioGroup
-                value={data.volume || ""}
-                onValueChange={(value) => updateField("volume", value as VolumeOption)}
-                className="space-y-3"
-              >
-                {volumeOptions.map((option) => (
-                  <div key={option.value} className="flex items-center space-x-2 border rounded-md p-3 hover:bg-muted/50 transition-colors">
-                    <RadioGroupItem value={option.value} id={option.value} />
-                    <Label htmlFor={option.value} className="flex-grow cursor-pointer">{option.label}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
+            {step === 1 && (
+              <VolumeStep 
+                volume={data.volume} 
+                updateField={updateField}
+              />
             )}
             
-            {currentStep.field === "referralSource" && (
-              <RadioGroup
-                value={data.referralSource || ""}
-                onValueChange={(value) => updateField("referralSource", value as ReferralOption)}
-                className="space-y-3"
-              >
-                {referralOptions.map((option) => (
-                  <div key={option.value} className="flex items-center space-x-2 border rounded-md p-3 hover:bg-muted/50 transition-colors">
-                    <RadioGroupItem value={option.value} id={option.value} />
-                    <Label htmlFor={option.value} className="flex-grow cursor-pointer">{option.label}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
+            {step === 2 && (
+              <ReferralStep
+                referralSource={data.referralSource}
+                updateField={updateField}
+              />
             )}
           </CardContent>
           
-          <CardFooter className="flex justify-between">
-            <Button
-              variant="outline"
-              onClick={handleBack}
-              disabled={step === 0}
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back
-            </Button>
-            
-            <Button
-              onClick={handleNext}
-              className="bg-[#04c8c8] hover:bg-[#04c8c8]/90"
-              disabled={!isCurrentStepValid}
-            >
-              {step < steps.length - 1 ? (
-                <>
-                  Next <ArrowRight className="ml-2 h-4 w-4" />
-                </>
-              ) : (
-                <>
-                  Complete <Check className="ml-2 h-4 w-4" />
-                </>
-              )}
-            </Button>
+          <CardFooter>
+            <WizardFooter 
+              step={step}
+              totalSteps={steps.length}
+              handleBack={handleBack}
+              handleNext={handleNext}
+              isCurrentStepValid={isCurrentStepValid}
+            />
           </CardFooter>
         </Card>
       </motion.div>
