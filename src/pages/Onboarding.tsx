@@ -16,17 +16,11 @@ const Onboarding = () => {
   const handleStartTrial = () => {
     setIsLoading(true);
     
-    // Mock API call to set up free trial
+    // Short timeout to show loading state, then navigate to the wizard
     setTimeout(() => {
       setIsLoading(false);
-      toast({
-        title: "Welcome to your free trial!",
-        description: "Your account has been set up successfully.",
-      });
-      
-      // Redirect to dashboard
-      navigate("/dashboard");
-    }, 1500);
+      navigate("/onboarding-wizard");
+    }, 500);
   };
   
   return (
