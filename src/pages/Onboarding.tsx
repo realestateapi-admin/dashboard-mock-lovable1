@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { Separator } from "@/components/ui/separator";
 
 const Onboarding = () => {
   const { toast } = useToast();
@@ -30,11 +32,13 @@ const Onboarding = () => {
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="w-full max-w-3xl mx-auto p-4">
+      <div className="w-full max-w-5xl mx-auto p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          className="grid md:grid-cols-2 gap-8"
         >
+          {/* Left Side - Trial Card */}
           <Card className="border shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-3xl font-bold tracking-tight">Welcome to your free trial</CardTitle>
@@ -82,6 +86,63 @@ const Onboarding = () => {
               </Button>
             </CardFooter>
           </Card>
+          
+          {/* Right Side - Social Proof */}
+          <motion.div
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="flex flex-col"
+          >
+            <div className="text-center mb-6">
+              <h2 className="text-xl font-semibold">We don't like to brag...</h2>
+              <p className="text-lg font-medium">But our users do.</p>
+            </div>
+            
+            <Carousel className="w-full mb-8">
+              <CarouselContent>
+                <CarouselItem>
+                  <div className="grid grid-cols-2 gap-4 justify-items-center">
+                    <img 
+                      src="/lovable-uploads/ce477b0d-ae2b-4f6a-a079-023a229fafd1.png" 
+                      alt="G2 Easiest To Do Business With Winter 2025" 
+                      className="h-28 w-auto"
+                    />
+                    <img 
+                      src="/lovable-uploads/25b45e9d-d768-4b1c-81ff-e8262cd8f87e.png" 
+                      alt="G2 High Performer Winter 2025" 
+                      className="h-28 w-auto"
+                    />
+                  </div>
+                </CarouselItem>
+                <CarouselItem>
+                  <div className="flex justify-center">
+                    <img 
+                      src="/lovable-uploads/1d9d9516-9460-4b44-9a33-41d3365e783f.png" 
+                      alt="G2 Best Support Winter 2025" 
+                      className="h-28 w-auto"
+                    />
+                  </div>
+                </CarouselItem>
+              </CarouselContent>
+            </Carousel>
+            
+            <Separator className="my-6" />
+            
+            <div className="text-center">
+              <p className="text-base font-medium">TRUSTED BY +25,000 BUSINESSES</p>
+              <div className="flex justify-center items-center gap-8 mt-4">
+                <div className="w-20 h-6 bg-foreground/80 rounded opacity-70"></div>
+                <div className="w-20 h-6 bg-foreground/80 rounded opacity-70"></div>
+                <div className="w-20 h-6 bg-foreground/80 rounded opacity-70"></div>
+              </div>
+            </div>
+            
+            <div className="mt-8 glass-card rounded-xl p-4 text-center w-full">
+              <p className="text-sm font-medium">Join thousands of real estate professionals who trust our API</p>
+              <p className="text-xs text-muted-foreground mt-1">⭐⭐⭐⭐⭐ 4.9/5 average rating on G2</p>
+            </div>
+          </motion.div>
         </motion.div>
       </div>
     </div>
