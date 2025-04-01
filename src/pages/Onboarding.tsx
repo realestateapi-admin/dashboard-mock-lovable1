@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { DashboardProvider } from "@/contexts/DashboardContext";
+import { useDashboardRefresh } from "@/components/dashboard/DashboardRefresh";
 
 // Mock data to satisfy the DashboardProvider props requirements
 const mockDailyUsageData = [
@@ -50,6 +51,8 @@ const Onboarding = () => {
       navigate("/onboarding-wizard");
     }, 500);
   };
+
+  const { handleRefresh } = useDashboardRefresh();
   
   return (
     <DashboardProvider
