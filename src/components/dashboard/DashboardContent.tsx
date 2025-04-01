@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 interface DashboardContentProps {
-  trialBanner: ReactNode;
+  trialBanner?: ReactNode; // Made the prop optional by adding '?'
 }
 
 export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
@@ -41,6 +41,7 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
         onRefresh={handleRefresh}
       />
       
+      {/* Only render the passed trialBanner if it exists */}
       {trialBanner}
       
       <DashboardSummary 
