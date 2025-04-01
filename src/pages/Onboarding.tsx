@@ -3,7 +3,7 @@ import { useState } from "react";
 import { StepOne } from "@/components/onboarding/StepOne";
 import { StepTwo } from "@/components/onboarding/StepTwo";
 import { useToast } from "@/components/ui/use-toast";
-import { allPlans, addOns } from "@/data/billingData"; // Import addOns as well
+import { signupPlans, addOns } from "@/data/billingData"; // Import signupPlans instead of allPlans
 
 const Onboarding = () => {
   const { toast } = useToast();
@@ -56,7 +56,7 @@ const Onboarding = () => {
         
         {currentStep === 1 ? (
           <StepOne 
-            plans={allPlans}
+            plans={signupPlans}
             selectedPlan={selectedPlan}
             setSelectedPlan={setSelectedPlan}
             isLoading={isLoading}
@@ -65,7 +65,7 @@ const Onboarding = () => {
         ) : (
           <StepTwo 
             selectedPlan={selectedPlan}
-            plans={allPlans}
+            plans={signupPlans}
             addOns={addOns}
             selectedAddOns={selectedAddOns}
             toggleAddOn={toggleAddOn}
