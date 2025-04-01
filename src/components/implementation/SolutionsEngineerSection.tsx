@@ -10,7 +10,7 @@ export const SolutionsEngineerSection: React.FC = () => {
       
       <h4 className="font-medium mb-2">User Metadata Structure</h4>
       <pre className="bg-gray-800 text-white p-4 rounded mb-3 overflow-x-auto">
-{
+{`{
   name: string,
   companyName: string,
   email: string,
@@ -22,7 +22,7 @@ export const SolutionsEngineerSection: React.FC = () => {
   },
   plan: string,         // selected plan during onboarding
   addOns: string[]      // selected add-ons during onboarding
-}
+}`}
       </pre>
       
       <h4 className="font-medium mt-4 mb-2">Implementation Notes:</h4>
@@ -37,7 +37,7 @@ export const SolutionsEngineerSection: React.FC = () => {
       <h4 className="font-medium mt-4 mb-2">MongoDB Collection Updates:</h4>
       <p>Update the <strong>accounts</strong> collection schema to include Solutions Engineer data:</p>
       <pre className="bg-gray-800 text-white p-4 rounded mb-3 overflow-x-auto">
-{
+{`{
   // ... existing account fields
   solutions_engineer: {
     id: String,
@@ -45,21 +45,21 @@ export const SolutionsEngineerSection: React.FC = () => {
     email: String,
     calendly: String,
   }
-}
+}`}
       </pre>
       
       <h4 className="font-medium mt-4 mb-2">Recommended API Endpoints:</h4>
       <p><strong>GET /api/user/support-contact</strong></p>
       <p>Returns the user's assigned Solutions Engineer information</p>
       <pre className="bg-gray-800 text-white p-4 rounded mb-3 overflow-x-auto">
-{
+{`{
   solutionsEngineer: {
     name: string,
     email: string,
     calendly: string,
     photo?: string
   }
-}
+}`}
       </pre>
     </div>
   );

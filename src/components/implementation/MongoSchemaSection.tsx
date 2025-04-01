@@ -14,7 +14,7 @@ export const MongoSchemaSection: React.FC = () => {
       <p className="mb-2"><strong>activity_logs (new):</strong> Detailed logs of every API request</p>
       
       <pre className="bg-gray-800 text-white p-4 rounded mb-3 overflow-x-auto">
-{
+{`{
   _id: ObjectId,
   account_id: Number,
   endpoint: String,
@@ -24,13 +24,13 @@ export const MongoSchemaSection: React.FC = () => {
   records_fetched: Number,
   credit_cost: Number,
   response_time: Number
-}
+}`}
       </pre>
       
       <p className="mb-2"><strong>endpoint_usage (new):</strong> Aggregated usage by endpoint</p>
       
       <pre className="bg-gray-800 text-white p-4 rounded mb-3 overflow-x-auto">
-{
+{`{
   _id: ObjectId,
   account_id: Number,
   billing_period_start: Date,
@@ -39,7 +39,7 @@ export const MongoSchemaSection: React.FC = () => {
   total_calls: Number,
   total_records: Number,
   last_updated: Date
-}
+}`}
       </pre>
     </div>
   );
