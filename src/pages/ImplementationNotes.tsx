@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 
@@ -326,6 +327,41 @@ const ImplementationNotes = () => {
   }
 }
         </pre>
+      </div>
+      
+      <div class="mb-8 mt-10 border-t pt-6 border-gray-300">
+        <h3 class="text-xl font-semibold mb-3">Chargebee Bulk Operations</h3>
+        <p class="mb-4">Use these documentation resources for managing bulk invoicing operations:</p>
+        
+        <div class="space-y-4">
+          <div class="p-4 bg-blue-50 border border-blue-200 rounded-md">
+            <h4 class="font-medium mb-2 text-blue-800">Sending Invoices in Bulk</h4>
+            <p class="mb-2">Learn how to create and send multiple invoices simultaneously to streamline your billing process.</p>
+            <a href="https://support.chargebee.com/support/solutions/articles/254527-how-to-send-invoices-in-bulk-" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+              View Documentation
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
+          
+          <div class="p-4 bg-blue-50 border border-blue-200 rounded-md">
+            <h4 class="font-medium mb-2 text-blue-800">Collecting Payments for Invoices in Bulk</h4>
+            <p class="mb-2">Efficiently process payments for multiple invoices at once to improve your collection workflow.</p>
+            <a href="https://support.chargebee.com/support/solutions/articles/256278-how-to-collect-payment-for-invoices-in-bulk-" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+              View Documentation
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   `;
