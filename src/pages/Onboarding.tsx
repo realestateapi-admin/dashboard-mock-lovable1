@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
 
 const Onboarding = () => {
@@ -72,7 +71,7 @@ const Onboarding = () => {
             <CardFooter>
               <Button
                 onClick={handleStartTrial}
-                className="w-full"
+                className="w-full bg-[#04c8c8] hover:bg-[#04c8c8]/90"
                 disabled={isLoading}
                 size="lg"
               >
@@ -99,27 +98,30 @@ const Onboarding = () => {
               <p className="text-lg font-medium">But our users do.</p>
             </div>
             
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              <img 
-                src="/lovable-uploads/be315e6a-52ff-476d-9da2-a17bd28d5a50.png" 
-                alt="G2 Easiest To Do Business With Winter 2025" 
-                className="h-28 w-auto"
-              />
-              <img 
-                src="/lovable-uploads/7056603f-fc89-4cdc-8044-e8d1703e42b3.png" 
-                alt="G2 High Performer Winter 2025" 
-                className="h-28 w-auto"
-              />
-              <img 
-                src="/lovable-uploads/a3dafc7a-6f43-4b35-8e74-361e8b0cf22e.png" 
-                alt="G2 Best Support Winter 2025" 
-                className="h-28 w-auto col-span-2 mx-auto"
-              />
-              <img 
-                src="/lovable-uploads/26151f0c-9d1c-45ad-9cca-ded8ba7703ef.png" 
-                alt="G2 Users Love Us" 
-                className="h-28 w-auto col-span-2 mx-auto"
-              />
+            <div className="flex flex-col items-center gap-8 mb-8">
+              <div className="flex justify-center items-center gap-8">
+                <img 
+                  src="/lovable-uploads/7056603f-fc89-4cdc-8044-e8d1703e42b3.png" 
+                  alt="G2 High Performer Winter 2025" 
+                  className="h-24 w-auto"
+                />
+              </div>
+              
+              <div className="flex justify-center items-center gap-8 mt-4">
+                <img 
+                  src="/lovable-uploads/a3dafc7a-6f43-4b35-8e74-361e8b0cf22e.png" 
+                  alt="G2 Best Support Winter 2025" 
+                  className="h-24 w-auto"
+                />
+              </div>
+              
+              <div className="flex justify-center items-center gap-8 mt-4">
+                <img 
+                  src="/lovable-uploads/be315e6a-52ff-476d-9da2-a17bd28d5a50.png" 
+                  alt="G2 Easiest To Do Business With Winter 2025" 
+                  className="h-24 w-auto"
+                />
+              </div>
             </div>
             
             <Separator className="my-6" />
@@ -127,9 +129,9 @@ const Onboarding = () => {
             <div className="text-center">
               <p className="text-base font-medium">TRUSTED BY +25,000 BUSINESSES</p>
               <div className="flex justify-center items-center gap-8 mt-4">
-                <div className="w-20 h-6 bg-foreground/80 rounded opacity-70"></div>
-                <div className="w-20 h-6 bg-foreground/80 rounded opacity-70"></div>
-                <div className="w-20 h-6 bg-foreground/80 rounded opacity-70"></div>
+                <div className="w-20 h-6 bg-gray-400 rounded opacity-70"></div>
+                <div className="w-20 h-6 bg-gray-400 rounded opacity-70"></div>
+                <div className="w-20 h-6 bg-gray-400 rounded opacity-70"></div>
               </div>
             </div>
             
