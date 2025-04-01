@@ -11,6 +11,9 @@ interface TrialContextType {
   trialStartDate: Date | null;
   isFreeUser: boolean;
   isOnPaidPlan: boolean;
+  setIsFreeUser: (value: boolean) => void;
+  setIsOnPaidPlan: (value: boolean) => void;
+  startFreeTrial: () => void;
 }
 
 const TrialAlertContext = createContext<TrialContextType | undefined>(undefined);
@@ -36,29 +39,40 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
 
   // Mock loading trial data
   useEffect(() => {
-    // In a real app, this would be fetched from your API
-    const mockLoadTrialData = async () => {
-      try {
-        // Simulating API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Mock data - this would come from your backend
-        const mockStartDate = new Date();
-        mockStartDate.setDate(mockStartDate.getDate() - 2); // 2 days into trial
-        
-        setTrialStartDate(mockStartDate);
-        const daysElapsed = Math.floor((Date.now() - mockStartDate.getTime()) / (1000 * 60 * 60 * 24));
-        setTrialDaysLeft(14 - daysElapsed);
-        
-        // For demo purposes, set the user to be on a free plan to show the trial banner
-        setIsFreeUser(true);
-        setIsOnPaidPlan(false);
-      } catch (error) {
-        console.error("Failed to load trial data:", error);
-      }
-    };
+    // Check if there's saved trial data
+    const savedTrialStartDate = localStorage.getItem('trialStartDate');
+    const savedIsFreeUser = localStorage.getItem('isFreeUser');
+    const savedIsOnPaidPlan = localStorage.getItem('isOnPaidPlan');
     
-    mockLoadTrialData();
+    if (savedTrialStartDate) {
+      const startDate = new Date(savedTrialStartDate);
+      setTrialStartDate(startDate);
+      const daysElapsed = Math.floor((Date.now() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+      setTrialDaysLeft(Math.max(0, 14 - daysElapsed));
+    }
+    
+    if (savedIsFreeUser) {
+      setIsFreeUser(savedIsFreeUser === 'true');
+    }
+    
+    if (savedIsOnPaidPlan) {
+      setIsOnPaidPlan(savedIsOnPaidPlan === 'true');
+    }
+    
+    // If no saved data, use the mock data
+    if (!savedTrialStartDate && !savedIsFreeUser && !savedIsOnPaidPlan) {
+      // Mock data - this would come from your backend
+      const mockStartDate = new Date();
+      mockStartDate.setDate(mockStartDate.getDate() - 2); // 2 days into trial
+      
+      setTrialStartDate(mockStartDate);
+      const daysElapsed = Math.floor((Date.now() - mockStartDate.getTime()) / (1000 * 60 * 60 * 24));
+      setTrialDaysLeft(14 - daysElapsed);
+      
+      // For demo purposes, set the user to be on a free plan to show the trial banner
+      setIsFreeUser(true);
+      setIsOnPaidPlan(false);
+    }
   }, []);
 
   // Check for trial alerts
@@ -89,6 +103,20 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
     }
   }, [trialDaysLeft, toast, isFreeUser, isOnPaidPlan]);
 
+  // Start a fresh free trial
+  const startFreeTrial = () => {
+    const newStartDate = new Date();
+    setTrialStartDate(newStartDate);
+    setTrialDaysLeft(14);
+    setIsFreeUser(true);
+    setIsOnPaidPlan(false);
+    
+    // Store in localStorage for persistence
+    localStorage.setItem('trialStartDate', newStartDate.toISOString());
+    localStorage.setItem('isFreeUser', 'true');
+    localStorage.setItem('isOnPaidPlan', 'false');
+  };
+
   const requestTrialExtension = () => {
     // In a real app, this would call your API
     toast({
@@ -105,6 +133,9 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
     trialStartDate,
     isFreeUser,
     isOnPaidPlan,
+    setIsFreeUser,
+    setIsOnPaidPlan,
+    startFreeTrial,
   };
 
   return (

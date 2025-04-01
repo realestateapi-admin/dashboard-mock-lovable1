@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 type IndustryOption = "real-estate" | "proptech" | "fintech" | "home-services" | "lead-generation" | "e-commerce" | "other";
 type VolumeOption = "under-2k" | "2k-30k" | "30k-150k" | "150k-400k" | "400k-plus";
@@ -58,6 +58,7 @@ const OnboardingWizard = () => {
   });
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { setIsFreeUser, setIsOnPaidPlan, startFreeTrial } = useTrialAlert();
   
   const steps = [
     {
@@ -100,6 +101,23 @@ const OnboardingWizard = () => {
   const handleComplete = () => {
     // In a real app, you would send this data to an API
     console.log("Form data submitted:", data);
+    
+    // Start free trial
+    if (startFreeTrial) {
+      // Start the trial with 14 days
+      startFreeTrial();
+    } else {
+      // If startFreeTrial is not available, set the trial state manually
+      setIsFreeUser(true);
+      setIsOnPaidPlan(false);
+      // Store in localStorage for persistence
+      localStorage.setItem('isFreeUser', 'true');
+      localStorage.setItem('isOnPaidPlan', 'false');
+      localStorage.setItem('trialStartDate', new Date().toISOString());
+    }
+    
+    // Ensure the user is authenticated before redirecting to dashboard
+    localStorage.setItem('isAuthenticated', 'true');
     
     // Show success message
     toast({

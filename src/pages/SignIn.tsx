@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ const SignIn = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { setIsAuthenticated, setCurrentRole } = useAuth();
+  const { startFreeTrial } = useTrialAlert();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +48,15 @@ const SignIn = () => {
       // but kept for backward compatibility)
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('userRole', role);
+      
+      // Check if this is a new user (for demo purposes, we'll use a flag in localStorage)
+      const isNewUser = !localStorage.getItem('hasSignedInBefore');
+      
+      // If it's a new user, start a trial
+      if (isNewUser && startFreeTrial) {
+        startFreeTrial();
+        localStorage.setItem('hasSignedInBefore', 'true');
+      }
       
       toast({
         title: "Signed in successfully",
