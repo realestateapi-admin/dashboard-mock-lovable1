@@ -13,6 +13,7 @@ import { useOnboardingState } from "./hooks/useOnboardingState";
 import IndustryStep from "./wizard/IndustryStep";
 import VolumeStep from "./wizard/VolumeStep";
 import ReferralStep from "./wizard/ReferralStep";
+import CreditCardStep from "./wizard/CreditCardStep";
 import WizardFooter from "./wizard/WizardFooter";
 import WizardProgress from "./wizard/WizardProgress";
 import { WizardStep } from "./types/OnboardingTypes";
@@ -36,6 +37,11 @@ const OnboardingWizard = () => {
       description: "We're always looking to improve our outreach",
       field: "referralSource",
     },
+    {
+      title: "Set up your free trial",
+      description: "Your card won't be charged until your 14-day free trial ends",
+      field: "creditCardInfo",
+    }
   ];
 
   const currentStep = steps[step];
@@ -82,6 +88,13 @@ const OnboardingWizard = () => {
             {step === 2 && (
               <ReferralStep
                 referralSource={data.referralSource}
+                updateField={updateField}
+              />
+            )}
+
+            {step === 3 && (
+              <CreditCardStep
+                creditCardInfo={data.creditCardInfo}
                 updateField={updateField}
               />
             )}

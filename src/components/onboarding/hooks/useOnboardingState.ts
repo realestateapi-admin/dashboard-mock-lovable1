@@ -12,6 +12,7 @@ export const useOnboardingState = () => {
     industry: null,
     volume: null,
     referralSource: null,
+    creditCardInfo: null,
   });
   
   const { toast } = useToast();
@@ -20,7 +21,7 @@ export const useOnboardingState = () => {
   const { setIsAuthenticated, setCurrentRole } = useAuth();
   
   const handleNext = () => {
-    if (step < 2) {
+    if (step < 3) {
       setStep(step + 1);
     } else {
       handleComplete();
