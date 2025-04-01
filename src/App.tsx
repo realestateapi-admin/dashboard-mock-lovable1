@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Onboarding from "./pages/Onboarding";
+import OnboardingWizardPage from "./pages/OnboardingWizardPage";
 import { DashboardLayout } from "./components/layouts/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import ApiUsage from "./pages/ApiUsage";
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/sign-in" element={<SignIn />} />
               <Route path="/sign-up" element={<SignUp />} />
               <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/onboarding-wizard" element={<OnboardingWizardPage />} />
               <Route path="/sales-flow" element={<SalesFlowPage />} />
               
               {/* Dashboard routes */}
