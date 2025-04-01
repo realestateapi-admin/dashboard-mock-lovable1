@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -24,6 +23,7 @@ import { TrialAlertProvider } from "./contexts/TrialAlertContext";
 import { AuthProvider, ProtectedRoute } from "./contexts/AuthContext";
 import AccessDenied from "./pages/AccessDenied";
 import ImplementationNotes from "./pages/ImplementationNotes";
+import SalesFlowPage from "./pages/SalesFlowPage";
 
 // Initialize the query client for data fetching
 const queryClient = new QueryClient();
@@ -42,6 +42,7 @@ const App = () => (
               <Route path="/sign-in" element={<SignIn />} />
               <Route path="/sign-up" element={<SignUp />} />
               <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/sales-flow" element={<SalesFlowPage />} />
               
               {/* Dashboard routes */}
               <Route path="/dashboard" element={
@@ -86,6 +87,9 @@ const App = () => (
                 
                 {/* Implementation Notes - accessible to all roles */}
                 <Route path="implementation-notes" element={<ImplementationNotes />} />
+                
+                {/* Sales Flow - accessible to all roles */}
+                <Route path="sales-flow" element={<SalesFlowPage />} />
                 
                 {/* Settings - accessible to admins only */}
                 <Route path="settings" element={
