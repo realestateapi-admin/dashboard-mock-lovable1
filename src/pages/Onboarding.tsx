@@ -125,18 +125,16 @@ const Onboarding = () => {
                 <p className="text-lg text-muted-foreground">See what our users are saying about us</p>
               </div>
               
-              {/* SourceForge Badge */}
+              {/* SourceForge Badge - Using direct image URL */}
               <div className="flex justify-center mb-10">
-                <div 
-                  className="sf-root" 
-                  data-id="3819142" 
-                  data-badge="customers-love-us-white" 
-                  data-variant-id="sf" 
-                  style={{ width: "250px" }}
-                  dangerouslySetInnerHTML={{
-                    __html: `<a href="https://sourceforge.net/software/product/RealEstateAPI/" target="_blank">RealEstateAPI (REAPI) Reviews</a>`
-                  }}
-                ></div>
+                <a href="https://sourceforge.net/software/product/RealEstateAPI/" target="_blank" rel="noopener noreferrer">
+                  <img 
+                    src="https://sourceforge.net/cdn/syndication/badge_img/3819142/customers-love-us-white?&variant_id=sf&r=https://sourceforge.net/s/realestateapi/admin/ext/commercial_badges/" 
+                    alt="SourceForge Badge"
+                    width="250"
+                    height="auto"
+                  />
+                </a>
               </div>
               
               <Separator className="my-6" />
@@ -159,17 +157,6 @@ const Onboarding = () => {
           </div>
         </div>
       </div>
-      
-      {/* Script for SourceForge badge */}
-      <script dangerouslySetInnerHTML={{
-        __html: `(function () {
-          var sc=document.createElement('script');
-          sc.async=true;
-          sc.src='https://b.sf-syn.com/badge_js?sf_id=3819142&variant_id=sf';
-          var p=document.getElementsByTagName('script')[0];
-          p.parentNode.insertBefore(sc, p);
-        })();`
-      }} />
     </DashboardProvider>
   );
 };
