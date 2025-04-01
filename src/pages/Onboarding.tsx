@@ -7,7 +7,7 @@ import { plans, addOns } from "@/data/billingData";
 import { StepOne } from "@/components/onboarding/StepOne";
 import { StepTwo } from "@/components/onboarding/StepTwo";
 import { useAuth } from "@/contexts/AuthContext";
-import { AccountExecutive, useAccountExecutive } from "@/contexts/AccountExecutiveContext";
+import { AccountExecutiveProvider } from "@/contexts/AccountExecutiveContext";
 
 const Onboarding = () => {
   const [selectedPlan, setSelectedPlan] = useState("free");
@@ -17,7 +17,6 @@ const Onboarding = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { setIsAuthenticated, setCurrentRole } = useAuth();
-  const { ae } = useAccountExecutive();
 
   const toggleAddOn = (addOnId: string) => {
     setSelectedAddOns(prev => 
@@ -43,10 +42,10 @@ const Onboarding = () => {
         // For a real implementation, we would store the SE data in the user metadata
         const userMetadata = {
           solutionsEngineer: {
-            id: ae?.name.toLowerCase().replace(' ', '-'),
-            name: ae?.name,
-            email: ae?.email,
-            calendly: ae?.calendly,
+            id: "alex-grant",
+            name: "Alex Grant",
+            email: "alex@realestateapi.com",
+            calendly: "https://calendly.com/alex-reapi",
           },
           plan: selectedPlan,
           addOns: selectedAddOns,
@@ -85,40 +84,42 @@ const Onboarding = () => {
   };
 
   return (
-    <AuthLayout>
-      <div className="space-y-6 w-full">
-        <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {step === 1 ? "Choose your plan" : "Complete your setup"}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {step === 1 
-              ? "Start with a free plan or choose a paid option with more features" 
-              : "Just a few more steps to get you started."}
-          </p>
+    <AccountExecutiveProvider>
+      <AuthLayout>
+        <div className="space-y-6 w-full">
+          <div className="space-y-2 text-center">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {step === 1 ? "Choose your plan" : "Complete your setup"}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {step === 1 
+                ? "Start with a free plan or choose a paid option with more features" 
+                : "Just a few more steps to get you started."}
+            </p>
+          </div>
+          
+          {step === 1 ? (
+            <StepOne
+              plans={plans}
+              selectedPlan={selectedPlan}
+              setSelectedPlan={setSelectedPlan}
+              isLoading={isLoading}
+              handleContinue={handleContinue}
+            />
+          ) : (
+            <StepTwo
+              plans={plans}
+              addOns={addOns}
+              selectedPlan={selectedPlan}
+              selectedAddOns={selectedAddOns}
+              toggleAddOn={toggleAddOn}
+              isLoading={isLoading}
+              handleContinue={handleContinue}
+            />
+          )}
         </div>
-        
-        {step === 1 ? (
-          <StepOne
-            plans={plans}
-            selectedPlan={selectedPlan}
-            setSelectedPlan={setSelectedPlan}
-            isLoading={isLoading}
-            handleContinue={handleContinue}
-          />
-        ) : (
-          <StepTwo
-            plans={plans}
-            addOns={addOns}
-            selectedPlan={selectedPlan}
-            selectedAddOns={selectedAddOns}
-            toggleAddOn={toggleAddOn}
-            isLoading={isLoading}
-            handleContinue={handleContinue}
-          />
-        )}
-      </div>
-    </AuthLayout>
+      </AuthLayout>
+    </AccountExecutiveProvider>
   );
 };
 
