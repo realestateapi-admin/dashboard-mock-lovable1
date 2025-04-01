@@ -3,10 +3,11 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Quote as QuoteIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 const Onboarding = () => {
   const { toast } = useToast();
@@ -80,7 +81,7 @@ const Onboarding = () => {
             </CardFooter>
           </Card>
           
-          {/* Right Side - Social Proof */}
+          {/* Right Side - Social Proof with SourceForge badge and customer quote */}
           <motion.div
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
@@ -92,28 +93,23 @@ const Onboarding = () => {
               <p className="text-lg font-medium">But our users do.</p>
             </div>
             
-            <div className="flex flex-col items-center gap-6 mb-8">
-              {/* Two badges side by side */}
-              <div className="flex justify-center gap-4">
-                <img 
-                  src="/lovable-uploads/7056603f-fc89-4cdc-8044-e8d1703e42b3.png" 
-                  alt="G2 High Performer Winter 2025" 
-                  className="h-24 w-auto"
-                />
-                <img 
-                  src="/lovable-uploads/a3dafc7a-6f43-4b35-8e74-361e8b0cf22e.png" 
-                  alt="G2 Best Support Winter 2025" 
-                  className="h-24 w-auto"
-                />
-              </div>
-              
-              {/* The "Easiest To Do Business With" badge */}
-              <div className="flex justify-center">
-                <img 
-                  src="/lovable-uploads/533ff3dd-281a-4d38-a7ae-a6e45f1eee23.png" 
-                  alt="G2 Easiest To Do Business With Winter 2025" 
-                  className="h-24 w-auto"
-                />
+            {/* SourceForge Badge */}
+            <div className="flex justify-center mb-8">
+              <img 
+                src="/lovable-uploads/cbf1a12f-50dd-479c-936b-f54823350ad1.png" 
+                alt="SourceForge Customers Love Us" 
+                className="h-36 w-auto"
+              />
+            </div>
+            
+            {/* Customer Quote */}
+            <div className="bg-muted/50 rounded-lg p-5 mb-8 relative">
+              <QuoteIcon className="h-8 w-8 text-muted-foreground/40 absolute top-3 left-3" />
+              <div className="pl-6 pt-4">
+                <p className="text-lg italic">
+                  "Great team, great product what's not to like! Very committed to your success.."
+                </p>
+                <p className="text-right mt-3 font-medium">— Satisfied Customer</p>
               </div>
             </div>
             
