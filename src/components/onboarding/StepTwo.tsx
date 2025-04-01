@@ -16,22 +16,24 @@ import {
 
 interface StepTwoProps {
   plans: PlanData[];
-  addOns: AddOnData[];
   selectedPlan: string;
-  selectedAddOns: string[];
-  toggleAddOn: (addOnId: string) => void;
+  addOns?: AddOnData[];
+  selectedAddOns?: string[];
+  toggleAddOn?: (addOnId: string) => void;
   isLoading: boolean;
-  handleContinue: () => void;
+  handleSubscribe: () => void; // Added this prop to match what's being passed in Onboarding.tsx
+  handleBack: () => void;
 }
 
 export const StepTwo = ({
   plans,
-  addOns,
+  addOns = [],
   selectedPlan,
-  selectedAddOns,
-  toggleAddOn,
+  selectedAddOns = [],
+  toggleAddOn = () => {},
   isLoading,
-  handleContinue
+  handleSubscribe,
+  handleBack
 }: StepTwoProps) => {
   return (
     <motion.div
@@ -70,7 +72,7 @@ export const StepTwo = ({
         </CardContent>
         <CardFooter>
           <Button
-            onClick={handleContinue}
+            onClick={handleSubscribe} // Use the handleSubscribe prop here
             className="w-full"
             disabled={isLoading}
           >
@@ -87,4 +89,3 @@ export const StepTwo = ({
     </motion.div>
   );
 };
-

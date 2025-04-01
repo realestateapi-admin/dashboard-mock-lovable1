@@ -3,17 +3,27 @@ import { useState } from "react";
 import { StepOne } from "@/components/onboarding/StepOne";
 import { StepTwo } from "@/components/onboarding/StepTwo";
 import { useToast } from "@/components/ui/use-toast";
-import { allPlans } from "@/data/billingData"; // Changed from plans to allPlans
+import { allPlans, addOns } from "@/data/billingData"; // Import addOns as well
 
 const Onboarding = () => {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedPlan, setSelectedPlan] = useState("free");
+  const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]); // Add state for selected add-ons
   const [isLoading, setIsLoading] = useState(false);
   
   const handleContinue = () => {
     // Move to next step
     setCurrentStep(2);
+  };
+
+  // Add a function to toggle add-ons
+  const toggleAddOn = (addOnId: string) => {
+    setSelectedAddOns(prev => 
+      prev.includes(addOnId) 
+        ? prev.filter(id => id !== addOnId) 
+        : [...prev, addOnId]
+    );
   };
   
   const handleSubscribe = () => {
@@ -46,7 +56,7 @@ const Onboarding = () => {
         
         {currentStep === 1 ? (
           <StepOne 
-            plans={allPlans} // Changed from plans to allPlans
+            plans={allPlans}
             selectedPlan={selectedPlan}
             setSelectedPlan={setSelectedPlan}
             isLoading={isLoading}
@@ -55,7 +65,10 @@ const Onboarding = () => {
         ) : (
           <StepTwo 
             selectedPlan={selectedPlan}
-            plans={allPlans} // Changed from plans to allPlans
+            plans={allPlans}
+            addOns={addOns}
+            selectedAddOns={selectedAddOns}
+            toggleAddOn={toggleAddOn}
             isLoading={isLoading}
             handleSubscribe={handleSubscribe}
             handleBack={() => setCurrentStep(1)}
