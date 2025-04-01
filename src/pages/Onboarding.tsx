@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthLayout } from "@/components/layouts/AuthLayout";
@@ -7,7 +6,6 @@ import { plans, addOns } from "@/data/billingData";
 import { StepOne } from "@/components/onboarding/StepOne";
 import { StepTwo } from "@/components/onboarding/StepTwo";
 import { useAuth } from "@/contexts/AuthContext";
-import { AccountExecutiveProvider } from "@/contexts/AccountExecutiveContext";
 
 const Onboarding = () => {
   const [selectedPlan, setSelectedPlan] = useState("free");
@@ -84,42 +82,40 @@ const Onboarding = () => {
   };
 
   return (
-    <AccountExecutiveProvider>
-      <AuthLayout>
-        <div className="space-y-6 w-full">
-          <div className="space-y-2 text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              {step === 1 ? "Choose your plan" : "Complete your setup"}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {step === 1 
-                ? "Start with a free plan or choose a paid option with more features" 
-                : "Just a few more steps to get you started."}
-            </p>
-          </div>
-          
-          {step === 1 ? (
-            <StepOne
-              plans={plans}
-              selectedPlan={selectedPlan}
-              setSelectedPlan={setSelectedPlan}
-              isLoading={isLoading}
-              handleContinue={handleContinue}
-            />
-          ) : (
-            <StepTwo
-              plans={plans}
-              addOns={addOns}
-              selectedPlan={selectedPlan}
-              selectedAddOns={selectedAddOns}
-              toggleAddOn={toggleAddOn}
-              isLoading={isLoading}
-              handleContinue={handleContinue}
-            />
-          )}
+    <AuthLayout>
+      <div className="space-y-6 w-full">
+        <div className="space-y-2 text-center">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {step === 1 ? "Choose your plan" : "Complete your setup"}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {step === 1 
+              ? "Start with a free plan or choose a paid option with more features" 
+              : "Just a few more steps to get you started."}
+          </p>
         </div>
-      </AuthLayout>
-    </AccountExecutiveProvider>
+        
+        {step === 1 ? (
+          <StepOne
+            plans={plans}
+            selectedPlan={selectedPlan}
+            setSelectedPlan={setSelectedPlan}
+            isLoading={isLoading}
+            handleContinue={handleContinue}
+          />
+        ) : (
+          <StepTwo
+            plans={plans}
+            addOns={addOns}
+            selectedPlan={selectedPlan}
+            selectedAddOns={selectedAddOns}
+            toggleAddOn={toggleAddOn}
+            isLoading={isLoading}
+            handleContinue={handleContinue}
+          />
+        )}
+      </div>
+    </AuthLayout>
   );
 };
 
