@@ -1,15 +1,15 @@
 
 import { motion } from "framer-motion";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { IndustryOption } from "../types/OnboardingTypes";
+import RadioOption, { RadioOptionProps } from "./RadioOption";
 
 interface IndustryStepProps {
   industry: IndustryOption | null;
   updateField: (field: "industry", value: IndustryOption) => void;
 }
 
-const industryOptions = [
+const industryOptions: RadioOptionProps[] = [
   { value: "real-estate", label: "Real Estate" },
   { value: "proptech", label: "PropTech" },
   { value: "fintech", label: "FinTech" },
@@ -27,10 +27,7 @@ const IndustryStep = ({ industry, updateField }: IndustryStepProps) => {
       className="space-y-3"
     >
       {industryOptions.map((option) => (
-        <div key={option.value} className="flex items-center space-x-2 border rounded-md p-3 hover:bg-muted/50 transition-colors">
-          <RadioGroupItem value={option.value} id={option.value} />
-          <Label htmlFor={option.value} className="flex-grow cursor-pointer">{option.label}</Label>
-        </div>
+        <RadioOption key={option.value} value={option.value} label={option.label} />
       ))}
     </RadioGroup>
   );

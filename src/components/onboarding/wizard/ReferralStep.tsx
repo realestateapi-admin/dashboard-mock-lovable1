@@ -1,14 +1,14 @@
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { ReferralOption } from "../types/OnboardingTypes";
+import RadioOption, { RadioOptionProps } from "./RadioOption";
 
 interface ReferralStepProps {
   referralSource: ReferralOption | null;
   updateField: (field: "referralSource", value: ReferralOption) => void;
 }
 
-const referralOptions = [
+const referralOptions: RadioOptionProps[] = [
   { value: "google", label: "Google" },
   { value: "reddit", label: "Reddit" },
   { value: "sourceforgeg2", label: "SourceForge / G2" },
@@ -26,10 +26,7 @@ const ReferralStep = ({ referralSource, updateField }: ReferralStepProps) => {
       className="space-y-3"
     >
       {referralOptions.map((option) => (
-        <div key={option.value} className="flex items-center space-x-2 border rounded-md p-3 hover:bg-muted/50 transition-colors">
-          <RadioGroupItem value={option.value} id={option.value} />
-          <Label htmlFor={option.value} className="flex-grow cursor-pointer">{option.label}</Label>
-        </div>
+        <RadioOption key={option.value} value={option.value} label={option.label} />
       ))}
     </RadioGroup>
   );
