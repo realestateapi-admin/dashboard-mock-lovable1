@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -171,9 +171,6 @@ const SignUp = () => {
         </div>
       </div>
     </AuthLayout>
-  </form>
-  </div>
-</AuthLayout>
   );
 };
 

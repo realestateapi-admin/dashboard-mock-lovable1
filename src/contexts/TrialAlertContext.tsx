@@ -50,10 +50,9 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
         const daysElapsed = Math.floor((Date.now() - mockStartDate.getTime()) / (1000 * 60 * 60 * 24));
         setTrialDaysLeft(14 - daysElapsed);
         
-        // For demo purposes, let's assume user is on a paid plan (Starter)
-        // This will hide the Free Plan banner
-        setIsFreeUser(false);
-        setIsOnPaidPlan(true);
+        // For demo purposes, set the user to be on a free plan to show the trial banner
+        setIsFreeUser(true);
+        setIsOnPaidPlan(false);
       } catch (error) {
         console.error("Failed to load trial data:", error);
       }

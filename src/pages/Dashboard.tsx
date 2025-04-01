@@ -1,8 +1,6 @@
-
 import { motion } from "framer-motion";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
 import { DashboardProvider } from "@/contexts/DashboardContext";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { TrialBanner } from "@/components/dashboard/TrialBanner";
 import { DashboardContent } from "@/components/dashboard/DashboardContent";
 
@@ -155,6 +153,15 @@ const Dashboard = () => {
         recentActivity={recentActivity}
         usageDistributionData={usageDistributionData}
       >
+        {/* Always render the TrialBanner - it will only be displayed if conditions are met */}
+        <TrialBanner 
+          isTrialActive={isTrialActive}
+          trialDaysLeft={trialDaysLeft}
+          requestTrialExtension={requestTrialExtension}
+          isFreeUser={isFreeUser}
+          isOnPaidPlan={isOnPaidPlan}
+        />
+        
         <DashboardContent 
           trialBanner={
             <TrialBanner 
