@@ -1,4 +1,6 @@
+
 import React from 'react';
+import SalesMotionFlowchart from '../flowcharts/SalesMotionFlowchart';
 
 export const SolutionsEngineerSection: React.FC = () => {
   return (
@@ -6,6 +8,11 @@ export const SolutionsEngineerSection: React.FC = () => {
       <h3 className="text-xl font-semibold mb-3">Demo Notes: Solutions Engineer Integration</h3>
       <div className="bg-amber-50 border-l-4 border-amber-500 p-4 mb-4">
         <p className="font-medium">Important: Solutions Engineer data is now stored in user metadata</p>
+      </div>
+      
+      <h4 className="font-medium mb-4">Sales Motion Flowchart</h4>
+      <div className="mb-6 border rounded-lg overflow-hidden">
+        <SalesMotionFlowchart />
       </div>
       
       <h4 className="font-medium mb-2">User Metadata Structure</h4>
