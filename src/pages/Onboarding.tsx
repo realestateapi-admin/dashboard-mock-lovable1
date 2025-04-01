@@ -130,12 +130,12 @@ const Onboarding = () => {
                 <p className="text-lg font-medium">But our users do.</p>
               </div>
               
-              {/* SourceForge Badge */}
-              <div className="flex justify-center mb-8">
+              {/* SourceForge Badge - Enlarged and centered */}
+              <div className="flex justify-center items-center mb-8 py-4">
                 <img 
                   src="/lovable-uploads/cbf1a12f-50dd-479c-936b-f54823350ad1.png" 
                   alt="SourceForge Customers Love Us" 
-                  className="h-36 w-auto"
+                  className="h-48 w-auto"
                 />
               </div>
               
