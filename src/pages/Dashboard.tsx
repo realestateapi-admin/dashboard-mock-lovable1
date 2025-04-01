@@ -153,7 +153,7 @@ const Dashboard = () => {
         recentActivity={recentActivity}
         usageDistributionData={usageDistributionData}
       >
-        {/* Always render the TrialBanner - it will only be displayed if conditions are met */}
+        {/* Show the TrialBanner only once here - not in DashboardContent */}
         <TrialBanner 
           isTrialActive={isTrialActive}
           trialDaysLeft={trialDaysLeft}
@@ -162,17 +162,7 @@ const Dashboard = () => {
           isOnPaidPlan={isOnPaidPlan}
         />
         
-        <DashboardContent 
-          trialBanner={
-            <TrialBanner 
-              isTrialActive={isTrialActive}
-              trialDaysLeft={trialDaysLeft}
-              requestTrialExtension={requestTrialExtension}
-              isFreeUser={isFreeUser}
-              isOnPaidPlan={isOnPaidPlan}
-            />
-          }
-        />
+        <DashboardContent />
       </DashboardProvider>
     </motion.div>
   );
