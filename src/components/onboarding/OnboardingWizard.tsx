@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -10,6 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 type IndustryOption = "real-estate" | "proptech" | "fintech" | "home-services" | "lead-generation" | "e-commerce" | "other";
 type VolumeOption = "under-2k" | "2k-30k" | "30k-150k" | "150k-400k" | "400k-plus";
@@ -59,6 +59,7 @@ const OnboardingWizard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { setIsFreeUser, setIsOnPaidPlan, startFreeTrial } = useTrialAlert();
+  const { setIsAuthenticated, setCurrentRole } = useAuth();
   
   const steps = [
     {
@@ -87,7 +88,6 @@ const OnboardingWizard = () => {
     if (step < steps.length - 1) {
       setStep(step + 1);
     } else {
-      // Submit the form data
       handleComplete();
     }
   };
@@ -99,33 +99,30 @@ const OnboardingWizard = () => {
   };
   
   const handleComplete = () => {
-    // In a real app, you would send this data to an API
     console.log("Form data submitted:", data);
     
-    // Start free trial
     if (startFreeTrial) {
-      // Start the trial with 14 days
       startFreeTrial();
     } else {
-      // If startFreeTrial is not available, set the trial state manually
       setIsFreeUser(true);
       setIsOnPaidPlan(false);
-      // Store in localStorage for persistence
       localStorage.setItem('isFreeUser', 'true');
       localStorage.setItem('isOnPaidPlan', 'false');
       localStorage.setItem('trialStartDate', new Date().toISOString());
     }
     
-    // Ensure the user is authenticated before redirecting to dashboard
-    localStorage.setItem('isAuthenticated', 'true');
+    setIsAuthenticated(true);
+    setCurrentRole('admin');
     
-    // Show success message
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('userRole', 'admin');
+    localStorage.setItem('hasCompletedOnboarding', 'true');
+    
     toast({
       title: "Account setup complete!",
       description: "Welcome to your free trial. Your dashboard is ready.",
     });
     
-    // Redirect to dashboard
     navigate("/dashboard");
   };
   
@@ -159,7 +156,6 @@ const OnboardingWizard = () => {
               </div>
             </div>
             
-            {/* Progress bar */}
             <div className="w-full h-2 bg-gray-200 rounded-full mt-4">
               <div 
                 className="h-full bg-[#04c8c8] rounded-full transition-all duration-500"

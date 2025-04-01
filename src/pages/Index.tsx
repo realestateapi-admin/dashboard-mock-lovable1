@@ -1,9 +1,10 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     // Check if the URL includes documentation path and avoid redirect in that case
@@ -11,9 +12,14 @@ const Index = () => {
       return; // Don't redirect if accessing documentation
     }
     
-    // Redirect to sign-in page for other routes
-    navigate("/sign-in");
-  }, [navigate]);
+    // If the user is authenticated, redirect to the dashboard
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    } else {
+      // Otherwise, redirect to the sign-in page
+      navigate("/sign-in");
+    }
+  }, [navigate, isAuthenticated]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-radial from-[#04c8c8]/10 to-transparent">
