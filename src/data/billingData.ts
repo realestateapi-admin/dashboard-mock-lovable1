@@ -33,7 +33,8 @@ export const invoices: InvoiceData[] = [
   }
 ];
 
-export const plans: PlanData[] = [
+// All plans including the free plan (used during signup/onboarding)
+export const allPlans: PlanData[] = [
   {
     id: "free",
     name: "Free",
@@ -121,6 +122,9 @@ export const plans: PlanData[] = [
     ],
   },
 ];
+
+// Plans shown on the billing page (excludes the free plan)
+export const plans: PlanData[] = allPlans.filter(plan => plan.id !== "free");
 
 export const addOns: AddOnData[] = [
   {
