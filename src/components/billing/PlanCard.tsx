@@ -3,12 +3,13 @@ import { CheckCircle, Phone } from "lucide-react";
 import { PlanData } from "@/types/billing";
 
 interface PlanCardProps {
-  plan: PlanData;
+  plan: PlanData & { originalPrice?: string };
   isSelected: boolean;
   onSelect: () => void;
+  billingCycle?: 'monthly' | 'annual';
 }
 
-export const PlanCard = ({ plan, isSelected, onSelect }: PlanCardProps) => {
+export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' }: PlanCardProps) => {
   return (
     <div className="relative">
       {plan.popular && (
@@ -85,11 +86,26 @@ export const PlanCard = ({ plan, isSelected, onSelect }: PlanCardProps) => {
               <CheckCircle className={`h-5 w-5 ${isSelected ? "opacity-100" : "opacity-0"}`} />
             </div>
           </div>
-          <div className="flex gap-1 items-baseline mb-4">
-            <span className="text-xl font-semibold">{plan.price}</span>
-            <span className="text-xs text-muted-foreground">
-              /month
-            </span>
+          <div className="flex flex-col mb-4">
+            <div className="flex gap-1 items-baseline">
+              <span className="text-xl font-semibold">{plan.price}</span>
+              <span className="text-xs text-muted-foreground">
+                /month
+              </span>
+            </div>
+            
+            {billingCycle === 'annual' && plan.originalPrice && (
+              <div className="flex items-center mt-1">
+                <span className="text-xs text-muted-foreground line-through mr-2">{plan.originalPrice}/mo</span>
+                <span className="text-xs text-green-600 font-medium">20% savings</span>
+              </div>
+            )}
+            
+            {billingCycle === 'annual' && (
+              <div className="mt-1 text-xs text-muted-foreground">
+                12-month agreement, billed monthly
+              </div>
+            )}
           </div>
           <div className="mb-4 flex items-center gap-2">
             <span className="text-xs font-medium">Records:</span>
