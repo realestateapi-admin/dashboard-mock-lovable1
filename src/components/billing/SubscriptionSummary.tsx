@@ -129,10 +129,13 @@ export function SubscriptionSummary({
               <span>{startDate}</span>
             </div>
           )}
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Renews</span>
-            <span>{renewalDate}</span>
-          </div>
+          {/* Only show the renewal date for annual billing cycle or if there's an existing subscription */}
+          {(billingCycle === 'annual' || subscription?.contract_end_date) && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Renews</span>
+              <span>{renewalDate}</span>
+            </div>
+          )}
         </div>
         
         <div className="text-xs text-muted-foreground">
