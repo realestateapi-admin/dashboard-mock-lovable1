@@ -50,6 +50,8 @@ export const BillingTabs = ({
   
   // Find the enterprise plan
   const enterprisePlan = plans.find(p => p.id === "enterprise");
+  // Filter out enterprise plan from the regular plans list
+  const regularPlans = plans.filter(p => p.id !== "enterprise");
 
   return (
     <Tabs defaultValue="subscription" className="w-full">
@@ -69,7 +71,7 @@ export const BillingTabs = ({
         <div className="grid gap-6 md:grid-cols-3">
           <div className="md:col-span-2">
             <BillingPlans 
-              plans={plans.filter(p => p.id !== "enterprise")}
+              plans={regularPlans}
               addOns={addOns}
               selectedPlan={selectedPlan}
               activeAddOns={activeAddOns}
@@ -98,7 +100,7 @@ export const BillingTabs = ({
           </div>
         </div>
         
-        {/* Enterprise Plan Special Section */}
+        {/* Enterprise Plan Section */}
         {enterprisePlan && (
           <div className="mt-8">
             <div className="mb-3">

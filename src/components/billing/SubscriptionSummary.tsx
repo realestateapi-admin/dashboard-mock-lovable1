@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
+import { format } from "date-fns";
 
 interface SubscriptionSummaryProps {
   selectedPlan: string;
@@ -32,6 +33,20 @@ export function SubscriptionSummary({
   billingCycle = 'monthly'
 }: SubscriptionSummaryProps) {
   const plan = plans.find(p => p.id === selectedPlan);
+
+  // Format dates for display
+  const formatDisplayDate = (dateString?: string) => {
+    if (!dateString) return null;
+    try {
+      return format(new Date(dateString), 'MMM d, yyyy');
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return null;
+    }
+  };
+
+  const startDate = formatDisplayDate(subscription?.subscription_start_date || subscription?.contract_start_date);
+  const renewalDate = formatDisplayDate(subscription?.contract_end_date);
 
   if (isLoading) {
     return (
@@ -87,6 +102,25 @@ export function SubscriptionSummary({
           <span className="font-semibold">Monthly Total</span>
           <span className="font-semibold">{costs.total}</span>
         </div>
+        
+        {/* Subscription dates section */}
+        {subscription && (startDate || renewalDate) && (
+          <div className="pt-3 border-t">
+            <h4 className="text-sm font-semibold mb-2">Subscription Details</h4>
+            {startDate && (
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Started</span>
+                <span>{startDate}</span>
+              </div>
+            )}
+            {renewalDate && (
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Renews</span>
+                <span>{renewalDate}</span>
+              </div>
+            )}
+          </div>
+        )}
         
         <div className="text-xs text-muted-foreground">
           {subscription ? (

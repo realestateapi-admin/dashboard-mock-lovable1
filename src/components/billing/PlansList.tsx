@@ -10,7 +10,6 @@ interface PlansListProps {
 }
 
 export const PlansList = ({ plans, selectedPlan, onPlanChange, billingCycle = 'monthly' }: PlansListProps) => {
-  // We're specifically dealing with 3 plans now (after removing enterprise)
   return (
     <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
       {plans.map((plan) => (
