@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
-import { format } from "date-fns";
+import { format, addDays, addYears } from "date-fns";
 
 interface SubscriptionSummaryProps {
   selectedPlan: string;
@@ -45,8 +45,25 @@ export function SubscriptionSummary({
     }
   };
 
+  // Calculate renewal date based on billing cycle
+  const calculateRenewalDate = () => {
+    const today = new Date();
+    
+    if (billingCycle === 'monthly') {
+      // 30 days forward for monthly
+      return format(addDays(today, 30), 'MMM d, yyyy');
+    } else {
+      // 365 days (1 year) forward for annual
+      return format(addYears(today, 1), 'MMM d, yyyy');
+    }
+  };
+
   const startDate = formatDisplayDate(subscription?.subscription_start_date || subscription?.contract_start_date);
-  const renewalDate = formatDisplayDate(subscription?.contract_end_date);
+  
+  // Use existing renewal date from subscription or calculate based on billing cycle
+  const renewalDate = subscription?.contract_end_date 
+    ? formatDisplayDate(subscription.contract_end_date)
+    : calculateRenewalDate();
 
   if (isLoading) {
     return (
@@ -104,23 +121,19 @@ export function SubscriptionSummary({
         </div>
         
         {/* Subscription dates section */}
-        {subscription && (startDate || renewalDate) && (
-          <div className="pt-3 border-t">
-            <h4 className="text-sm font-semibold mb-2">Subscription Details</h4>
-            {startDate && (
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Started</span>
-                <span>{startDate}</span>
-              </div>
-            )}
-            {renewalDate && (
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Renews</span>
-                <span>{renewalDate}</span>
-              </div>
-            )}
+        <div className="pt-3 border-t">
+          <h4 className="text-sm font-semibold mb-2">Subscription Details</h4>
+          {startDate && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Started</span>
+              <span>{startDate}</span>
+            </div>
+          )}
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Renews</span>
+            <span>{renewalDate}</span>
           </div>
-        )}
+        </div>
         
         <div className="text-xs text-muted-foreground">
           {subscription ? (
