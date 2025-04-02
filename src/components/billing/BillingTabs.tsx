@@ -69,7 +69,7 @@ export const BillingTabs = ({
         <div className="grid gap-6 md:grid-cols-3">
           <div className="md:col-span-2">
             <BillingPlans 
-              plans={plans}
+              plans={plans.filter(p => p.id !== "enterprise")}
               addOns={addOns}
               selectedPlan={selectedPlan}
               activeAddOns={activeAddOns}
@@ -101,10 +101,9 @@ export const BillingTabs = ({
         {/* Enterprise Plan Special Section */}
         {enterprisePlan && (
           <div className="mt-8">
-            <div className="mb-3 text-center">
-              <div className="inline-block bg-primary/10 rounded-full px-4 py-1 text-sm font-medium text-primary">
-                Need more? Our Enterprise plan offers tailored solutions
-              </div>
+            <div className="mb-3">
+              <h3 className="text-xl font-semibold">Enterprise Solutions</h3>
+              <p className="text-sm text-muted-foreground">Need a custom solution? Our Enterprise plan offers tailored options for large organizations.</p>
             </div>
             <EnterprisePlanCard 
               plan={enterprisePlan}

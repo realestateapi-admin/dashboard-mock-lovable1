@@ -36,12 +36,9 @@ export const BillingPlans = ({
 }: BillingPlansProps) => {
   // Get the selected plan's name for displaying in overage options
   const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || "selected plan";
-
-  // Filter out enterprise plan
-  const standardPlans = plans.filter(plan => plan.id !== "enterprise");
   
   // Apply discount to plans for annual billing
-  const adjustedPlans = standardPlans.map(plan => {
+  const adjustedPlans = plans.map(plan => {
     if (billingCycle === 'annual' && plan.price !== 'Custom') {
       // Extract numeric price and apply 20% discount
       const numericPrice = parseInt(plan.price.replace(/\$|,/g, ""));
@@ -64,12 +61,15 @@ export const BillingPlans = ({
           Manage your current plan and subscription settings
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         {/* Billing Cycle Selector */}
-        <BillingCycleSelector 
-          billingCycle={billingCycle}
-          onBillingCycleChange={onBillingCycleChange}
-        />
+        <div className="mb-6">
+          <h3 className="text-lg font-medium mb-3">Choose Your Billing Option</h3>
+          <BillingCycleSelector 
+            billingCycle={billingCycle}
+            onBillingCycleChange={onBillingCycleChange}
+          />
+        </div>
         
         {/* Plans Section with adjusted prices */}
         <PlansList 
@@ -79,7 +79,7 @@ export const BillingPlans = ({
           billingCycle={billingCycle}
         />
         
-        <div className="mt-6">
+        <div className="mt-8">
           {/* Add-Ons Section */}
           <AddOnsList
             addOns={addOns}
