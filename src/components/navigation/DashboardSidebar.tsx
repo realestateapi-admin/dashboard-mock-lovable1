@@ -116,8 +116,12 @@ export const DashboardSidebar = () => {
                         isActive ? "text-[#5014d0] font-medium" : "text-foreground/70 hover:text-foreground"
                       }
                     >
-                      <item.icon className={({ isActive }) => isActive ? "h-5 w-5 text-[#5014d0]" : "h-5 w-5"} />
-                      <span>{item.title}</span>
+                      {({ isActive }) => (
+                        <>
+                          <item.icon className={isActive ? "h-5 w-5 text-[#5014d0]" : "h-5 w-5"} />
+                          <span>{item.title}</span>
+                        </>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -139,8 +143,12 @@ export const DashboardSidebar = () => {
                         isActive ? "text-[#5014d0] font-medium" : "text-foreground/70 hover:text-foreground"
                       }
                     >
-                      <item.icon className={({ isActive }) => isActive ? "h-5 w-5 text-[#5014d0]" : "h-5 w-5"} />
-                      <span>{item.title}</span>
+                      {({ isActive }) => (
+                        <>
+                          <item.icon className={isActive ? "h-5 w-5 text-[#5014d0]" : "h-5 w-5"} />
+                          <span>{item.title}</span>
+                        </>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -162,8 +170,12 @@ export const DashboardSidebar = () => {
                         isActive ? "text-[#5014d0] font-medium" : "text-foreground/70 hover:text-foreground"
                       }
                     >
-                      <item.icon className={({ isActive }) => isActive ? "h-5 w-5 text-[#5014d0]" : "h-5 w-5"} />
-                      <span>{item.title}</span>
+                      {({ isActive }) => (
+                        <>
+                          <item.icon className={isActive ? "h-5 w-5 text-[#5014d0]" : "h-5 w-5"} />
+                          <span>{item.title}</span>
+                        </>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
