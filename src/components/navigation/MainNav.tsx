@@ -47,8 +47,8 @@ export function MainNav() {
           key={item.title}
           to={item.href}
           className={({ isActive }) =>
-            `transition-colors hover:text-[#04c8c8] ${
-              isActive ? "text-[#04c8c8]" : "text-muted-foreground"
+            `transition-colors hover:text-[#5014d0] ${
+              isActive ? "text-[#5014d0] font-medium" : "text-muted-foreground"
             }`
           }
         >
