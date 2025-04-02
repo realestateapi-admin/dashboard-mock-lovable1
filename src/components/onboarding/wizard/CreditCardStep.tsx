@@ -25,7 +25,7 @@ interface CreditCardStepProps {
 
 const CreditCardStep = ({ updateField, creditCardInfo }: CreditCardStepProps) => {
   const [secureMessage] = useState(
-    "Your card information is secure and encrypted. You won't be charged until your 14-day free trial ends."
+    "Your card information is only collected for identification purposes. No charges will be made during your 14-day free trial."
   );
 
   const form = useForm<CreditCardFormValues>({
