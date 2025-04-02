@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Building2, ArrowRight } from "lucide-react";
+import { CheckCircle, Building2, Phone } from "lucide-react";
 
 interface EnterpriseCompactCardProps {
   onSelectEnterprise: () => void;
@@ -40,7 +40,8 @@ export const EnterpriseCompactCard = ({
           className="w-full border-primary text-primary hover:bg-primary/10 mt-2"
           onClick={onSelectEnterprise}
         >
-          Learn More <ArrowRight className="ml-1 h-3 w-3" />
+          <Phone className="h-3 w-3 mr-1" />
+          Contact Sales
         </Button>
       </CardContent>
     </Card>
