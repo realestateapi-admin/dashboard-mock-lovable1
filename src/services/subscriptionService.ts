@@ -17,7 +17,8 @@ const mockSubscription: SubscriptionData = {
   unit_price: 0.02,
   credit: 0,
   trial_begin_date: "",
-  trial_end_date: ""
+  trial_end_date: "",
+  subscription_start_date: "2024-05-23T00:00:00.000Z" // Using same date as contract start for the mock
 };
 
 export const fetchSubscription = async (accountId?: number): Promise<SubscriptionData> => {
@@ -35,4 +36,19 @@ export const isPaidPlan = (planName?: string): boolean => {
   // Check if the plan name matches any of our paid plans
   const paidPlans = ["Starter", "Growth", "Pro", "Enterprise"];
   return paidPlans.includes(planName);
+};
+
+// Calculate the renewal date (1 year from start date)
+export const calculateRenewalDate = (startDate?: string): string | null => {
+  if (!startDate) return null;
+  
+  try {
+    const start = new Date(startDate);
+    const renewalDate = new Date(start);
+    renewalDate.setFullYear(renewalDate.getFullYear() + 1);
+    return renewalDate.toISOString();
+  } catch (error) {
+    console.error("Error calculating renewal date:", error);
+    return null;
+  }
 };

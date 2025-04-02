@@ -46,4 +46,5 @@ export interface SubscriptionData {
   trial_begin_date?: string;
   trial_end_date?: string;
   isFree?: boolean;
+  subscription_start_date?: string; // Date when user signed up for paid plan
 }

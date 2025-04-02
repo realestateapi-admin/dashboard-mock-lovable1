@@ -6,20 +6,39 @@ import { Badge } from "@/components/ui/badge";
 import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
 
 interface BillingCardProps {
   isTrialActive: boolean;
   trialDaysLeft: number;
   isFreeUser?: boolean;
   isOnPaidPlan?: boolean;
+  subscriptionStartDate?: string;
+  subscriptionRenewalDate?: string;
 }
 
 export const BillingCard = ({
   isTrialActive,
   trialDaysLeft,
   isFreeUser = false,
-  isOnPaidPlan = false
+  isOnPaidPlan = false,
+  subscriptionStartDate,
+  subscriptionRenewalDate
 }: BillingCardProps) => {
+  // Format dates if available
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return null;
+    try {
+      return format(new Date(dateString), "MMM d, yyyy");
+    } catch (e) {
+      console.error("Invalid date format:", e);
+      return null;
+    }
+  };
+
+  const formattedStartDate = formatDate(subscriptionStartDate);
+  const formattedRenewalDate = formatDate(subscriptionRenewalDate);
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -37,7 +56,7 @@ export const BillingCard = ({
           </div>
           <p className="text-xs text-muted-foreground">
             {isOnPaidPlan 
-              ? "Next payment on Mar 1, 2024"
+              ? `Next payment on ${formattedRenewalDate || 'Mar 1, 2024'}`
               : (isFreeUser 
                 ? `Free plan expires in ${trialDaysLeft} days` 
                 : (isTrialActive 
@@ -63,6 +82,11 @@ export const BillingCard = ({
               }
             </Badge>
           </div>
+          {isOnPaidPlan && formattedStartDate && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              Member since {formattedStartDate}
+            </p>
+          )}
           <div className="mt-2">
             <Button 
               variant={isFreeUser || isTrialActive ? "default" : "outline"} 

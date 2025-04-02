@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { SubscriptionData } from '@/types/billing';
-import { fetchSubscription } from '@/services/subscriptionService';
+import { fetchSubscription, calculateRenewalDate } from '@/services/subscriptionService';
 
 // Import useTrialAlert conditionally
 let useTrialAlert: any;
@@ -17,6 +17,7 @@ export function useSubscriptionData(accountId?: number) {
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [renewalDate, setRenewalDate] = useState<string | null>(null);
   
   // We need to handle the case where the context might not be available
   let contextIsOnPaidPlan = false;
@@ -33,7 +34,13 @@ export function useSubscriptionData(accountId?: number) {
     
     try {
       const data = await fetchSubscription(accountId);
+      
+      // Calculate renewal date based on subscription start date or contract start date
+      const startDate = data.subscription_start_date || data.contract_start_date;
+      const calculatedRenewalDate = calculateRenewalDate(startDate);
+      
       setSubscription(data);
+      setRenewalDate(calculatedRenewalDate);
       
       // Update the trial context if the subscription indicates a paid plan
       // This would be handled by the backend in a real app
@@ -53,6 +60,7 @@ export function useSubscriptionData(accountId?: number) {
     subscription,
     isLoading,
     error,
+    renewalDate,
     refetch: fetchData
   };
 }

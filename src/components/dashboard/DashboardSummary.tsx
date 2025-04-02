@@ -15,6 +15,8 @@ interface DashboardSummaryProps {
   isTrialActive: boolean;
   trialDaysLeft: number;
   isOnPaidPlan?: boolean;
+  subscriptionStartDate?: string;
+  subscriptionRenewalDate?: string;
 }
 
 export const DashboardSummary = ({
@@ -26,7 +28,9 @@ export const DashboardSummary = ({
   monthlyRecordsPercentage,
   isTrialActive,
   trialDaysLeft,
-  isOnPaidPlan = false
+  isOnPaidPlan = false,
+  subscriptionStartDate,
+  subscriptionRenewalDate
 }: DashboardSummaryProps) => {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -51,6 +55,8 @@ export const DashboardSummary = ({
         isTrialActive={isTrialActive}
         trialDaysLeft={trialDaysLeft}
         isOnPaidPlan={isOnPaidPlan}
+        subscriptionStartDate={subscriptionStartDate}
+        subscriptionRenewalDate={subscriptionRenewalDate}
       />
     </div>
   );

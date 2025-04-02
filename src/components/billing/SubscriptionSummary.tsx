@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format, addYears } from "date-fns";
 import { Loader2, Phone } from "lucide-react";
 
 interface SubscriptionSummaryProps {
@@ -43,6 +43,27 @@ export const SubscriptionSummary = ({
     }
   };
 
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "N/A";
+    try {
+      return format(new Date(dateString), "MMMM d, yyyy");
+    } catch (error) {
+      return "Invalid date";
+    }
+  };
+
+  // Calculate renewal date (1 year from start date)
+  const getRenewalDate = (startDate?: string) => {
+    if (!startDate) return "N/A";
+    try {
+      const start = new Date(startDate);
+      const renewal = addYears(start, 1);
+      return formatDate(renewal.toISOString());
+    } catch (error) {
+      return "N/A";
+    }
+  };
+
   // Get current selected plan
   const currentPlan = plans.find(p => p.id === selectedPlan);
   const isEnterprisePlan = selectedPlan === "enterprise";
@@ -74,6 +95,20 @@ export const SubscriptionSummary = ({
               <span className="text-sm">Records</span>
               <span>{subscription.usage_amount.toLocaleString()}/month</span>
             </div>
+
+            {subscription.contract_start_date && (
+              <>
+                <div className="flex justify-between items-baseline">
+                  <span className="text-sm">Started On</span>
+                  <span>{formatDate(subscription.contract_start_date)}</span>
+                </div>
+                <div className="flex justify-between items-baseline">
+                  <span className="text-sm">Next Renewal</span>
+                  <span>{getRenewalDate(subscription.contract_start_date)}</span>
+                </div>
+              </>
+            )}
+            
             <div className="flex justify-between items-baseline">
               <span className="text-sm">Contract End</span>
               <span>{getRemainingTime(subscription.contract_end_date)}</span>
