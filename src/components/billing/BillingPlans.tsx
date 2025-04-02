@@ -62,7 +62,7 @@ export const BillingPlans = ({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Billing Cycle Selector */}
+        {/* Billing Cycle Selector with heading */}
         <div className="mb-6">
           <h3 className="text-lg font-medium mb-3">Choose Your Billing Option</h3>
           <BillingCycleSelector 
