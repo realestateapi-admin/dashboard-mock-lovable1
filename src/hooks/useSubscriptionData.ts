@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { SubscriptionData } from '@/types/billing';
-import { fetchSubscription, calculateRenewalDate } from '@/services/subscriptionService';
+import { fetchSubscription, calculateRenewalDate, isPaidPlan } from '@/services/subscriptionService';
 
 // Import useTrialAlert conditionally
 let useTrialAlert: any;

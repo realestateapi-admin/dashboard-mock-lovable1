@@ -1,5 +1,5 @@
 
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useDashboard } from "@/contexts/DashboardContext";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
@@ -11,6 +11,8 @@ import { RecordUsageBreakdown } from "@/components/dashboard/RecordUsageBreakdow
 import { ApiAccessSection } from "@/components/dashboard/ApiAccessSection";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
+import { useSubscriptionData } from "@/hooks/useSubscriptionData";
+import { calculateRenewalDate } from "@/services/subscriptionService";
 
 interface DashboardContentProps {
   trialBanner?: ReactNode; // Made the prop optional by adding '?'
@@ -33,6 +35,9 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
   } = useDashboard();
 
   const { isTrialActive, trialDaysLeft, isFreeUser, isOnPaidPlan } = useTrialAlert();
+  
+  // Fetch subscription data
+  const { subscription, renewalDate } = useSubscriptionData();
 
   return (
     <>
@@ -54,6 +59,8 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
         isTrialActive={isTrialActive}
         trialDaysLeft={trialDaysLeft}
         isOnPaidPlan={isOnPaidPlan}
+        subscriptionStartDate={subscription?.subscription_start_date}
+        subscriptionRenewalDate={renewalDate || undefined}
       />
       
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">

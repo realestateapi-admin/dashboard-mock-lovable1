@@ -87,7 +87,7 @@ export const BillingCard = ({
               Member since {formattedStartDate}
             </p>
           )}
-          <div className="mt-2">
+          <div className="mt-4">
             <Button 
               variant={isFreeUser || isTrialActive ? "default" : "outline"} 
               size="sm" 
