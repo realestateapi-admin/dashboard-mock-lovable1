@@ -1,3 +1,4 @@
+
 import { CreditCard, CreditCardIcon, Wallet } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BillingPlans } from "@/components/billing/BillingPlans";
@@ -6,6 +7,7 @@ import { PaymentMethods } from "@/components/billing/PaymentMethods";
 import { InvoiceHistory } from "@/components/billing/InvoiceHistory";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
 import { useState } from "react";
+import { EnterprisePlanCard } from "./EnterprisePlanCard";
 
 interface BillingTabsProps {
   plans: PlanData[];
@@ -45,6 +47,9 @@ export const BillingTabs = ({
   onDownloadInvoice
 }: BillingTabsProps) => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  
+  // Find the enterprise plan
+  const enterprisePlan = plans.find(p => p.id === "enterprise");
 
   return (
     <Tabs defaultValue="subscription" className="w-full">
@@ -92,6 +97,22 @@ export const BillingTabs = ({
             />
           </div>
         </div>
+        
+        {/* Enterprise Plan Special Section */}
+        {enterprisePlan && (
+          <div className="mt-8">
+            <div className="mb-3 text-center">
+              <div className="inline-block bg-primary/10 rounded-full px-4 py-1 text-sm font-medium text-primary">
+                Need more? Our Enterprise plan offers tailored solutions
+              </div>
+            </div>
+            <EnterprisePlanCard 
+              plan={enterprisePlan}
+              selectedPlan={selectedPlan}
+              onPlanChange={onPlanChange}
+            />
+          </div>
+        )}
       </TabsContent>
       
       <TabsContent value="payment">

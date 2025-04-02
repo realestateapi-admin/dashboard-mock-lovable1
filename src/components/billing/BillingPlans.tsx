@@ -37,8 +37,11 @@ export const BillingPlans = ({
   // Get the selected plan's name for displaying in overage options
   const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || "selected plan";
 
+  // Filter out enterprise plan
+  const standardPlans = plans.filter(plan => plan.id !== "enterprise");
+  
   // Apply discount to plans for annual billing
-  const adjustedPlans = plans.map(plan => {
+  const adjustedPlans = standardPlans.map(plan => {
     if (billingCycle === 'annual' && plan.price !== 'Custom') {
       // Extract numeric price and apply 20% discount
       const numericPrice = parseInt(plan.price.replace(/\$|,/g, ""));
