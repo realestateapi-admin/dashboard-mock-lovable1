@@ -137,7 +137,7 @@ export function SubscriptionSummary({
         
         <div className="text-xs text-muted-foreground">
           {subscription ? (
-            <p>Your plan will renew automatically each month.</p>
+            <p>Your plan will renew automatically {billingCycle === 'monthly' ? 'each month' : 'each year'}.</p>
           ) : (
             <p>
               {billingCycle === 'monthly' 
