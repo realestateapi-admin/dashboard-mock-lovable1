@@ -1,6 +1,7 @@
 
 import { CheckCircle, Phone } from "lucide-react";
 import { PlanData } from "@/types/billing";
+import { Button } from "@/components/ui/button";
 
 interface PlanCardProps {
   plan: PlanData & { originalPrice?: string };
@@ -132,5 +133,3 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
     </div>
   );
 };
-
-import { Button } from "@/components/ui/button";

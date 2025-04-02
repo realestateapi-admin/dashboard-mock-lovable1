@@ -1,4 +1,3 @@
-
 import { CreditCard, CreditCardIcon, Wallet } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BillingPlans } from "@/components/billing/BillingPlans";
@@ -6,6 +5,7 @@ import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
 import { PaymentMethods } from "@/components/billing/PaymentMethods";
 import { InvoiceHistory } from "@/components/billing/InvoiceHistory";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
+import { useState } from "react";
 
 interface BillingTabsProps {
   plans: PlanData[];
@@ -44,6 +44,8 @@ export const BillingTabs = ({
   onSaveBillingPreferences,
   onDownloadInvoice
 }: BillingTabsProps) => {
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+
   return (
     <Tabs defaultValue="subscription" className="w-full">
       <TabsList className="mb-4">
@@ -71,6 +73,8 @@ export const BillingTabs = ({
               onToggleAddOn={onToggleAddOn}
               onOverageHandlingChange={onOverageHandlingChange}
               onSaveBillingPreferences={onSaveBillingPreferences}
+              billingCycle={billingCycle}
+              onBillingCycleChange={setBillingCycle}
             />
           </div>
           
@@ -84,6 +88,7 @@ export const BillingTabs = ({
               subscription={subscription}
               isLoading={isLoadingSubscription}
               onSubmit={onSaveBillingPreferences}
+              billingCycle={billingCycle}
             />
           </div>
         </div>

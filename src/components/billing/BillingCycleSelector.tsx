@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
 
 interface BillingCycleSelectorProps {
@@ -14,10 +13,8 @@ export const BillingCycleSelector = ({
 }: BillingCycleSelectorProps) => {
   return (
     <div className="mb-6">
-      <CardHeader className="px-0 pt-0">
-        <CardTitle className="text-xl">Choose Your Billing Option</CardTitle>
-      </CardHeader>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+      <div className="text-xl font-semibold mb-3">Choose Your Billing Option</div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Monthly Option */}
         <div 
           className={`border rounded-lg p-4 cursor-pointer transition-all hover:border-primary ${

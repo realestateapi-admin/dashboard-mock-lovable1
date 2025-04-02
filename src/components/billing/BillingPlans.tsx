@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlanData, AddOnData } from "@/types/billing";
@@ -18,6 +17,8 @@ interface BillingPlansProps {
   onToggleAddOn: (addOnId: string) => void;
   onOverageHandlingChange: (value: string) => void;
   onSaveBillingPreferences: () => void;
+  billingCycle: 'monthly' | 'annual';
+  onBillingCycleChange: (cycle: 'monthly' | 'annual') => void;
 }
 
 export const BillingPlans = ({
@@ -29,11 +30,12 @@ export const BillingPlans = ({
   onPlanChange,
   onToggleAddOn,
   onOverageHandlingChange,
-  onSaveBillingPreferences
+  onSaveBillingPreferences,
+  billingCycle,
+  onBillingCycleChange
 }: BillingPlansProps) => {
   // Get the selected plan's name for displaying in overage options
   const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || "selected plan";
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
 
   // Apply discount to plans for annual billing
   const adjustedPlans = plans.map(plan => {
@@ -63,7 +65,7 @@ export const BillingPlans = ({
         {/* Billing Cycle Selector */}
         <BillingCycleSelector 
           billingCycle={billingCycle}
-          onBillingCycleChange={setBillingCycle}
+          onBillingCycleChange={onBillingCycleChange}
         />
         
         {/* Plans Section with adjusted prices */}
