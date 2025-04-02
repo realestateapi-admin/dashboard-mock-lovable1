@@ -8,6 +8,7 @@ import { InvoiceHistory } from "@/components/billing/InvoiceHistory";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
 import { useState } from "react";
 import { EnterprisePlanCard } from "./EnterprisePlanCard";
+import { EnterpriseCompactCard } from "./EnterpriseCompactCard";
 
 interface BillingTabsProps {
   plans: PlanData[];
@@ -53,6 +54,13 @@ export const BillingTabs = ({
   // Filter out enterprise plan from the regular plans list
   const regularPlans = plans.filter(p => p.id !== "enterprise");
 
+  // Handle selecting enterprise plan
+  const handleSelectEnterprise = () => {
+    if (enterprisePlan) {
+      onPlanChange(enterprisePlan.id);
+    }
+  };
+
   return (
     <Tabs defaultValue="subscription" className="w-full">
       <TabsList className="mb-4">
@@ -97,11 +105,16 @@ export const BillingTabs = ({
               onSubmit={onSaveBillingPreferences}
               billingCycle={billingCycle}
             />
+            
+            {/* Add the compact Enterprise card here */}
+            {enterprisePlan && selectedPlan !== enterprisePlan.id && (
+              <EnterpriseCompactCard onSelectEnterprise={handleSelectEnterprise} />
+            )}
           </div>
         </div>
         
-        {/* Enterprise Plan Section */}
-        {enterprisePlan && (
+        {/* Enterprise Plan Section - only show when enterprise plan is selected */}
+        {enterprisePlan && selectedPlan === enterprisePlan.id && (
           <div className="mt-8">
             <div className="mb-3">
               <h3 className="text-xl font-semibold">Enterprise Solutions</h3>
