@@ -223,3 +223,31 @@ export const salesMotionFlowData = {
     },
   ],
 };
+
+// Helper function to get nodes for React Flow
+export const getSalesMotionNodes = () => {
+  return salesMotionFlowData.nodes;
+};
+
+// Helper function to get edges for React Flow
+export const getSalesMotionEdges = () => {
+  return salesMotionFlowData.edges;
+};
+
+// Helper function to get node color based on type
+export const getNodeColor = (nodeType: string) => {
+  switch(nodeType) {
+    case 'system':
+      return '#3b82f6'; // blue
+    case 'action':
+      return '#10b981'; // green
+    case 'decision':
+      return '#f59e0b'; // yellow/amber
+    case 'result':
+      return '#ef4444'; // red
+    case 'prospect':
+      return '#8b5cf6'; // purple
+    default:
+      return '#64748b'; // slate
+  }
+};
