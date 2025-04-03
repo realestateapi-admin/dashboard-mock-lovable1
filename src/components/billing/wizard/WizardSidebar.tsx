@@ -50,7 +50,6 @@ export const WizardSidebar = ({
         costs={costs}
         subscription={null}
         isLoading={false}
-        onSubmit={onSubmit}
         billingCycle={billingCycle}
       />
       

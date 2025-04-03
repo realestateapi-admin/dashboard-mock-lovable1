@@ -17,8 +17,9 @@ interface SubscriptionSummaryProps {
   };
   subscription?: SubscriptionData | null;
   isLoading: boolean;
-  onSubmit: () => void;
+  onSubmit?: () => void;
   billingCycle?: 'monthly' | 'annual';
+  showSubmitButton?: boolean;
 }
 
 export function SubscriptionSummary({
@@ -30,7 +31,8 @@ export function SubscriptionSummary({
   subscription,
   isLoading,
   onSubmit,
-  billingCycle = 'monthly'
+  billingCycle = 'monthly',
+  showSubmitButton = false
 }: SubscriptionSummaryProps) {
   const plan = plans.find(p => p.id === selectedPlan);
 
@@ -151,16 +153,20 @@ export function SubscriptionSummary({
           )}
         </div>
       </CardContent>
-      <CardFooter>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="w-full"
-          onClick={onSubmit}
-        >
-          {subscription ? "Update Subscription" : "Confirm Selection"}
-        </Button>
-      </CardFooter>
+      
+      {/* Only show the submit button if explicitly requested */}
+      {showSubmitButton && onSubmit && (
+        <CardFooter>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full"
+            onClick={onSubmit}
+          >
+            {subscription ? "Update Subscription" : "Confirm Selection"}
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 }
