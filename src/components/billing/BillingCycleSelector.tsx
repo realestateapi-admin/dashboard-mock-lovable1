@@ -77,7 +77,7 @@ export const BillingCycleSelector = ({
           </div>
         </div>
         <div className="mt-4 pt-3 border-t">
-          <p className="text-center text-green-600 font-medium">SAVE 20% MONTHLY</p>
+          <p className="text-center text-green-600 font-medium">AVERAGE SAVINGS: 20%</p>
         </div>
       </div>
     </div>

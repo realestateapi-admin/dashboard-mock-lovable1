@@ -88,17 +88,17 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
             </div>
           </div>
           <div className="flex flex-col mb-4">
-            <div className="flex gap-1 items-baseline">
-              <span className="text-xl font-semibold">{plan.price}</span>
-              <span className="text-xs text-muted-foreground">
-                /month
-              </span>
-            </div>
-            
-            {billingCycle === 'annual' && plan.originalPrice && (
-              <div className="flex items-center mt-1">
-                <span className="text-xs text-muted-foreground line-through mr-2">{plan.originalPrice}/mo</span>
-                <span className="text-xs text-green-600 font-medium">20% savings</span>
+            {/* Price display section */}
+            {billingCycle === 'annual' && plan.originalPrice ? (
+              <div className="flex gap-1 items-baseline">
+                <span className="text-xl font-semibold">{plan.price}</span>
+                <span className="text-xs text-muted-foreground">/month</span>
+                <span className="text-xs text-muted-foreground line-through ml-2">{plan.originalPrice}</span>
+              </div>
+            ) : (
+              <div className="flex gap-1 items-baseline">
+                <span className="text-xl font-semibold">{plan.price}</span>
+                <span className="text-xs text-muted-foreground">/month</span>
               </div>
             )}
             
