@@ -72,8 +72,18 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
       // For demo purposes, set the user to be on a free plan to show the trial banner
       setIsFreeUser(true);
       setIsOnPaidPlan(false);
+      
+      // Save to localStorage
+      localStorage.setItem('trialStartDate', mockStartDate.toISOString());
+      localStorage.setItem('isFreeUser', 'true');
+      localStorage.setItem('isOnPaidPlan', 'false');
     }
   }, []);
+
+  // When isOnPaidPlan changes, update localStorage
+  useEffect(() => {
+    localStorage.setItem('isOnPaidPlan', isOnPaidPlan.toString());
+  }, [isOnPaidPlan]);
 
   // Check for trial alerts
   useEffect(() => {
