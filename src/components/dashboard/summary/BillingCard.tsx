@@ -94,7 +94,7 @@ export const BillingCard = ({
               className="w-full" 
               asChild
             >
-              <Link to="/dashboard/billing">
+              <Link to={isFreeUser || isTrialActive ? "/dashboard/plan-signup" : "/dashboard/billing"}>
                 {isFreeUser || isTrialActive ? "Upgrade Now" : (isOnPaidPlan ? "Manage Subscription" : "Choose a Plan")}
               </Link>
             </Button>

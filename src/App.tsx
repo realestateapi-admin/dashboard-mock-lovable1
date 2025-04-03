@@ -19,6 +19,7 @@ import Billing from "./pages/Billing";
 import Support from "./pages/Support";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import PlanSignupWizard from "./pages/PlanSignupWizard"; // Add the new page
 import SettingsPage from "./components/settings/SettingsPage";
 import ProfileSettings from "./components/settings/ProfileSettings";
 import { TrialAlertProvider } from "./contexts/TrialAlertContext";
@@ -55,6 +56,9 @@ const App = () => (
               }>
                 <Route index element={<Dashboard />} />
                 <Route path="access-denied" element={<AccessDenied />} />
+                
+                {/* New Plan Signup Wizard */}
+                <Route path="plan-signup" element={<PlanSignupWizard />} />
                 
                 {/* API Usage - accessible to all except viewers */}
                 <Route path="usage" element={

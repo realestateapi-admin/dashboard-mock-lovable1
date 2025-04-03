@@ -30,7 +30,7 @@ export const TrialDashboardBanner = () => {
         </div>
         <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:ml-4 sm:self-center">
           <Button asChild className="bg-[#5014d0] hover:bg-[#5014d0]/90">
-            <Link to="/dashboard/billing">Choose a Plan</Link>
+            <Link to="/dashboard/plan-signup">Choose a Plan</Link>
           </Button>
           <Button 
             variant="outline" 

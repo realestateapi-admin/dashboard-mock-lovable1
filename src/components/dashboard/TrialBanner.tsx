@@ -38,7 +38,7 @@ export const TrialBanner = ({
         </div>
         <div className="flex gap-2 mt-2 sm:mt-0">
           <Button size="sm" className="bg-[#5014d0] hover:bg-[#5014d0]/90" asChild>
-            <Link to="/dashboard/billing">Upgrade Now</Link>
+            <Link to="/dashboard/plan-signup">Upgrade Now</Link>
           </Button>
           <Button size="sm" variant="outline" className="text-[#5014d0] border-[#5014d0] hover:bg-[#5014d0]/10" onClick={requestTrialExtension}>
             Request Extension

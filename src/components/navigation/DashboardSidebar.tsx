@@ -12,9 +12,11 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { useAuth, UserRole } from "@/contexts/AuthContext";
+import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 export const DashboardSidebar = () => {
   const { currentRole } = useAuth();
+  const { isOnPaidPlan, isFreeUser } = useTrialAlert();
   
   // Define navigation items with role-based access
   const mainNavItems = [
@@ -41,6 +43,8 @@ export const DashboardSidebar = () => {
       href: "/dashboard/billing",
       icon: FileText,
       allowedRoles: ['admin', 'billing'],
+      // Only show billing for paid plans or admin users
+      hideCondition: isFreeUser && !isOnPaidPlan && currentRole !== 'admin'
     },
   ];
 
@@ -76,9 +80,10 @@ export const DashboardSidebar = () => {
     },
   ];
 
-  // Filter items based on the user's role
+  // Filter items based on the user's role and hide condition
   const filteredMainNavItems = mainNavItems.filter(item => 
-    item.allowedRoles.includes(currentRole as UserRole)
+    item.allowedRoles.includes(currentRole as UserRole) && 
+    !item.hideCondition
   );
 
   const filteredSecondaryNavItems = secondaryNavItems.filter(item => 

@@ -2,9 +2,11 @@
 import * as React from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth, UserRole } from "@/contexts/AuthContext";
+import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 export function MainNav() {
   const { currentRole } = useAuth();
+  const { isOnPaidPlan, isFreeUser } = useTrialAlert();
 
   // Define navigation items with role-based access
   const navItems = [
@@ -27,6 +29,8 @@ export function MainNav() {
       title: "Billing",
       href: "/dashboard/billing",
       allowedRoles: ['admin', 'billing'],
+      // Only show billing for paid plans or admin users
+      hideCondition: isFreeUser && !isOnPaidPlan && currentRole !== 'admin'
     },
     {
       title: "Support",
@@ -35,9 +39,10 @@ export function MainNav() {
     },
   ];
 
-  // Filter items based on the user's role
+  // Filter items based on the user's role and hide condition
   const filteredNavItems = navItems.filter(item => 
-    item.allowedRoles.includes(currentRole as UserRole)
+    item.allowedRoles.includes(currentRole as UserRole) && 
+    !item.hideCondition
   );
 
   return (
