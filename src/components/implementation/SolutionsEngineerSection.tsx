@@ -10,6 +10,16 @@ export const SolutionsEngineerSection: React.FC = () => {
         <p className="font-medium">Important: Solutions Engineer data is now stored in user metadata</p>
       </div>
       
+      <h4 className="font-medium mb-4">Updated Sales Motion Flow</h4>
+      <div className="bg-gray-50 p-4 rounded-lg mb-6">
+        <p className="mb-2">We now have two primary entry points to our sales process:</p>
+        <ol className="list-decimal ml-5 space-y-1">
+          <li><strong>Direct Free Trial:</strong> Users can click a CTA from the homepage to immediately start a free trial without qualification</li>
+          <li><strong>Traditional Qualification:</strong> Users go through Calendly qualification and are assigned a Solutions Engineer</li>
+        </ol>
+        <p className="mt-2">Both paths result in a user record with Solutions Engineer metadata being created.</p>
+      </div>
+      
       <h4 className="font-medium mb-4">Support Widget Flow</h4>
       <div className="bg-gray-50 p-4 rounded-lg mb-6">
         <p className="mb-2">The new widget follows an Intercom-style flow:</p>
@@ -45,6 +55,7 @@ export const SolutionsEngineerSection: React.FC = () => {
       <h4 className="font-medium mt-4 mb-2">Implementation Notes:</h4>
       <ul className="list-disc ml-5 mb-4">
         <li>Solutions Engineer data is assigned at signup and persisted in user metadata</li>
+        <li>For direct free trial signups, an SE is automatically assigned using round-robin</li>
         <li>Dashboard applications should retrieve and use this data to personalize support options</li>
         <li>At the API level, retrieve the SE data from <code>user.metadata.solutionsEngineer</code></li>
         <li>Store this association in the database to maintain the connection between users and their Solutions Engineers</li>
@@ -64,6 +75,13 @@ export const SolutionsEngineerSection: React.FC = () => {
   }
 }`}
       </pre>
+      
+      <h4 className="font-medium mt-4 mb-2">Additional Implementation:</h4>
+      <ul className="list-disc ml-5 mb-4">
+        <li>Updated onboarding wizard that collects industry and volume information</li>
+        <li>New Support page with tabbed interface for AI copilot, Knowledge Base, and API Documentation</li>
+        <li>Intercom-style help widget that only displays human contact options when requested</li>
+      </ul>
       
       <h4 className="font-medium mt-4 mb-2">Recommended API Endpoints:</h4>
       <p><strong>GET /api/user/support-contact</strong></p>
