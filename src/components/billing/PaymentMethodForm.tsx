@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Bank, CreditCard, Check, Lock } from "lucide-react";
+import { CreditCard, Check, Lock } from "lucide-react";
+import { BuildingBank } from "lucide-react"; // Using BuildingBank instead of Bank
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const PaymentMethodForm = () => {
@@ -34,7 +35,7 @@ export const PaymentMethodForm = () => {
             }`}
             onClick={() => setPaymentType('bank')}
           >
-            <Bank className="h-5 w-5" />
+            <BuildingBank className="h-5 w-5" />
             <span>US bank account</span>
           </div>
         </div>

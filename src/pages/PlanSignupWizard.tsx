@@ -2,17 +2,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
-import { BillingCycleSelector } from "@/components/billing/BillingCycleSelector";
-import { PlansList } from "@/components/billing/PlansList";
+// Import wizard components
+import { WizardHeader } from "@/components/billing/wizard/WizardHeader";
+import { WizardFooter } from "@/components/billing/wizard/WizardFooter";
+import { WizardSidebar } from "@/components/billing/wizard/WizardSidebar";
+import { BillingOptionStep } from "@/components/billing/wizard/BillingOptionStep";
+
+// Import billing components
 import { AddOnsList } from "@/components/billing/AddOnsList";
 import { OverageHandling } from "@/components/billing/OverageHandling";
-import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
-import { EnterpriseCompactCard } from "@/components/billing/EnterpriseCompactCard";
 import { PaymentMethodForm } from "@/components/billing/PaymentMethodForm";
 
 // Import plan data
@@ -111,15 +113,9 @@ const PlanSignupWizard = () => {
       description: "Your subscription has been successfully processed.",
     });
     
-    // Update user status to paid user
-    // This would typically be done server-side after payment confirmation
-    
     // Redirect to dashboard
     navigate("/dashboard");
   };
-  
-  // Calculate progress percentage
-  const progress = ((currentStep + 1) / steps.length) * 100;
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -131,27 +127,10 @@ const PlanSignupWizard = () => {
       >
         <Card className="border shadow-lg">
           <CardHeader>
-            <div className="flex justify-between items-center">
-              <div>
-                <CardTitle className="text-2xl font-bold tracking-tight">
-                  {steps[currentStep].title}
-                </CardTitle>
-                <CardDescription className="mt-1">
-                  {steps[currentStep].description}
-                </CardDescription>
-              </div>
-              <div className="text-sm font-medium">
-                Step {currentStep + 1} of {steps.length}
-              </div>
-            </div>
-            
-            {/* Progress bar */}
-            <div className="w-full bg-slate-100 rounded-full h-2 mt-4">
-              <div 
-                className="bg-primary h-2 rounded-full transition-all duration-300 ease-in-out" 
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
+            <WizardHeader 
+              currentStep={currentStep} 
+              steps={steps} 
+            />
           </CardHeader>
           
           <CardContent className="py-6">
@@ -160,22 +139,15 @@ const PlanSignupWizard = () => {
               <div className="lg:col-span-2 space-y-8">
                 {/* Step 1: Choose Billing Option */}
                 {currentStep === 0 && (
-                  <div className="space-y-8">
-                    <BillingCycleSelector 
-                      billingCycle={billingCycle}
-                      onBillingCycleChange={handleBillingCycleChange}
-                    />
-                    
-                    <div className="mt-8">
-                      <h3 className="text-lg font-medium mb-4">Select Your Plan</h3>
-                      <PlansList 
-                        plans={adjustedPlans} 
-                        selectedPlan={selectedPlan} 
-                        onPlanChange={handlePlanChange}
-                        billingCycle={billingCycle}
-                      />
-                    </div>
-                  </div>
+                  <BillingOptionStep
+                    billingCycle={billingCycle}
+                    onBillingCycleChange={handleBillingCycleChange}
+                    adjustedPlans={adjustedPlans}
+                    selectedPlan={selectedPlan}
+                    onPlanChange={handlePlanChange}
+                    enterprisePlan={enterprisePlan}
+                    onSelectEnterprise={handleSelectEnterprise}
+                  />
                 )}
                 
                 {/* Step 2: Add-Ons */}
@@ -204,45 +176,31 @@ const PlanSignupWizard = () => {
               </div>
               
               {/* Right side - Subscription Summary and Enterprise Card */}
-              <div className="space-y-4">
-                <SubscriptionSummary
+              <div>
+                <WizardSidebar 
+                  currentStep={currentStep}
                   selectedPlan={selectedPlan}
                   plans={plans}
                   activeAddOns={activeAddOns}
                   addOns={addOns}
                   costs={costs}
-                  subscription={null}
-                  isLoading={false}
-                  onSubmit={handleSubmit}
                   billingCycle={billingCycle}
+                  enterprisePlan={enterprisePlan}
+                  onSelectEnterprise={handleSelectEnterprise}
+                  onSubmit={handleSubmit}
                 />
-                
-                {/* Show the Enterprise compact card only on step 1 and when enterprise is not selected */}
-                {currentStep === 0 && enterprisePlan && selectedPlan !== enterprisePlan.id && (
-                  <EnterpriseCompactCard onSelectEnterprise={handleSelectEnterprise} />
-                )}
               </div>
             </div>
           </CardContent>
           
-          <CardFooter className="flex justify-between">
-            <Button
-              variant="outline"
-              onClick={handleBack}
-              disabled={currentStep === 0}
-            >
-              Back
-            </Button>
-            
-            {currentStep < steps.length - 1 ? (
-              <Button onClick={handleNext}>
-                Continue
-              </Button>
-            ) : (
-              <Button onClick={handleSubmit}>
-                Complete Subscription
-              </Button>
-            )}
+          <CardFooter>
+            <WizardFooter
+              currentStep={currentStep}
+              totalSteps={steps.length}
+              handleBack={handleBack}
+              handleNext={handleNext}
+              handleSubmit={handleSubmit}
+            />
           </CardFooter>
         </Card>
       </motion.div>
