@@ -14,6 +14,7 @@ const referralOptions: RadioOptionProps[] = [
   { value: "sourceforgeg2", label: "SourceForge / G2" },
   { value: "podcast", label: "Podcast" },
   { value: "industry-magazine", label: "Industry Magazine" },
+  { value: "chat-gpt-perplexity", label: "Chat GPT/Perplexity" },
   { value: "friend", label: "A Friend" },
   { value: "other", label: "Other" },
 ];

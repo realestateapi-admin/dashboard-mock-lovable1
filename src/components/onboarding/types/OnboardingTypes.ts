@@ -36,4 +36,6 @@ export type ReferralOption =
   | "podcast" 
   | "industry-magazine" 
   | "friend" 
+  | "chat-gpt-perplexity"
   | "other";
+
