@@ -1,151 +1,38 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 // Import wizard components
 import { WizardHeader } from "@/components/billing/wizard/WizardHeader";
 import { WizardFooter } from "@/components/billing/wizard/WizardFooter";
-import { WizardSidebar } from "@/components/billing/wizard/WizardSidebar";
-import { BillingOptionStep } from "@/components/billing/wizard/BillingOptionStep";
-
-// Import billing components
-import { AddOnsList } from "@/components/billing/AddOnsList";
-import { OverageHandling } from "@/components/billing/OverageHandling";
-import { PaymentMethodForm } from "@/components/billing/PaymentMethodForm";
+import { WizardContent } from "@/components/billing/wizard/WizardContent";
 
 // Import plan data
-import { plans, addOns, annualPlanPrices } from "@/data/billingData";
-import { useSubscriptionCalculator } from "@/hooks/useSubscriptionCalculator";
+import { plans, addOns } from "@/data/billingData";
+import { useWizardState } from "@/hooks/useWizardState";
 
 const PlanSignupWizard = () => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const { startFreeTrial } = useTrialAlert();
-  
-  // Step management
-  const [currentStep, setCurrentStep] = useState(0);
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
-  
-  // Loading states
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Use the subscription calculator hook
   const {
+    currentStep,
+    billingCycle,
+    isLoading,
+    isSubmitting,
     selectedPlan,
-    setSelectedPlan,
     overageHandling,
     setOverageHandling,
     activeAddOns,
     toggleAddOn,
-    calculateMonthlyCost
-  } = useSubscriptionCalculator(plans, addOns);
-  
-  const costs = calculateMonthlyCost();
-  
-  // Simulate data loading on initial render
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
-    
-    return () => clearTimeout(timer);
-  }, []);
-  
-  // Find the enterprise plan
-  const enterprisePlan = plans.find(p => p.id === "enterprise");
-  // Filter out enterprise plan from the regular plans list for display
-  const regularPlans = plans.filter(p => p.id !== "enterprise");
-  
-  // Apply annual pricing to plans when annual billing is selected
-  const adjustedPlans = regularPlans.map(plan => {
-    if (billingCycle === 'annual' && plan.price !== 'Custom' && annualPlanPrices[plan.id as keyof typeof annualPlanPrices]) {
-      return {
-        ...plan,
-        price: annualPlanPrices[plan.id as keyof typeof annualPlanPrices],
-        originalPrice: plan.price
-      };
-    }
-    return plan;
-  });
-  
-  // Handle selecting enterprise plan
-  const handleSelectEnterprise = () => {
-    if (enterprisePlan) {
-      setSelectedPlan(enterprisePlan.id);
-    }
-  };
-  
-  const steps = [
-    {
-      title: "Choose Your Billing Option",
-      description: ""
-    },
-    {
-      title: "Select Add-Ons",
-      description: "Enhance your subscription with premium features"
-    },
-    {
-      title: "Overage Handling",
-      description: "Choose how to handle API calls that exceed your plan limits"
-    },
-    {
-      title: "Payment Information",
-      description: "Enter your payment details to complete your subscription"
-    }
-  ];
-  
-  // Simulate loading when moving between steps
-  const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setCurrentStep(prevStep => prevStep + 1);
-        setIsLoading(false);
-      }, 500);
-    }
-  };
-  
-  const handleBack = () => {
-    if (currentStep > 0) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setCurrentStep(prevStep => prevStep - 1);
-        setIsLoading(false);
-      }, 500);
-    }
-  };
-  
-  const handleBillingCycleChange = (cycle: 'monthly' | 'annual') => {
-    setBillingCycle(cycle);
-  };
-  
-  const handlePlanChange = (planId: string) => {
-    setSelectedPlan(planId);
-  };
-  
-  const handleSubmit = () => {
-    // Simulate submission loading
-    setIsSubmitting(true);
-    
-    // Simulate API call with timeout
-    setTimeout(() => {
-      setIsSubmitting(false);
-      
-      // In a real application, this would process the payment via Stripe
-      toast({
-        title: "Subscription Successful",
-        description: "Your subscription has been successfully processed.",
-      });
-      
-      // Redirect to dashboard
-      navigate("/dashboard");
-    }, 2000);
-  };
+    costs,
+    steps,
+    enterprisePlan,
+    regularPlans,
+    handleSelectEnterprise,
+    handleNext,
+    handleBack,
+    handleBillingCycleChange,
+    handlePlanChange,
+    handleSubmit
+  } = useWizardState();
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -164,67 +51,25 @@ const PlanSignupWizard = () => {
           </CardHeader>
           
           <CardContent className="py-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left side - Current step content */}
-              <div className="lg:col-span-2 space-y-8">
-                {/* Step 1: Choose Billing Option */}
-                {currentStep === 0 && (
-                  <BillingOptionStep
-                    billingCycle={billingCycle}
-                    onBillingCycleChange={handleBillingCycleChange}
-                    adjustedPlans={adjustedPlans}
-                    selectedPlan={selectedPlan}
-                    onPlanChange={handlePlanChange}
-                    enterprisePlan={enterprisePlan}
-                    onSelectEnterprise={handleSelectEnterprise}
-                    isLoading={isLoading}
-                  />
-                )}
-                
-                {/* Step 2: Add-Ons */}
-                {currentStep === 1 && (
-                  <AddOnsList
-                    addOns={addOns}
-                    selectedPlan={selectedPlan}
-                    activeAddOns={activeAddOns}
-                    onToggleAddOn={toggleAddOn}
-                    isLoading={isLoading}
-                  />
-                )}
-                
-                {/* Step 3: Overage Handling */}
-                {currentStep === 2 && (
-                  <OverageHandling 
-                    selectedPlanName={plans.find(p => p.id === selectedPlan)?.name || "selected plan"}
-                    overageHandling={overageHandling}
-                    onOverageHandlingChange={setOverageHandling}
-                    isLoading={isLoading}
-                  />
-                )}
-                
-                {/* Step 4: Payment */}
-                {currentStep === 3 && (
-                  <PaymentMethodForm isLoading={isLoading} />
-                )}
-              </div>
-              
-              {/* Right side - Subscription Summary and Enterprise Card */}
-              <div>
-                <WizardSidebar 
-                  currentStep={currentStep}
-                  selectedPlan={selectedPlan}
-                  plans={plans}
-                  activeAddOns={activeAddOns}
-                  addOns={addOns}
-                  costs={costs}
-                  billingCycle={billingCycle}
-                  enterprisePlan={enterprisePlan}
-                  onSelectEnterprise={handleSelectEnterprise}
-                  onSubmit={handleSubmit}
-                  isLoading={isLoading}
-                />
-              </div>
-            </div>
+            <WizardContent
+              currentStep={currentStep}
+              billingCycle={billingCycle}
+              isLoading={isLoading}
+              selectedPlan={selectedPlan}
+              overageHandling={overageHandling}
+              setOverageHandling={setOverageHandling}
+              activeAddOns={activeAddOns}
+              toggleAddOn={toggleAddOn}
+              costs={costs}
+              regularPlans={regularPlans}
+              enterprisePlan={enterprisePlan}
+              addOns={addOns}
+              plans={plans}
+              onSelectEnterprise={handleSelectEnterprise}
+              onBillingCycleChange={handleBillingCycleChange}
+              onPlanChange={handlePlanChange}
+              onSubmit={handleSubmit}
+            />
           </CardContent>
           
           <CardFooter>
