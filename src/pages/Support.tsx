@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import KnowledgeBaseTab from "@/components/support/KnowledgeBaseTab";
 import AiAssistantTab from "@/components/support/AiAssistantTab";
+import ApiDocumentationTab from "@/components/support/ApiDocumentationTab";
 
 const Support = () => {
   return (
@@ -19,18 +20,23 @@ const Support = () => {
         </p>
       </div>
       
-      <Tabs defaultValue="knowledge-base" className="space-y-6">
-        <TabsList className="grid grid-cols-2 max-w-md">
+      <Tabs defaultValue="ai-assistant" className="space-y-6">
+        <TabsList className="grid grid-cols-3 max-w-md">
+          <TabsTrigger value="ai-assistant">AI Copilot</TabsTrigger>
           <TabsTrigger value="knowledge-base">Knowledge Base</TabsTrigger>
-          <TabsTrigger value="ai-assistant">AI Assistant</TabsTrigger>
+          <TabsTrigger value="api-docs">API Documentation</TabsTrigger>
         </TabsList>
+        
+        <TabsContent value="ai-assistant">
+          <AiAssistantTab />
+        </TabsContent>
         
         <TabsContent value="knowledge-base">
           <KnowledgeBaseTab />
         </TabsContent>
         
-        <TabsContent value="ai-assistant">
-          <AiAssistantTab />
+        <TabsContent value="api-docs">
+          <ApiDocumentationTab />
         </TabsContent>
       </Tabs>
     </motion.div>
