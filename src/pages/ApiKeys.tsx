@@ -6,7 +6,6 @@ import { useTrialAlert } from "@/contexts/TrialAlertContext";
 import { useUsageData } from "@/hooks/useUsageData";
 import UsageTracking from "@/components/dashboard/UsageTracking";
 import { ApiKeyTabs } from "@/components/api-keys/ApiKeyTabs";
-import { ApiConfiguration } from "@/components/api-keys/ApiConfiguration";
 
 const ApiKeys = () => {
   const { isTrialActive, trialDaysLeft, isOnPaidPlan } = useTrialAlert();
@@ -54,8 +53,6 @@ const ApiKeys = () => {
         isTrialActive={isTrialActive}
         trialDaysLeft={trialDaysLeft}
       />
-      
-      <ApiConfiguration />
     </motion.div>
   );
 };
