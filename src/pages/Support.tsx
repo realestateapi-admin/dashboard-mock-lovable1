@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import KnowledgeBaseTab from "@/components/support/KnowledgeBaseTab";
 import AiAssistantTab from "@/components/support/AiAssistantTab";
 import ApiDocumentationTab from "@/components/support/ApiDocumentationTab";
+import TicketSubmissionTab from "@/components/support/TicketSubmissionTab";
 
 const Support = () => {
   return (
@@ -21,10 +22,11 @@ const Support = () => {
       </div>
       
       <Tabs defaultValue="ai-assistant" className="space-y-6">
-        <TabsList className="grid grid-cols-3 max-w-md">
+        <TabsList className="grid grid-cols-4 max-w-md">
           <TabsTrigger value="ai-assistant">AI Copilot</TabsTrigger>
           <TabsTrigger value="knowledge-base">Knowledge Base</TabsTrigger>
           <TabsTrigger value="api-docs">API Documentation</TabsTrigger>
+          <TabsTrigger value="submit-ticket">Submit Ticket</TabsTrigger>
         </TabsList>
         
         <TabsContent value="ai-assistant">
@@ -37,6 +39,10 @@ const Support = () => {
         
         <TabsContent value="api-docs">
           <ApiDocumentationTab />
+        </TabsContent>
+        
+        <TabsContent value="submit-ticket">
+          <TicketSubmissionTab />
         </TabsContent>
       </Tabs>
     </motion.div>
