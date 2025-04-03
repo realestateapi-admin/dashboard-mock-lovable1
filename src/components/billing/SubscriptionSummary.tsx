@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -36,7 +35,6 @@ export function SubscriptionSummary({
 }: SubscriptionSummaryProps) {
   const plan = plans.find(p => p.id === selectedPlan);
 
-  // Format dates for display
   const formatDisplayDate = (dateString?: string) => {
     if (!dateString) return null;
     try {
@@ -47,22 +45,18 @@ export function SubscriptionSummary({
     }
   };
 
-  // Calculate renewal date based on billing cycle
   const calculateRenewalDate = () => {
     const today = new Date();
     
     if (billingCycle === 'monthly') {
-      // 30 days forward for monthly
       return format(addDays(today, 30), 'MMM d, yyyy');
     } else {
-      // 365 days (1 year) forward for annual
       return format(addYears(today, 1), 'MMM d, yyyy');
     }
   };
 
   const startDate = formatDisplayDate(subscription?.subscription_start_date || subscription?.contract_start_date);
   
-  // Use existing renewal date from subscription or calculate based on billing cycle
   const renewalDate = subscription?.contract_end_date 
     ? formatDisplayDate(subscription.contract_end_date)
     : calculateRenewalDate();
@@ -122,7 +116,6 @@ export function SubscriptionSummary({
           <span className="font-semibold">{costs.total}</span>
         </div>
         
-        {/* Subscription dates section */}
         <div className="pt-3 border-t">
           <h4 className="text-sm font-semibold mb-2">Subscription Details</h4>
           {startDate && (
@@ -131,8 +124,6 @@ export function SubscriptionSummary({
               <span>{startDate}</span>
             </div>
           )}
-          {/* Only show renewal date for annual billing or existing subscriptions with contract_end_date */}
-          {/* Important: For monthly billing without an existing subscription, don't show renewal date at all */}
           {((billingCycle === 'annual' && !subscription) || subscription?.contract_end_date) && (
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Renews</span>
@@ -148,13 +139,12 @@ export function SubscriptionSummary({
             <p>
               {billingCycle === 'monthly' 
                 ? "Month-to-month billing with no long-term commitment. Cancel anytime." 
-                : "12-month agreement with monthly billing at a 20% discount on the base plan."}
+                : ""}
             </p>
           )}
         </div>
       </CardContent>
       
-      {/* Only show the submit button if explicitly requested */}
       {showSubmitButton && onSubmit && (
         <CardFooter>
           <Button 
