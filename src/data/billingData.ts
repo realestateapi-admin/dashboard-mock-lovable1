@@ -1,4 +1,3 @@
-
 import { PlanData, AddOnData, InvoiceData } from "@/types/billing";
 
 // Mock invoice data
@@ -133,7 +132,7 @@ export const plans: PlanData[] = allPlans.filter(plan => plan.id !== "free");
 export const annualPlanPrices = {
   starter: "$599",
   growth: "$1,200",
-  pro: "$1,500"
+  pro: "$2,500"
 };
 
 export const addOns: AddOnData[] = [
