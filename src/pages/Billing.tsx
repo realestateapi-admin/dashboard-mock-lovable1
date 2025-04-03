@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -6,6 +7,7 @@ import { useTrialAlert } from "@/contexts/TrialAlertContext";
 // Import components
 import { TrialAlert } from "@/components/billing/TrialAlert";
 import { BillingTabs } from "@/components/billing/BillingTabs";
+import { CancellationLink } from "@/components/billing/CancellationLink";
 
 // Import data
 import { plans, addOns, invoices } from "@/data/billingData";
@@ -86,6 +88,10 @@ const Billing = () => {
   // Determine if we should hide trial banners based on subscription
   const shouldHideTrialBanners = localIsOnPaidPlan || isOnPaidPlan;
 
+  // Get current plan name from subscription or selected plan
+  const currentPlanName = subscription?.plan_name || 
+    plans.find(p => p.id === selectedPlan)?.name || "Starter";
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -122,6 +128,14 @@ const Billing = () => {
         onSaveBillingPreferences={handleSaveBillingPreferences}
         onDownloadInvoice={handleDownloadInvoice}
       />
+      
+      {/* Only show cancellation link if user is on a paid plan */}
+      {(localIsOnPaidPlan || isOnPaidPlan) && (
+        <CancellationLink 
+          planName={currentPlanName} 
+          isAnnual={billingCycle === 'annual'} 
+        />
+      )}
     </motion.div>
   );
 };
