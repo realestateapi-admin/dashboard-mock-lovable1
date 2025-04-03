@@ -11,7 +11,7 @@ import { useSubscriptionCalculator } from "@/hooks/useSubscriptionCalculator";
 export const useWizardState = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { startFreeTrial } = useTrialAlert();
+  const { startFreeTrial, setIsOnPaidPlan } = useTrialAlert();
   
   // Step management
   const [currentStep, setCurrentStep] = useState(0);
@@ -111,6 +111,12 @@ export const useWizardState = () => {
     // Simulate API call with timeout
     setTimeout(() => {
       setIsSubmitting(false);
+      
+      // Set user as on a paid plan in context and localStorage
+      if (setIsOnPaidPlan) {
+        setIsOnPaidPlan(true);
+        localStorage.setItem('isOnPaidPlan', 'true');
+      }
       
       // In a real application, this would process the payment via Stripe
       toast({
