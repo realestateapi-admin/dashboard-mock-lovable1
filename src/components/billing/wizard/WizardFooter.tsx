@@ -1,5 +1,6 @@
 
 import { Button } from "@/components/ui/button";
+import { Loader } from "lucide-react";
 
 interface WizardFooterProps {
   currentStep: number;
@@ -7,6 +8,7 @@ interface WizardFooterProps {
   handleBack: () => void;
   handleNext: () => void;
   handleSubmit: () => void;
+  isLoading?: boolean;
 }
 
 export const WizardFooter = ({ 
@@ -14,25 +16,40 @@ export const WizardFooter = ({
   totalSteps, 
   handleBack, 
   handleNext,
-  handleSubmit
+  handleSubmit,
+  isLoading = false
 }: WizardFooterProps) => {
   return (
     <div className="flex justify-between">
       <Button
         variant="outline"
         onClick={handleBack}
-        disabled={currentStep === 0}
+        disabled={currentStep === 0 || isLoading}
       >
         Back
       </Button>
       
       {currentStep < totalSteps - 1 ? (
-        <Button onClick={handleNext}>
-          Continue
+        <Button onClick={handleNext} disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Loader className="h-4 w-4 mr-2 animate-spin" />
+              Loading...
+            </>
+          ) : (
+            "Continue"
+          )}
         </Button>
       ) : (
-        <Button onClick={handleSubmit}>
-          Complete Subscription
+        <Button onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Loader className="h-4 w-4 mr-2 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            "Complete Subscription"
+          )}
         </Button>
       )}
     </div>

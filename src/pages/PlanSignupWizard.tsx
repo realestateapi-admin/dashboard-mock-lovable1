@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
@@ -30,6 +30,10 @@ const PlanSignupWizard = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   
+  // Loading states
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   // Use the subscription calculator hook
   const {
     selectedPlan,
@@ -42,6 +46,15 @@ const PlanSignupWizard = () => {
   } = useSubscriptionCalculator(plans, addOns);
   
   const costs = calculateMonthlyCost();
+  
+  // Simulate data loading on initial render
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1200);
+    
+    return () => clearTimeout(timer);
+  }, []);
   
   // Find the enterprise plan
   const enterprisePlan = plans.find(p => p.id === "enterprise");
@@ -86,15 +99,24 @@ const PlanSignupWizard = () => {
     }
   ];
   
+  // Simulate loading when moving between steps
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
-      setCurrentStep(prevStep => prevStep + 1);
+      setIsLoading(true);
+      setTimeout(() => {
+        setCurrentStep(prevStep => prevStep + 1);
+        setIsLoading(false);
+      }, 500);
     }
   };
   
   const handleBack = () => {
     if (currentStep > 0) {
-      setCurrentStep(prevStep => prevStep - 1);
+      setIsLoading(true);
+      setTimeout(() => {
+        setCurrentStep(prevStep => prevStep - 1);
+        setIsLoading(false);
+      }, 500);
     }
   };
   
@@ -107,14 +129,22 @@ const PlanSignupWizard = () => {
   };
   
   const handleSubmit = () => {
-    // In a real application, this would process the payment via Stripe
-    toast({
-      title: "Subscription Successful",
-      description: "Your subscription has been successfully processed.",
-    });
+    // Simulate submission loading
+    setIsSubmitting(true);
     
-    // Redirect to dashboard
-    navigate("/dashboard");
+    // Simulate API call with timeout
+    setTimeout(() => {
+      setIsSubmitting(false);
+      
+      // In a real application, this would process the payment via Stripe
+      toast({
+        title: "Subscription Successful",
+        description: "Your subscription has been successfully processed.",
+      });
+      
+      // Redirect to dashboard
+      navigate("/dashboard");
+    }, 2000);
   };
   
   return (
@@ -147,6 +177,7 @@ const PlanSignupWizard = () => {
                     onPlanChange={handlePlanChange}
                     enterprisePlan={enterprisePlan}
                     onSelectEnterprise={handleSelectEnterprise}
+                    isLoading={isLoading}
                   />
                 )}
                 
@@ -157,6 +188,7 @@ const PlanSignupWizard = () => {
                     selectedPlan={selectedPlan}
                     activeAddOns={activeAddOns}
                     onToggleAddOn={toggleAddOn}
+                    isLoading={isLoading}
                   />
                 )}
                 
@@ -166,12 +198,13 @@ const PlanSignupWizard = () => {
                     selectedPlanName={plans.find(p => p.id === selectedPlan)?.name || "selected plan"}
                     overageHandling={overageHandling}
                     onOverageHandlingChange={setOverageHandling}
+                    isLoading={isLoading}
                   />
                 )}
                 
                 {/* Step 4: Payment */}
                 {currentStep === 3 && (
-                  <PaymentMethodForm />
+                  <PaymentMethodForm isLoading={isLoading} />
                 )}
               </div>
               
@@ -188,6 +221,7 @@ const PlanSignupWizard = () => {
                   enterprisePlan={enterprisePlan}
                   onSelectEnterprise={handleSelectEnterprise}
                   onSubmit={handleSubmit}
+                  isLoading={isLoading}
                 />
               </div>
             </div>
@@ -200,6 +234,7 @@ const PlanSignupWizard = () => {
               handleBack={handleBack}
               handleNext={handleNext}
               handleSubmit={handleSubmit}
+              isLoading={currentStep === steps.length - 1 ? isSubmitting : isLoading}
             />
           </CardFooter>
         </Card>

@@ -2,6 +2,7 @@
 import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
 import { EnterpriseCompactCard } from "@/components/billing/EnterpriseCompactCard";
 import { PlanData, AddOnData } from "@/types/billing";
+import { SummarySkeleton } from "./SkeletonLoading";
 
 interface WizardSidebarProps {
   currentStep: number;
@@ -18,6 +19,7 @@ interface WizardSidebarProps {
   enterprisePlan: PlanData | undefined;
   onSelectEnterprise: () => void;
   onSubmit: () => void;
+  isLoading?: boolean;
 }
 
 export const WizardSidebar = ({
@@ -30,8 +32,14 @@ export const WizardSidebar = ({
   billingCycle,
   enterprisePlan,
   onSelectEnterprise,
-  onSubmit
+  onSubmit,
+  isLoading = false
 }: WizardSidebarProps) => {
+  
+  if (isLoading) {
+    return <SummarySkeleton />;
+  }
+  
   return (
     <div className="space-y-4">
       <SubscriptionSummary
