@@ -22,11 +22,13 @@ interface BillingTabsProps {
     totalAddOns: string;
     total: string;
   };
+  billingCycle: 'monthly' | 'annual';
   subscription?: SubscriptionData | null;
   isLoadingSubscription: boolean;
   onPlanChange: (planId: string) => void;
   onToggleAddOn: (addOnId: string) => void;
   onOverageHandlingChange: (value: string) => void;
+  onBillingCycleChange: (cycle: 'monthly' | 'annual') => void;
   onSaveBillingPreferences: () => void;
   onDownloadInvoice: (invoiceId: string) => void;
 }
@@ -39,15 +41,18 @@ export const BillingTabs = ({
   activeAddOns,
   overageHandling,
   costs,
+  billingCycle,
   subscription,
   isLoadingSubscription,
   onPlanChange,
   onToggleAddOn,
   onOverageHandlingChange,
+  onBillingCycleChange,
   onSaveBillingPreferences,
   onDownloadInvoice
 }: BillingTabsProps) => {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  // Remove the local billingCycle state since it's now passed as a prop
+  // const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   
   // Find the enterprise plan
   const enterprisePlan = plans.find(p => p.id === "enterprise");
@@ -89,7 +94,7 @@ export const BillingTabs = ({
               onOverageHandlingChange={onOverageHandlingChange}
               onSaveBillingPreferences={onSaveBillingPreferences}
               billingCycle={billingCycle}
-              onBillingCycleChange={setBillingCycle}
+              onBillingCycleChange={onBillingCycleChange}
             />
           </div>
           
