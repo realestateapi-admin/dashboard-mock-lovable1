@@ -15,7 +15,7 @@ export const BillingCycleSelector = ({
 }: BillingCycleSelectorProps) => {
   return (
     <div>
-      <h3 className="text-lg font-medium mb-3">Choose Your Billing Option</h3>
+      <h3 className="text-lg font-medium mb-3">What Works Best For You?</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Monthly Option */}
         <div 
@@ -65,10 +65,10 @@ export const BillingCycleSelector = ({
           </div>
           <ul className="mt-4 space-y-2 text-sm">
             <li className="flex items-center">
-              <span>12-month agreement</span>
+              <span>Lock in today's pricing with 12 month agreement</span>
             </li>
             <li className="flex items-center">
-              <span>20% discount on all plans</span>
+              <span>Discount on all plans</span>
             </li>
             <li className="flex items-center">
               <span>Still pay monthly</span>
