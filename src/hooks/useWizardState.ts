@@ -75,8 +75,27 @@ export const useWizardState = () => {
     }
   ];
   
+  // Validate if current step is complete
+  const isCurrentStepValid = () => {
+    if (currentStep === 2) {
+      // Make overage handling selection mandatory
+      return !!overageHandling;
+    }
+    return true;
+  };
+  
   // Simulate loading when moving between steps
   const handleNext = () => {
+    // Check if current step is valid before proceeding
+    if (!isCurrentStepValid()) {
+      toast({
+        title: "Selection Required",
+        description: "Please select an overage handling option to continue.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     if (currentStep < steps.length - 1) {
       setIsLoading(true);
       setTimeout(() => {

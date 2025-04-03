@@ -23,15 +23,22 @@ export const OverageHandling = ({
   
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium">Overage Handling</h3>
+      <h3 className="text-lg font-medium">Overage Handling <span className="text-red-500">*</span></h3>
       <p className="text-sm text-muted-foreground">
         Choose how to handle API usage that exceeds your {selectedPlanName} plan limits
       </p>
+      
+      {!overageHandling && (
+        <p className="text-sm text-red-500 font-medium">
+          Please select an overage handling option to continue
+        </p>
+      )}
       
       <RadioGroup
         value={overageHandling}
         onValueChange={onOverageHandlingChange}
         className="space-y-4 mt-4"
+        required
       >
         <div className="flex items-start space-x-3 border p-4 rounded-md">
           <RadioGroupItem value="cut-off" id="cut-off" className="mt-1" />
