@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
 import { isPaidPlan } from "@/services/subscriptionService";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
+import { annualPlanPrices } from "@/data/billingData";
 
 interface SubscriptionCalculatorReturn {
   selectedPlan: string;

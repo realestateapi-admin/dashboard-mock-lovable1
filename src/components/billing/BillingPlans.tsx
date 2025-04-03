@@ -6,6 +6,7 @@ import { PlansList } from "./PlansList";
 import { AddOnsList } from "./AddOnsList";
 import { OverageHandling } from "./OverageHandling";
 import { BillingCycleSelector } from "./BillingCycleSelector";
+import { annualPlanPrices } from "@/data/billingData";
 
 interface BillingPlansProps {
   plans: PlanData[];
@@ -37,16 +38,12 @@ export const BillingPlans = ({
   // Get the selected plan's name for displaying in overage options
   const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || "selected plan";
   
-  // Apply discount to plans for annual billing
+  // Apply annual pricing to plans when annual billing is selected
   const adjustedPlans = plans.map(plan => {
-    if (billingCycle === 'annual' && plan.price !== 'Custom') {
-      // Extract numeric price and apply 20% discount
-      const numericPrice = parseInt(plan.price.replace(/\$|,/g, ""));
-      const discountedPrice = Math.floor(numericPrice * 0.8);
-      
+    if (billingCycle === 'annual' && plan.price !== 'Custom' && annualPlanPrices[plan.id as keyof typeof annualPlanPrices]) {
       return {
         ...plan,
-        price: `$${discountedPrice.toLocaleString()}`,
+        price: annualPlanPrices[plan.id as keyof typeof annualPlanPrices],
         originalPrice: plan.price
       };
     }

@@ -51,7 +51,7 @@ export const allPlans: PlanData[] = [
   {
     id: "starter",
     name: "Starter",
-    price: "$599",
+    price: "$699",
     description: "Perfect for indie developers and startups",
     records: "30,000",
     features: [
@@ -64,7 +64,7 @@ export const allPlans: PlanData[] = [
   {
     id: "growth",
     name: "Growth",
-    price: "$1,200",
+    price: "$1,500",
     description: "For growing companies and small teams",
     records: "150,000",
     features: [
@@ -82,7 +82,7 @@ export const allPlans: PlanData[] = [
   {
     id: "pro",
     name: "Pro",
-    price: "$2,500",
+    price: "$3,000",
     description: "For established companies with higher volume needs",
     records: "400,000",
     features: [
@@ -128,6 +128,13 @@ export const signupPlans: PlanData[] = allPlans.filter(plan => plan.id !== "ente
 
 // Plans shown on the billing page (excludes the free plan)
 export const plans: PlanData[] = allPlans.filter(plan => plan.id !== "free");
+
+// Annual plan prices (used for the annual billing calculation)
+export const annualPlanPrices = {
+  starter: "$599",
+  growth: "$1,200",
+  pro: "$1,500"
+};
 
 export const addOns: AddOnData[] = [
   {
