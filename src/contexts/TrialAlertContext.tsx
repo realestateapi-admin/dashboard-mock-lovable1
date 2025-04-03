@@ -80,10 +80,17 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
     }
   }, []);
 
-  // When isOnPaidPlan changes, update localStorage
+  // When isOnPaidPlan or isFreeUser changes, update localStorage
   useEffect(() => {
     localStorage.setItem('isOnPaidPlan', isOnPaidPlan.toString());
-  }, [isOnPaidPlan]);
+    localStorage.setItem('isFreeUser', isFreeUser.toString());
+    
+    // If a user is on a paid plan, they are no longer considered a free user
+    if (isOnPaidPlan && isFreeUser) {
+      setIsFreeUser(false);
+      localStorage.setItem('isFreeUser', 'false');
+    }
+  }, [isOnPaidPlan, isFreeUser]);
 
   // Check for trial alerts
   useEffect(() => {

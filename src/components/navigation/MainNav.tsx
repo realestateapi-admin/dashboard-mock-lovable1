@@ -6,7 +6,7 @@ import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 export function MainNav() {
   const { currentRole } = useAuth();
-  const { isOnPaidPlan } = useTrialAlert();
+  const { isOnPaidPlan, isFreeUser } = useTrialAlert();
 
   // Define navigation items with role-based access
   const navItems = [
@@ -30,7 +30,7 @@ export function MainNav() {
       href: "/dashboard/billing",
       allowedRoles: ['admin', 'billing'],
       // Only show billing for paid plan users or admin users
-      hideCondition: !isOnPaidPlan && currentRole !== 'admin'
+      hideCondition: (isFreeUser && !isOnPaidPlan) || (currentRole !== 'admin' && !isOnPaidPlan)
     },
     {
       title: "Support",
