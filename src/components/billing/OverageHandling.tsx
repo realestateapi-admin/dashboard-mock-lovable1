@@ -34,10 +34,10 @@ export const OverageHandling = ({
         className="space-y-4 mt-4"
       >
         <div className="flex items-start space-x-3 border p-4 rounded-md">
-          <RadioGroupItem value="fail" id="fail" className="mt-1" />
+          <RadioGroupItem value="cut-off" id="cut-off" className="mt-1" />
           <div>
-            <Label htmlFor="fail" className="text-base font-medium">
-              Fail requests
+            <Label htmlFor="cut-off" className="text-base font-medium">
+              Cut off access at plan limit
             </Label>
             <p className="text-sm text-muted-foreground mt-1">
               API calls will fail once you reach your monthly limit, preventing any overage charges.
@@ -46,49 +46,37 @@ export const OverageHandling = ({
         </div>
         
         <div className="flex items-start space-x-3 border p-4 rounded-md">
-          <RadioGroupItem value="pay-as-you-go" id="pay-as-you-go" className="mt-1" />
+          <RadioGroupItem value="allow-25" id="allow-25" className="mt-1" />
           <div>
-            <Label htmlFor="pay-as-you-go" className="text-base font-medium">
-              Pay-as-you-go
+            <Label htmlFor="allow-25" className="text-base font-medium">
+              Allow 25% overage billed at the plan's unit rate
             </Label>
             <p className="text-sm text-muted-foreground mt-1">
-              Continue processing requests at $0.003 per additional record over your plan limit.
+              Continue processing requests up to 25% over your plan limit at your standard unit rate.
             </p>
           </div>
         </div>
         
         <div className="flex items-start space-x-3 border p-4 rounded-md">
-          <RadioGroupItem value="notify-80" id="notify-80" className="mt-1" />
+          <RadioGroupItem value="allow-100" id="allow-100" className="mt-1" />
           <div>
-            <Label htmlFor="notify-80" className="text-base font-medium">
-              Notify at 80% threshold
+            <Label htmlFor="allow-100" className="text-base font-medium">
+              Allow 100% overage billed at the plan's unit rate
             </Label>
             <p className="text-sm text-muted-foreground mt-1">
-              We'll send an alert when you reach 80% of your monthly limit so you can upgrade if needed.
+              Continue processing requests up to double your plan limit at your standard unit rate.
             </p>
           </div>
         </div>
         
         <div className="flex items-start space-x-3 border p-4 rounded-md">
-          <RadioGroupItem value="notify-90" id="notify-90" className="mt-1" />
+          <RadioGroupItem value="unlimited" id="unlimited" className="mt-1" />
           <div>
-            <Label htmlFor="notify-90" className="text-base font-medium">
-              Notify at 90% threshold
+            <Label htmlFor="unlimited" className="text-base font-medium">
+              My app is mission critical. Do not cut off access no matter the amount of overage
             </Label>
             <p className="text-sm text-muted-foreground mt-1">
-              We'll send an alert when you reach 90% of your monthly limit so you can upgrade if needed.
-            </p>
-          </div>
-        </div>
-        
-        <div className="flex items-start space-x-3 border p-4 rounded-md">
-          <RadioGroupItem value="notify-both" id="notify-both" className="mt-1" />
-          <div>
-            <Label htmlFor="notify-both" className="text-base font-medium">
-              Notify at both thresholds
-            </Label>
-            <p className="text-sm text-muted-foreground mt-1">
-              We'll send alerts when you reach both 80% and 90% of your monthly limit.
+              Always process requests regardless of usage, with overages billed at your standard unit rate.
             </p>
           </div>
         </div>
