@@ -97,7 +97,7 @@ export function SubscriptionSummary({
         
         {billingCycle === 'annual' && (
           <div className="bg-green-50 border border-green-200 p-3 rounded-md">
-            <p className="text-sm text-green-800 font-medium">Annual Contract (20% Savings)</p>
+            <p className="text-sm text-green-800 font-medium">Annual Contract (20% Savings on Base Plan)</p>
             <p className="text-xs text-green-700 mt-1">
               12-month agreement with monthly billing
             </p>
@@ -148,7 +148,7 @@ export function SubscriptionSummary({
             <p>
               {billingCycle === 'monthly' 
                 ? "Month-to-month billing with no long-term commitment. Cancel anytime." 
-                : "12-month agreement with monthly billing at a 20% discount."}
+                : "12-month agreement with monthly billing at a 20% discount on the base plan."}
             </p>
           )}
         </div>

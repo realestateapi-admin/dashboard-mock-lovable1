@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
 import { isPaidPlan } from "@/services/subscriptionService";
@@ -87,12 +86,9 @@ export const useSubscriptionCalculator = (
         // Handle both formats: "$X/month" or just "$X"
         const numericPrice = parseInt(priceStr.replace(/\$|,|\/month/g, ""));
         if (!isNaN(numericPrice)) {
-          // Apply 20% discount for add-ons if annual billing
-          if (billingCycle === 'annual') {
-            addOnTotal += Math.round(numericPrice * 0.8); // 20% discount
-          } else {
-            addOnTotal += numericPrice;
-          }
+          // REMOVED: No longer apply 20% discount for add-ons if annual billing
+          // Add-on prices remain the same regardless of billing cycle
+          addOnTotal += numericPrice;
         }
       }
     });
