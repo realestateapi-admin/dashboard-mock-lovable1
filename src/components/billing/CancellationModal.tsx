@@ -49,7 +49,16 @@ export const CancellationModal = ({
   const [step, setStep] = useState<'initial' | 'questionnaire' | 'completed'>('initial');
   const [reason, setReason] = useState('');
 
+  // Check if current plan is Enterprise
+  const isEnterprise = planName.toLowerCase() === 'enterprise';
+
   const handleProceedToCancel = () => {
+    // For Enterprise plan, just complete the cancellation process with SE outreach
+    if (isEnterprise) {
+      handleCancellationComplete();
+      return;
+    }
+    
     // If annual contract, no questionnaire is shown
     if (isAnnual) {
       handleCancellationComplete();
@@ -63,8 +72,10 @@ export const CancellationModal = ({
     
     // In a real app, this would make an API call to cancel the subscription
     toast({
-      title: "Subscription Cancelled",
-      description: "Your subscription has been cancelled successfully.",
+      title: "Subscription Update",
+      description: isEnterprise 
+        ? "Your request has been received. Your Solutions Engineer will contact you shortly."
+        : "Your subscription has been cancelled successfully.",
     });
     
     // Simulating backend email trigger
@@ -78,7 +89,29 @@ export const CancellationModal = ({
 
   // Determine the initial modal content based on plan and contract type
   const renderInitialContent = () => {
-    if (isAnnual) {
+    // Special handling for Enterprise plan
+    if (isEnterprise) {
+      return (
+        <>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Enterprise Partnership</AlertDialogTitle>
+            <AlertDialogDescription>
+              We greatly value our partnership with you and we want to find a way to keep supporting your project. 
+              Your dedicated Solutions Engineer will reach out shortly to offer some options--including closing your account. 
+              Rest assured, we'll do whatever your feel is best for your business.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => navigate('/dashboard')}>
+              Keep My Subscription
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleProceedToCancel}>
+              Submit Request
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </>
+      );
+    } else if (isAnnual) {
       return (
         <>
           <AlertDialogHeader>
