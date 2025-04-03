@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +20,7 @@ const Billing = () => {
   const { toast } = useToast();
   const { isTrialActive, trialDaysLeft, requestTrialExtension, isOnPaidPlan } = useTrialAlert();
   const [localIsOnPaidPlan, setLocalIsOnPaidPlan] = useState(false);
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   
   // Fetch usage data
   const { 
@@ -46,7 +46,8 @@ const Billing = () => {
     calculateMonthlyCost
   } = useSubscriptionCalculator(plans, addOns, subscription);
 
-  const costs = calculateMonthlyCost();
+  // Calculate costs based on billing cycle
+  const costs = calculateMonthlyCost(billingCycle);
 
   // Check if user is on a paid plan when subscription data loads
   useEffect(() => {
@@ -69,6 +70,10 @@ const Billing = () => {
       title: "Plan selection updated",
       description: `You've selected the ${plans.find(p => p.id === planId)?.name} plan.`,
     });
+  };
+
+  const handleBillingCycleChange = (cycle: 'monthly' | 'annual') => {
+    setBillingCycle(cycle);
   };
 
   const handleDownloadInvoice = (invoiceId: string) => {
@@ -107,11 +112,13 @@ const Billing = () => {
         activeAddOns={activeAddOns}
         overageHandling={overageHandling}
         costs={costs}
+        billingCycle={billingCycle}
         subscription={subscription}
         isLoadingSubscription={isLoadingSubscription}
         onPlanChange={handlePlanChange}
         onToggleAddOn={toggleAddOn}
         onOverageHandlingChange={setOverageHandling}
+        onBillingCycleChange={handleBillingCycleChange}
         onSaveBillingPreferences={handleSaveBillingPreferences}
         onDownloadInvoice={handleDownloadInvoice}
       />

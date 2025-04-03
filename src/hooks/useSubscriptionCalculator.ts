@@ -13,7 +13,7 @@ interface SubscriptionCalculatorReturn {
   activeAddOns: string[];
   setActiveAddOns: (addOns: string[]) => void;
   toggleAddOn: (addOnId: string) => void;
-  calculateMonthlyCost: () => {
+  calculateMonthlyCost: (billingCycle?: 'monthly' | 'annual') => {
     basePrice: string;
     totalAddOns: string;
     total: string;
@@ -48,7 +48,7 @@ export const useSubscriptionCalculator = (
   };
 
   // Calculate estimated monthly cost for UI purposes when no subscription is available
-  const calculateMonthlyCost = () => {
+  const calculateMonthlyCost = (billingCycle: 'monthly' | 'annual' = 'monthly') => {
     const basePlan = plans.find(p => p.id === selectedPlan);
     if (!basePlan) return { basePrice: "$0", totalAddOns: "$0", total: "$0" };
     
@@ -61,8 +61,16 @@ export const useSubscriptionCalculator = (
       };
     }
     
-    // Extract numeric price from base plan (removing $ and ,)
-    const basePrice = parseInt((basePlan.price || "$0").replace(/\$|,/g, ""));
+    // Use annual pricing if selected
+    let basePrice = 0;
+    if (billingCycle === 'annual' && annualPlanPrices[selectedPlan as keyof typeof annualPlanPrices]) {
+      // Extract numeric price from annual plan price (removing $ and ,)
+      const annualPriceStr = annualPlanPrices[selectedPlan as keyof typeof annualPlanPrices];
+      basePrice = parseInt(annualPriceStr.replace(/\$|,/g, ""));
+    } else {
+      // Extract numeric price from base plan (removing $ and ,)
+      basePrice = parseInt((basePlan.price || "$0").replace(/\$|,/g, ""));
+    }
     
     // Calculate add-on costs - only include subscription add-ons (not metered)
     let addOnTotal = 0;
@@ -79,7 +87,12 @@ export const useSubscriptionCalculator = (
         // Handle both formats: "$X/month" or just "$X"
         const numericPrice = parseInt(priceStr.replace(/\$|,|\/month/g, ""));
         if (!isNaN(numericPrice)) {
-          addOnTotal += numericPrice;
+          // Apply 20% discount for add-ons if annual billing
+          if (billingCycle === 'annual') {
+            addOnTotal += Math.round(numericPrice * 0.8); // 20% discount
+          } else {
+            addOnTotal += numericPrice;
+          }
         }
       }
     });

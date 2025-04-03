@@ -32,7 +32,8 @@ export const useWizardState = () => {
     calculateMonthlyCost
   } = useSubscriptionCalculator(plans, addOns);
   
-  const costs = calculateMonthlyCost();
+  // Calculate costs based on current billing cycle
+  const costs = calculateMonthlyCost(billingCycle);
   
   // Find the enterprise plan
   const enterprisePlan = plans.find(p => p.id === "enterprise");
