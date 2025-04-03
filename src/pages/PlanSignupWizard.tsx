@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -84,7 +83,7 @@ const PlanSignupWizard = () => {
   const steps = [
     {
       title: "Choose Your Billing Option",
-      description: "Select your preferred billing cycle"
+      description: ""
     },
     {
       title: "Select Add-Ons",
