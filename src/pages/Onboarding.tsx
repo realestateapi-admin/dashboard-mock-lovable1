@@ -90,10 +90,6 @@ const Onboarding = () => {
                     <span className="mr-2 mt-0.5">✓</span>
                     <span>Full access to documentation and support</span>
                   </li>
-                  <li className="flex items-start">
-                    <span className="mr-2 mt-0.5">✓</span>
-                    <span>No credit card required for the trial</span>
-                  </li>
                 </ul>
               </div>
               
