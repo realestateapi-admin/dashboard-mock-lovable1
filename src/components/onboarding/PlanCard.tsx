@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 interface PlanCardProps {
-  plan: PlanData;
+  plan: PlanData & { originalPrice?: string };
   isSelected: boolean;
   className?: string;
 }
@@ -76,6 +76,14 @@ export const PlanCard = ({ plan, isSelected, className = "" }: PlanCardProps) =>
                     <span>14 days only</span>
                   </div>
                 </div>
+              </div>
+            ) : plan.originalPrice ? (
+              <div className="flex items-baseline gap-2 mb-4">
+                <span className="text-2xl font-bold">{plan.price}</span>
+                <span className="text-lg line-through text-muted-foreground">{plan.originalPrice}</span>
+                <span className="text-xs text-muted-foreground">
+                  per month
+                </span>
               </div>
             ) : (
               <div className="flex gap-1 items-baseline mb-4">

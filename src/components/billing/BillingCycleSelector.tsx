@@ -1,6 +1,8 @@
 
-import React from 'react';
-import { CheckCircle2 } from "lucide-react";
+import { useState } from 'react';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { CheckCircle, CheckIcon } from "lucide-react";
 
 interface BillingCycleSelectorProps {
   billingCycle: 'monthly' | 'annual';
@@ -12,72 +14,69 @@ export const BillingCycleSelector = ({
   onBillingCycleChange
 }: BillingCycleSelectorProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {/* Monthly Option */}
-      <div 
-        className={`border rounded-lg p-4 cursor-pointer transition-all hover:border-primary ${
-          billingCycle === 'monthly' 
-            ? 'border-primary bg-primary/5 ring-2 ring-primary ring-offset-2'
-            : 'border-border'
-        }`}
-        onClick={() => onBillingCycleChange('monthly')}
-      >
-        <div className="flex justify-between items-start">
-          <h3 className="font-medium text-lg">Monthly Flexibility</h3>
-          <div className={billingCycle === 'monthly' ? "text-primary" : "text-muted-foreground"}>
-            <CheckCircle2 className={`h-5 w-5 ${billingCycle === 'monthly' ? "opacity-100" : "opacity-0"}`} />
+    <div>
+      <h3 className="text-lg font-medium mb-3">Choose Your Billing Option</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Monthly Option */}
+        <div 
+          className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
+            billingCycle === 'monthly' 
+              ? 'border-primary ring-2 ring-primary ring-offset-2' 
+              : 'border-border hover:border-primary/50'
+          }`}
+          onClick={() => onBillingCycleChange('monthly')}
+        >
+          <div className="flex justify-between items-start">
+            <h4 className="text-xl font-semibold">Monthly Flexibility</h4>
+            {billingCycle === 'monthly' && (
+              <CheckIcon className="h-5 w-5 text-primary" />
+            )}
+          </div>
+          <ul className="mt-4 space-y-2 text-sm">
+            <li className="flex items-center">
+              <span>Pay month-to-month</span>
+            </li>
+            <li className="flex items-center">
+              <span>Cancel anytime</span>
+            </li>
+            <li className="flex items-center">
+              <span>No long-term commitment</span>
+            </li>
+          </ul>
+          <div className="mt-4 text-center text-sm font-medium">
+            Standard Price
           </div>
         </div>
-        <div className="mt-4 space-y-2">
-          <div className="flex items-start gap-2">
-            <div className="bg-primary/10 rounded-full h-2 w-2 mt-1.5" />
-            <span className="text-sm">Pay month-to-month</span>
+        
+        {/* Annual Option */}
+        <div 
+          className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
+            billingCycle === 'annual' 
+              ? 'border-primary ring-2 ring-primary ring-offset-2' 
+              : 'border-border hover:border-primary/50'
+          }`}
+          onClick={() => onBillingCycleChange('annual')}
+        >
+          <div className="flex justify-between items-start">
+            <h4 className="text-xl font-semibold">Annual Value</h4>
+            {billingCycle === 'annual' && (
+              <CheckIcon className="h-5 w-5 text-primary" />
+            )}
           </div>
-          <div className="flex items-start gap-2">
-            <div className="bg-primary/10 rounded-full h-2 w-2 mt-1.5" />
-            <span className="text-sm">Cancel anytime</span>
+          <ul className="mt-4 space-y-2 text-sm">
+            <li className="flex items-center">
+              <span>12-month agreement</span>
+            </li>
+            <li className="flex items-center">
+              <span>20% discount on all plans</span>
+            </li>
+            <li className="flex items-center">
+              <span>Still pay monthly</span>
+            </li>
+          </ul>
+          <div className="mt-4 text-center font-medium text-green-600">
+            AVERAGE SAVINGS: 20%
           </div>
-          <div className="flex items-start gap-2">
-            <div className="bg-primary/10 rounded-full h-2 w-2 mt-1.5" />
-            <span className="text-sm">No long-term commitment</span>
-          </div>
-        </div>
-        <div className="mt-4 pt-3 border-t">
-          <p className="text-center font-medium">Standard Price</p>
-        </div>
-      </div>
-      
-      {/* Annual Option */}
-      <div 
-        className={`border rounded-lg p-4 cursor-pointer transition-all hover:border-primary ${
-          billingCycle === 'annual' 
-            ? 'border-primary bg-primary/5 ring-2 ring-primary ring-offset-2'
-            : 'border-border'
-        }`}
-        onClick={() => onBillingCycleChange('annual')}
-      >
-        <div className="flex justify-between items-start">
-          <h3 className="font-medium text-lg">Annual Value</h3>
-          <div className={billingCycle === 'annual' ? "text-primary" : "text-muted-foreground"}>
-            <CheckCircle2 className={`h-5 w-5 ${billingCycle === 'annual' ? "opacity-100" : "opacity-0"}`} />
-          </div>
-        </div>
-        <div className="mt-4 space-y-2">
-          <div className="flex items-start gap-2">
-            <div className="bg-primary/10 rounded-full h-2 w-2 mt-1.5" />
-            <span className="text-sm">12-month agreement</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <div className="bg-primary/10 rounded-full h-2 w-2 mt-1.5" />
-            <span className="text-sm"><span className="font-medium">20% discount</span> on all plans</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <div className="bg-primary/10 rounded-full h-2 w-2 mt-1.5" />
-            <span className="text-sm">Still pay monthly</span>
-          </div>
-        </div>
-        <div className="mt-4 pt-3 border-t">
-          <p className="text-center text-green-600 font-medium">AVERAGE SAVINGS: 20%</p>
         </div>
       </div>
     </div>

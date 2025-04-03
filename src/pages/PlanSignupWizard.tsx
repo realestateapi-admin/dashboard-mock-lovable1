@@ -12,6 +12,7 @@ import { PlansList } from "@/components/billing/PlansList";
 import { AddOnsList } from "@/components/billing/AddOnsList";
 import { OverageHandling } from "@/components/billing/OverageHandling";
 import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
+import { EnterpriseCompactCard } from "@/components/billing/EnterpriseCompactCard";
 
 // Import plan data
 import { plans, addOns, annualPlanPrices } from "@/data/billingData";
@@ -56,8 +57,13 @@ const PlanSignupWizard = () => {
   
   const costs = calculateMonthlyCost();
   
+  // Find the enterprise plan
+  const enterprisePlan = plans.find(p => p.id === "enterprise");
+  // Filter out enterprise plan from the regular plans list for display
+  const regularPlans = plans.filter(p => p.id !== "enterprise");
+  
   // Apply annual pricing to plans when annual billing is selected
-  const adjustedPlans = plans.map(plan => {
+  const adjustedPlans = regularPlans.map(plan => {
     if (billingCycle === 'annual' && plan.price !== 'Custom' && annualPlanPrices[plan.id as keyof typeof annualPlanPrices]) {
       return {
         ...plan,
@@ -67,6 +73,13 @@ const PlanSignupWizard = () => {
     }
     return plan;
   });
+  
+  // Handle selecting enterprise plan
+  const handleSelectEnterprise = () => {
+    if (enterprisePlan) {
+      setSelectedPlan(enterprisePlan.id);
+    }
+  };
   
   const steps = [
     {
@@ -206,8 +219,8 @@ const PlanSignupWizard = () => {
                 )}
               </div>
               
-              {/* Right side - Subscription Summary */}
-              <div>
+              {/* Right side - Subscription Summary and Enterprise Card */}
+              <div className="space-y-4">
                 <SubscriptionSummary
                   selectedPlan={selectedPlan}
                   plans={plans}
@@ -219,6 +232,11 @@ const PlanSignupWizard = () => {
                   onSubmit={handleSubmit}
                   billingCycle={billingCycle}
                 />
+                
+                {/* Show the Enterprise compact card only on step 1 and when enterprise is not selected */}
+                {currentStep === 0 && enterprisePlan && selectedPlan !== enterprisePlan.id && (
+                  <EnterpriseCompactCard onSelectEnterprise={handleSelectEnterprise} />
+                )}
               </div>
             </div>
           </CardContent>

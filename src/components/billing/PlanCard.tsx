@@ -88,12 +88,12 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
             </div>
           </div>
           <div className="flex flex-col mb-4">
-            {/* Price display section */}
+            {/* Price display with strikethrough for original price when on annual billing */}
             {billingCycle === 'annual' && plan.originalPrice ? (
-              <div className="flex gap-1 items-baseline">
+              <div className="flex items-baseline gap-2">
                 <span className="text-xl font-semibold">{plan.price}</span>
+                <span className="text-xl line-through text-muted-foreground">{plan.originalPrice}</span>
                 <span className="text-xs text-muted-foreground">/month</span>
-                <span className="text-xs text-muted-foreground line-through ml-2">{plan.originalPrice}</span>
               </div>
             ) : (
               <div className="flex gap-1 items-baseline">
