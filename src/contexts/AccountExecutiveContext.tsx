@@ -13,10 +13,12 @@ export interface AccountExecutive {
 interface AccountExecutiveContextType {
   ae: AccountExecutive | null;
   isWidgetVisible: boolean;
+  isEnterprisePlan: boolean;
   showWidget: () => void;
   hideWidget: () => void;
   toggleWidget: () => void;
   setAe: (ae: AccountExecutive | null) => void;
+  setIsEnterprisePlan: (isEnterprise: boolean) => void;
 }
 
 // Create the context with default values
@@ -42,6 +44,8 @@ export const AccountExecutiveProvider = ({
 }: AccountExecutiveProviderProps) => {
   // State for the widget visibility
   const [isWidgetVisible, setIsWidgetVisible] = useState(initialVisibility);
+  // State for tracking if user is on enterprise plan
+  const [isEnterprisePlan, setIsEnterprisePlan] = useState(false);
   
   // Mocked SE data - in a real app, this would come from the user object or API
   const [ae, setAe] = useState<AccountExecutive | null>({
@@ -56,6 +60,14 @@ export const AccountExecutiveProvider = ({
     const widgetClosedCount = localStorage.getItem('widgetClosedCount');
     if (!widgetClosedCount) {
       localStorage.setItem('widgetClosedCount', '0');
+    }
+    
+    // Check if user is on enterprise plan from localStorage
+    const selectedPlan = localStorage.getItem('selectedPlan');
+    if (selectedPlan === 'enterprise') {
+      setIsEnterprisePlan(true);
+      // Always show widget for enterprise users
+      setIsWidgetVisible(true);
     }
   }, []);
 
@@ -77,6 +89,7 @@ export const AccountExecutiveProvider = ({
         // 1. User has just landed on the support page (determined by route)
         // 2. User has exceeded usage threshold
         // 3. User has a custom flag set to show the AE
+        // 4. User is on enterprise plan (NEW)
         
         const isOnSupportPage = window.location.pathname.includes('/support');
         
@@ -88,7 +101,8 @@ export const AccountExecutiveProvider = ({
         const widgetClosedCount = parseInt(localStorage.getItem('widgetClosedCount') || '0');
         
         // Show automatically on support page if widget wasn't closed too many times
-        if ((isOnSupportPage && widgetClosedCount < 3) || mockShowAE || showDueToUsage) {
+        // Or if user is on enterprise plan
+        if ((isOnSupportPage && widgetClosedCount < 3) || mockShowAE || showDueToUsage || isEnterprisePlan) {
           setIsWidgetVisible(true);
         }
       } catch (error) {
@@ -97,30 +111,42 @@ export const AccountExecutiveProvider = ({
     };
     
     checkPageAndTriggers();
-  }, []);
+  }, [isEnterprisePlan]);
 
   // Actions for showing/hiding the widget
   const showWidget = () => setIsWidgetVisible(true);
   
   const hideWidget = () => {
-    setIsWidgetVisible(false);
-    
-    // Increment the widget closed count in localStorage
-    const currentCount = parseInt(localStorage.getItem('widgetClosedCount') || '0');
-    localStorage.setItem('widgetClosedCount', (currentCount + 1).toString());
+    // Only allow hiding the widget if not on enterprise plan
+    if (!isEnterprisePlan) {
+      setIsWidgetVisible(false);
+      
+      // Increment the widget closed count in localStorage
+      const currentCount = parseInt(localStorage.getItem('widgetClosedCount') || '0');
+      localStorage.setItem('widgetClosedCount', (currentCount + 1).toString());
+    }
   };
   
-  const toggleWidget = () => setIsWidgetVisible(prev => !prev);
+  const toggleWidget = () => {
+    if (!isEnterprisePlan) {
+      setIsWidgetVisible(prev => !prev);
+    } else if (!isWidgetVisible) {
+      // For enterprise users, only allow showing the widget if it's hidden
+      setIsWidgetVisible(true);
+    }
+  };
 
   return (
     <AccountExecutiveContext.Provider
       value={{
         ae,
         isWidgetVisible,
+        isEnterprisePlan,
         showWidget,
         hideWidget,
         toggleWidget,
-        setAe
+        setAe,
+        setIsEnterprisePlan
       }}
     >
       {children}

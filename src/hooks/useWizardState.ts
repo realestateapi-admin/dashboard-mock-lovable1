@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
+import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 
 // Import plan data
 import { plans, addOns } from "@/data/billingData";
@@ -12,6 +13,7 @@ export const useWizardState = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { startFreeTrial, setIsOnPaidPlan } = useTrialAlert();
+  const { setIsEnterprisePlan } = useAccountExecutive();
   
   // Step management
   const [currentStep, setCurrentStep] = useState(0);
@@ -48,6 +50,20 @@ export const useWizardState = () => {
     
     return () => clearTimeout(timer);
   }, []);
+
+  // Update enterprise plan status when the selected plan changes
+  useEffect(() => {
+    // Check if the selected plan is the enterprise plan
+    const isEnterprisePlan = selectedPlan === 'enterprise';
+    
+    // Update the enterprise status in the AccountExecutiveContext
+    setIsEnterprisePlan(isEnterprisePlan);
+    
+    // Store the selected plan in localStorage
+    if (selectedPlan) {
+      localStorage.setItem('selectedPlan', selectedPlan);
+    }
+  }, [selectedPlan, setIsEnterprisePlan]);
   
   // Handle selecting enterprise plan
   const handleSelectEnterprise = () => {
@@ -136,6 +152,9 @@ export const useWizardState = () => {
         setIsOnPaidPlan(true);
         localStorage.setItem('isOnPaidPlan', 'true');
       }
+      
+      // Save selected plan to localStorage for persistence
+      localStorage.setItem('selectedPlan', selectedPlan);
       
       // In a real application, this would process the payment via Stripe
       toast({
