@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -12,27 +13,11 @@ import { AddOnsList } from "@/components/billing/AddOnsList";
 import { OverageHandling } from "@/components/billing/OverageHandling";
 import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
 import { EnterpriseCompactCard } from "@/components/billing/EnterpriseCompactCard";
+import { PaymentMethodForm } from "@/components/billing/PaymentMethodForm";
 
 // Import plan data
 import { plans, addOns, annualPlanPrices } from "@/data/billingData";
 import { useSubscriptionCalculator } from "@/hooks/useSubscriptionCalculator";
-
-// Payment component placeholder (would be replaced with Stripe Elements)
-const PaymentMethodForm = () => {
-  return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-medium">Payment Information</h3>
-      <p className="text-sm text-muted-foreground mb-4">
-        Enter your payment details to complete your subscription
-      </p>
-      <div className="p-6 border rounded-lg bg-slate-50 flex items-center justify-center">
-        <p className="text-center text-muted-foreground">
-          [Stripe Payment Form Would Be Embedded Here]
-        </p>
-      </div>
-    </div>
-  );
-};
 
 const PlanSignupWizard = () => {
   const navigate = useNavigate();
