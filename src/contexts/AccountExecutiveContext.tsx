@@ -51,11 +51,18 @@ export const AccountExecutiveProvider = ({
     photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces&q=80',
   });
 
-  // Check if the SE should be shown automatically (based on user record threshold or showAE flag)
+  // Initialize widget closed state in localStorage if not set
   useEffect(() => {
-    // Mock checking user state for showAE flag
-    // In a real app, this would use actual user data
-    const checkUserTriggers = async () => {
+    const widgetClosedCount = localStorage.getItem('widgetClosedCount');
+    if (!widgetClosedCount) {
+      localStorage.setItem('widgetClosedCount', '0');
+    }
+  }, []);
+
+  // Check if the SE widget should be shown automatically
+  useEffect(() => {
+    // Only show widget on support page or when triggered
+    const checkPageAndTriggers = async () => {
       try {
         // Simulate API call to check user state
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -66,13 +73,22 @@ export const AccountExecutiveProvider = ({
         // For demo purposes, let's assume showAE is false
         const mockShowAE = false;
         
+        // Show the widget automatically in these conditions:
+        // 1. User has just landed on the support page (determined by route)
+        // 2. User has exceeded usage threshold
+        // 3. User has a custom flag set to show the AE
+        
+        const isOnSupportPage = window.location.pathname.includes('/support');
+        
         // Check if records fetched exceeds threshold (200)
-        // This would come from actual usage data in a real app
         const mockRecordsFetched = 150;
         const showDueToUsage = mockRecordsFetched > 200;
         
-        // Show the widget if either condition is true
-        if (mockShowAE || showDueToUsage) {
+        // Get the number of times widget was closed
+        const widgetClosedCount = parseInt(localStorage.getItem('widgetClosedCount') || '0');
+        
+        // Show automatically on support page if widget wasn't closed too many times
+        if ((isOnSupportPage && widgetClosedCount < 3) || mockShowAE || showDueToUsage) {
           setIsWidgetVisible(true);
         }
       } catch (error) {
@@ -80,12 +96,20 @@ export const AccountExecutiveProvider = ({
       }
     };
     
-    checkUserTriggers();
+    checkPageAndTriggers();
   }, []);
 
   // Actions for showing/hiding the widget
   const showWidget = () => setIsWidgetVisible(true);
-  const hideWidget = () => setIsWidgetVisible(false);
+  
+  const hideWidget = () => {
+    setIsWidgetVisible(false);
+    
+    // Increment the widget closed count in localStorage
+    const currentCount = parseInt(localStorage.getItem('widgetClosedCount') || '0');
+    localStorage.setItem('widgetClosedCount', (currentCount + 1).toString());
+  };
+  
   const toggleWidget = () => setIsWidgetVisible(prev => !prev);
 
   return (

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { HelpCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { useAccountExecutive } from '@/contexts/AccountExecutiveContext';
 
 export const NeedHelpButton = () => {
@@ -13,8 +13,8 @@ export const NeedHelpButton = () => {
       onClick={toggleWidget}
       size="icon"
     >
-      <HelpCircle className="h-5 w-5" />
-      <span className="sr-only">Need Help from your Solutions Engineer?</span>
+      <MessageCircle className="h-5 w-5" />
+      <span className="sr-only">Need Help?</span>
     </Button>
   );
 };

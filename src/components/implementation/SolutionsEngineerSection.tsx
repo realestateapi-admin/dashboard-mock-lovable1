@@ -10,6 +10,16 @@ export const SolutionsEngineerSection: React.FC = () => {
         <p className="font-medium">Important: Solutions Engineer data is now stored in user metadata</p>
       </div>
       
+      <h4 className="font-medium mb-4">Support Widget Flow</h4>
+      <div className="bg-gray-50 p-4 rounded-lg mb-6">
+        <p className="mb-2">The new widget follows an Intercom-style flow:</p>
+        <ol className="list-decimal ml-5 space-y-1">
+          <li>Initial options displayed: Query help, Billing questions, Connect with human</li>
+          <li>If user selects a help topic, display relevant resources with option to talk to human</li>
+          <li>Human contact options (email/call) are only shown after explicit request</li>
+        </ol>
+      </div>
+      
       <h4 className="font-medium mb-4">Sales Motion Flowchart</h4>
       <div className="mb-6 border rounded-lg overflow-hidden">
         <SalesMotionFlowchart />
