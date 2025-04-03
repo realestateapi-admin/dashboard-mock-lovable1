@@ -1,4 +1,3 @@
-
 import { CreditCard, CreditCardIcon, Wallet } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BillingPlans } from "@/components/billing/BillingPlans";
@@ -6,9 +5,10 @@ import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
 import { PaymentMethods } from "@/components/billing/PaymentMethods";
 import { InvoiceHistory } from "@/components/billing/InvoiceHistory";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { EnterprisePlanCard } from "./EnterprisePlanCard";
 import { EnterpriseCompactCard } from "./EnterpriseCompactCard";
+import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 
 interface BillingTabsProps {
   plans: PlanData[];
@@ -54,15 +54,20 @@ export const BillingTabs = ({
   // Remove the local billingCycle state since it's now passed as a prop
   // const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   
+  // Access the AccountExecutive context to show/hide the widget
+  const { showWidget } = useAccountExecutive();
+  
   // Find the enterprise plan
   const enterprisePlan = plans.find(p => p.id === "enterprise");
   // Filter out enterprise plan from the regular plans list
   const regularPlans = plans.filter(p => p.id !== "enterprise");
 
-  // Handle selecting enterprise plan
+  // Handle selecting enterprise plan - now also shows the SE widget
   const handleSelectEnterprise = () => {
     if (enterprisePlan) {
       onPlanChange(enterprisePlan.id);
+      // Show the sales engineer widget when enterprise is selected
+      showWidget();
     }
   };
 
@@ -111,27 +116,14 @@ export const BillingTabs = ({
               billingCycle={billingCycle}
             />
             
-            {/* Add the compact Enterprise card here */}
+            {/* Add the compact Enterprise card here - only show when enterprise is NOT selected */}
             {enterprisePlan && selectedPlan !== enterprisePlan.id && (
               <EnterpriseCompactCard onSelectEnterprise={handleSelectEnterprise} />
             )}
           </div>
         </div>
         
-        {/* Enterprise Plan Section - only show when enterprise plan is selected */}
-        {enterprisePlan && selectedPlan === enterprisePlan.id && (
-          <div className="mt-8">
-            <div className="mb-3">
-              <h3 className="text-xl font-semibold">Enterprise Solutions</h3>
-              <p className="text-sm text-muted-foreground">Need a custom solution? Our Enterprise plan offers tailored options for large organizations.</p>
-            </div>
-            <EnterprisePlanCard 
-              plan={enterprisePlan}
-              selectedPlan={selectedPlan}
-              onPlanChange={onPlanChange}
-            />
-          </div>
-        )}
+        {/* REMOVED: Enterprise Plan Section - no longer showing the large card when enterprise is selected */}
       </TabsContent>
       
       <TabsContent value="payment">

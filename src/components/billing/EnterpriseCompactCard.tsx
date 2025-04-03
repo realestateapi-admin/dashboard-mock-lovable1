@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Building2, Phone } from "lucide-react";
+import { useAccountExecutive } from '@/contexts/AccountExecutiveContext';
 
 interface EnterpriseCompactCardProps {
   onSelectEnterprise: () => void;
@@ -11,6 +12,17 @@ interface EnterpriseCompactCardProps {
 export const EnterpriseCompactCard = ({
   onSelectEnterprise
 }: EnterpriseCompactCardProps) => {
+  // Access the context to show the widget when "Contact Sales" is clicked
+  const { showWidget } = useAccountExecutive();
+  
+  // Handle the enterprise selection and show the SE widget
+  const handleEnterpriseSelect = () => {
+    // Show the sales engineer widget
+    showWidget();
+    // Call the provided onSelectEnterprise function
+    onSelectEnterprise();
+  };
+  
   return (
     <Card className="border border-primary/40 bg-primary/5 mt-4">
       <CardContent className="p-4">
@@ -38,7 +50,7 @@ export const EnterpriseCompactCard = ({
           variant="outline" 
           size="sm"
           className="w-full border-primary text-primary hover:bg-primary/10 mt-2"
-          onClick={onSelectEnterprise}
+          onClick={handleEnterpriseSelect}
         >
           <Phone className="h-3 w-3 mr-1" />
           Contact Sales

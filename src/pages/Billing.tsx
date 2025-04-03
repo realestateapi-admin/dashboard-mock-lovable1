@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
+import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 
 // Import components
 import { TrialAlert } from "@/components/billing/TrialAlert";
 import { BillingTabs } from "@/components/billing/BillingTabs";
 import { CancellationLink } from "@/components/billing/CancellationLink";
+import { AccountExecutiveWidget } from "@/components/support/AccountExecutiveWidget";
 
 // Import data
 import { plans, addOns, invoices } from "@/data/billingData";
@@ -21,6 +23,7 @@ import { isPaidPlan } from "@/services/subscriptionService";
 const Billing = () => {
   const { toast } = useToast();
   const { isTrialActive, trialDaysLeft, requestTrialExtension, isOnPaidPlan } = useTrialAlert();
+  const { setIsEnterprisePlan } = useAccountExecutive();
   const [localIsOnPaidPlan, setLocalIsOnPaidPlan] = useState(false);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   
@@ -58,6 +61,20 @@ const Billing = () => {
       setLocalIsOnPaidPlan(onPaidPlan);
     }
   }, [subscription]);
+  
+  // Update enterprise plan status when the selected plan changes
+  useEffect(() => {
+    // Check if the selected plan is the enterprise plan
+    const isEnterprise = selectedPlan === 'enterprise';
+    
+    // Update the enterprise status in the AccountExecutiveContext
+    setIsEnterprisePlan(isEnterprise);
+    
+    // Store the selected plan in localStorage for persistence
+    if (selectedPlan) {
+      localStorage.setItem('selectedPlan', selectedPlan);
+    }
+  }, [selectedPlan, setIsEnterprisePlan]);
 
   const handleSaveBillingPreferences = () => {
     toast({
@@ -136,6 +153,9 @@ const Billing = () => {
           isAnnual={billingCycle === 'annual'} 
         />
       )}
+      
+      {/* Always render the AccountExecutiveWidget - it has internal visibility control */}
+      <AccountExecutiveWidget />
     </motion.div>
   );
 };
