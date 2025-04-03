@@ -65,7 +65,7 @@ export const BillingCycleSelector = ({
           </div>
           <ul className="mt-4 space-y-2 text-sm">
             <li className="flex items-center">
-              <span>Lock in today's pricing with 12 month agreement</span>
+              <span>12 month agreement</span>
             </li>
             <li className="flex items-center">
               <span>Discount on all plans</span>
