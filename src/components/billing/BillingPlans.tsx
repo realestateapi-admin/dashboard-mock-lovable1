@@ -2,11 +2,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlanData, AddOnData } from "@/types/billing";
-import { PlansList } from "./PlansList";
-import { AddOnsList } from "./AddOnsList";
-import { OverageHandling } from "./OverageHandling";
-import { BillingCycleSelector } from "./BillingCycleSelector";
 import { annualPlanPrices } from "@/data/billingData";
+import { BillingCycleSection } from "./sections/BillingCycleSection";
+import { PlansSection } from "./sections/PlansSection";
+import { AddOnSection } from "./sections/AddOnSection";
+import { OverageSection } from "./sections/OverageSection";
 
 interface BillingPlansProps {
   plans: PlanData[];
@@ -59,40 +59,34 @@ export const BillingPlans = ({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Billing Cycle Selector with updated heading */}
-        <div className="mb-6">
-          <BillingCycleSelector 
-            billingCycle={billingCycle}
-            onBillingCycleChange={onBillingCycleChange}
-          />
-        </div>
+        {/* Billing Cycle Section */}
+        <BillingCycleSection 
+          billingCycle={billingCycle}
+          onBillingCycleChange={onBillingCycleChange}
+        />
         
-        {/* Plans Section with adjusted prices */}
-        <PlansList 
+        {/* Plans Section */}
+        <PlansSection 
           plans={adjustedPlans} 
           selectedPlan={selectedPlan} 
           onPlanChange={onPlanChange}
           billingCycle={billingCycle}
         />
         
-        <div className="mt-8">
-          {/* Add-Ons Section */}
-          <AddOnsList
-            addOns={addOns}
-            selectedPlan={selectedPlan}
-            activeAddOns={activeAddOns}
-            onToggleAddOn={onToggleAddOn}
-          />
-        </div>
+        {/* Add-Ons Section */}
+        <AddOnSection
+          addOns={addOns}
+          selectedPlan={selectedPlan}
+          activeAddOns={activeAddOns}
+          onToggleAddOn={onToggleAddOn}
+        />
         
-        <div className="mt-6">
-          {/* Overage Handling Section */}
-          <OverageHandling 
-            selectedPlanName={selectedPlanName}
-            overageHandling={overageHandling}
-            onOverageHandlingChange={onOverageHandlingChange}
-          />
-        </div>
+        {/* Overage Handling Section */}
+        <OverageSection 
+          selectedPlanName={selectedPlanName}
+          overageHandling={overageHandling}
+          onOverageHandlingChange={onOverageHandlingChange}
+        />
       </CardContent>
       <CardFooter>
         <Button className="w-full" onClick={onSaveBillingPreferences}>
