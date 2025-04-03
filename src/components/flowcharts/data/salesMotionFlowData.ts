@@ -1,149 +1,225 @@
 
-import { Node, Edge } from '@xyflow/react';
-import { Calendar, Mail, Database, User, ExternalLink } from 'lucide-react';
+import { MarkerType, Position } from '@xyflow/react';
 import React from 'react';
+import { CalendarDays, Database, FileText, Home, UserSquare2, Users } from 'lucide-react';
 
-export const getSalesMotionNodes = (): Node[] => [
-  {
-    id: '1',
-    type: 'prospect',
-    data: { label: 'Prospect' },
-    position: { x: 300, y: 5 },
-  },
-  {
-    id: '2',
-    type: 'action',
-    data: { label: 'Clicks CTA' },
-    position: { x: 300, y: 75 },
-  },
-  {
-    id: '3',
-    type: 'system',
-    data: { 
-      label: 'Fills Calendly Form (Qualification)',
-      icon: <Calendar className="icon" size={16} /> 
-    },
-    position: { x: 300, y: 150 },
-  },
-  {
-    id: '4',
-    type: 'decision',
-    data: { label: 'Opportunity Size?' },
-    position: { x: 300, y: 225 },
-  },
-  {
-    id: '5',
-    type: 'system',
-    data: { 
-      label: 'SE Assignment (Round Robin)',
-      icon: <User className="icon" size={16} /> 
-    },
-    position: { x: 300, y: 300 },
-  },
-  {
-    id: '6',
-    type: 'database',
-    data: { label: 'Record in Pipedrive' },
-    position: { x: 500, y: 300 },
-  },
-  {
-    id: '7',
-    type: 'action',
-    data: { label: 'Small Opportunity' },
-    position: { x: 150, y: 300 },
-  },
-  {
-    id: '8',
-    type: 'action',
-    data: { label: 'Large Opportunity' },
-    position: { x: 450, y: 300 },
-  },
-  {
-    id: '9',
-    type: 'system',
-    data: { 
-      label: 'Welcome Email with Tutorial Videos & Free Trial Link',
-      icon: <Mail className="icon" size={16} />
-    },
-    position: { x: 150, y: 375 },
-  },
-  {
-    id: '10',
-    type: 'system',
-    data: { 
-      label: 'Calendly Link for Live Call',
-      icon: <Calendar className="icon" size={16} /> 
-    },
-    position: { x: 450, y: 375 },
-  },
-  {
-    id: '11',
-    type: 'action',
-    data: { label: 'Prospect Starts Trial' },
-    position: { x: 150, y: 450 },
-  },
-  {
-    id: '12',
-    type: 'action',
-    data: { label: 'Prospect Books Call' },
-    position: { x: 450, y: 450 },
-  },
-  {
-    id: '13',
-    type: 'database',
-    data: { label: 'User Record with SE Metadata' },
-    position: { x: 300, y: 525 },
-  },
-  {
-    id: '14',
-    type: 'database',
-    data: { label: 'MongoDB Sync' },
-    position: { x: 500, y: 525 },
-  },
-  {
-    id: '15',
-    type: 'result',
-    data: { label: 'Dashboard with SE Widget' },
-    position: { x: 300, y: 600 },
-  },
-  {
-    id: '16',
-    type: 'system',
-    data: { 
-      label: 'SE Widget Activates on: Trial Ending, Usage Threshold, or Support Request',
-      icon: <ExternalLink className="icon" size={16} /> 
-    },
-    position: { x: 300, y: 675 },
-  },
-];
+// Node types
+export const nodeTypes = {
+  prospect: 'prospect',
+  action: 'action',
+  decision: 'decision',
+  result: 'result',
+  system: 'system',
+};
 
-export const getSalesMotionEdges = (): Edge[] => [
-  { id: 'e1-2', source: '1', target: '2', animated: true },
-  { id: 'e2-3', source: '2', target: '3', animated: true },
-  { id: 'e3-4', source: '3', target: '4' },
-  { id: 'e4-5', source: '4', target: '5' },
-  { id: 'e4-7', source: '4', target: '7', label: 'Small', animated: true },
-  { id: 'e4-8', source: '4', target: '8', label: 'Large', animated: true },
-  { id: 'e5-6', source: '5', target: '6' },
-  { id: 'e7-9', source: '7', target: '9', animated: true },
-  { id: 'e8-10', source: '8', target: '10', animated: true },
-  { id: 'e9-11', source: '9', target: '11', animated: true },
-  { id: 'e10-12', source: '10', target: '12', animated: true },
-  { id: 'e11-13', source: '11', target: '13' },
-  { id: 'e12-13', source: '12', target: '13' },
-  { id: 'e13-14', source: '13', target: '14' },
-  { id: 'e13-15', source: '13', target: '15' },
-  { id: 'e15-16', source: '15', target: '16' },
-];
-
-export const getNodeColor = (nodeType: string): string => {
-  switch (nodeType) {
-    case 'prospect': return '#9b87f5';
-    case 'action': return '#f5f5f5';
-    case 'decision': return '#ffedd5';
-    case 'system': return '#e0f2fe';
-    case 'database': return '#dbeafe';
-    case 'result': return '#dcfce7';
-    default: return '#eee';
-  }
+// Define the flow data
+export const salesMotionFlowData = {
+  nodes: [
+    {
+      id: 'homepage',
+      type: 'system',
+      data: { 
+        label: 'Website Homepage',
+        icon: React.createElement(Home, { size: 16 })
+      },
+      position: { x: 300, y: 5 },
+    },
+    {
+      id: 'userClick',
+      type: 'decision',
+      data: { label: 'User clicks CTA?' },
+      position: { x: 300, y: 100 },
+    },
+    {
+      id: 'cta1',
+      type: 'action',
+      data: { 
+        label: 'CTA 1: "Schedule Demo"' 
+      },
+      position: { x: 100, y: 200 },
+    },
+    {
+      id: 'cta2',
+      type: 'action',
+      data: { 
+        label: 'CTA 2: "Start Free Trial"' 
+      },
+      position: { x: 500, y: 200 },
+    },
+    {
+      id: 'calendly',
+      type: 'system',
+      data: { 
+        label: 'Calendly Form',
+        icon: React.createElement(CalendarDays, { size: 16 })
+      },
+      position: { x: 100, y: 300 },
+    },
+    {
+      id: 'qualify',
+      type: 'action',
+      data: { label: 'Sales Team Qualification' },
+      position: { x: 100, y: 400 },
+    },
+    {
+      id: 'signup',
+      type: 'system',
+      data: { 
+        label: 'Signup Wizard',
+        icon: React.createElement(UserSquare2, { size: 16 })
+      },
+      position: { x: 500, y: 300 },
+    },
+    {
+      id: 'qualifyDecision',
+      type: 'decision',
+      data: { label: 'Qualified?' },
+      position: { x: 100, y: 500 },
+    },
+    {
+      id: 'notQualified',
+      type: 'result',
+      data: { label: 'Lead Rejected' },
+      position: { x: -100, y: 600 },
+    },
+    {
+      id: 'sendEmail',
+      type: 'action',
+      data: { label: 'Send Email with Trial Signup Instructions' },
+      position: { x: 100, y: 600 },
+    },
+    {
+      id: 'demoBooking',
+      type: 'action',
+      data: { label: 'Book Personalized Demo' },
+      position: { x: 300, y: 600 },
+    },
+    {
+      id: 'customerDatabase',
+      type: 'system',
+      data: { 
+        label: 'Customer Database',
+        icon: React.createElement(Database, { size: 16 })
+      },
+      position: { x: 500, y: 400 },
+    },
+    {
+      id: 'onboarding',
+      type: 'system',
+      data: { 
+        label: 'Onboarding Process',
+        icon: React.createElement(FileText, { size: 16 })
+      },
+      position: { x: 500, y: 500 },
+    },
+    {
+      id: 'support',
+      type: 'system',
+      data: { 
+        label: 'Support System',
+        icon: React.createElement(Users, { size: 16 })
+      },
+      position: { x: 500, y: 600 },
+    },
+  ],
+  edges: [
+    {
+      id: 'homepage-userClick',
+      source: 'homepage',
+      target: 'userClick',
+      animated: true,
+    },
+    {
+      id: 'userClick-cta1',
+      source: 'userClick',
+      target: 'cta1',
+      animated: true,
+      label: 'Demo CTA',
+      labelStyle: { fill: '#888' },
+    },
+    {
+      id: 'userClick-cta2',
+      source: 'userClick',
+      target: 'cta2',
+      animated: true,
+      label: 'Trial CTA',
+      labelStyle: { fill: '#888' },
+    },
+    {
+      id: 'cta1-calendly',
+      source: 'cta1',
+      target: 'calendly',
+      animated: true,
+    },
+    {
+      id: 'calendly-qualify',
+      source: 'calendly',
+      target: 'qualify',
+      animated: true,
+    },
+    {
+      id: 'qualify-qualifyDecision',
+      source: 'qualify',
+      target: 'qualifyDecision',
+      animated: true,
+    },
+    {
+      id: 'qualifyDecision-notQualified',
+      source: 'qualifyDecision',
+      target: 'notQualified',
+      animated: true,
+      label: 'No',
+      labelStyle: { fill: '#888' },
+    },
+    {
+      id: 'qualifyDecision-sendEmail',
+      source: 'qualifyDecision',
+      target: 'sendEmail',
+      animated: true,
+      label: 'Yes - SMB',
+      labelStyle: { fill: '#888' },
+    },
+    {
+      id: 'qualifyDecision-demoBooking',
+      source: 'qualifyDecision',
+      target: 'demoBooking',
+      animated: true,
+      label: 'Yes - Enterprise',
+      labelStyle: { fill: '#888' },
+    },
+    {
+      id: 'sendEmail-onboarding',
+      source: 'sendEmail',
+      target: 'onboarding',
+      animated: true,
+      type: 'smoothstep',
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+      },
+    },
+    {
+      id: 'cta2-signup',
+      source: 'cta2',
+      target: 'signup',
+      animated: true,
+    },
+    {
+      id: 'signup-customerDatabase',
+      source: 'signup',
+      target: 'customerDatabase',
+      animated: true,
+    },
+    {
+      id: 'customerDatabase-onboarding',
+      source: 'customerDatabase',
+      target: 'onboarding',
+      animated: true,
+    },
+    {
+      id: 'onboarding-support',
+      source: 'onboarding',
+      target: 'support',
+      animated: true,
+    },
+  ],
 };
