@@ -27,7 +27,7 @@ export const useSubscriptionCalculator = (
 ): SubscriptionCalculatorReturn => {
   const [selectedPlan, setSelectedPlan] = useState("growth");
   const [overageHandling, setOverageHandling] = useState("stop");
-  const [activeAddOns, setActiveAddOns] = useState<string[]>(["premium-avm"]);
+  const [activeAddOns, setActiveAddOns] = useState<string[]>([]);
   
   // Get access to the trial context
   let trialContext;
