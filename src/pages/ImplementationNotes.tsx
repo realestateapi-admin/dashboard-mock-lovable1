@@ -12,6 +12,7 @@ import { MongoSchemaSection } from '@/components/implementation/MongoSchemaSecti
 import { ImplementationStrategySection } from '@/components/implementation/ImplementationStrategySection';
 import { SolutionsEngineerSection } from '@/components/implementation/SolutionsEngineerSection';
 import { ChargebeeBulkSection } from '@/components/implementation/ChargebeeBulkSection';
+import { TermsOfServiceModalSection } from '@/components/implementation/TermsOfServiceModalSection';
 
 const ImplementationNotes: React.FC = () => {
   return (
@@ -33,6 +34,7 @@ const ImplementationNotes: React.FC = () => {
           <ImplementationStrategySection />
           <SolutionsEngineerSection />
           <ChargebeeBulkSection />
+          <TermsOfServiceModalSection />
         </div>
       </Card>
     </div>
