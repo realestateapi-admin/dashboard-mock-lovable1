@@ -31,6 +31,24 @@ export const TermsOfServiceModalSection: React.FC = () => {
         <li>Implementation follows accessibility best practices with proper focus management</li>
         <li>The modal includes an effective date and proper closing mechanism</li>
       </ul>
+      
+      <h4 className="text-lg font-medium mb-2">Payment Methods Implementation:</h4>
+      <ul className="list-disc ml-5 mb-4">
+        <li>Implemented a modular payment methods system with credit card and ACH bank account options</li>
+        <li>Created separate hooks for state management, validation, and operations</li>
+        <li>Added proper error handling and validation for all payment forms</li>
+        <li>Supports setting a default payment method and removing existing methods</li>
+        <li>Implemented backup credit card requirement for ACH payment methods</li>
+      </ul>
+      
+      <h4 className="text-lg font-medium mb-2">Payment Method Architecture:</h4>
+      <ul className="list-disc ml-5 mb-4">
+        <li>Used React context pattern for managing payment method state across components</li>
+        <li>Created specialized hooks for different concerns: usePaymentMethodState, usePaymentMethodOperations, etc.</li>
+        <li>Built responsive UI with proper validation feedback</li>
+        <li>Added security features like masking card numbers and displaying trust indicators</li>
+        <li>Implemented a tabbed interface for different payment method types</li>
+      </ul>
     </div>
   );
 };
