@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import EmailVerification from "./EmailVerification";
 import TrialInfoCard from "./TrialInfoCard";
 import OnboardingSteps, { OnboardingStep } from "./OnboardingSteps";
-import TrialCountdown from "./TrialCountdown";
 
 interface WelcomeSectionProps {
   emailVerified: boolean;
@@ -57,9 +56,6 @@ const WelcomeSection = ({
         <h1 className="text-4xl font-bold tracking-tight mb-2">Welcome to RealEstateAPI</h1>
         <p className="text-lg text-muted-foreground">Start your 14-day free trial and explore our property data platform.</p>
       </div>
-      
-      {/* Trial Countdown Timer */}
-      <TrialCountdown daysLeft={14} />
       
       {!emailVerified && userEmail && (
         <EmailVerification userEmail={userEmail} onVerify={onVerify} />
