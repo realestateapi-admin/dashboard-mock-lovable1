@@ -37,6 +37,11 @@ export const useOnboardingState = () => {
   const handleComplete = () => {
     console.log("Form data submitted:", data);
     
+    // Save credit card info to localStorage for use in the payment form later
+    if (data.creditCardInfo) {
+      localStorage.setItem('creditCardInfo', JSON.stringify(data.creditCardInfo));
+    }
+    
     if (startFreeTrial) {
       startFreeTrial();
     } else {

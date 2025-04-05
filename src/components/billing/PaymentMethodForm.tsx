@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCard, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,10 +9,53 @@ import { PaymentMethodSkeleton } from "../billing/wizard/SkeletonLoading";
 
 interface PaymentMethodFormProps {
   isLoading?: boolean;
+  creditCardInfo?: {
+    cardName?: string;
+    cardNumber?: string;
+    expiry?: string;
+    cvc?: string;
+    zipCode?: string;
+  } | null;
 }
 
-export const PaymentMethodForm = ({ isLoading = false }: PaymentMethodFormProps) => {
+export const PaymentMethodForm = ({ 
+  isLoading = false, 
+  creditCardInfo = null
+}: PaymentMethodFormProps) => {
   const [paymentMethod, setPaymentMethod] = useState<"card" | "bank">("card");
+  
+  // State for credit card form fields
+  const [cardName, setCardName] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvc, setCvc] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  
+  // Pre-fill form with creditCardInfo if provided
+  useEffect(() => {
+    if (creditCardInfo) {
+      setCardName(creditCardInfo.cardName || "");
+      setCardNumber(creditCardInfo.cardNumber || "");
+      setExpiry(creditCardInfo.expiry || "");
+      setCvc(creditCardInfo.cvc || "");
+      setZipCode(creditCardInfo.zipCode || "");
+    } else {
+      // Try to get stored credit card info from localStorage
+      const storedCreditCardInfo = localStorage.getItem("creditCardInfo");
+      if (storedCreditCardInfo) {
+        try {
+          const parsedInfo = JSON.parse(storedCreditCardInfo);
+          setCardName(parsedInfo.cardName || "");
+          setCardNumber(parsedInfo.cardNumber || "");
+          setExpiry(parsedInfo.expiry || "");
+          setCvc(parsedInfo.cvc || "");
+          setZipCode(parsedInfo.zipCode || "");
+        } catch (error) {
+          console.error("Error parsing stored credit card info:", error);
+        }
+      }
+    }
+  }, [creditCardInfo]);
   
   if (isLoading) {
     return <PaymentMethodSkeleton />;
@@ -41,11 +84,21 @@ export const PaymentMethodForm = ({ isLoading = false }: PaymentMethodFormProps)
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="cardName">Cardholder Name</Label>
-              <Input id="cardName" placeholder="John Smith" />
+              <Input 
+                id="cardName" 
+                placeholder="John Smith" 
+                value={cardName}
+                onChange={(e) => setCardName(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="cardNumber">Card Number</Label>
-              <Input id="cardNumber" placeholder="1234 5678 9012 3456" />
+              <Input 
+                id="cardNumber" 
+                placeholder="1234 5678 9012 3456" 
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
+              />
             </div>
           </div>
           
@@ -57,17 +110,33 @@ export const PaymentMethodForm = ({ isLoading = false }: PaymentMethodFormProps)
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="expiry">Expiry Date</Label>
-              <Input id="expiry" placeholder="MM/YY" />
+              <Input 
+                id="expiry" 
+                placeholder="MM/YY" 
+                value={expiry}
+                onChange={(e) => setExpiry(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="cvc">CVC</Label>
-              <Input id="cvc" placeholder="123" />
+              <Input 
+                id="cvc" 
+                placeholder="123" 
+                type="password"
+                value={cvc}
+                onChange={(e) => setCvc(e.target.value)}
+              />
             </div>
           </div>
           
           <div className="space-y-2">
             <Label htmlFor="zipCode">ZIP/Postal Code</Label>
-            <Input id="zipCode" placeholder="12345" />
+            <Input 
+              id="zipCode" 
+              placeholder="12345" 
+              value={zipCode}
+              onChange={(e) => setZipCode(e.target.value)}
+            />
           </div>
         </TabsContent>
         
