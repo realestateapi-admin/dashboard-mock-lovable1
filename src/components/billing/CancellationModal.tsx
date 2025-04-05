@@ -39,7 +39,7 @@ export const CancellationModal = ({
   // Check if current plan is Enterprise
   const isEnterprise = planName.toLowerCase() === 'enterprise';
   
-  // Use the cancellation state hook
+  // Use the cancellation state hook with all required parameters
   const {
     step,
     reason,
@@ -50,6 +50,7 @@ export const CancellationModal = ({
     handleCancellationComplete
   } = useCancellationState(planName, isEnterprise, isAnnual);
 
+  // When step is 'initial', show the AlertDialog with initial cancellation warning
   if (step === 'initial') {
     return (
       <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
@@ -65,6 +66,7 @@ export const CancellationModal = ({
     );
   }
 
+  // For other steps, show the regular Dialog
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
