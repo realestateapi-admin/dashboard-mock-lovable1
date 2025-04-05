@@ -58,6 +58,19 @@ export const PaymentMethods = () => {
     let newMethod: PaymentMethod;
     
     if (type === "card") {
+      // For credit card payment method
+      if (newPaymentMethod.cardNumber.trim() === "" || 
+          newPaymentMethod.cardholderName.trim() === "" ||
+          newPaymentMethod.expiry.trim() === "" ||
+          newPaymentMethod.cvc.trim() === "") {
+        toast({
+          title: "Missing information",
+          description: "Please complete all required credit card fields.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       newMethod = {
         id: `pm_${Math.random().toString(36).substring(2, 9)}`,
         type: "Visa", // This would be detected from the card number
@@ -66,7 +79,7 @@ export const PaymentMethods = () => {
         isDefault: newPaymentMethod.makeDefault,
       };
     } else {
-      // Validate ACH form first
+      // For ACH payment method
       if (!isACHFormValid()) {
         toast({
           title: "Missing information",
@@ -76,15 +89,15 @@ export const PaymentMethods = () => {
         return;
       }
       
-      // ACH payment method - actually add it to the list now
+      // ACH payment method with backup card
       newMethod = {
         id: `pm_${Math.random().toString(36).substring(2, 9)}`,
         type: "ACH",
         lastFour: newACHMethod.accountNumber.slice(-4),
         expiryDate: "N/A", // ACH doesn't have expiry
         isDefault: newACHMethod.makeDefault,
-        accountType: newACHMethod.accountType, // Add account type for display
-        accountName: newACHMethod.accountName, // Add account name for display
+        accountType: newACHMethod.accountType,
+        accountName: newACHMethod.accountName,
       };
       
       // In a real app, we would also store the backup card info
@@ -96,7 +109,7 @@ export const PaymentMethods = () => {
       });
     }
     
-    // If this is set as default, update other cards
+    // If this is set as default, update other payment methods
     let updatedMethods = [...paymentMethods];
     if ((type === "card" && newPaymentMethod.makeDefault) || 
         (type === "ach" && newACHMethod.makeDefault)) {
@@ -106,6 +119,7 @@ export const PaymentMethods = () => {
       }));
     }
     
+    // Add the new payment method to the list
     setPaymentMethods([...updatedMethods, newMethod]);
     setIsAddDialogOpen(false);
     
