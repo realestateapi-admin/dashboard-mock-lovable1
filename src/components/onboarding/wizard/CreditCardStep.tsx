@@ -14,6 +14,7 @@ const formSchema = z.object({
   cardNumber: z.string().min(16, { message: "Enter a valid card number" }).max(19),
   expiry: z.string().min(5, { message: "Enter a valid expiry date (MM/YY)" }),
   cvc: z.string().min(3, { message: "Enter a valid CVC" }).max(4),
+  zipCode: z.string().min(5, { message: "Enter a valid ZIP code" }).max(10),
 });
 
 type CreditCardFormValues = z.infer<typeof formSchema>;
@@ -21,9 +22,10 @@ type CreditCardFormValues = z.infer<typeof formSchema>;
 interface CreditCardStepProps {
   updateField: (field: string, value: any) => void;
   creditCardInfo: any;
+  userName?: string; // Add userName prop to pre-fill card name
 }
 
-const CreditCardStep = ({ updateField, creditCardInfo }: CreditCardStepProps) => {
+const CreditCardStep = ({ updateField, creditCardInfo, userName }: CreditCardStepProps) => {
   const [secureMessage] = useState(
     "Your card information is only collected for identification purposes. No charges will be made during your 14-day free trial."
   );
@@ -31,10 +33,11 @@ const CreditCardStep = ({ updateField, creditCardInfo }: CreditCardStepProps) =>
   const form = useForm<CreditCardFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      cardName: creditCardInfo?.cardName || "",
+      cardName: creditCardInfo?.cardName || userName || "",
       cardNumber: creditCardInfo?.cardNumber || "",
       expiry: creditCardInfo?.expiry || "",
       cvc: creditCardInfo?.cvc || "",
+      zipCode: creditCardInfo?.zipCode || "",
     },
   });
 
@@ -63,6 +66,11 @@ const CreditCardStep = ({ updateField, creditCardInfo }: CreditCardStepProps) =>
       value = value.replace(/[^0-9]/g, "").substring(0, 4);
     }
 
+    // Format ZIP code
+    if (field === "zipCode") {
+      value = value.replace(/[^0-9-]/g, "").substring(0, 10);
+    }
+
     form.setValue(field, value);
     const formValues = { ...form.getValues(), [field]: value };
     updateField("creditCardInfo", formValues);
@@ -73,14 +81,15 @@ const CreditCardStep = ({ updateField, creditCardInfo }: CreditCardStepProps) =>
     !!form.getValues("cardName") && 
     form.getValues("cardNumber").replace(/\s/g, "").length >= 16 &&
     form.getValues("expiry").length === 5 &&
-    form.getValues("cvc").length >= 3;
+    form.getValues("cvc").length >= 3 &&
+    form.getValues("zipCode").length >= 5;
 
   // Update parent component validation state when form values change
   React.useEffect(() => {
     if (isStepValid) {
       onSubmit(form.getValues());
     }
-  }, [form.getValues("cardName"), form.getValues("cardNumber"), form.getValues("expiry"), form.getValues("cvc")]);
+  }, [form.getValues("cardName"), form.getValues("cardNumber"), form.getValues("expiry"), form.getValues("cvc"), form.getValues("zipCode")]);
 
   return (
     <div className="space-y-6">
@@ -169,6 +178,24 @@ const CreditCardStep = ({ updateField, creditCardInfo }: CreditCardStepProps) =>
               )}
             />
           </div>
+
+          <FormField
+            control={form.control}
+            name="zipCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Billing ZIP Code</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="12345" 
+                    value={field.value}
+                    onChange={(e) => handleInputChange("zipCode", e.target.value)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </form>
       </Form>
       

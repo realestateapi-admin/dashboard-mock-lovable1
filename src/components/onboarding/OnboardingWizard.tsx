@@ -47,6 +47,9 @@ const OnboardingWizard = () => {
   const currentStep = steps[step];
   const isCurrentStepValid = !!data[currentStep.field];
 
+  // Get the user's name from the industry step data if available
+  const userName = data.industry?.name || "";
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <motion.div
@@ -96,6 +99,7 @@ const OnboardingWizard = () => {
               <CreditCardStep
                 creditCardInfo={data.creditCardInfo}
                 updateField={updateField}
+                userName={userName}
               />
             )}
           </CardContent>
