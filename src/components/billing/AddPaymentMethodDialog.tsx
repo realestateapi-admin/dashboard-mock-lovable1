@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Dialog,
@@ -132,13 +131,13 @@ export const AddPaymentMethodDialog = ({
                   makeDefault: false, // Backup card can't be default
                 }}
                 setNewPaymentMethod={(values) => {
-                  setNewACHMethod({
-                    ...newACHMethod,
+                  setNewACHMethod(prevState => ({
+                    ...prevState,
                     backupCardNumber: values.cardNumber,
                     backupCardholderName: values.cardholderName,
                     backupExpiry: values.expiry,
                     backupCvc: values.cvc,
-                  });
+                  }));
                 }}
               />
             </div>
