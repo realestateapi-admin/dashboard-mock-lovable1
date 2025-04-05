@@ -18,7 +18,11 @@ import WizardFooter from "./wizard/WizardFooter";
 import WizardProgress from "./wizard/WizardProgress";
 import { WizardStep, IndustryData, VolumeOption, ReferralOption } from "./types/OnboardingTypes";
 
-const OnboardingWizard = () => {
+interface OnboardingWizardProps {
+  userName?: string;
+}
+
+const OnboardingWizard = ({ userName = "" }: OnboardingWizardProps) => {
   const { step, data, handleNext, handleBack, updateField } = useOnboardingState();
   
   const steps: WizardStep[] = [
@@ -46,9 +50,6 @@ const OnboardingWizard = () => {
 
   const currentStep = steps[step];
   const isCurrentStepValid = !!data[currentStep.field];
-
-  // Get the user's name from the industry step data if available
-  const userName = data.industry?.name || "";
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">

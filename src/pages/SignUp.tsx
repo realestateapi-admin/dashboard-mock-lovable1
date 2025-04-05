@@ -43,8 +43,9 @@ const SignUp = () => {
       
       console.log("User registered with metadata:", userMetadata);
       
-      // Save the email in sessionStorage for use in the onboarding page
+      // Save the email and name in sessionStorage for use in the onboarding page
       sessionStorage.setItem("userEmail", email);
+      sessionStorage.setItem("userName", name);
       
       // Mock registration - in a real app, create the account here
       toast({

@@ -3,7 +3,7 @@ import OnboardingWizard from "@/components/onboarding/OnboardingWizard";
 import { DashboardProvider } from "@/contexts/DashboardContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Mock data to satisfy the DashboardProvider props requirements
 const mockDailyUsageData = [
@@ -34,6 +34,15 @@ const mockUsageDistributionData = [
 const OnboardingWizardPage = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [userName, setUserName] = useState("");
+
+  // Get the user's name from sessionStorage
+  useEffect(() => {
+    const storedName = sessionStorage.getItem("userName");
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
 
   // If the user already completed onboarding, send them to the dashboard
   useEffect(() => {
@@ -51,7 +60,7 @@ const OnboardingWizardPage = () => {
       recentActivity={mockRecentActivity}
       usageDistributionData={mockUsageDistributionData}
     >
-      <OnboardingWizard />
+      <OnboardingWizard userName={userName} />
     </DashboardProvider>
   );
 };
