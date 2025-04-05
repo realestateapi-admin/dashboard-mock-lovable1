@@ -5,7 +5,6 @@ import { useDashboard } from "@/contexts/DashboardContext";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardSummary } from "@/components/dashboard/DashboardSummary";
 import { UpdatesSection } from "@/components/dashboard/UpdatesSection";
-import { ApiAccessSection } from "@/components/dashboard/ApiAccessSection";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
 import { useSubscriptionData } from "@/hooks/useSubscriptionData";
@@ -60,12 +59,11 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
         subscriptionRenewalDate={renewalDate || undefined}
       />
       
-      {/* Updates section now takes full width */}
+      {/* Updates section now takes full width and is the only content */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.3 }}
-        className="mb-6"
       >
         <UpdatesSection 
           isLoading={isLoading}
@@ -74,18 +72,7 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
       
       {/* Removed the Endpoint Usage and Record Usage Breakdown grid section */}
       
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9, duration: 0.3 }}
-      >
-        <ApiAccessSection 
-          isTrialActive={isTrialActive}
-          isLoading={isLoading}
-          isFreeUser={isFreeUser}
-          trialDaysLeft={trialDaysLeft}
-        />
-      </motion.div>
+      {/* Removed the API Access section */}
     </>
   );
 };

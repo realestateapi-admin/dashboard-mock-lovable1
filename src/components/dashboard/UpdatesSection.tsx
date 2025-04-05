@@ -22,7 +22,7 @@ const mockUpdates: Update[] = [
     id: '1',
     type: 'alert',
     title: 'API Service Interruption',
-    content: 'We are experiencing intermittent issues with the Property Search endpoint. Our team is investigating.',
+    content: "We are experiencing intermittent issues with the Property Search endpoint. Our team is investigating.",
     date: '2025-04-05',
     isNew: true
   },
