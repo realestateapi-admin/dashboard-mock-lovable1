@@ -151,6 +151,20 @@ export const addOns: AddOnData[] = [
     category: 'Property Data'
   },
   {
+    id: "mls-data",
+    name: "MLS Data Access",
+    description: "Access to real-time Multiple Listing Service data for your region",
+    prices: {
+      starter: "Contact Sales",
+      growth: "Contact Sales",
+      pro: "Contact Sales",
+      enterprise: "Contact Sales",
+    },
+    billingType: 'subscription',
+    category: 'Property Data',
+    requiresApproval: true
+  },
+  {
     id: "lien-search",
     name: "Involuntary Lien Search",
     description: "Search for liens against properties",

@@ -21,6 +21,8 @@ export interface AddOnData {
   billingType?: 'metered' | 'subscription';
   // Add category for grouping similar add-ons
   category?: string;
+  // Add flag to indicate if the add-on requires approval
+  requiresApproval?: boolean;
 }
 
 export interface InvoiceData {
