@@ -2,7 +2,7 @@
 import { Switch } from "@/components/ui/switch";
 import { AddOnData } from "@/types/billing";
 import { Card } from "@/components/ui/card";
-import { InfoCircle } from "lucide-react";
+import { Info } from "lucide-react";
 
 interface AddOnItemProps {
   addon: AddOnData;
@@ -34,7 +34,7 @@ export const AddOnItem = ({
           )}
           {addon.requiresApproval && (
             <div className="mt-2 flex items-start gap-2">
-              <InfoCircle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+              <Info className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
               <p className="text-xs text-muted-foreground">
                 Requires approval. If selected, a sales representative will contact you to evaluate your request and determine your level of access.
               </p>
