@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Info, Database, ChevronRight } from "lucide-react";
+import { Info, Database, ChevronRight, ZapIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { UsageProgressBar } from './UsageProgressBar';
@@ -55,7 +55,7 @@ export const CurrentUsageTab = ({
         <UsageProgressBar
           usage={currentUsage.skiptrace_usage}
           label="Skiptrace Records"
-          icon={<Database className="h-4 w-4 text-indigo-500" />}
+          icon={<ZapIcon className="h-4 w-4 text-indigo-500" />}
           color="indigo-500"
           isMetered={true}
         />
@@ -66,7 +66,7 @@ export const CurrentUsageTab = ({
         <div>
           <p className="text-sm font-medium">Usage Information</p>
           <p className="text-sm text-muted-foreground mt-1">
-            These usage statistics show your consumption for the current billing period. Property records include all property search, detail, and comps API calls. Skiptrace records are metered and billed based on actual usage.
+            These usage statistics show your consumption for the current billing period. Property records include all property search, detail, and comps API calls. Skiptrace records are metered and billed based on actual usage at $0.08 per record.
           </p>
           <Button 
             variant="link" 

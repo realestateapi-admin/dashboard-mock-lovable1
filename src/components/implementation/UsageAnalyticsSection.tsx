@@ -30,6 +30,22 @@ export const UsageAnalyticsSection: React.FC = () => {
   }>
 }`;
 
+  const skipTraceResponseStructure = `{
+  results: Array<{
+    property_id: string;    // Property identifier
+    owner_name: string;     // Property owner's name
+    email: string | null;   // Owner's email if found
+    phone: string | null;   // Owner's phone if found
+    mailing_address: {      // Owner's mailing address
+      street: string;
+      city: string;
+      state: string;
+      zip: string;
+    },
+    confidence_score: number;  // Match confidence (0-100)
+  }>
+}`;
+
   return (
     <>
       <h3 className="text-xl font-semibold mb-3">2. Dashboard Updates and Analytics</h3>
@@ -44,6 +60,19 @@ export const UsageAnalyticsSection: React.FC = () => {
           "Create updates with different types (announcement, release, maintenance, alert)",
           "Implement a mark-as-read functionality to track which updates are new",
           "Include an isNew flag for highlighting unread updates"
+        ]}
+      />
+
+      <ApiRecommendationSection
+        title="Skip Tracing API"
+        api="/api/skiptrace"
+        collection="skiptrace_records"
+        purpose="Locate contact information for property owners"
+        responseStructure={skipTraceResponseStructure}
+        implementationNotes={[
+          "Metered endpoint charged at $0.08 per successful lookup",
+          "Track usage in skiptrace_records collection",
+          "Include confidence score to help users evaluate match quality"
         ]}
       />
 

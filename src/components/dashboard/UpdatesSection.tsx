@@ -29,20 +29,28 @@ const mockUpdates: Update[] = [
   {
     id: '2',
     type: 'release',
+    title: 'New Service: Skip Tracing API',
+    content: "We've launched a new Skip Tracing API to help you locate property owners. Available as a metered add-on at $0.08 per successful lookup.",
+    date: '2025-04-04',
+    isNew: true
+  },
+  {
+    id: '3',
+    type: 'release',
     title: 'New Endpoint: Property Insights',
     content: "We've launched a new endpoint that provides market trends and valuation insights for properties.",
     date: '2025-04-03',
     isNew: true
   },
   {
-    id: '3',
+    id: '4',
     type: 'maintenance',
     title: 'Scheduled Maintenance',
     content: 'Planned database maintenance on April 10th from 2-4 AM EST. Expect brief service interruptions.',
     date: '2025-04-02'
   },
   {
-    id: '4',
+    id: '5',
     type: 'announcement',
     title: 'Improved Rate Limits',
     content: "We've increased rate limits by 20% for all subscription tiers, effective immediately.",

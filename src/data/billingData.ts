@@ -1,3 +1,4 @@
+
 import { PlanData, AddOnData, InvoiceData } from "@/types/billing";
 
 // Mock invoice data
@@ -171,5 +172,17 @@ export const addOns: AddOnData[] = [
       enterprise: "Included",
     },
     billingType: 'subscription'
+  },
+  {
+    id: "skip-tracing",
+    name: "Skip Tracing",
+    description: "Locate contact information for property owners",
+    prices: {
+      starter: "$0.08 each",
+      growth: "$0.08 each",
+      pro: "$0.08 each",
+      enterprise: "$0.08 each",
+    },
+    billingType: 'metered'
   }
 ];
