@@ -170,11 +170,6 @@ export const SubscriptionConfirmationStep = ({
             </div>
           </div>
         )}
-        
-        <div className="pt-3 border-t flex justify-between items-center text-primary font-medium">
-          <span>Monthly Total</span>
-          <span>{costs.total}</span>
-        </div>
       </CardContent>
     </Card>
   );
