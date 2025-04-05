@@ -1,9 +1,11 @@
-import { CreditCard, CreditCardIcon, Wallet } from "lucide-react";
+
+import { CreditCard, CreditCardIcon, FileText, Wallet } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BillingPlans } from "@/components/billing/BillingPlans";
 import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
 import { PaymentMethods } from "@/components/billing/PaymentMethods";
 import { InvoiceHistory } from "@/components/billing/InvoiceHistory";
+import { TermsOfServiceTab } from "@/components/billing/TermsOfServiceTab";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
 import { useState, useEffect } from "react";
 import { EnterprisePlanCard } from "./EnterprisePlanCard";
@@ -83,6 +85,9 @@ export const BillingTabs = ({
         <TabsTrigger value="invoices" className="flex items-center gap-2">
           <CreditCard className="h-4 w-4" /> Invoices
         </TabsTrigger>
+        <TabsTrigger value="terms" className="flex items-center gap-2">
+          <FileText className="h-4 w-4" /> Terms of Service
+        </TabsTrigger>
       </TabsList>
       
       <TabsContent value="subscription">
@@ -122,8 +127,6 @@ export const BillingTabs = ({
             )}
           </div>
         </div>
-        
-        {/* REMOVED: Enterprise Plan Section - no longer showing the large card when enterprise is selected */}
       </TabsContent>
       
       <TabsContent value="payment">
@@ -135,6 +138,10 @@ export const BillingTabs = ({
           invoices={invoices} 
           onDownloadInvoice={onDownloadInvoice} 
         />
+      </TabsContent>
+      
+      <TabsContent value="terms">
+        <TermsOfServiceTab />
       </TabsContent>
     </Tabs>
   );
