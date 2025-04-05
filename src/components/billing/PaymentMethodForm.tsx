@@ -22,7 +22,7 @@ export const PaymentMethodForm = ({ isLoading = false }: PaymentMethodFormProps)
     <div className="space-y-6">
       <h3 className="text-lg font-semibold">Payment Method</h3>
       <p className="text-sm text-muted-foreground">
-        Your card won't be charged until your free trial ends.
+        Your card won't be charged until you select a subscription plan.
       </p>
       
       <Tabs defaultValue="card" onValueChange={(value) => setPaymentMethod(value as "card" | "bank")}>

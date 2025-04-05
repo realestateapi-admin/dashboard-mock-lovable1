@@ -39,7 +39,7 @@ const OnboardingWizard = () => {
     },
     {
       title: "Set up your free trial",
-      description: "Your card won't be charged until your 14-day free trial ends",
+      description: "Your card won't be charged until you select a subscription plan.",
       field: "creditCardInfo",
     }
   ];
