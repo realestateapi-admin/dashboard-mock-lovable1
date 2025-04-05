@@ -33,6 +33,20 @@ const CreditCardStep = ({ updateField, creditCardInfo, userName }: CreditCardSte
     form.getValues("zipCode")
   ]);
 
+  // Ensure credit card data is loaded on initial render
+  useEffect(() => {
+    if (creditCardInfo) {
+      // Make sure existing values are properly reflected in the form
+      form.reset({
+        cardName: creditCardInfo.cardName || userName || "",
+        cardNumber: creditCardInfo.cardNumber || "",
+        expiry: creditCardInfo.expiry || "",
+        cvc: creditCardInfo.cvc || "",
+        zipCode: creditCardInfo.zipCode || ""
+      });
+    }
+  }, [creditCardInfo]);
+
   return (
     <div className="space-y-6">
       {/* Security message banner */}
