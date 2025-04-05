@@ -5,10 +5,15 @@ export interface WizardStep {
   field: string;
 }
 
+export interface IndustryData {
+  value: IndustryOption;
+  name?: string;
+}
+
 export interface WizardData {
-  industry: string | null;
-  volume: string | null;
-  referralSource: string | null;
+  industry: IndustryData | null;
+  volume: VolumeOption | null;
+  referralSource: ReferralOption | null;
   creditCardInfo: any | null;
 }
 
@@ -38,4 +43,3 @@ export type ReferralOption =
   | "friend" 
   | "chat-gpt-perplexity"
   | "other";
-

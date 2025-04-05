@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { WizardData } from "../types/OnboardingTypes";
+import { WizardData, IndustryData, VolumeOption, ReferralOption } from "../types/OnboardingTypes";
 
 export const useOnboardingState = () => {
   const [step, setStep] = useState(0);

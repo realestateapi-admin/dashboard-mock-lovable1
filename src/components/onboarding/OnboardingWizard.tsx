@@ -16,7 +16,7 @@ import ReferralStep from "./wizard/ReferralStep";
 import CreditCardStep from "./wizard/CreditCardStep";
 import WizardFooter from "./wizard/WizardFooter";
 import WizardProgress from "./wizard/WizardProgress";
-import { WizardStep, IndustryOption, VolumeOption, ReferralOption } from "./types/OnboardingTypes";
+import { WizardStep, IndustryData, VolumeOption, ReferralOption } from "./types/OnboardingTypes";
 
 const OnboardingWizard = () => {
   const { step, data, handleNext, handleBack, updateField } = useOnboardingState();
@@ -76,7 +76,7 @@ const OnboardingWizard = () => {
           <CardContent className="py-4">
             {step === 0 && (
               <IndustryStep 
-                industry={data.industry as IndustryOption | null} 
+                industry={data.industry as IndustryData | null} 
                 updateField={updateField}
               />
             )}

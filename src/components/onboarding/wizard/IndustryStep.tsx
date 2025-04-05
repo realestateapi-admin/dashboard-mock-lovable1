@@ -1,12 +1,11 @@
 
-import { motion } from "framer-motion";
 import { RadioGroup } from "@/components/ui/radio-group";
-import { IndustryOption } from "../types/OnboardingTypes";
+import { IndustryOption, IndustryData } from "../types/OnboardingTypes";
 import RadioOption, { RadioOptionProps } from "./RadioOption";
 
 interface IndustryStepProps {
-  industry: IndustryOption | null;
-  updateField: (field: "industry", value: IndustryOption) => void;
+  industry: IndustryData | null;
+  updateField: (field: "industry", value: IndustryData) => void;
 }
 
 const industryOptions: RadioOptionProps[] = [
@@ -20,10 +19,18 @@ const industryOptions: RadioOptionProps[] = [
 ];
 
 const IndustryStep = ({ industry, updateField }: IndustryStepProps) => {
+  const handleIndustryChange = (value: string) => {
+    const selectedOption = industryOptions.find(option => option.value === value);
+    updateField("industry", {
+      value: value as IndustryOption,
+      name: selectedOption?.label || ""
+    });
+  };
+
   return (
     <RadioGroup
-      value={industry || ""}
-      onValueChange={(value) => updateField("industry", value as IndustryOption)}
+      value={industry?.value || ""}
+      onValueChange={handleIndustryChange}
       className="space-y-3"
     >
       {industryOptions.map((option) => (
