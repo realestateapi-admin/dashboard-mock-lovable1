@@ -3,6 +3,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 interface ACHFormProps {
   newACHMethod: {
@@ -35,11 +42,11 @@ export const ACHForm = ({
   setNewACHMethod,
   showBackupCardSection = false
 }: ACHFormProps) => {
-  // Handle the account type radio button change
-  const handleAccountTypeChange = (type: string) => {
+  // Handle the account type change
+  const handleAccountTypeChange = (value: string) => {
     setNewACHMethod(prev => ({
       ...prev,
-      accountType: type
+      accountType: value
     }));
   };
 
@@ -77,30 +84,18 @@ export const ACHForm = ({
       </div>
       <div className="grid gap-2">
         <Label htmlFor="accountType">Account Type</Label>
-        <div className="flex space-x-4">
-          <div className="flex items-center">
-            <input
-              type="radio"
-              id="checking"
-              value="checking"
-              checked={newACHMethod.accountType === "checking"}
-              onChange={() => handleAccountTypeChange("checking")}
-              className="h-4 w-4 border-gray-300"
-            />
-            <Label htmlFor="checking" className="ml-2 text-sm font-medium">Checking</Label>
-          </div>
-          <div className="flex items-center">
-            <input
-              type="radio"
-              id="savings"
-              value="savings"
-              checked={newACHMethod.accountType === "savings"}
-              onChange={() => handleAccountTypeChange("savings")}
-              className="h-4 w-4 border-gray-300"
-            />
-            <Label htmlFor="savings" className="ml-2 text-sm font-medium">Savings</Label>
-          </div>
-        </div>
+        <Select
+          value={newACHMethod.accountType}
+          onValueChange={handleAccountTypeChange}
+        >
+          <SelectTrigger id="accountType">
+            <SelectValue placeholder="Select account type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="checking">Checking</SelectItem>
+            <SelectItem value="savings">Savings</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex items-center space-x-2 pt-2">
         <input
