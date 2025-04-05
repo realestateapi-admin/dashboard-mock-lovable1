@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlanData, AddOnData } from "@/types/billing";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { format, addMonths } from "date-fns";
 
 interface SubscriptionConfirmationStepProps {
   selectedPlan: string;
@@ -40,6 +41,16 @@ export const SubscriptionConfirmationStep = ({
   const transactionFeeRate = 0.03; // 3%
   const transactionFee = paymentMethodType === 'card' ? totalAmount * transactionFeeRate : 0;
   const totalWithFee = totalAmount + transactionFee;
+  
+  // Calculate first payment date (1st of next month)
+  const today = new Date();
+  const nextMonth = addMonths(today, 1);
+  const firstPaymentDate = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
+  
+  // Calculate proration amount for current month
+  const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  const remainingDays = daysInMonth - today.getDate();
+  const proratedAmount = (totalWithFee / daysInMonth) * remainingDays;
   
   // Format as currency
   const formatCurrency = (amount: number) => {
@@ -86,6 +97,11 @@ export const SubscriptionConfirmationStep = ({
             <div>
               <p className="text-sm text-muted-foreground">Billing Cycle</p>
               <p className="font-medium">{billingCycle === 'annual' ? 'Annual (12-month commitment)' : 'Monthly'}</p>
+            </div>
+            
+            <div>
+              <p className="text-sm text-muted-foreground">First Payment Date</p>
+              <p className="font-medium">{format(firstPaymentDate, 'MMMM 1, yyyy')}</p>
             </div>
             
             <div>
@@ -141,6 +157,18 @@ export const SubscriptionConfirmationStep = ({
             <div className="flex justify-between py-2 font-medium border-t mt-1">
               <span>Total Monthly Payment:</span>
               <span>{formatCurrency(totalWithFee)}</span>
+            </div>
+            
+            {/* Prorated amount section */}
+            <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
+              <h4 className="text-sm font-medium text-blue-800">Your first payment</h4>
+              <div className="flex justify-between py-1 text-sm text-blue-700">
+                <span>Prorated amount for current month ({remainingDays} days):</span>
+                <span>{formatCurrency(proratedAmount)}</span>
+              </div>
+              <div className="text-xs text-blue-600 mt-1">
+                Your first payment on {format(today, 'MMMM d, yyyy')} will be prorated. Full billing begins on {format(firstPaymentDate, 'MMMM 1, yyyy')}.
+              </div>
             </div>
           </div>
           
