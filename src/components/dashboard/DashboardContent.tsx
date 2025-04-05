@@ -5,7 +5,6 @@ import { useDashboard } from "@/contexts/DashboardContext";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardSummary } from "@/components/dashboard/DashboardSummary";
 import { UpdatesSection } from "@/components/dashboard/UpdatesSection";
-import { RecentActivityList } from "@/components/dashboard/RecentActivityList";
 import { EndpointUsageSection } from "@/components/dashboard/EndpointUsageSection";
 import { RecordUsageBreakdown } from "@/components/dashboard/RecordUsageBreakdown";
 import { ApiAccessSection } from "@/components/dashboard/ApiAccessSection";
@@ -63,39 +62,17 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
         subscriptionRenewalDate={renewalDate || undefined}
       />
       
-      <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.3 }}
-          className="lg:col-span-2"
-        >
-          <UpdatesSection 
-            isLoading={isLoading}
-          />
-        </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.3 }}
-        >
-          <Card className="h-full">
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>
-                Latest API calls and record usage
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="px-0">
-              <RecentActivityList 
-                activities={recentActivity}
-                isLoading={isLoading} 
-              />
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
+      {/* Modified this section to have UpdatesSection take full width */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.3 }}
+        className="mb-6"
+      >
+        <UpdatesSection 
+          isLoading={isLoading}
+        />
+      </motion.div>
       
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
         <motion.div 
