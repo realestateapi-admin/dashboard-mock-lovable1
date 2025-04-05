@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 
@@ -7,9 +6,9 @@ import { WizardHeader } from "@/components/billing/wizard/WizardHeader";
 import { WizardFooter } from "@/components/billing/wizard/WizardFooter";
 import { WizardContent } from "@/components/billing/wizard/WizardContent";
 
-// Import plan data
-import { plans, addOns } from "@/data/billingData";
+// Import the refactored useWizardState hook
 import { useWizardState } from "@/hooks/useWizardState";
+import { plans, addOns } from "@/data/billingData";
 
 const PlanSignupWizard = () => {
   const {

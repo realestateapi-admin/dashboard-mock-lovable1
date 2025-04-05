@@ -1,42 +1,46 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
-import { useTrialAlert } from "@/contexts/TrialAlertContext";
+import { useEffect } from "react";
 import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 
 // Import plan data
 import { plans, addOns } from "@/data/billingData";
 import { useSubscriptionCalculator } from "@/hooks/useSubscriptionCalculator";
 
+// Import the new modular hooks
+import { useWizardSteps } from "./wizard/useWizardSteps";
+import { useBillingCycle } from "./wizard/useBillingCycle";
+import { useCreditCardInfo } from "./wizard/useCreditCardInfo";
+import { useSubscriptionSubmit } from "./wizard/useSubscriptionSubmit";
+
 export const useWizardState = () => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const { startFreeTrial, setIsOnPaidPlan } = useTrialAlert();
   const { setIsEnterprisePlan } = useAccountExecutive();
   
-  // Step management
-  const [currentStep, setCurrentStep] = useState(0);
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  // Use the step management hook
+  const { 
+    currentStep, 
+    steps, 
+    isLoading, 
+    setIsLoading, 
+    handleNext: nextStep, 
+    handleBack: prevStep 
+  } = useWizardSteps();
   
-  // Loading states
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // Use the billing cycle hook
+  const { 
+    billingCycle, 
+    handleBillingCycleChange 
+  } = useBillingCycle();
   
-  // Credit card info from onboarding
-  const [creditCardInfo, setCreditCardInfo] = useState<any>(null);
+  // Use the credit card info hook
+  const { 
+    creditCardInfo 
+  } = useCreditCardInfo();
   
-  // Load credit card info from localStorage on component mount
-  useEffect(() => {
-    try {
-      const storedCreditCardInfo = localStorage.getItem("creditCardInfo");
-      if (storedCreditCardInfo) {
-        setCreditCardInfo(JSON.parse(storedCreditCardInfo));
-      }
-    } catch (error) {
-      console.error("Error loading stored credit card info:", error);
-    }
-  }, []);
+  // Use the submission hook
+  const { 
+    isSubmitting, 
+    handleSubmit: submitSubscription 
+  } = useSubscriptionSubmit();
   
   // Use the subscription calculator hook
   const {
@@ -64,7 +68,7 @@ export const useWizardState = () => {
     }, 1200);
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [setIsLoading]);
 
   // Update enterprise plan status when the selected plan changes
   useEffect(() => {
@@ -87,67 +91,14 @@ export const useWizardState = () => {
     }
   };
   
-  const steps = [
-    {
-      title: "Choose Your Billing Option",
-      description: ""
-    },
-    {
-      title: "Select Add-Ons",
-      description: "Enhance your subscription with premium features"
-    },
-    {
-      title: "Overage Handling",
-      description: "Choose how to handle API calls that exceed your plan limits"
-    },
-    {
-      title: "Payment Information",
-      description: "Enter your payment details to complete your subscription"
-    }
-  ];
-  
-  // Validate if current step is complete
-  const isCurrentStepValid = () => {
-    if (currentStep === 2) {
-      // Make overage handling selection mandatory
-      return !!overageHandling;
-    }
-    return true;
-  };
-  
-  // Simulate loading when moving between steps
+  // Handle next step with validation
   const handleNext = () => {
-    // Check if current step is valid before proceeding
-    if (!isCurrentStepValid()) {
-      toast({
-        title: "Selection Required",
-        description: "Please select an overage handling option to continue.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    if (currentStep < steps.length - 1) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setCurrentStep(prevStep => prevStep + 1);
-        setIsLoading(false);
-      }, 500);
-    }
+    nextStep(overageHandling);
   };
   
+  // Handle back step
   const handleBack = () => {
-    if (currentStep > 0) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setCurrentStep(prevStep => prevStep - 1);
-        setIsLoading(false);
-      }, 500);
-    }
-  };
-  
-  const handleBillingCycleChange = (cycle: 'monthly' | 'annual') => {
-    setBillingCycle(cycle);
+    prevStep();
   };
   
   const handlePlanChange = (planId: string) => {
@@ -155,31 +106,7 @@ export const useWizardState = () => {
   };
   
   const handleSubmit = () => {
-    // Simulate submission loading
-    setIsSubmitting(true);
-    
-    // Simulate API call with timeout
-    setTimeout(() => {
-      setIsSubmitting(false);
-      
-      // Set user as on a paid plan in context and localStorage
-      if (setIsOnPaidPlan) {
-        setIsOnPaidPlan(true);
-        localStorage.setItem('isOnPaidPlan', 'true');
-      }
-      
-      // Save selected plan to localStorage for persistence
-      localStorage.setItem('selectedPlan', selectedPlan);
-      
-      // In a real application, this would process the payment via Stripe
-      toast({
-        title: "Subscription Successful",
-        description: "Your subscription has been successfully processed.",
-      });
-      
-      // Redirect to dashboard
-      navigate("/dashboard");
-    }, 2000);
+    submitSubscription(selectedPlan);
   };
   
   return {
