@@ -151,6 +151,19 @@ export const addOns: AddOnData[] = [
     category: 'Property Data'
   },
   {
+    id: "lien-search",
+    name: "Involuntary Lien Search",
+    description: "Search for liens against properties",
+    prices: {
+      starter: "$1 each",
+      growth: "$0.75 each",
+      pro: "$0.50 each",
+      enterprise: "$0.40 each",
+    },
+    billingType: 'metered',
+    category: 'Property Data'
+  },
+  {
     id: "mls-data",
     name: "MLS Data Access",
     description: "Access to real-time Multiple Listing Service data for your region",
@@ -163,19 +176,6 @@ export const addOns: AddOnData[] = [
     billingType: 'subscription',
     category: 'Property Data',
     requiresApproval: true
-  },
-  {
-    id: "lien-search",
-    name: "Involuntary Lien Search",
-    description: "Search for liens against properties",
-    prices: {
-      starter: "$1 each",
-      growth: "$0.75 each",
-      pro: "$0.50 each",
-      enterprise: "$0.40 each",
-    },
-    billingType: 'metered',
-    category: 'Property Data'
   },
   {
     id: "tech-support",
