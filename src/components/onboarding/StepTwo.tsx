@@ -21,7 +21,7 @@ interface StepTwoProps {
   selectedAddOns?: string[];
   toggleAddOn?: (addOnId: string) => void;
   isLoading: boolean;
-  handleSubscribe: () => void; // Added this prop to match what's being passed in Onboarding.tsx
+  handleSubscribe: () => void; 
   handleBack: () => void;
 }
 
@@ -35,6 +35,21 @@ export const StepTwo = ({
   handleSubscribe,
   handleBack
 }: StepTwoProps) => {
+  // Find the plan name from the selected plan ID
+  const selectedPlanObj = plans.find(p => p.id === selectedPlan);
+  
+  // Store the selected plan name in localStorage when subscribing
+  const handleSubscribeWithPlanStorage = () => {
+    if (selectedPlanObj) {
+      // Store both the plan ID and name
+      localStorage.setItem('selectedPlan', selectedPlan);
+      localStorage.setItem('selectedPlanName', selectedPlanObj.name);
+    }
+    
+    // Call the original handleSubscribe function
+    handleSubscribe();
+  };
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -45,7 +60,7 @@ export const StepTwo = ({
         <CardHeader className="pb-3">
           <CardTitle>Add premium features</CardTitle>
           <CardDescription>
-            Enhance your {plans.find(p => p.id === selectedPlan)?.name} plan with add-ons
+            Enhance your {selectedPlanObj?.name} plan with add-ons
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -72,7 +87,7 @@ export const StepTwo = ({
         </CardContent>
         <CardFooter>
           <Button
-            onClick={handleSubscribe} // Use the handleSubscribe prop here
+            onClick={handleSubscribeWithPlanStorage} // Use the new handler
             className="w-full"
             disabled={isLoading}
           >

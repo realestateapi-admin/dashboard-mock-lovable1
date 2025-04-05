@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
+import { plans } from "@/data/plans";
 
 export const useSubscriptionSubmit = () => {
   const navigate = useNavigate();
@@ -26,6 +27,10 @@ export const useSubscriptionSubmit = () => {
       
       // Save selected plan to localStorage for persistence
       localStorage.setItem('selectedPlan', selectedPlan);
+      
+      // Find the plan name for the selected plan
+      const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || "Growth";
+      localStorage.setItem('selectedPlanName', selectedPlanName);
       
       // In a real application, this would process the payment via Stripe
       toast({

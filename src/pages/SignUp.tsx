@@ -46,9 +46,11 @@ const SignUp = () => {
       
       console.log("User registered with metadata:", userMetadata);
       
-      // Save the email and name in sessionStorage for use in the onboarding page
+      // Save the email, name, and default selected plan in sessionStorage
       sessionStorage.setItem("userEmail", email);
       sessionStorage.setItem("userName", name);
+      // Set a default plan - normally this would come from the sign-up flow
+      sessionStorage.setItem("selectedPlan", "growth");
       
       // Mock registration - in a real app, create the account here
       toast({

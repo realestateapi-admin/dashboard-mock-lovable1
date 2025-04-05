@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,7 @@ import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { plans } from "@/data/plans";
 
 interface BillingCardProps {
   isTrialActive: boolean;
@@ -25,6 +26,22 @@ export const BillingCard = ({
   subscriptionStartDate,
   subscriptionRenewalDate
 }: BillingCardProps) => {
+  // State to store the plan name
+  const [planName, setPlanName] = useState("Professional Plan");
+  
+  // Get the selected plan from localStorage on component mount
+  useEffect(() => {
+    const storedPlanId = localStorage.getItem('selectedPlan') || sessionStorage.getItem('selectedPlan');
+    
+    if (storedPlanId) {
+      // Find the plan with the matching ID
+      const selectedPlan = plans.find(p => p.id === storedPlanId);
+      if (selectedPlan) {
+        setPlanName(selectedPlan.name + " Plan");
+      }
+    }
+  }, []);
+
   // Format dates if available
   const formatDate = (dateString?: string) => {
     if (!dateString) return null;
@@ -56,12 +73,12 @@ export const BillingCard = ({
           </div>
           <p className="text-xs text-muted-foreground">
             {isOnPaidPlan 
-              ? `Next payment on ${formattedRenewalDate || 'Mar 1, 2024'}`
+              ? `Next payment on ${formattedRenewalDate || 'May 22, 2025'}`
               : (isFreeUser 
                 ? `Free plan expires in ${trialDaysLeft} days` 
                 : (isTrialActive 
                   ? `Ends in ${trialDaysLeft} days` 
-                  : "Next payment on Mar 1, 2024")
+                  : "Next payment on May 22, 2025")
               )
             }
           </p>
@@ -74,10 +91,10 @@ export const BillingCard = ({
               )
             }>
               {isOnPaidPlan 
-                ? "Professional Plan"
+                ? planName
                 : (isFreeUser 
                   ? "Free Plan" 
-                  : (isTrialActive ? "Trial" : "Professional Plan")
+                  : (isTrialActive ? "Trial" : planName)
                 )
               }
             </Badge>
