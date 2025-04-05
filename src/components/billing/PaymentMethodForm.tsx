@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCard, Building } from "lucide-react";
@@ -64,9 +63,6 @@ export const PaymentMethodForm = ({
   return (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold">Payment Method</h3>
-      <p className="text-sm text-muted-foreground">
-        Your card won't be charged until you select a subscription plan.
-      </p>
       
       <Tabs defaultValue="card" onValueChange={(value) => setPaymentMethod(value as "card" | "bank")}>
         <TabsList className="grid grid-cols-2 mb-6">
