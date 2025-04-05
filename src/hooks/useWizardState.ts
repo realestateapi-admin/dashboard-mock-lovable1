@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 
-// Import plan data
+// Import plan data from the new location
 import { plans, addOns } from "@/data/billingData";
 import { useSubscriptionCalculator } from "@/hooks/useSubscriptionCalculator";
 

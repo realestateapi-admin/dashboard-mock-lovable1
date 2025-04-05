@@ -11,7 +11,7 @@ import { BillingTabs } from "@/components/billing/BillingTabs";
 import { CancellationLink } from "@/components/billing/CancellationLink";
 import { AccountExecutiveWidget } from "@/components/support/AccountExecutiveWidget";
 
-// Import data
+// Import data from the new modular files
 import { plans, addOns, invoices } from "@/data/billingData";
 
 // Import hooks
