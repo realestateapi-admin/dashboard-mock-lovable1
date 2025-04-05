@@ -171,12 +171,6 @@ export const SubscriptionConfirmationStep = ({
           <span>Monthly Total</span>
           <span>{costs.total}</span>
         </div>
-        
-        <div className="bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-900 rounded-md p-4 text-sm text-blue-800 dark:text-blue-300">
-          <p>
-            Your 30-day free trial starts today. You will be billed on {trialEndDate}.
-          </p>
-        </div>
       </CardContent>
     </Card>
   );
