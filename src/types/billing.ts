@@ -19,6 +19,8 @@ export interface AddOnData {
   };
   // Add billing type to clarify which add-ons are metered vs subscription
   billingType?: 'metered' | 'subscription';
+  // Add category for grouping similar add-ons
+  category?: string;
 }
 
 export interface InvoiceData {

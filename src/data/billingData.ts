@@ -147,7 +147,8 @@ export const addOns: AddOnData[] = [
       pro: "$1,000",
       enterprise: "$2,500",
     },
-    billingType: 'subscription'
+    billingType: 'subscription',
+    category: 'Property Data'
   },
   {
     id: "lien-search",
@@ -159,7 +160,8 @@ export const addOns: AddOnData[] = [
       pro: "$0.50 each",
       enterprise: "$0.40 each",
     },
-    billingType: 'metered'
+    billingType: 'metered',
+    category: 'Property Data'
   },
   {
     id: "tech-support",
@@ -171,7 +173,8 @@ export const addOns: AddOnData[] = [
       pro: "Included",
       enterprise: "Included",
     },
-    billingType: 'subscription'
+    billingType: 'subscription',
+    category: 'Support'
   },
   {
     id: "skip-tracing",
@@ -183,6 +186,7 @@ export const addOns: AddOnData[] = [
       pro: "$0.08 each",
       enterprise: "$0.08 each",
     },
-    billingType: 'metered'
+    billingType: 'metered',
+    category: 'Demographic Data'
   }
 ];
