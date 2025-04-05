@@ -43,10 +43,13 @@ const SignUp = () => {
       
       console.log("User registered with metadata:", userMetadata);
       
+      // Save the email in sessionStorage for use in the onboarding page
+      sessionStorage.setItem("userEmail", email);
+      
       // Mock registration - in a real app, create the account here
       toast({
         title: "Account created successfully",
-        description: "Welcome to RealEstateAPI. Start your free trial now!",
+        description: "Please check your email to verify your account.",
       });
       
       navigate("/onboarding");

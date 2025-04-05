@@ -1,13 +1,14 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Quote as QuoteIcon } from "lucide-react";
+import { ArrowRight, Quote as QuoteIcon, Mail } from "lucide-react";
 import { motion } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
 import { DashboardProvider } from "@/contexts/DashboardContext";
 import { useDashboardRefresh } from "@/components/dashboard/DashboardRefresh";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 // Mock data to satisfy the DashboardProvider props requirements
 const mockDailyUsageData = [
@@ -38,7 +39,44 @@ const mockUsageDistributionData = [
 const Onboarding = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+  const [emailVerified, setEmailVerified] = useState(false);
+  
+  // Check for email verification status on component mount and from URL params
+  useEffect(() => {
+    // Get email from sessionStorage (saved during sign up)
+    const email = sessionStorage.getItem("userEmail");
+    if (email) {
+      setUserEmail(email);
+    }
+    
+    // Check for verification token in URL (this would be added when user clicks the email link)
+    const searchParams = new URLSearchParams(location.search);
+    const verificationToken = searchParams.get("token");
+    
+    if (verificationToken) {
+      // In a real app, you would validate this token with your backend
+      // For this demo, we'll simulate a successful verification
+      setEmailVerified(true);
+      toast({
+        title: "Email verified successfully!",
+        description: "You can now proceed with your free trial.",
+      });
+      
+      // Remove the token from the URL
+      navigate("/onboarding", { replace: true });
+    }
+  }, [location, navigate, toast]);
+  
+  const handleResendEmail = () => {
+    // In a real app, you would call an API to resend the verification email
+    toast({
+      title: "Verification email sent",
+      description: `We've sent another verification email to ${userEmail}`,
+    });
+  };
   
   const handleStartTrial = () => {
     setIsLoading(true);
@@ -75,6 +113,24 @@ const Onboarding = () => {
                 <p className="text-lg text-muted-foreground">Start your 14-day free trial and explore our property data platform.</p>
               </div>
               
+              {!emailVerified && userEmail && (
+                <Alert className="bg-amber-50 border-amber-200">
+                  <Mail className="h-4 w-4 text-amber-600 mr-2" />
+                  <AlertDescription className="text-amber-800">
+                    <p className="font-medium">Please verify your email to continue</p>
+                    <p className="mt-1">We've sent a verification link to <span className="font-semibold">{userEmail}</span>. Please check your inbox and click the link to verify your email.</p>
+                    <div className="mt-3">
+                      <button 
+                        onClick={handleResendEmail}
+                        className="text-sm text-amber-800 underline hover:text-amber-900"
+                      >
+                        Didn't receive the email? Click here to resend
+                      </button>
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              )}
+              
               <div className="rounded-lg bg-primary-teal/5 p-6 border border-primary-teal/20">
                 <h3 className="font-medium text-primary-teal text-lg mb-4">What's included in your trial:</h3>
                 <ul className="space-y-3">
@@ -96,11 +152,13 @@ const Onboarding = () => {
               <Button
                 onClick={handleStartTrial}
                 className="w-full bg-[#04c8c8] hover:bg-[#04c8c8]/90 mt-2"
-                disabled={isLoading}
+                disabled={isLoading || !emailVerified}
                 size="lg"
               >
                 {isLoading ? (
                   "Setting up your account..."
+                ) : !emailVerified ? (
+                  "Verify your email to continue"
                 ) : (
                   <>
                     Start Free Trial <ArrowRight className="ml-2 h-4 w-4" />
