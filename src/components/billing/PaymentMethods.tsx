@@ -76,13 +76,15 @@ export const PaymentMethods = () => {
         return;
       }
       
-      // ACH payment method
+      // ACH payment method - actually add it to the list now
       newMethod = {
         id: `pm_${Math.random().toString(36).substring(2, 9)}`,
         type: "ACH",
         lastFour: newACHMethod.accountNumber.slice(-4),
         expiryDate: "N/A", // ACH doesn't have expiry
         isDefault: newACHMethod.makeDefault,
+        accountType: newACHMethod.accountType, // Add account type for display
+        accountName: newACHMethod.accountName, // Add account name for display
       };
       
       // In a real app, we would also store the backup card info

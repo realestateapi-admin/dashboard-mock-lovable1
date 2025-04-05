@@ -1,7 +1,6 @@
 
-import { CreditCardIcon, Building, Trash2 } from "lucide-react";
+import { CreditCard, Bank, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { PaymentMethod } from "./types";
 
 interface PaymentMethodItemProps {
@@ -15,25 +14,48 @@ export const PaymentMethodItem = ({
   onSetDefault, 
   onRequestRemove 
 }: PaymentMethodItemProps) => {
+  
+  const isACH = method.type === "ACH";
+  
   return (
-    <div className="border rounded-lg p-4 flex justify-between items-center">
-      <div className="flex items-center gap-3">
-        {method.type === "ACH" ? (
-          <Building className="h-5 w-5 text-primary" />
+    <div className="flex items-center justify-between p-4 border rounded-lg">
+      <div className="flex items-center space-x-4">
+        {isACH ? (
+          <div className="bg-blue-100 p-2 rounded-full">
+            <Bank className="h-5 w-5 text-blue-600" />
+          </div>
         ) : (
-          <CreditCardIcon className="h-5 w-5 text-primary" />
+          <div className="bg-indigo-100 p-2 rounded-full">
+            <CreditCard className="h-5 w-5 text-indigo-600" />
+          </div>
         )}
+        
         <div>
-          <p className="font-medium">{method.type} ending in {method.lastFour}</p>
-          <p className="text-sm text-muted-foreground">
-            {method.type === "ACH" ? "Bank Account" : `Expires ${method.expiryDate}`}
-          </p>
+          <div className="font-medium">
+            {isACH ? (
+              <>Bank Account ({method.accountType}) <span className="ml-1 text-sm text-muted-foreground">•••• {method.lastFour}</span></>
+            ) : (
+              <>{method.type} <span className="ml-1 text-sm text-muted-foreground">•••• {method.lastFour}</span></>
+            )}
+          </div>
+          
+          <div className="text-sm text-muted-foreground">
+            {isACH ? (
+              <>Account: {method.accountName || "N/A"}</>
+            ) : (
+              <>Expires: {method.expiryDate}</>
+            )}
+            {method.isDefault && (
+              <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                Default
+              </span>
+            )}
+          </div>
         </div>
       </div>
-      <div className="flex items-center gap-2">
-        {method.isDefault ? (
-          <Badge>Default</Badge>
-        ) : (
+      
+      <div className="flex space-x-2">
+        {!method.isDefault && (
           <Button 
             variant="outline" 
             size="sm"
@@ -42,16 +64,14 @@ export const PaymentMethodItem = ({
             Set Default
           </Button>
         )}
-        {!method.isDefault && (
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="text-destructive"
-            onClick={() => onRequestRemove(method.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        )}
+        
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={() => onRequestRemove(method.id)}
+        >
+          <Trash2 className="h-4 w-4 text-red-500" />
+        </Button>
       </div>
     </div>
   );
