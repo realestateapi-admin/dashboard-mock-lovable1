@@ -1,10 +1,12 @@
+
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreditCard, Building } from "lucide-react";
+import { CreditCard, Building, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PaymentMethodSkeleton } from "../billing/wizard/SkeletonLoading";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface PaymentMethodFormProps {
   isLoading?: boolean;
@@ -137,6 +139,7 @@ export const PaymentMethodForm = ({
         </TabsContent>
         
         <TabsContent value="bank" className="space-y-4">
+          {/* Bank account input fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="accountName">Account Holder Name</Label>
@@ -162,6 +165,76 @@ export const PaymentMethodForm = ({
             <p className="text-sm text-muted-foreground">
               By providing your bank account information, you authorize us to debit the above account for subscription charges.
             </p>
+          </div>
+          
+          {/* Credit card backup fields for bank account option */}
+          <Alert className="mt-6 bg-amber-50 border-amber-200">
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-800">
+              A credit card is required as a backup payment method when using bank account
+            </AlertDescription>
+          </Alert>
+          
+          <div className="mt-2 p-4 border border-amber-200 rounded-md space-y-4">
+            <h4 className="font-medium text-sm">Backup Credit Card Information</h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="backupCardName">Cardholder Name</Label>
+                <Input 
+                  id="backupCardName" 
+                  placeholder="John Smith" 
+                  value={cardName}
+                  onChange={(e) => setCardName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="backupCardNumber">Card Number</Label>
+                <Input 
+                  id="backupCardNumber" 
+                  placeholder="1234 5678 9012 3456" 
+                  value={cardNumber}
+                  onChange={(e) => setCardNumber(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="backupExpiry">Expiry Date</Label>
+                <Input 
+                  id="backupExpiry" 
+                  placeholder="MM/YY" 
+                  value={expiry}
+                  onChange={(e) => setExpiry(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="backupCvc">CVC</Label>
+                <Input 
+                  id="backupCvc" 
+                  placeholder="123" 
+                  type="password"
+                  value={cvc}
+                  onChange={(e) => setCvc(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="backupZipCode">ZIP/Postal Code</Label>
+              <Input 
+                id="backupZipCode" 
+                placeholder="12345" 
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value)}
+                required
+              />
+            </div>
           </div>
         </TabsContent>
       </Tabs>
