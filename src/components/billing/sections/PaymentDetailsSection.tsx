@@ -64,6 +64,10 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
         
         <div className="mt-4">
           <TabsContent value="card" className="mt-0 p-0 space-y-4">
+            {/* Credit card transaction fee notice */}
+            <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md border border-amber-100">
+              Please note: A 3% transaction fee will be added to all credit card payments.
+            </div>
             <CreditCardFormSection
               cardName={cardDetails.cardName}
               setCardName={(value) => handleCardDetailsChange("cardName", value)}

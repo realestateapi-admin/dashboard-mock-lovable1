@@ -8,11 +8,13 @@ import { usePaymentMethodFormV2 } from "./hooks/usePaymentMethodForm.v2";
 interface PaymentMethodFormProps {
   isLoading: boolean;
   creditCardInfo?: any;
+  onPaymentMethodTypeChange?: (type: 'card' | 'ach') => void;
 }
 
 export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
   isLoading,
   creditCardInfo,
+  onPaymentMethodTypeChange
 }) => {
   const {
     paymentMethodType,
@@ -30,6 +32,22 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     handlePaymentTypeChange
   } = usePaymentMethodFormV2(isLoading);
 
+  // Notify parent component when payment method type changes
+  React.useEffect(() => {
+    if (onPaymentMethodTypeChange) {
+      onPaymentMethodTypeChange(paymentMethodType);
+    }
+  }, [paymentMethodType, onPaymentMethodTypeChange]);
+
+  // Custom handler for payment type changes that notifies parent component
+  const handlePaymentMethodChange = (value: string) => {
+    const type = value as 'card' | 'ach';
+    handlePaymentTypeChange(type);
+    
+    // Store the payment method type in localStorage for persistence
+    localStorage.setItem('paymentMethodType', type);
+  };
+
   return (
     <div className="space-y-8">
       {/* Company Information Section (First) */}
@@ -43,7 +61,7 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
       {/* Payment Details Section (Second) */}
       <PaymentDetailsSection 
         paymentMethodType={paymentMethodType}
-        handlePaymentTypeChange={handlePaymentTypeChange}
+        handlePaymentTypeChange={handlePaymentMethodChange}
         cardDetails={cardDetails}
         backupCardDetails={backupCardDetails}
         handleCardDetailsChange={handleCardDetailsChange}

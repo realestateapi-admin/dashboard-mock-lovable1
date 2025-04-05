@@ -7,6 +7,7 @@ import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
 import { TermsOfServiceStep } from "@/components/billing/wizard/TermsOfServiceStep";
 import { SubscriptionConfirmationStep } from "@/components/billing/wizard/SubscriptionConfirmationStep";
 import { PlanData, AddOnData } from "@/types/billing";
+import { useState, useEffect } from "react";
 
 interface WizardContentProps {
   currentStep: number;
@@ -60,6 +61,23 @@ export function WizardContent({
   // Find the name of the selected plan for the OverageHandling component
   const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || 'Selected';
   
+  // Track the payment method type selected in step 4
+  const [paymentMethodType, setPaymentMethodType] = useState<'card' | 'ach'>('card');
+  
+  // Monitor changes to payment method type from PaymentMethodForm component
+  useEffect(() => {
+    const savedType = localStorage.getItem('paymentMethodType');
+    if (savedType === 'card' || savedType === 'ach') {
+      setPaymentMethodType(savedType as 'card' | 'ach');
+    }
+  }, [currentStep]);
+  
+  // Handle payment method changes from the PaymentMethodForm
+  const handlePaymentMethodChange = (type: 'card' | 'ach') => {
+    setPaymentMethodType(type);
+    localStorage.setItem('paymentMethodType', type);
+  };
+  
   return (
     <>
       {/* For Terms of Service step, show just the Terms of Service content without the sidebar */}
@@ -82,6 +100,7 @@ export function WizardContent({
             costs={costs}
             billingCycle={billingCycle}
             isLoading={isLoading}
+            paymentMethodType={paymentMethodType}
           />
         </div>
       ) : (
@@ -127,6 +146,7 @@ export function WizardContent({
               <PaymentMethodForm 
                 isLoading={isLoading} 
                 creditCardInfo={creditCardInfo}
+                onPaymentMethodTypeChange={handlePaymentMethodChange}
               />
             )}
           </div>
