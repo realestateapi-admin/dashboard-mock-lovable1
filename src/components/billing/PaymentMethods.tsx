@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CreditCardIcon, PlusCircle, Trash2 } from "lucide-react";
+import { CreditCardIcon, PlusCircle, Trash2, Building } from "lucide-react";
 import { 
   Dialog, 
   DialogContent, 
@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type PaymentMethod = {
   id: string;
@@ -34,6 +35,7 @@ export const PaymentMethods = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
   const [methodToRemove, setMethodToRemove] = useState<string | null>(null);
+  const [paymentMethodType, setPaymentMethodType] = useState<"card" | "ach">("card");
   const [newPaymentMethod, setNewPaymentMethod] = useState({
     cardNumber: "",
     cardholderName: "",
@@ -41,20 +43,42 @@ export const PaymentMethods = () => {
     cvc: "",
     makeDefault: false,
   });
+  
+  const [newACHMethod, setNewACHMethod] = useState({
+    accountName: "",
+    routingNumber: "",
+    accountNumber: "",
+    accountType: "checking",
+    makeDefault: false,
+  });
 
   const handleAddPaymentMethod = () => {
     // In a real app, this would send the payment info to a payment processor
-    const newMethod: PaymentMethod = {
-      id: `pm_${Math.random().toString(36).substring(2, 9)}`,
-      type: "Visa", // This would be detected from the card number
-      lastFour: newPaymentMethod.cardNumber.slice(-4),
-      expiryDate: newPaymentMethod.expiry,
-      isDefault: newPaymentMethod.makeDefault,
-    };
+    let newMethod: PaymentMethod;
+    
+    if (paymentMethodType === "card") {
+      newMethod = {
+        id: `pm_${Math.random().toString(36).substring(2, 9)}`,
+        type: "Visa", // This would be detected from the card number
+        lastFour: newPaymentMethod.cardNumber.slice(-4),
+        expiryDate: newPaymentMethod.expiry,
+        isDefault: newPaymentMethod.makeDefault,
+      };
+    } else {
+      // ACH payment method
+      newMethod = {
+        id: `pm_${Math.random().toString(36).substring(2, 9)}`,
+        type: "ACH",
+        lastFour: newACHMethod.accountNumber.slice(-4),
+        expiryDate: "N/A", // ACH doesn't have expiry
+        isDefault: newACHMethod.makeDefault,
+      };
+    }
     
     // If this is set as default, update other cards
     let updatedMethods = [...paymentMethods];
-    if (newPaymentMethod.makeDefault) {
+    if ((paymentMethodType === "card" && newPaymentMethod.makeDefault) || 
+        (paymentMethodType === "ach" && newACHMethod.makeDefault)) {
       updatedMethods = updatedMethods.map(method => ({
         ...method,
         isDefault: false,
@@ -63,6 +87,8 @@ export const PaymentMethods = () => {
     
     setPaymentMethods([...updatedMethods, newMethod]);
     setIsAddDialogOpen(false);
+    
+    // Reset form states
     setNewPaymentMethod({
       cardNumber: "",
       cardholderName: "",
@@ -71,9 +97,17 @@ export const PaymentMethods = () => {
       makeDefault: false,
     });
     
+    setNewACHMethod({
+      accountName: "",
+      routingNumber: "",
+      accountNumber: "",
+      accountType: "checking",
+      makeDefault: false,
+    });
+    
     toast({
       title: "Payment method added",
-      description: "Your new payment method has been added successfully.",
+      description: `Your new ${paymentMethodType === "card" ? "card" : "bank account"} payment method has been added successfully.`,
     });
   };
 
@@ -139,10 +173,16 @@ export const PaymentMethods = () => {
         {paymentMethods.map((method) => (
           <div key={method.id} className="border rounded-lg p-4 flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <CreditCardIcon className="h-5 w-5 text-primary" />
+              {method.type === "ACH" ? (
+                <Building className="h-5 w-5 text-primary" />
+              ) : (
+                <CreditCardIcon className="h-5 w-5 text-primary" />
+              )}
               <div>
                 <p className="font-medium">{method.type} ending in {method.lastFour}</p>
-                <p className="text-sm text-muted-foreground">Expires {method.expiryDate}</p>
+                <p className="text-sm text-muted-foreground">
+                  {method.type === "ACH" ? "Bank Account" : `Expires ${method.expiryDate}`}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -187,61 +227,156 @@ export const PaymentMethods = () => {
           <DialogHeader>
             <DialogTitle>Add Payment Method</DialogTitle>
             <DialogDescription>
-              Enter your card details to add a new payment method.
+              Enter your payment details to add a new payment method.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="cardholderName">Cardholder Name</Label>
-              <Input
-                id="cardholderName"
-                value={newPaymentMethod.cardholderName}
-                onChange={(e) => setNewPaymentMethod({...newPaymentMethod, cardholderName: e.target.value})}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="cardNumber">Card Number</Label>
-              <Input
-                id="cardNumber"
-                value={newPaymentMethod.cardNumber}
-                onChange={(e) => setNewPaymentMethod({...newPaymentMethod, cardNumber: e.target.value})}
-                placeholder="•••• •••• •••• ••••"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="expiry">Expiry Date</Label>
-                <Input
-                  id="expiry"
-                  value={newPaymentMethod.expiry}
-                  onChange={(e) => setNewPaymentMethod({...newPaymentMethod, expiry: e.target.value})}
-                  placeholder="MM/YY"
-                />
+          
+          <Tabs 
+            defaultValue="card" 
+            onValueChange={(value) => setPaymentMethodType(value as "card" | "ach")}
+          >
+            <TabsList className="grid grid-cols-2 w-full">
+              <TabsTrigger value="card" className="flex items-center gap-2">
+                <CreditCardIcon className="h-4 w-4" />
+                Credit Card
+              </TabsTrigger>
+              <TabsTrigger value="ach" className="flex items-center gap-2">
+                <Building className="h-4 w-4" />
+                Bank Account (ACH)
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="card" className="mt-4">
+              <div className="grid gap-4 py-2">
+                <div className="grid gap-2">
+                  <Label htmlFor="cardholderName">Cardholder Name</Label>
+                  <Input
+                    id="cardholderName"
+                    value={newPaymentMethod.cardholderName}
+                    onChange={(e) => setNewPaymentMethod({...newPaymentMethod, cardholderName: e.target.value})}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="cardNumber">Card Number</Label>
+                  <Input
+                    id="cardNumber"
+                    value={newPaymentMethod.cardNumber}
+                    onChange={(e) => setNewPaymentMethod({...newPaymentMethod, cardNumber: e.target.value})}
+                    placeholder="•••• •••• •••• ••••"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="expiry">Expiry Date</Label>
+                    <Input
+                      id="expiry"
+                      value={newPaymentMethod.expiry}
+                      onChange={(e) => setNewPaymentMethod({...newPaymentMethod, expiry: e.target.value})}
+                      placeholder="MM/YY"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="cvc">CVC</Label>
+                    <Input
+                      id="cvc"
+                      value={newPaymentMethod.cvc}
+                      onChange={(e) => setNewPaymentMethod({...newPaymentMethod, cvc: e.target.value})}
+                      placeholder="•••"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2 pt-2">
+                  <input
+                    type="checkbox"
+                    id="makeDefaultCard"
+                    checked={newPaymentMethod.makeDefault}
+                    onChange={(e) => setNewPaymentMethod({...newPaymentMethod, makeDefault: e.target.checked})}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  <Label htmlFor="makeDefaultCard" className="text-sm font-medium">
+                    Make this my default payment method
+                  </Label>
+                </div>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="cvc">CVC</Label>
-                <Input
-                  id="cvc"
-                  value={newPaymentMethod.cvc}
-                  onChange={(e) => setNewPaymentMethod({...newPaymentMethod, cvc: e.target.value})}
-                  placeholder="•••"
-                />
+            </TabsContent>
+            
+            <TabsContent value="ach" className="mt-4">
+              <div className="grid gap-4 py-2">
+                <div className="grid gap-2">
+                  <Label htmlFor="accountName">Account Holder Name</Label>
+                  <Input
+                    id="accountName"
+                    value={newACHMethod.accountName}
+                    onChange={(e) => setNewACHMethod({...newACHMethod, accountName: e.target.value})}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="routingNumber">Routing Number</Label>
+                  <Input
+                    id="routingNumber"
+                    value={newACHMethod.routingNumber}
+                    onChange={(e) => setNewACHMethod({...newACHMethod, routingNumber: e.target.value})}
+                    placeholder="123456789"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="accountNumber">Account Number</Label>
+                  <Input
+                    id="accountNumber"
+                    value={newACHMethod.accountNumber}
+                    onChange={(e) => setNewACHMethod({...newACHMethod, accountNumber: e.target.value})}
+                    placeholder="•••••••••••"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="accountType">Account Type</Label>
+                  <div className="flex space-x-4">
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="checking"
+                        value="checking"
+                        checked={newACHMethod.accountType === "checking"}
+                        onChange={() => setNewACHMethod({...newACHMethod, accountType: "checking"})}
+                        className="h-4 w-4 border-gray-300"
+                      />
+                      <Label htmlFor="checking" className="ml-2 text-sm font-medium">Checking</Label>
+                    </div>
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="savings"
+                        value="savings"
+                        checked={newACHMethod.accountType === "savings"}
+                        onChange={() => setNewACHMethod({...newACHMethod, accountType: "savings"})}
+                        className="h-4 w-4 border-gray-300"
+                      />
+                      <Label htmlFor="savings" className="ml-2 text-sm font-medium">Savings</Label>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2 pt-2">
+                  <input
+                    type="checkbox"
+                    id="makeDefaultACH"
+                    checked={newACHMethod.makeDefault}
+                    onChange={(e) => setNewACHMethod({...newACHMethod, makeDefault: e.target.checked})}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  <Label htmlFor="makeDefaultACH" className="text-sm font-medium">
+                    Make this my default payment method
+                  </Label>
+                </div>
+                <div className="p-3 mt-2 bg-muted/20 border border-muted rounded-md">
+                  <p className="text-sm text-muted-foreground">
+                    By providing your bank account information, you authorize us to debit the above account for all agreed-upon subscription charges.
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-2 pt-2">
-              <input
-                type="checkbox"
-                id="makeDefault"
-                checked={newPaymentMethod.makeDefault}
-                onChange={(e) => setNewPaymentMethod({...newPaymentMethod, makeDefault: e.target.checked})}
-                className="h-4 w-4 rounded border-gray-300"
-              />
-              <Label htmlFor="makeDefault" className="text-sm font-medium">
-                Make this my default payment method
-              </Label>
-            </div>
-          </div>
-          <DialogFooter>
+            </TabsContent>
+          </Tabs>
+          
+          <DialogFooter className="mt-4">
             <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
               Cancel
             </Button>
