@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import TermsOfServiceModal from "@/components/modals/TermsOfServiceModal";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -15,6 +16,8 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -137,19 +140,21 @@ const SignUp = () => {
             <Checkbox id="terms" required />
             <Label htmlFor="terms" className="text-sm font-normal">
               I agree to the{" "}
-              <Link 
-                to="/terms" 
+              <button 
+                type="button"
+                onClick={() => setShowTermsModal(true)} 
                 className="text-primary hover:underline underline-offset-4"
               >
                 Terms of Service
-              </Link>
+              </button>
               {" "}and{" "}
-              <Link 
-                to="/privacy" 
+              <button
+                type="button"
+                onClick={() => setShowPrivacyModal(true)}
                 className="text-primary hover:underline underline-offset-4"
               >
                 Privacy Policy
-              </Link>
+              </button>
             </Label>
           </div>
           
@@ -174,6 +179,19 @@ const SignUp = () => {
           </p>
         </div>
       </div>
+
+      {/* Terms of Service Modal */}
+      <TermsOfServiceModal 
+        isOpen={showTermsModal} 
+        onOpenChange={setShowTermsModal} 
+      />
+
+      {/* Privacy Policy Modal */}
+      <TermsOfServiceModal 
+        isOpen={showPrivacyModal} 
+        onOpenChange={setShowPrivacyModal}
+        isPrivacyPolicy={true}
+      />
     </AuthLayout>
   );
 };
