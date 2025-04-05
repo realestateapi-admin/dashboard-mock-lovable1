@@ -44,13 +44,37 @@ export const BackupCardForm: React.FC<BackupCardFormProps> = ({
             makeDefault: false,
           }}
           setNewPaymentMethod={(values) => {
-            setNewACHMethod(prevState => ({
-              ...prevState,
-              backupCardNumber: values.cardNumber || prevState.backupCardNumber,
-              backupCardholderName: values.cardholderName || prevState.backupCardholderName,
-              backupExpiry: values.expiry || prevState.backupExpiry,
-              backupCvc: values.cvc || prevState.backupCvc,
-            }));
+            // Fix: Properly handle the setNewPaymentMethod callback
+            // The values parameter could be either a new state object or a function
+            if (typeof values === 'function') {
+              // If it's a function, we need to apply it to get the new values
+              setNewACHMethod(prevState => {
+                const newValues = values({
+                  cardNumber: prevState.backupCardNumber,
+                  cardholderName: prevState.backupCardholderName,
+                  expiry: prevState.backupExpiry,
+                  cvc: prevState.backupCvc,
+                  makeDefault: false,
+                });
+                
+                return {
+                  ...prevState,
+                  backupCardNumber: newValues.cardNumber,
+                  backupCardholderName: newValues.cardholderName,
+                  backupExpiry: newValues.expiry,
+                  backupCvc: newValues.cvc,
+                };
+              });
+            } else {
+              // If it's a direct object, we can use the values directly
+              setNewACHMethod(prevState => ({
+                ...prevState,
+                backupCardNumber: values.cardNumber || prevState.backupCardNumber,
+                backupCardholderName: values.cardholderName || prevState.backupCardholderName,
+                backupExpiry: values.expiry || prevState.backupExpiry,
+                backupCvc: values.cvc || prevState.backupCvc,
+              }));
+            }
           }}
         />
       </div>
