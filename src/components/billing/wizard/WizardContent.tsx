@@ -5,6 +5,7 @@ import { OverageHandling } from "@/components/billing/OverageHandling";
 import { PaymentMethodForm } from "@/components/billing/PaymentMethodForm";
 import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
 import { TermsOfServiceStep } from "@/components/billing/wizard/TermsOfServiceStep";
+import { SubscriptionConfirmationStep } from "@/components/billing/wizard/SubscriptionConfirmationStep";
 import { PlanData, AddOnData } from "@/types/billing";
 
 interface WizardContentProps {
@@ -68,6 +69,19 @@ export function WizardContent({
             isLoading={isLoading}
             termsAccepted={termsAccepted}
             onTermsAccepted={onTermsAccepted}
+          />
+        </div>
+      ) : currentStep === 5 ? (
+        <div className="w-full mx-auto max-w-4xl">
+          <SubscriptionConfirmationStep
+            selectedPlan={selectedPlan}
+            plans={plans}
+            activeAddOns={activeAddOns}
+            addOns={addOns}
+            overageHandling={overageHandling}
+            costs={costs}
+            billingCycle={billingCycle}
+            isLoading={isLoading}
           />
         </div>
       ) : (

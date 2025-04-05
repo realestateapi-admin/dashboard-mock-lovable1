@@ -32,6 +32,10 @@ export const useWizardSteps = () => {
     {
       title: "Terms of Service",
       description: "Review and accept our terms of service"
+    },
+    {
+      title: "Subscription Confirmation",
+      description: "Review your subscription details"
     }
   ];
 
