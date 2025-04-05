@@ -1,5 +1,5 @@
 
-import { CreditCard, Bank, Trash2 } from "lucide-react";
+import { CreditCard, Building, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PaymentMethod } from "./types";
 
@@ -22,7 +22,7 @@ export const PaymentMethodItem = ({
       <div className="flex items-center space-x-4">
         {isACH ? (
           <div className="bg-blue-100 p-2 rounded-full">
-            <Bank className="h-5 w-5 text-blue-600" />
+            <Building className="h-5 w-5 text-blue-600" />
           </div>
         ) : (
           <div className="bg-indigo-100 p-2 rounded-full">
