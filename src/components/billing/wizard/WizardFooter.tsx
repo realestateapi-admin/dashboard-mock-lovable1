@@ -48,7 +48,7 @@ export const WizardFooter = ({
               Processing...
             </>
           ) : (
-            "Complete Subscription"
+            "Go To Dashboard"
           )}
         </Button>
       )}
