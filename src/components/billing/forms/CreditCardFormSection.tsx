@@ -38,6 +38,7 @@ export const CreditCardFormSection = ({
             placeholder="John Smith" 
             value={cardName}
             onChange={(e) => setCardName(e.target.value)}
+            required
           />
         </div>
         <div className="space-y-2">
@@ -47,13 +48,18 @@ export const CreditCardFormSection = ({
             placeholder="1234 5678 9012 3456" 
             value={cardNumber}
             onChange={(e) => setCardNumber(e.target.value)}
+            required
           />
         </div>
       </div>
       
       <div className="space-y-2">
         <Label htmlFor="billingAddress">Billing Address</Label>
-        <Input id="billingAddress" placeholder="123 Main St" />
+        <Input 
+          id="billingAddress" 
+          placeholder="123 Main St"
+          required 
+        />
       </div>
       
       <div className="grid grid-cols-2 gap-4">
@@ -64,6 +70,7 @@ export const CreditCardFormSection = ({
             placeholder="MM/YY" 
             value={expiry}
             onChange={(e) => setExpiry(e.target.value)}
+            required
           />
         </div>
         <div className="space-y-2">
@@ -74,6 +81,7 @@ export const CreditCardFormSection = ({
             type="password"
             value={cvc}
             onChange={(e) => setCvc(e.target.value)}
+            required
           />
         </div>
       </div>
@@ -85,6 +93,7 @@ export const CreditCardFormSection = ({
           placeholder="12345" 
           value={zipCode}
           onChange={(e) => setZipCode(e.target.value)}
+          required
         />
       </div>
     </div>

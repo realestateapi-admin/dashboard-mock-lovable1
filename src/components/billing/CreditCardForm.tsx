@@ -31,6 +31,7 @@ export const CreditCardForm = ({
           id="cardholderName"
           value={newPaymentMethod.cardholderName}
           onChange={(e) => setNewPaymentMethod({...newPaymentMethod, cardholderName: e.target.value})}
+          required
         />
       </div>
       <div className="grid gap-2">
@@ -40,6 +41,7 @@ export const CreditCardForm = ({
           value={newPaymentMethod.cardNumber}
           onChange={(e) => setNewPaymentMethod({...newPaymentMethod, cardNumber: e.target.value})}
           placeholder="•••• •••• •••• ••••"
+          required
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
@@ -50,6 +52,7 @@ export const CreditCardForm = ({
             value={newPaymentMethod.expiry}
             onChange={(e) => setNewPaymentMethod({...newPaymentMethod, expiry: e.target.value})}
             placeholder="MM/YY"
+            required
           />
         </div>
         <div className="grid gap-2">
@@ -59,6 +62,7 @@ export const CreditCardForm = ({
             value={newPaymentMethod.cvc}
             onChange={(e) => setNewPaymentMethod({...newPaymentMethod, cvc: e.target.value})}
             placeholder="•••"
+            required
           />
         </div>
       </div>

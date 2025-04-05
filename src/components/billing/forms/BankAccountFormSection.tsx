@@ -38,22 +38,22 @@ export const BankAccountFormSection = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="accountName">Account Holder Name</Label>
-          <Input id="accountName" placeholder="John Smith" />
+          <Input id="accountName" placeholder="John Smith" required />
         </div>
         <div className="space-y-2">
           <Label htmlFor="accountType">Account Type</Label>
-          <Input id="accountType" placeholder="Checking" />
+          <Input id="accountType" placeholder="Checking" required />
         </div>
       </div>
       
       <div className="space-y-2">
         <Label htmlFor="routingNumber">Routing Number</Label>
-        <Input id="routingNumber" placeholder="123456789" />
+        <Input id="routingNumber" placeholder="123456789" required />
       </div>
       
       <div className="space-y-2">
         <Label htmlFor="accountNumber">Account Number</Label>
-        <Input id="accountNumber" placeholder="1234567890123456" />
+        <Input id="accountNumber" placeholder="1234567890123456" required />
       </div>
       
       <div className="p-4 bg-muted/20 border border-muted rounded-md">

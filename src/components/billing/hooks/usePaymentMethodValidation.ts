@@ -16,15 +16,36 @@ export const usePaymentMethodValidation = () => {
     backupExpiry: string;
     backupCvc: string;
   }) => {
-    return (
-      newACHMethod.accountName.trim() !== "" &&
-      newACHMethod.routingNumber.trim() !== "" &&
-      newACHMethod.accountNumber.trim() !== "" &&
-      newACHMethod.backupCardNumber.trim() !== "" &&
-      newACHMethod.backupCardholderName.trim() !== "" &&
-      newACHMethod.backupExpiry.trim() !== "" &&
-      newACHMethod.backupCvc.trim() !== ""
-    );
+    if (!newACHMethod.accountName.trim()) {
+      showValidationError("Account holder name is required");
+      return false;
+    }
+    if (!newACHMethod.routingNumber.trim()) {
+      showValidationError("Routing number is required");
+      return false;
+    }
+    if (!newACHMethod.accountNumber.trim()) {
+      showValidationError("Account number is required");
+      return false;
+    }
+    if (!newACHMethod.backupCardNumber.trim()) {
+      showValidationError("Backup card number is required");
+      return false;
+    }
+    if (!newACHMethod.backupCardholderName.trim()) {
+      showValidationError("Backup cardholder name is required");
+      return false;
+    }
+    if (!newACHMethod.backupExpiry.trim()) {
+      showValidationError("Backup card expiry date is required");
+      return false;
+    }
+    if (!newACHMethod.backupCvc.trim()) {
+      showValidationError("Backup card CVC is required");
+      return false;
+    }
+    
+    return true;
   };
 
   // Validate credit card form before submission
@@ -35,12 +56,24 @@ export const usePaymentMethodValidation = () => {
     cvc: string;
     makeDefault: boolean;
   }) => {
-    return (
-      newPaymentMethod.cardNumber.trim() !== "" || 
-      newPaymentMethod.cardholderName.trim() !== "" ||
-      newPaymentMethod.expiry.trim() !== "" ||
-      newPaymentMethod.cvc.trim() !== ""
-    );
+    if (!newPaymentMethod.cardholderName.trim()) {
+      showValidationError("Cardholder name is required");
+      return false;
+    }
+    if (!newPaymentMethod.cardNumber.trim()) {
+      showValidationError("Card number is required");
+      return false;
+    }
+    if (!newPaymentMethod.expiry.trim()) {
+      showValidationError("Expiry date is required");
+      return false;
+    }
+    if (!newPaymentMethod.cvc.trim()) {
+      showValidationError("CVC is required");
+      return false;
+    }
+    
+    return true;
   };
 
   // Display validation error toast
