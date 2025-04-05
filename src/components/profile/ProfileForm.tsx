@@ -10,21 +10,35 @@ interface ProfileFormProps {
   initialName: string;
   initialEmail: string;
   initialCompanyName: string;
+  onEmailChange?: (email: string) => void;
 }
 
 export const ProfileForm = ({ 
   initialName,
   initialEmail,
-  initialCompanyName
+  initialCompanyName,
+  onEmailChange
 }: ProfileFormProps) => {
   const { toast } = useToast();
   const [name, setName] = React.useState(initialName);
   const [email, setEmail] = React.useState(initialEmail);
   const [companyName, setCompanyName] = React.useState(initialCompanyName);
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    if (onEmailChange) {
+      onEmailChange(newEmail);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, you would save the profile info to a server here
+    
+    // Store the email in localStorage to persist it
+    localStorage.setItem('userEmail', email);
+    
     toast({
       title: "Profile updated",
       description: "Your profile information has been saved."
@@ -49,7 +63,7 @@ export const ProfileForm = ({
             id="email" 
             type="email" 
             value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
+            onChange={handleEmailChange} 
             placeholder="Your email"
           />
         </div>

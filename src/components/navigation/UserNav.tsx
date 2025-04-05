@@ -13,10 +13,20 @@ import {
 import { useAuth, UserRole } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export function UserNav() {
   const { currentRole, logout } = useAuth();
   const navigate = useNavigate();
+  const [userEmail, setUserEmail] = useState('john@example.com');
+  
+  // Check for email in localStorage whenever the dropdown is opened
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('userEmail');
+    if (storedEmail) {
+      setUserEmail(storedEmail);
+    }
+  }, []);
   
   const userRoleBadgeColors: Record<UserRole, string> = {
     admin: "bg-red-100 text-red-800",
@@ -55,7 +65,7 @@ export function UserNav() {
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">John Doe</p>
             <p className="text-xs leading-none text-muted-foreground">
-              john@example.com
+              {userEmail}
             </p>
             <Badge className={`mt-2 w-fit ${userRoleBadgeColors[currentRole as UserRole]}`}>
               {getRoleLabel(currentRole as UserRole)}
