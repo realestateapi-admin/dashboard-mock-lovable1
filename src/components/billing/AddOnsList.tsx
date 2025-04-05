@@ -36,7 +36,7 @@ export const AddOnsList = ({
   });
   
   // Define the order of categories for display
-  const categoryOrder = ['Property Data', 'Support', 'Demographic Data'];
+  const categoryOrder = ['Property Data', 'Demographic Data', 'Support'];
   
   // Sort categories based on the defined order
   const sortedCategories = Object.keys(groupedAddOns).sort((a, b) => {
