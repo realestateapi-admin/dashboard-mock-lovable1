@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCardIcon, Building } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { CreditCardForm } from "./CreditCardForm";
 import { ACHForm } from "./ACHForm";
 
@@ -98,19 +99,21 @@ export const AddPaymentMethodDialog = ({
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="card" className="mt-4">
-            <CreditCardForm 
-              newPaymentMethod={newPaymentMethod}
-              setNewPaymentMethod={setNewPaymentMethod}
-            />
-          </TabsContent>
-          
-          <TabsContent value="ach" className="mt-4">
-            <ACHForm 
-              newACHMethod={newACHMethod}
-              setNewACHMethod={setNewACHMethod}
-            />
-          </TabsContent>
+          <ScrollArea className="max-h-[60vh]">
+            <TabsContent value="card" className="mt-4">
+              <CreditCardForm 
+                newPaymentMethod={newPaymentMethod}
+                setNewPaymentMethod={setNewPaymentMethod}
+              />
+            </TabsContent>
+            
+            <TabsContent value="ach" className="mt-4">
+              <ACHForm 
+                newACHMethod={newACHMethod}
+                setNewACHMethod={setNewACHMethod}
+              />
+            </TabsContent>
+          </ScrollArea>
         </Tabs>
         
         <DialogFooter className="mt-4">
