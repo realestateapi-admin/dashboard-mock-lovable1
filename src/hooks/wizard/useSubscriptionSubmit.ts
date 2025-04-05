@@ -32,6 +32,10 @@ export const useSubscriptionSubmit = () => {
       const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || "Growth";
       localStorage.setItem('selectedPlanName', selectedPlanName);
       
+      // Set subscription start date to track contract terms
+      const startDate = new Date().toISOString();
+      localStorage.setItem('subscriptionStartDate', startDate);
+      
       // In a real application, this would process the payment via Stripe
       toast({
         title: "Subscription Successful",
