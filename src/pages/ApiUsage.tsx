@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ApiUsageSummary } from '@/components/dashboard/ApiUsageSummary';
 import { CardSkeleton } from '@/components/dashboard/LoadingState';
@@ -11,13 +11,25 @@ import { ApiUsageFooter } from '@/components/api-usage/ApiUsageFooter';
 import { fetchApiUsageData } from '@/components/api-usage/ApiUsageService';
 import { fetchEndUserAnalytics } from '@/components/api-usage/EndUserAnalyticsService';
 import { ActiveEndUsersCard } from '@/components/api-usage/ActiveEndUsersCard';
+import { ApiUsageCategorySelector, DataCategory } from '@/components/api-usage/ApiUsageCategorySelector';
+import { DemographicUsageSummary } from '@/components/api-usage/demographic/DemographicUsageSummary';
+import { fetchSkiptraceData } from '@/components/api-usage/demographic/SkiptraceService';
 
 const ApiUsage = () => {
-  const { data, isLoading, isError } = useQuery({
+  // State to track which data category the user is viewing
+  const [dataCategory, setDataCategory] = useState<DataCategory>('property');
+
+  // Property data query
+  const { 
+    data, 
+    isLoading, 
+    isError 
+  } = useQuery({
     queryKey: ['apiUsage'],
     queryFn: fetchApiUsageData,
   });
 
+  // End user data query
   const { 
     data: endUserData, 
     isLoading: isEndUserLoading 
@@ -26,7 +38,16 @@ const ApiUsage = () => {
     queryFn: fetchEndUserAnalytics,
   });
 
-  // Initialize default empty values
+  // Skiptrace/demographic data query
+  const {
+    data: skiptraceData,
+    isLoading: isSkiptraceLoading
+  } = useQuery({
+    queryKey: ['skiptraceData'],
+    queryFn: fetchSkiptraceData,
+  });
+
+  // Initialize default empty values for property data
   const safeData = {
     totalApiCalls: data?.totalApiCalls || 0,
     totalRecords: data?.totalRecords || 0,
@@ -47,48 +68,86 @@ const ApiUsage = () => {
     );
   }
 
+  // Handle category change
+  const handleCategoryChange = (category: DataCategory) => {
+    setDataCategory(category);
+  };
+
   return (
     <div className="space-y-6">
       <ApiUsageHeader />
+      
+      <ApiUsageCategorySelector 
+        value={dataCategory} 
+        onChange={handleCategoryChange}
+      />
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {isLoading ? (
-          <>
-            <CardSkeleton />
-            <CardSkeleton />
-            <CardSkeleton />
-          </>
+        {dataCategory === 'property' ? (
+          // Property Data View
+          isLoading ? (
+            <>
+              <CardSkeleton />
+              <CardSkeleton />
+              <CardSkeleton />
+            </>
+          ) : (
+            <>
+              <ApiUsageSummary
+                totalApiCalls={safeData.totalApiCalls}
+                totalRecords={safeData.totalRecords}
+                recordsLimit={safeData.recordsLimit}
+                increasePercentage={safeData.increasePercentage}
+                displayPropertyRecordsFirst={true}
+              />
+              <ActiveEndUsersCard 
+                activeEndUsers={endUserData?.activeEndUsers || null}
+                isLoading={isEndUserLoading}
+              />
+            </>
+          )
         ) : (
-          <>
-            {/* Reordered cards: Property Records, API Calls, Active End Users */}
-            <ApiUsageSummary
-              totalApiCalls={safeData.totalApiCalls}
-              totalRecords={safeData.totalRecords}
-              recordsLimit={safeData.recordsLimit}
-              increasePercentage={safeData.increasePercentage}
-              displayPropertyRecordsFirst={true}
-            />
-            <ActiveEndUsersCard 
-              activeEndUsers={endUserData?.activeEndUsers || null}
-              isLoading={isEndUserLoading}
-            />
-          </>
+          // Demographic Data View
+          isSkiptraceLoading ? (
+            <>
+              <CardSkeleton />
+              <CardSkeleton />
+              <CardSkeleton />
+            </>
+          ) : (
+            <>
+              <DemographicUsageSummary 
+                skipTraceHits={skiptraceData?.skipTraceHits || 0}
+                skipTraceRequests={skiptraceData?.skipTraceRequests || 0}
+                isLoading={isSkiptraceLoading}
+              />
+              <ActiveEndUsersCard 
+                activeEndUsers={endUserData?.activeEndUsers || null}
+                isLoading={isEndUserLoading}
+              />
+            </>
+          )
         )}
       </div>
 
-      <ApiUsageCharts 
-        dailyUsageData={safeData.dailyUsageData}
-        monthlyUsageData={safeData.monthlyUsageData}
-        usageDistributionData={safeData.usageDistributionData}
-        isLoading={isLoading}
-      />
-
-      <div>
-        <EndpointUsageSection 
-          endpointUsage={safeData.endpointUsage} 
+      {/* Only show charts for property data for now */}
+      {dataCategory === 'property' && (
+        <ApiUsageCharts 
+          dailyUsageData={safeData.dailyUsageData}
+          monthlyUsageData={safeData.monthlyUsageData}
+          usageDistributionData={safeData.usageDistributionData}
           isLoading={isLoading}
         />
-      </div>
+      )}
+
+      {dataCategory === 'property' && (
+        <div>
+          <EndpointUsageSection 
+            endpointUsage={safeData.endpointUsage} 
+            isLoading={isLoading}
+          />
+        </div>
+      )}
 
       <ApiUsageFooter />
     </div>
