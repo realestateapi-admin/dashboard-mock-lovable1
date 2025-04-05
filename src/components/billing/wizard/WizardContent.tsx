@@ -43,7 +43,7 @@ export function WizardContent({
   enterprisePlan,
   addOns,
   plans,
-  creditCardInfo, // Add credit card info
+  creditCardInfo,
   setOverageHandling,
   toggleAddOn,
   onSelectEnterprise,
@@ -51,6 +51,9 @@ export function WizardContent({
   onPlanChange,
   onSubmit
 }: WizardContentProps) {
+  // Find the name of the selected plan for the OverageHandling component
+  const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || 'Selected';
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
       <div className="md:col-span-8">
@@ -59,7 +62,7 @@ export function WizardContent({
           <BillingOptionStep 
             selectedPlan={selectedPlan}
             billingCycle={billingCycle}
-            regularPlans={regularPlans}
+            adjustedPlans={regularPlans}
             enterprisePlan={enterprisePlan}
             onPlanChange={onPlanChange}
             onBillingCycleChange={onBillingCycleChange}
@@ -82,8 +85,9 @@ export function WizardContent({
         {/* Step 3: Overage Handling */}
         {currentStep === 2 && (
           <OverageHandling 
-            selectedOption={overageHandling}
-            onChange={setOverageHandling}
+            selectedPlanName={selectedPlanName}
+            overageHandling={overageHandling || ''}
+            onOverageHandlingChange={setOverageHandling}
             isLoading={isLoading}
           />
         )}
