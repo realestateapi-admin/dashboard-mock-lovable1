@@ -35,16 +35,31 @@ export const AddOnsList = ({
     groupedAddOns[category].push(addon);
   });
   
+  // Define the order of categories for display
+  const categoryOrder = ['Property Data', 'Support', 'Demographic Data'];
+  
+  // Sort categories based on the defined order
+  const sortedCategories = Object.keys(groupedAddOns).sort((a, b) => {
+    const indexA = categoryOrder.indexOf(a);
+    const indexB = categoryOrder.indexOf(b);
+    
+    // If the category is not in our ordered list, put it at the end
+    if (indexA === -1) return 1;
+    if (indexB === -1) return -1;
+    
+    return indexA - indexB;
+  });
+  
   return (
     <div className="space-y-6">
       <h3 className="text-lg font-medium mb-4">Available Add-Ons</h3>
       
-      {/* Render add-ons by category */}
-      {Object.entries(groupedAddOns).map(([category, categoryAddOns]) => (
+      {/* Render add-ons by category in the specified order */}
+      {sortedCategories.map((category) => (
         <div key={category} className="space-y-4 mb-8">
           <h4 className="text-md font-medium text-muted-foreground">{category}</h4>
           <div className="space-y-4">
-            {categoryAddOns.map((addon) => (
+            {groupedAddOns[category].map((addon) => (
               <AddOnItem
                 key={addon.id}
                 addon={addon}
