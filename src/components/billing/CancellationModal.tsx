@@ -12,11 +12,14 @@ import {
   DialogContent,
 } from '@/components/ui/dialog';
 
-// Import our new components
+// Import our cancellation components
 import { CancellationInitial } from './cancellation/CancellationInitial';
 import { CancellationQuestionnaire } from './cancellation/CancellationQuestionnaire';
 import { CancellationSummary } from './cancellation/CancellationSummary';
 import { CancellationCompleted } from './cancellation/CancellationCompleted';
+
+// Import the cancellation state hook
+import { useCancellationState } from './cancellation/useCancellationState';
 
 interface CancellationModalProps {
   isOpen: boolean;
@@ -32,41 +35,20 @@ export const CancellationModal = ({
   isAnnual,
 }: CancellationModalProps) => {
   const { ae } = useAccountExecutive();
-  const [step, setStep] = React.useState<'initial' | 'questionnaire' | 'summary' | 'completed'>('initial');
-  const [reason, setReason] = React.useState('');
-
+  
   // Check if current plan is Enterprise
   const isEnterprise = planName.toLowerCase() === 'enterprise';
-
-  const handleProceedToCancel = () => {
-    // For Enterprise plan, just complete the cancellation process with SE outreach
-    if (isEnterprise) {
-      handleCancellationComplete();
-      return;
-    }
-    
-    // If annual contract, no questionnaire is shown
-    if (isAnnual) {
-      setStep('summary');
-    } else {
-      setStep('questionnaire');
-    }
-  };
-
-  const handleSubmitQuestionnaire = () => {
-    setStep('summary');
-  };
-
-  const handleBackToInitial = () => {
-    setStep('initial');
-  };
-
-  const handleCancellationComplete = () => {
-    setStep('completed');
-    
-    // In a real app, this would make an API call to cancel the subscription
-    console.log(`Sending email to assigned sales rep for ${planName} cancellation`);
-  };
+  
+  // Use the cancellation state hook
+  const {
+    step,
+    reason,
+    setReason,
+    handleProceedToCancel,
+    handleSubmitQuestionnaire,
+    handleBackToInitial,
+    handleCancellationComplete
+  } = useCancellationState(planName, isEnterprise, isAnnual);
 
   if (step === 'initial') {
     return (

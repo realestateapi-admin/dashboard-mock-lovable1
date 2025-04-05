@@ -4,7 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 
 type CancellationStep = 'initial' | 'questionnaire' | 'summary' | 'completed';
 
-export const useCancellationState = (planName: string, isEnterprise: boolean) => {
+export const useCancellationState = (planName: string, isEnterprise: boolean, isAnnual: boolean) => {
   const [step, setStep] = useState<CancellationStep>('initial');
   const [reason, setReason] = useState('');
   const { toast } = useToast();
