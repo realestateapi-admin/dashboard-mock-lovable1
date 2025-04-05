@@ -14,6 +14,7 @@ import { ActiveEndUsersCard } from '@/components/api-usage/ActiveEndUsersCard';
 import { ApiUsageCategorySelector, DataCategory } from '@/components/api-usage/ApiUsageCategorySelector';
 import { DemographicUsageSummary } from '@/components/api-usage/demographic/DemographicUsageSummary';
 import { fetchSkiptraceData } from '@/components/api-usage/demographic/SkiptraceService';
+import { DemographicEndpointCharts } from '@/components/api-usage/demographic/DemographicEndpointCharts';
 
 const ApiUsage = () => {
   // State to track which data category the user is viewing
@@ -130,16 +131,21 @@ const ApiUsage = () => {
         )}
       </div>
 
-      {/* Only show charts for property data for now */}
-      {dataCategory === 'property' && (
+      {/* Charts Section - Conditional rendering based on data category */}
+      {dataCategory === 'property' ? (
+        // Property Data Charts
         <ApiUsageCharts 
           dailyUsageData={safeData.dailyUsageData}
           monthlyUsageData={safeData.monthlyUsageData}
           usageDistributionData={safeData.usageDistributionData}
           isLoading={isLoading}
         />
+      ) : (
+        // Demographic Data Charts
+        <DemographicEndpointCharts isLoading={isSkiptraceLoading} />
       )}
 
+      {/* Only show endpoint usage section for property data */}
       {dataCategory === 'property' && (
         <div>
           <EndpointUsageSection 
