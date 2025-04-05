@@ -129,6 +129,10 @@ export const SubscriptionConfirmationStep = ({
                 <span className="text-muted-foreground">First Charge</span>
                 <span className="font-medium">{costs.total}</span>
               </div>
+              
+              <div className="text-xs text-muted-foreground italic">
+                Your first charge may include applicable proration based on your billing cycle start date.
+              </div>
             </div>
           </div>
         </div>
