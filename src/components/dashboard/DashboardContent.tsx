@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useDashboard } from "@/contexts/DashboardContext";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardSummary } from "@/components/dashboard/DashboardSummary";
-import { UsageCharts } from "@/components/dashboard/UsageCharts";
+import { UpdatesSection } from "@/components/dashboard/UpdatesSection";
 import { RecentActivityList } from "@/components/dashboard/RecentActivityList";
 import { EndpointUsageSection } from "@/components/dashboard/EndpointUsageSection";
 import { RecordUsageBreakdown } from "@/components/dashboard/RecordUsageBreakdown";
@@ -70,7 +70,7 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
           transition={{ delay: 0.5, duration: 0.3 }}
           className="lg:col-span-2"
         >
-          <UsageCharts 
+          <UpdatesSection 
             isLoading={isLoading}
           />
         </motion.div>

@@ -19,9 +19,34 @@ export const UsageAnalyticsSection: React.FC = () => {
   }>
 }`;
 
+  const updatesResponseStructure = `{
+  updates: Array<{
+    id: string;           // Unique identifier for the update
+    type: string;         // Type of update: 'announcement', 'release', 'maintenance', 'alert'
+    title: string;        // Update title
+    content: string;      // Main update content
+    date: string;         // ISO date string when the update was published
+    isNew?: boolean;      // Whether this is a new update the user hasn't seen
+  }>
+}`;
+
   return (
     <>
-      <h3 className="text-xl font-semibold mb-3">2. Usage Analytics Charts</h3>
+      <h3 className="text-xl font-semibold mb-3">2. Dashboard Updates and Analytics</h3>
+      
+      <ApiRecommendationSection
+        title="Company Updates"
+        api="/api/updates"
+        collection="company_updates"
+        purpose="Fetch latest company announcements, alerts, and feature releases"
+        responseStructure={updatesResponseStructure}
+        implementationNotes={[
+          "Create updates with different types (announcement, release, maintenance, alert)",
+          "Implement a mark-as-read functionality to track which updates are new",
+          "Include an isNew flag for highlighting unread updates"
+        ]}
+      />
+
       <ApiRecommendationSection
         title=""
         api="/api/usage/daily"
