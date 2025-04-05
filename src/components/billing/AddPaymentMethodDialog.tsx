@@ -99,7 +99,7 @@ export const AddPaymentMethodDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-hidden flex flex-col">
+      <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-hidden flex flex-col z-50">
         <PaymentMethodDialogHeader 
           isBackupCardStep={isBackupCardStep}
           onBackClick={handleBackToACHDetails}

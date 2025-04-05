@@ -68,12 +68,12 @@ export const PaymentMethodTabs: React.FC<PaymentMethodTabsProps> = ({
       onValueChange={handleTabChange}
       className="w-full"
     >
-      <TabsList className="grid grid-cols-2 w-full">
-        <TabsTrigger value="card" className="flex items-center gap-2">
+      <TabsList className="grid grid-cols-2 w-full bg-background">
+        <TabsTrigger value="card" className="flex items-center gap-2 data-[state=active]:bg-accent">
           <CreditCardIcon className="h-4 w-4" />
           Credit Card
         </TabsTrigger>
-        <TabsTrigger value="ach" className="flex items-center gap-2">
+        <TabsTrigger value="ach" className="flex items-center gap-2 data-[state=active]:bg-accent">
           <Building className="h-4 w-4" />
           Bank Account (ACH)
         </TabsTrigger>
