@@ -45,12 +45,12 @@ export const PaymentMethodForm = ({
       <h3 className="text-lg font-semibold">Payment Method</h3>
       
       <Tabs defaultValue="card" onValueChange={(value) => setPaymentMethod(value as "card" | "bank")}>
-        <TabsList className="grid grid-cols-2 mb-6 bg-background">
-          <TabsTrigger value="card" className="flex items-center gap-2 data-[state=active]:bg-accent">
+        <TabsList className="grid grid-cols-2 mb-6 bg-background relative z-10">
+          <TabsTrigger value="card" className="flex items-center gap-2 data-[state=active]:bg-accent cursor-pointer">
             <CreditCard className="h-4 w-4" />
             <span>Credit Card</span>
           </TabsTrigger>
-          <TabsTrigger value="bank" className="flex items-center gap-2 data-[state=active]:bg-accent">
+          <TabsTrigger value="bank" className="flex items-center gap-2 data-[state=active]:bg-accent cursor-pointer">
             <Building className="h-4 w-4" />
             <span>Bank Account</span>
           </TabsTrigger>
