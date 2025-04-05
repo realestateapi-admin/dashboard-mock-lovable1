@@ -36,7 +36,7 @@ interface AddPaymentMethodDialogProps {
     backupCardholderName: string;
     backupExpiry: string;
     backupCvc: string;
-  }>;
+  };
   setNewACHMethod: React.Dispatch<React.SetStateAction<{
     accountName: string;
     routingNumber: string;
