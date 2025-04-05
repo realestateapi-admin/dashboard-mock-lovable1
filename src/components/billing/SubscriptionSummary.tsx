@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -60,6 +61,19 @@ export function SubscriptionSummary({
   const renewalDate = subscription?.contract_end_date 
     ? formatDisplayDate(subscription.contract_end_date)
     : calculateRenewalDate();
+    
+  // Separate add-ons into subscription and metered types
+  const selectedAddOns = activeAddOns
+    .map(id => addOns.find(addon => addon.id === id))
+    .filter(addon => addon !== undefined) as AddOnData[];
+    
+  const subscriptionAddOns = selectedAddOns.filter(addon => 
+    addon.billingType === 'subscription' || !addon.billingType
+  );
+  
+  const meteredAddOns = selectedAddOns.filter(addon => 
+    addon.billingType === 'metered'
+  );
 
   if (isLoading) {
     return (
@@ -103,6 +117,7 @@ export function SubscriptionSummary({
             <span className="text-sm">Base Plan</span>
             <span className="font-medium">{costs.basePrice}</span>
           </div>
+          
           {activeAddOns.length > 0 && (
             <div className="flex justify-between">
               <span className="text-sm">Add-ons</span>
@@ -115,6 +130,22 @@ export function SubscriptionSummary({
           <span className="font-semibold">Monthly Total</span>
           <span className="font-semibold">{costs.total}</span>
         </div>
+        
+        {/* Show metered add-ons if any are selected */}
+        {meteredAddOns.length > 0 && (
+          <div className="pt-2 border-t">
+            <h4 className="text-sm font-semibold mb-2">Usage-Based Services</h4>
+            {meteredAddOns.map(addon => (
+              <div key={addon.id} className="flex justify-between text-sm">
+                <span className="text-muted-foreground">{addon.name}</span>
+                <span>{addon.prices[selectedPlan]}</span>
+              </div>
+            ))}
+            <p className="text-xs text-muted-foreground mt-2 italic">
+              Billed based on actual usage
+            </p>
+          </div>
+        )}
         
         <div className="pt-3 border-t">
           <h4 className="text-sm font-semibold mb-2">Subscription Details</h4>
