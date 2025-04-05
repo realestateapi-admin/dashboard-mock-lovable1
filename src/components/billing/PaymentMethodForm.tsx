@@ -1,6 +1,5 @@
 
 import React, { useState } from "react";
-import { CreditCardFormSection } from "./forms/CreditCardFormSection";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -26,10 +25,22 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
       zipCode: "",
       country: "United States"
     },
-    useSameAddress: false
   });
 
-  // Handle input changes for company and billing info
+  // State for billing address
+  const [billingAddress, setBillingAddress] = useState({
+    line1: "",
+    line2: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "United States"
+  });
+
+  // State for using same address
+  const [useSameAddress, setUseSameAddress] = useState(false);
+
+  // Handle input changes for company info
   const handleCompanyInfoChange = (field: string, value: string) => {
     setCompanyInfo(prev => ({
       ...prev,
@@ -37,8 +48,8 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     }));
   };
 
-  // Handle address changes
-  const handleAddressChange = (field: string, value: string) => {
+  // Handle company address changes
+  const handleCompanyAddressChange = (field: string, value: string) => {
     setCompanyInfo(prev => ({
       ...prev,
       address: {
@@ -48,18 +59,39 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     }));
   };
 
+  // Handle billing address changes
+  const handleBillingAddressChange = (field: string, value: string) => {
+    setBillingAddress(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   // Handle checkbox for using same address
   const handleUseSameAddressChange = (checked: boolean) => {
-    setCompanyInfo(prev => ({
+    setUseSameAddress(checked);
+  };
+
+  // Mock credit card state for demo purposes
+  const [cardDetails, setCardDetails] = useState({
+    cardName: "",
+    cardNumber: "",
+    expiry: "",
+    cvc: "",
+    zipCode: ""
+  });
+
+  const handleCardDetailsChange = (field: string, value: string) => {
+    setCardDetails(prev => ({
       ...prev,
-      useSameAddress: checked
+      [field]: value
     }));
   };
 
   return (
-    <div className="space-y-6">
-      {/* Company Information Section */}
-      <div className="space-y-4 mb-6">
+    <div className="space-y-8">
+      {/* Company Information Section (First) */}
+      <div className="space-y-4 pb-6 border-b">
         <h3 className="text-lg font-semibold">Company Information</h3>
         
         <div className="grid gap-4">
@@ -85,44 +117,175 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
               disabled={isLoading}
             />
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="addressLine1">Company Address</Label>
+            <Input 
+              id="addressLine1" 
+              value={companyInfo.address.line1}
+              onChange={(e) => handleCompanyAddressChange("line1", e.target.value)}
+              placeholder="123 Main St"
+              disabled={isLoading}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="addressLine2">Address Line 2 (Optional)</Label>
+            <Input 
+              id="addressLine2" 
+              value={companyInfo.address.line2}
+              onChange={(e) => handleCompanyAddressChange("line2", e.target.value)}
+              placeholder="Suite 100"
+              disabled={isLoading}
+            />
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="city">City</Label>
+              <Input 
+                id="city" 
+                value={companyInfo.address.city}
+                onChange={(e) => handleCompanyAddressChange("city", e.target.value)}
+                placeholder="San Francisco"
+                disabled={isLoading}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="state">State</Label>
+              <Input 
+                id="state" 
+                value={companyInfo.address.state}
+                onChange={(e) => handleCompanyAddressChange("state", e.target.value)}
+                placeholder="CA"
+                disabled={isLoading}
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="zipCode">ZIP Code</Label>
+              <Input 
+                id="zipCode" 
+                value={companyInfo.address.zipCode}
+                onChange={(e) => handleCompanyAddressChange("zipCode", e.target.value)}
+                placeholder="94103"
+                disabled={isLoading}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="country">Country</Label>
+              <Input 
+                id="country" 
+                value={companyInfo.address.country}
+                onChange={(e) => handleCompanyAddressChange("country", e.target.value)}
+                placeholder="United States"
+                disabled={isLoading}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Billing Address Section */}
-      <div className="space-y-4 mb-6">
+      {/* Payment Details Section (Second) */}
+      <div className="space-y-4 pb-6 border-b">
+        <h3 className="text-lg font-semibold">Payment Details</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="cardName">Cardholder Name</Label>
+            <Input 
+              id="cardName" 
+              placeholder="John Smith" 
+              value={cardDetails.cardName}
+              onChange={(e) => handleCardDetailsChange("cardName", e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="cardNumber">Card Number</Label>
+            <Input 
+              id="cardNumber" 
+              placeholder="1234 5678 9012 3456" 
+              value={cardDetails.cardNumber}
+              onChange={(e) => handleCardDetailsChange("cardNumber", e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-3 gap-4">
+          <div className="space-y-2 col-span-1">
+            <Label htmlFor="expiry">Expiry Date</Label>
+            <Input 
+              id="expiry" 
+              placeholder="MM/YY" 
+              value={cardDetails.expiry}
+              onChange={(e) => handleCardDetailsChange("expiry", e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+          <div className="space-y-2 col-span-1">
+            <Label htmlFor="cvc">CVC</Label>
+            <Input 
+              id="cvc" 
+              placeholder="123" 
+              type="password"
+              value={cardDetails.cvc}
+              onChange={(e) => handleCardDetailsChange("cvc", e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+          <div className="space-y-2 col-span-1">
+            <Label htmlFor="zipCode">ZIP Code</Label>
+            <Input 
+              id="zipCode" 
+              placeholder="12345" 
+              value={cardDetails.zipCode}
+              onChange={(e) => handleCardDetailsChange("zipCode", e.target.value)}
+              disabled={isLoading}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Billing Address Section (Third) */}
+      <div className="space-y-4">
         <h3 className="text-lg font-semibold">Billing Address</h3>
         
         <div className="flex items-center space-x-2 mb-4">
           <Checkbox 
             id="useSameAddress" 
-            checked={companyInfo.useSameAddress}
+            checked={useSameAddress}
             onCheckedChange={(checked) => handleUseSameAddressChange(checked as boolean)}
             disabled={isLoading}
           />
           <Label htmlFor="useSameAddress" className="text-sm font-medium">
-            Use same address as previously entered
+            Use same address as company address
           </Label>
         </div>
         
-        {!companyInfo.useSameAddress && (
+        {!useSameAddress && (
           <div className="grid gap-4">
             <div className="space-y-2">
-              <Label htmlFor="addressLine1">Address Line 1</Label>
+              <Label htmlFor="billingLine1">Address Line 1</Label>
               <Input 
-                id="addressLine1" 
-                value={companyInfo.address.line1}
-                onChange={(e) => handleAddressChange("line1", e.target.value)}
+                id="billingLine1" 
+                value={billingAddress.line1}
+                onChange={(e) => handleBillingAddressChange("line1", e.target.value)}
                 placeholder="123 Main St"
                 disabled={isLoading}
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="addressLine2">Address Line 2 (Optional)</Label>
+              <Label htmlFor="billingLine2">Address Line 2 (Optional)</Label>
               <Input 
-                id="addressLine2" 
-                value={companyInfo.address.line2}
-                onChange={(e) => handleAddressChange("line2", e.target.value)}
+                id="billingLine2" 
+                value={billingAddress.line2}
+                onChange={(e) => handleBillingAddressChange("line2", e.target.value)}
                 placeholder="Suite 100"
                 disabled={isLoading}
               />
@@ -130,22 +293,22 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="billingCity">City</Label>
                 <Input 
-                  id="city" 
-                  value={companyInfo.address.city}
-                  onChange={(e) => handleAddressChange("city", e.target.value)}
+                  id="billingCity" 
+                  value={billingAddress.city}
+                  onChange={(e) => handleBillingAddressChange("city", e.target.value)}
                   placeholder="San Francisco"
                   disabled={isLoading}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="state">State</Label>
+                <Label htmlFor="billingState">State</Label>
                 <Input 
-                  id="state" 
-                  value={companyInfo.address.state}
-                  onChange={(e) => handleAddressChange("state", e.target.value)}
+                  id="billingState" 
+                  value={billingAddress.state}
+                  onChange={(e) => handleBillingAddressChange("state", e.target.value)}
                   placeholder="CA"
                   disabled={isLoading}
                 />
@@ -154,22 +317,22 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="zipCode">ZIP Code</Label>
+                <Label htmlFor="billingZipCode">ZIP Code</Label>
                 <Input 
-                  id="zipCode" 
-                  value={companyInfo.address.zipCode}
-                  onChange={(e) => handleAddressChange("zipCode", e.target.value)}
+                  id="billingZipCode" 
+                  value={billingAddress.zipCode}
+                  onChange={(e) => handleBillingAddressChange("zipCode", e.target.value)}
                   placeholder="94103"
                   disabled={isLoading}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="country">Country</Label>
+                <Label htmlFor="billingCountry">Country</Label>
                 <Input 
-                  id="country" 
-                  value={companyInfo.address.country}
-                  onChange={(e) => handleAddressChange("country", e.target.value)}
+                  id="billingCountry" 
+                  value={billingAddress.country}
+                  onChange={(e) => handleBillingAddressChange("country", e.target.value)}
                   placeholder="United States"
                   disabled={isLoading}
                 />
@@ -177,15 +340,6 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
             </div>
           </div>
         )}
-      </div>
-
-      {/* Credit Card Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Payment Details</h3>
-        <CreditCardFormSection
-          isLoading={isLoading}
-          showMakeDefaultOption={false}
-        />
       </div>
     </div>
   );

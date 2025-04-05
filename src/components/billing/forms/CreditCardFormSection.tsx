@@ -14,6 +14,8 @@ interface CreditCardFormSectionProps {
   setCvc: (value: string) => void;
   zipCode: string;
   setZipCode: (value: string) => void;
+  isLoading?: boolean;
+  showMakeDefaultOption?: boolean;
 }
 
 export const CreditCardFormSection = ({
@@ -27,6 +29,8 @@ export const CreditCardFormSection = ({
   setCvc,
   zipCode,
   setZipCode,
+  isLoading = false,
+  showMakeDefaultOption = false,
 }: CreditCardFormSectionProps) => {
   return (
     <div className="space-y-4">
@@ -39,6 +43,7 @@ export const CreditCardFormSection = ({
             value={cardName}
             onChange={(e) => setCardName(e.target.value)}
             required
+            disabled={isLoading}
           />
         </div>
         <div className="space-y-2">
@@ -49,6 +54,7 @@ export const CreditCardFormSection = ({
             value={cardNumber}
             onChange={(e) => setCardNumber(e.target.value)}
             required
+            disabled={isLoading}
           />
         </div>
       </div>
@@ -58,7 +64,8 @@ export const CreditCardFormSection = ({
         <Input 
           id="billingAddress" 
           placeholder="123 Main St"
-          required 
+          required
+          disabled={isLoading}
         />
       </div>
       
@@ -71,6 +78,7 @@ export const CreditCardFormSection = ({
             value={expiry}
             onChange={(e) => setExpiry(e.target.value)}
             required
+            disabled={isLoading}
           />
         </div>
         <div className="space-y-2">
@@ -82,6 +90,7 @@ export const CreditCardFormSection = ({
             value={cvc}
             onChange={(e) => setCvc(e.target.value)}
             required
+            disabled={isLoading}
           />
         </div>
       </div>
@@ -94,6 +103,7 @@ export const CreditCardFormSection = ({
           value={zipCode}
           onChange={(e) => setZipCode(e.target.value)}
           required
+          disabled={isLoading}
         />
       </div>
     </div>
