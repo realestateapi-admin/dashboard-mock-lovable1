@@ -30,7 +30,7 @@ const mockUpdates: Update[] = [
     id: '2',
     type: 'release',
     title: 'New Endpoint: Property Insights',
-    content: 'We've launched a new endpoint that provides market trends and valuation insights for properties.',
+    content: "We've launched a new endpoint that provides market trends and valuation insights for properties.",
     date: '2025-04-03',
     isNew: true
   },
@@ -45,7 +45,7 @@ const mockUpdates: Update[] = [
     id: '4',
     type: 'announcement',
     title: 'Improved Rate Limits',
-    content: 'We've increased rate limits by 20% for all subscription tiers, effective immediately.',
+    content: "We've increased rate limits by 20% for all subscription tiers, effective immediately.",
     date: '2025-03-29'
   }
 ];
