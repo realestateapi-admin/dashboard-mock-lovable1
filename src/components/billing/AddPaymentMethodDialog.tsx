@@ -1,15 +1,10 @@
 
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { usePaymentMethodDialog } from "./hooks/usePaymentMethodDialog";
 import { PaymentMethodDialogHeader } from "./dialog/PaymentMethodDialogHeader";
-import { BackupCardForm } from "./dialog/BackupCardForm";
-import { PaymentMethodTabs } from "./dialog/PaymentMethodTabs";
+import { DialogContent as PaymentDialogContent } from "./dialog/DialogContent";
+import { DialogFooterButtons } from "./dialog/DialogFooterButtons";
 
 type PaymentMethodType = "card" | "ach";
 
@@ -41,7 +36,7 @@ interface AddPaymentMethodDialogProps {
     backupCardholderName: string;
     backupExpiry: string;
     backupCvc: string;
-  };
+  }>;
   setNewACHMethod: React.Dispatch<React.SetStateAction<{
     accountName: string;
     routingNumber: string;
@@ -95,6 +90,7 @@ export const AddPaymentMethodDialog = ({
   };
 
   const isBackupCardStep = paymentMethodType === "ach" && achStep === "backup-card";
+  const isACHFirstStep = paymentMethodType === "ach" && achStep === "ach-details";
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -107,36 +103,23 @@ export const AddPaymentMethodDialog = ({
             />
           </div>
           
-          <div className="flex-1 overflow-y-auto px-6 py-4">
-            {isBackupCardStep ? (
-              <BackupCardForm 
-                newACHMethod={newACHMethod}
-                setNewACHMethod={setNewACHMethod}
-              />
-            ) : (
-              <PaymentMethodTabs
-                paymentMethodType={paymentMethodType}
-                onPaymentTypeChange={handlePaymentTypeChange}
-                newPaymentMethod={newPaymentMethod}
-                setNewPaymentMethod={setNewPaymentMethod}
-                newACHMethod={newACHMethod}
-                setNewACHMethod={setNewACHMethod}
-              />
-            )}
-          </div>
+          <PaymentDialogContent 
+            isBackupCardStep={isBackupCardStep}
+            paymentMethodType={paymentMethodType}
+            onPaymentTypeChange={handlePaymentTypeChange}
+            newPaymentMethod={newPaymentMethod}
+            setNewPaymentMethod={setNewPaymentMethod}
+            newACHMethod={newACHMethod}
+            setNewACHMethod={setNewACHMethod}
+            handleClose={handleClose}
+            handleAddPaymentMethod={handleAddPaymentMethod}
+          />
           
-          <div className="p-6 pt-4 border-t mt-auto sticky bottom-0 bg-background">
-            <DialogFooter className="mt-0">
-              <Button variant="outline" onClick={handleClose} className="mr-2">
-                Cancel
-              </Button>
-              <Button onClick={handleAddPaymentMethod}>
-                {paymentMethodType === "ach" && achStep === "ach-details" 
-                  ? "Continue to Backup Card" 
-                  : "Add Payment Method"}
-              </Button>
-            </DialogFooter>
-          </div>
+          <DialogFooterButtons 
+            isACHFirstStep={isACHFirstStep}
+            handleClose={handleClose}
+            handleAddPaymentMethod={handleAddPaymentMethod}
+          />
         </div>
       </DialogContent>
     </Dialog>
