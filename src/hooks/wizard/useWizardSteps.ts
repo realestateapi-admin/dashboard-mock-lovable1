@@ -28,27 +28,45 @@ export const useWizardSteps = () => {
     {
       title: "Payment Information",
       description: "Enter your payment details to complete your subscription"
+    },
+    {
+      title: "Terms of Service",
+      description: "Review and accept our terms of service"
     }
   ];
 
   // Validate if current step is complete
-  const isCurrentStepValid = (overageHandling: string | null) => {
+  const isCurrentStepValid = (overageHandling: string | null, termsAccepted: boolean) => {
     if (currentStep === 2) {
       // Make overage handling selection mandatory
       return !!overageHandling;
     }
+    
+    if (currentStep === 4) {
+      // Terms of service acceptance is mandatory
+      return termsAccepted;
+    }
+    
     return true;
   };
 
   // Simulate loading when moving between steps
-  const handleNext = (overageHandling: string | null) => {
+  const handleNext = (overageHandling: string | null, termsAccepted: boolean) => {
     // Check if current step is valid before proceeding
-    if (!isCurrentStepValid(overageHandling)) {
-      toast({
-        title: "Selection Required",
-        description: "Please select an overage handling option to continue.",
-        variant: "destructive"
-      });
+    if (!isCurrentStepValid(overageHandling, termsAccepted)) {
+      if (currentStep === 2) {
+        toast({
+          title: "Selection Required",
+          description: "Please select an overage handling option to continue.",
+          variant: "destructive"
+        });
+      } else if (currentStep === 4) {
+        toast({
+          title: "Terms Acceptance Required",
+          description: "Please read and accept the Terms of Service to continue.",
+          variant: "destructive"
+        });
+      }
       return;
     }
     

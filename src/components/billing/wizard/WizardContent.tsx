@@ -4,6 +4,7 @@ import { AddOnsList } from "@/components/billing/AddOnsList";
 import { OverageHandling } from "@/components/billing/OverageHandling";
 import { PaymentMethodForm } from "@/components/billing/PaymentMethodForm";
 import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
+import { TermsOfServiceStep } from "@/components/billing/wizard/TermsOfServiceStep";
 import { PlanData, AddOnData } from "@/types/billing";
 
 interface WizardContentProps {
@@ -22,12 +23,14 @@ interface WizardContentProps {
   enterprisePlan: PlanData | undefined;
   addOns: AddOnData[];
   plans: PlanData[];
-  creditCardInfo?: any; // Add credit card info
+  creditCardInfo?: any;
+  termsAccepted: boolean;
   setOverageHandling: (option: string) => void;
   toggleAddOn: (addOnId: string) => void;
   onSelectEnterprise: () => void;
   onBillingCycleChange: (cycle: 'monthly' | 'annual') => void;
   onPlanChange: (planId: string) => void;
+  onTermsAccepted: (accepted: boolean) => void;
   onSubmit: () => void;
 }
 
@@ -44,11 +47,13 @@ export function WizardContent({
   addOns,
   plans,
   creditCardInfo,
+  termsAccepted,
   setOverageHandling,
   toggleAddOn,
   onSelectEnterprise,
   onBillingCycleChange,
   onPlanChange,
+  onTermsAccepted,
   onSubmit
 }: WizardContentProps) {
   // Find the name of the selected plan for the OverageHandling component
@@ -99,6 +104,15 @@ export function WizardContent({
             creditCardInfo={creditCardInfo}
           />
         )}
+        
+        {/* Step 5: Terms of Service */}
+        {currentStep === 4 && (
+          <TermsOfServiceStep 
+            isLoading={isLoading}
+            termsAccepted={termsAccepted}
+            onTermsAccepted={onTermsAccepted}
+          />
+        )}
       </div>
       
       <div className="md:col-span-4">
@@ -110,9 +124,9 @@ export function WizardContent({
           costs={costs}
           subscription={null}
           isLoading={isLoading}
-          onSubmit={currentStep === 3 ? onSubmit : undefined}
+          onSubmit={currentStep === 4 ? onSubmit : undefined}
           billingCycle={billingCycle}
-          showSubmitButton={currentStep === 3}
+          showSubmitButton={currentStep === 4}
         />
       </div>
     </div>

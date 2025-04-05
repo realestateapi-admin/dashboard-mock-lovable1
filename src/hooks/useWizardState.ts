@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 
 // Import plan data
@@ -14,6 +14,7 @@ import { useSubscriptionSubmit } from "./wizard/useSubscriptionSubmit";
 
 export const useWizardState = () => {
   const { setIsEnterprisePlan } = useAccountExecutive();
+  const [termsAccepted, setTermsAccepted] = useState(false);
   
   // Use the step management hook
   const { 
@@ -93,7 +94,7 @@ export const useWizardState = () => {
   
   // Handle next step with validation
   const handleNext = () => {
-    nextStep(overageHandling);
+    nextStep(overageHandling, termsAccepted);
   };
   
   // Handle back step
@@ -105,8 +106,15 @@ export const useWizardState = () => {
     setSelectedPlan(planId);
   };
   
+  const handleTermsAccepted = (accepted: boolean) => {
+    setTermsAccepted(accepted);
+  };
+  
   const handleSubmit = () => {
-    submitSubscription(selectedPlan);
+    // Only allow submission if terms have been accepted
+    if (termsAccepted) {
+      submitSubscription(selectedPlan);
+    }
   };
   
   return {
@@ -124,6 +132,8 @@ export const useWizardState = () => {
     enterprisePlan,
     regularPlans,
     creditCardInfo,
+    termsAccepted,
+    handleTermsAccepted,
     handleSelectEnterprise,
     handleNext,
     handleBack,

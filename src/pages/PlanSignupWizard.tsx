@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 
@@ -25,6 +26,9 @@ const PlanSignupWizard = () => {
     steps,
     enterprisePlan,
     regularPlans,
+    creditCardInfo,
+    termsAccepted,
+    handleTermsAccepted,
     handleSelectEnterprise,
     handleNext,
     handleBack,
@@ -64,6 +68,9 @@ const PlanSignupWizard = () => {
               enterprisePlan={enterprisePlan}
               addOns={addOns}
               plans={plans}
+              creditCardInfo={creditCardInfo}
+              termsAccepted={termsAccepted}
+              onTermsAccepted={handleTermsAccepted}
               onSelectEnterprise={handleSelectEnterprise}
               onBillingCycleChange={handleBillingCycleChange}
               onPlanChange={handlePlanChange}
