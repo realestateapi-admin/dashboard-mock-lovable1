@@ -35,6 +35,14 @@ export const ACHForm = ({
   setNewACHMethod,
   showBackupCardSection = false
 }: ACHFormProps) => {
+  // Handle the account type radio button change
+  const handleAccountTypeChange = (type: string) => {
+    setNewACHMethod(prev => ({
+      ...prev,
+      accountType: type
+    }));
+  };
+
   return (
     <div className="grid gap-4 py-2">
       <div className="grid gap-2">
@@ -43,6 +51,7 @@ export const ACHForm = ({
           id="accountName"
           value={newACHMethod.accountName}
           onChange={(e) => setNewACHMethod({...newACHMethod, accountName: e.target.value})}
+          placeholder="John Smith"
           required
         />
       </div>
@@ -75,7 +84,7 @@ export const ACHForm = ({
               id="checking"
               value="checking"
               checked={newACHMethod.accountType === "checking"}
-              onChange={() => setNewACHMethod({...newACHMethod, accountType: "checking"})}
+              onChange={() => handleAccountTypeChange("checking")}
               className="h-4 w-4 border-gray-300"
             />
             <Label htmlFor="checking" className="ml-2 text-sm font-medium">Checking</Label>
@@ -86,7 +95,7 @@ export const ACHForm = ({
               id="savings"
               value="savings"
               checked={newACHMethod.accountType === "savings"}
-              onChange={() => setNewACHMethod({...newACHMethod, accountType: "savings"})}
+              onChange={() => handleAccountTypeChange("savings")}
               className="h-4 w-4 border-gray-300"
             />
             <Label htmlFor="savings" className="ml-2 text-sm font-medium">Savings</Label>

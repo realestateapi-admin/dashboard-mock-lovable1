@@ -57,11 +57,16 @@ export const PaymentMethodTabs: React.FC<PaymentMethodTabsProps> = ({
   newACHMethod,
   setNewACHMethod
 }) => {
+  // Handle tab change directly
+  const handleTabChange = (value: string) => {
+    onPaymentTypeChange(value as PaymentMethodType);
+  };
+
   return (
     <Tabs 
-      defaultValue="card" 
       value={paymentMethodType}
-      onValueChange={(value) => onPaymentTypeChange(value as PaymentMethodType)}
+      onValueChange={handleTabChange}
+      className="w-full"
     >
       <TabsList className="grid grid-cols-2 w-full">
         <TabsTrigger value="card" className="flex items-center gap-2">
