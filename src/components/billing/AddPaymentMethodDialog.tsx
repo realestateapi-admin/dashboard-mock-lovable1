@@ -92,14 +92,13 @@ export const AddPaymentMethodDialog = ({
 
   const handlePaymentTypeChange = (value: PaymentMethodType) => {
     setPaymentMethodType(value);
-    resetSteps(); // Reset ACH step when changing tab
   };
 
   const isBackupCardStep = paymentMethodType === "ach" && achStep === "backup-card";
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-hidden flex flex-col z-50 p-0">
+      <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-hidden flex flex-col">
         <div className="p-6 flex flex-col h-full">
           <PaymentMethodDialogHeader 
             isBackupCardStep={isBackupCardStep}

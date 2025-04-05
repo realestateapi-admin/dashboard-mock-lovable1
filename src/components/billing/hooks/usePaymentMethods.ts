@@ -38,7 +38,7 @@ export const usePaymentMethods = () => {
     setNewACHMethod
   );
   
-  // Wrap the addPaymentMethod to match the original API
+  // Wrapper function to match the expected API signature
   const handleAddPaymentMethod = (type: "card" | "ach") => {
     addPaymentMethod(type, newPaymentMethod, newACHMethod);
   };

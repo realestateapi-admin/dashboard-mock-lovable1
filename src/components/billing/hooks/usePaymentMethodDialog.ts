@@ -18,7 +18,6 @@ export const usePaymentMethodDialog = () => {
 
   const resetSteps = () => {
     setACHStep("ach-details");
-    setPaymentMethodType("card");
   };
 
   return {
