@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CreditCardIcon, PlusCircle, Trash2, Building } from "lucide-react";
+import { CreditCardIcon, PlusCircle, Trash2, Building, AlertCircle } from "lucide-react";
 import { 
   Dialog, 
   DialogContent, 
@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type PaymentMethod = {
   id: string;
@@ -50,7 +51,26 @@ export const PaymentMethods = () => {
     accountNumber: "",
     accountType: "checking",
     makeDefault: false,
+    // Add backup credit card fields for ACH
+    backupCardNumber: "",
+    backupCardholderName: "",
+    backupExpiry: "",
+    backupCvc: "",
   });
+
+  // Validate ACH form before submission
+  const isACHFormValid = () => {
+    // When using ACH, backup credit card is required
+    return (
+      newACHMethod.accountName.trim() !== "" &&
+      newACHMethod.routingNumber.trim() !== "" &&
+      newACHMethod.accountNumber.trim() !== "" &&
+      newACHMethod.backupCardNumber.trim() !== "" &&
+      newACHMethod.backupCardholderName.trim() !== "" &&
+      newACHMethod.backupExpiry.trim() !== "" &&
+      newACHMethod.backupCvc.trim() !== ""
+    );
+  };
 
   const handleAddPaymentMethod = () => {
     // In a real app, this would send the payment info to a payment processor
@@ -65,6 +85,16 @@ export const PaymentMethods = () => {
         isDefault: newPaymentMethod.makeDefault,
       };
     } else {
+      // Validate ACH form first
+      if (!isACHFormValid()) {
+        toast({
+          title: "Missing information",
+          description: "Please complete all required fields including backup credit card information.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       // ACH payment method
       newMethod = {
         id: `pm_${Math.random().toString(36).substring(2, 9)}`,
@@ -73,6 +103,14 @@ export const PaymentMethods = () => {
         expiryDate: "N/A", // ACH doesn't have expiry
         isDefault: newACHMethod.makeDefault,
       };
+      
+      // In a real app, we would also store the backup card info
+      console.log("Backup credit card info:", {
+        cardNumber: newACHMethod.backupCardNumber,
+        cardholderName: newACHMethod.backupCardholderName,
+        expiry: newACHMethod.backupExpiry,
+        cvc: newACHMethod.backupCvc,
+      });
     }
     
     // If this is set as default, update other cards
@@ -103,6 +141,10 @@ export const PaymentMethods = () => {
       accountNumber: "",
       accountType: "checking",
       makeDefault: false,
+      backupCardNumber: "",
+      backupCardholderName: "",
+      backupExpiry: "",
+      backupCvc: "",
     });
     
     toast({
@@ -371,6 +413,62 @@ export const PaymentMethods = () => {
                   <p className="text-sm text-muted-foreground">
                     By providing your bank account information, you authorize us to debit the above account for all agreed-upon subscription charges.
                   </p>
+                </div>
+                
+                {/* Required Backup Credit Card Section for ACH */}
+                <Alert className="mt-4 bg-amber-50 border-amber-200">
+                  <AlertCircle className="h-4 w-4 text-amber-600" />
+                  <AlertDescription className="text-amber-800">
+                    A credit card is required as a backup payment method when using bank account
+                  </AlertDescription>
+                </Alert>
+                
+                <div className="mt-2 p-4 border border-amber-200 rounded-md space-y-4">
+                  <h4 className="font-medium text-sm">Backup Credit Card Information</h4>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="backupCardholderName">Cardholder Name</Label>
+                    <Input
+                      id="backupCardholderName"
+                      value={newACHMethod.backupCardholderName}
+                      onChange={(e) => setNewACHMethod({...newACHMethod, backupCardholderName: e.target.value})}
+                      placeholder="John Smith"
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="backupCardNumber">Card Number</Label>
+                    <Input
+                      id="backupCardNumber"
+                      value={newACHMethod.backupCardNumber}
+                      onChange={(e) => setNewACHMethod({...newACHMethod, backupCardNumber: e.target.value})}
+                      placeholder="•••• •••• •••• ••••"
+                      required
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="backupExpiry">Expiry Date</Label>
+                      <Input
+                        id="backupExpiry"
+                        value={newACHMethod.backupExpiry}
+                        onChange={(e) => setNewACHMethod({...newACHMethod, backupExpiry: e.target.value})}
+                        placeholder="MM/YY"
+                        required
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="backupCvc">CVC</Label>
+                      <Input
+                        id="backupCvc"
+                        value={newACHMethod.backupCvc}
+                        onChange={(e) => setNewACHMethod({...newACHMethod, backupCvc: e.target.value})}
+                        placeholder="•••"
+                        type="password"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </TabsContent>
