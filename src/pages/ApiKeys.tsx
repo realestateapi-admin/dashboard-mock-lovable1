@@ -3,19 +3,10 @@ import { motion } from "framer-motion";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
-import { useUsageData } from "@/hooks/useUsageData";
-import UsageTracking from "@/components/dashboard/UsageTracking";
 import { ApiKeyTabs } from "@/components/api-keys/ApiKeyTabs";
 
 const ApiKeys = () => {
   const { isTrialActive, trialDaysLeft, isOnPaidPlan } = useTrialAlert();
-  const { 
-    currentUsage,
-    usageHistory,
-    isLoading: isLoadingUsage,
-    error: usageError,
-    refetch: refetchUsageData
-  } = useUsageData();
 
   // Only show trial banner if trial is active AND user is not on a paid plan
   const shouldShowTrialBanner = isTrialActive && !isOnPaidPlan;
@@ -40,14 +31,6 @@ const ApiKeys = () => {
           </AlertDescription>
         </Alert>
       )}
-      
-      <UsageTracking
-        currentUsage={currentUsage}
-        usageHistory={usageHistory}
-        isLoading={isLoadingUsage}
-        error={usageError}
-        onRefresh={refetchUsageData}
-      />
       
       <ApiKeyTabs 
         isTrialActive={isTrialActive}
