@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EmailVerification from "./EmailVerification";
 import TrialInfoCard from "./TrialInfoCard";
+import OnboardingSteps, { OnboardingStep } from "./OnboardingSteps";
 
 interface WelcomeSectionProps {
   emailVerified: boolean;
@@ -21,6 +22,26 @@ const WelcomeSection = ({
   onVerify, 
   onStartTrial 
 }: WelcomeSectionProps) => {
+  // Define the onboarding steps
+  const steps: OnboardingStep[] = [
+    { 
+      name: "Create Account", 
+      status: "completed" 
+    },
+    { 
+      name: "Email Verification", 
+      status: emailVerified ? "completed" : "current" 
+    },
+    { 
+      name: "Free Trial", 
+      status: emailVerified ? "current" : "upcoming" 
+    },
+    { 
+      name: "Setup Complete", 
+      status: "upcoming" 
+    }
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -28,6 +49,9 @@ const WelcomeSection = ({
       transition={{ duration: 0.5 }}
       className="flex flex-col space-y-6"
     >
+      {/* Progress Indicator */}
+      <OnboardingSteps steps={steps} />
+      
       <div>
         <h1 className="text-4xl font-bold tracking-tight mb-2">Welcome to RealEstateAPI</h1>
         <p className="text-lg text-muted-foreground">Start your 14-day free trial and explore our property data platform.</p>
