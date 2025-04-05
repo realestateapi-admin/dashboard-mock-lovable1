@@ -60,75 +60,79 @@ export function WizardContent({
   const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || 'Selected';
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-      <div className="md:col-span-8">
-        {/* Step 1: Choose Billing Option */}
-        {currentStep === 0 && (
-          <BillingOptionStep 
-            selectedPlan={selectedPlan}
-            billingCycle={billingCycle}
-            adjustedPlans={regularPlans}
-            enterprisePlan={enterprisePlan}
-            onPlanChange={onPlanChange}
-            onBillingCycleChange={onBillingCycleChange}
-            onSelectEnterprise={onSelectEnterprise}
-            isLoading={isLoading}
-          />
-        )}
-        
-        {/* Step 2: Select Add-Ons */}
-        {currentStep === 1 && (
-          <AddOnsList 
-            addOns={addOns}
-            selectedPlan={selectedPlan}
-            activeAddOns={activeAddOns}
-            onToggleAddOn={toggleAddOn}
-            isLoading={isLoading}
-          />
-        )}
-        
-        {/* Step 3: Overage Handling */}
-        {currentStep === 2 && (
-          <OverageHandling 
-            selectedPlanName={selectedPlanName}
-            overageHandling={overageHandling || ''}
-            onOverageHandlingChange={setOverageHandling}
-            isLoading={isLoading}
-          />
-        )}
-        
-        {/* Step 4: Payment Information */}
-        {currentStep === 3 && (
-          <PaymentMethodForm 
-            isLoading={isLoading} 
-            creditCardInfo={creditCardInfo}
-          />
-        )}
-        
-        {/* Step 5: Terms of Service */}
-        {currentStep === 4 && (
+    <>
+      {/* For Terms of Service step, show just the Terms of Service content without the sidebar */}
+      {currentStep === 4 ? (
+        <div className="w-full mx-auto max-w-3xl">
           <TermsOfServiceStep 
             isLoading={isLoading}
             termsAccepted={termsAccepted}
             onTermsAccepted={onTermsAccepted}
           />
-        )}
-      </div>
-      
-      <div className="md:col-span-4">
-        <SubscriptionSummary 
-          selectedPlan={selectedPlan}
-          plans={plans}
-          activeAddOns={activeAddOns}
-          addOns={addOns}
-          costs={costs}
-          subscription={null}
-          isLoading={isLoading}
-          onSubmit={onSubmit}
-          billingCycle={billingCycle}
-          showSubmitButton={false} // Always set to false to remove the button
-        />
-      </div>
-    </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div className="md:col-span-8">
+            {/* Step 1: Choose Billing Option */}
+            {currentStep === 0 && (
+              <BillingOptionStep 
+                selectedPlan={selectedPlan}
+                billingCycle={billingCycle}
+                adjustedPlans={regularPlans}
+                enterprisePlan={enterprisePlan}
+                onPlanChange={onPlanChange}
+                onBillingCycleChange={onBillingCycleChange}
+                onSelectEnterprise={onSelectEnterprise}
+                isLoading={isLoading}
+              />
+            )}
+            
+            {/* Step 2: Select Add-Ons */}
+            {currentStep === 1 && (
+              <AddOnsList 
+                addOns={addOns}
+                selectedPlan={selectedPlan}
+                activeAddOns={activeAddOns}
+                onToggleAddOn={toggleAddOn}
+                isLoading={isLoading}
+              />
+            )}
+            
+            {/* Step 3: Overage Handling */}
+            {currentStep === 2 && (
+              <OverageHandling 
+                selectedPlanName={selectedPlanName}
+                overageHandling={overageHandling || ''}
+                onOverageHandlingChange={setOverageHandling}
+                isLoading={isLoading}
+              />
+            )}
+            
+            {/* Step 4: Payment Information */}
+            {currentStep === 3 && (
+              <PaymentMethodForm 
+                isLoading={isLoading} 
+                creditCardInfo={creditCardInfo}
+              />
+            )}
+          </div>
+          
+          <div className="md:col-span-4">
+            <SubscriptionSummary 
+              selectedPlan={selectedPlan}
+              plans={plans}
+              activeAddOns={activeAddOns}
+              addOns={addOns}
+              costs={costs}
+              subscription={null}
+              isLoading={isLoading}
+              onSubmit={onSubmit}
+              billingCycle={billingCycle}
+              showSubmitButton={false}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
