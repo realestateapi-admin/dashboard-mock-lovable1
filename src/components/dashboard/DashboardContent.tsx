@@ -5,8 +5,6 @@ import { useDashboard } from "@/contexts/DashboardContext";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardSummary } from "@/components/dashboard/DashboardSummary";
 import { UpdatesSection } from "@/components/dashboard/UpdatesSection";
-import { EndpointUsageSection } from "@/components/dashboard/EndpointUsageSection";
-import { RecordUsageBreakdown } from "@/components/dashboard/RecordUsageBreakdown";
 import { ApiAccessSection } from "@/components/dashboard/ApiAccessSection";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
@@ -62,7 +60,7 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
         subscriptionRenewalDate={renewalDate || undefined}
       />
       
-      {/* Modified this section to have UpdatesSection take full width */}
+      {/* Updates section now takes full width */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -74,30 +72,7 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
         />
       </motion.div>
       
-      <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.3 }}
-          className="lg:col-span-2"
-        >
-          <EndpointUsageSection 
-            endpointUsage={endpointUsage}
-            isLoading={isLoading}
-          />
-        </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.3 }}
-        >
-          <RecordUsageBreakdown 
-            usageDistributionData={usageDistributionData}
-            isLoading={isLoading}
-          />
-        </motion.div>
-      </div>
+      {/* Removed the Endpoint Usage and Record Usage Breakdown grid section */}
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
