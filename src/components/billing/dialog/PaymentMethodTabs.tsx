@@ -68,7 +68,7 @@ export const PaymentMethodTabs: React.FC<PaymentMethodTabsProps> = ({
       onValueChange={handleTabChange}
       className="w-full"
     >
-      <TabsList className="grid grid-cols-2 w-full">
+      <TabsList className="grid grid-cols-2 w-full sticky top-0 z-10 bg-background">
         <TabsTrigger 
           value="card" 
           className="flex items-center gap-2"
@@ -85,22 +85,22 @@ export const PaymentMethodTabs: React.FC<PaymentMethodTabsProps> = ({
         </TabsTrigger>
       </TabsList>
       
-      <ScrollArea className="flex-1 mt-4 px-1 max-h-[50vh]">
-        <TabsContent value="card" className="mt-4">
+      <div className="mt-4">
+        <TabsContent value="card" className="mt-0 p-0">
           <CreditCardForm 
             newPaymentMethod={newPaymentMethod}
             setNewPaymentMethod={setNewPaymentMethod}
           />
         </TabsContent>
         
-        <TabsContent value="ach" className="mt-4">
+        <TabsContent value="ach" className="mt-0 p-0">
           <ACHForm 
             newACHMethod={newACHMethod}
             setNewACHMethod={setNewACHMethod}
             showBackupCardSection={false}
           />
         </TabsContent>
-      </ScrollArea>
+      </div>
     </Tabs>
   );
 };

@@ -98,39 +98,45 @@ export const AddPaymentMethodDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-hidden flex flex-col">
-        <div className="p-6 flex flex-col h-full">
-          <PaymentMethodDialogHeader 
-            isBackupCardStep={isBackupCardStep}
-            onBackClick={handleBackToACHDetails}
-          />
-          
-          {isBackupCardStep ? (
-            <BackupCardForm 
-              newACHMethod={newACHMethod}
-              setNewACHMethod={setNewACHMethod}
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="flex flex-col h-full overflow-hidden">
+          <div className="p-6 pb-2">
+            <PaymentMethodDialogHeader 
+              isBackupCardStep={isBackupCardStep}
+              onBackClick={handleBackToACHDetails}
             />
-          ) : (
-            <PaymentMethodTabs
-              paymentMethodType={paymentMethodType}
-              onPaymentTypeChange={handlePaymentTypeChange}
-              newPaymentMethod={newPaymentMethod}
-              setNewPaymentMethod={setNewPaymentMethod}
-              newACHMethod={newACHMethod}
-              setNewACHMethod={setNewACHMethod}
-            />
-          )}
+          </div>
           
-          <DialogFooter className="mt-4">
-            <Button variant="outline" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button onClick={handleAddPaymentMethod}>
-              {paymentMethodType === "ach" && achStep === "ach-details" 
-                ? "Continue to Backup Card" 
-                : "Add Payment Method"}
-            </Button>
-          </DialogFooter>
+          <div className="flex-1 overflow-y-auto px-6 py-2">
+            {isBackupCardStep ? (
+              <BackupCardForm 
+                newACHMethod={newACHMethod}
+                setNewACHMethod={setNewACHMethod}
+              />
+            ) : (
+              <PaymentMethodTabs
+                paymentMethodType={paymentMethodType}
+                onPaymentTypeChange={handlePaymentTypeChange}
+                newPaymentMethod={newPaymentMethod}
+                setNewPaymentMethod={setNewPaymentMethod}
+                newACHMethod={newACHMethod}
+                setNewACHMethod={setNewACHMethod}
+              />
+            )}
+          </div>
+          
+          <div className="p-6 pt-2 border-t mt-auto">
+            <DialogFooter className="mt-0">
+              <Button variant="outline" onClick={handleClose} className="mr-2">
+                Cancel
+              </Button>
+              <Button onClick={handleAddPaymentMethod}>
+                {paymentMethodType === "ach" && achStep === "ach-details" 
+                  ? "Continue to Backup Card" 
+                  : "Add Payment Method"}
+              </Button>
+            </DialogFooter>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
