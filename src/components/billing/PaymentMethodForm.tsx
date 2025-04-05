@@ -3,6 +3,10 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CreditCardIcon, Building } from "lucide-react";
+import { CreditCardFormSection } from "./forms/CreditCardFormSection";
+import { BankAccountFormSection } from "./forms/BankAccountFormSection";
 
 interface PaymentMethodFormProps {
   isLoading: boolean;
@@ -13,6 +17,9 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
   isLoading,
   creditCardInfo,
 }) => {
+  // State for payment method type
+  const [paymentMethodType, setPaymentMethodType] = useState<"card" | "ach">("card");
+  
   // State for company and billing information
   const [companyInfo, setCompanyInfo] = useState({
     companyName: "",
@@ -72,8 +79,17 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     setUseSameAddress(checked);
   };
 
-  // Mock credit card state for demo purposes
+  // Credit card state
   const [cardDetails, setCardDetails] = useState({
+    cardName: "",
+    cardNumber: "",
+    expiry: "",
+    cvc: "",
+    zipCode: ""
+  });
+
+  // Backup credit card state for ACH
+  const [backupCardDetails, setBackupCardDetails] = useState({
     cardName: "",
     cardNumber: "",
     expiry: "",
@@ -86,6 +102,17 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
       ...prev,
       [field]: value
     }));
+  };
+
+  const handleBackupCardDetailsChange = (field: string, value: string) => {
+    setBackupCardDetails(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handlePaymentTypeChange = (value: string) => {
+    setPaymentMethodType(value as "card" | "ach");
   };
 
   return (
@@ -193,62 +220,63 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
       {/* Payment Details Section (Second) */}
       <div className="space-y-4 pb-6 border-b">
         <h3 className="text-lg font-semibold">Payment Details</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="cardName">Cardholder Name</Label>
-            <Input 
-              id="cardName" 
-              placeholder="John Smith" 
-              value={cardDetails.cardName}
-              onChange={(e) => handleCardDetailsChange("cardName", e.target.value)}
-              disabled={isLoading}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="cardNumber">Card Number</Label>
-            <Input 
-              id="cardNumber" 
-              placeholder="1234 5678 9012 3456" 
-              value={cardDetails.cardNumber}
-              onChange={(e) => handleCardDetailsChange("cardNumber", e.target.value)}
-              disabled={isLoading}
-            />
-          </div>
-        </div>
         
-        <div className="grid grid-cols-3 gap-4">
-          <div className="space-y-2 col-span-1">
-            <Label htmlFor="expiry">Expiry Date</Label>
-            <Input 
-              id="expiry" 
-              placeholder="MM/YY" 
-              value={cardDetails.expiry}
-              onChange={(e) => handleCardDetailsChange("expiry", e.target.value)}
-              disabled={isLoading}
-            />
+        <Tabs 
+          value={paymentMethodType} 
+          onValueChange={handlePaymentTypeChange}
+          className="w-full"
+        >
+          <TabsList className="grid grid-cols-2 w-full">
+            <TabsTrigger 
+              value="card" 
+              className="flex items-center gap-2"
+            >
+              <CreditCardIcon className="h-4 w-4" />
+              Credit Card
+            </TabsTrigger>
+            <TabsTrigger 
+              value="ach" 
+              className="flex items-center gap-2"
+            >
+              <Building className="h-4 w-4" />
+              Bank Account (ACH)
+            </TabsTrigger>
+          </TabsList>
+          
+          <div className="mt-4">
+            <TabsContent value="card" className="mt-0 p-0 space-y-4">
+              <CreditCardFormSection
+                cardName={cardDetails.cardName}
+                setCardName={(value) => handleCardDetailsChange("cardName", value)}
+                cardNumber={cardDetails.cardNumber}
+                setCardNumber={(value) => handleCardDetailsChange("cardNumber", value)}
+                expiry={cardDetails.expiry}
+                setExpiry={(value) => handleCardDetailsChange("expiry", value)}
+                cvc={cardDetails.cvc}
+                setCvc={(value) => handleCardDetailsChange("cvc", value)}
+                zipCode={cardDetails.zipCode}
+                setZipCode={(value) => handleCardDetailsChange("zipCode", value)}
+                isLoading={isLoading}
+                showMakeDefaultOption={true}
+              />
+            </TabsContent>
+            
+            <TabsContent value="ach" className="mt-0 p-0 space-y-4">
+              <BankAccountFormSection
+                cardName={backupCardDetails.cardName}
+                setCardName={(value) => handleBackupCardDetailsChange("cardName", value)}
+                cardNumber={backupCardDetails.cardNumber}
+                setCardNumber={(value) => handleBackupCardDetailsChange("cardNumber", value)}
+                expiry={backupCardDetails.expiry}
+                setExpiry={(value) => handleBackupCardDetailsChange("expiry", value)}
+                cvc={backupCardDetails.cvc}
+                setCvc={(value) => handleBackupCardDetailsChange("cvc", value)}
+                zipCode={backupCardDetails.zipCode}
+                setZipCode={(value) => handleBackupCardDetailsChange("zipCode", value)}
+              />
+            </TabsContent>
           </div>
-          <div className="space-y-2 col-span-1">
-            <Label htmlFor="cvc">CVC</Label>
-            <Input 
-              id="cvc" 
-              placeholder="123" 
-              type="password"
-              value={cardDetails.cvc}
-              onChange={(e) => handleCardDetailsChange("cvc", e.target.value)}
-              disabled={isLoading}
-            />
-          </div>
-          <div className="space-y-2 col-span-1">
-            <Label htmlFor="zipCode">ZIP Code</Label>
-            <Input 
-              id="zipCode" 
-              placeholder="12345" 
-              value={cardDetails.zipCode}
-              onChange={(e) => handleCardDetailsChange("zipCode", e.target.value)}
-              disabled={isLoading}
-            />
-          </div>
-        </div>
+        </Tabs>
       </div>
 
       {/* Billing Address Section (Third) */}

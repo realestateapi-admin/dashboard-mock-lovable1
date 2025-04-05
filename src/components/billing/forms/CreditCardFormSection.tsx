@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface CreditCardFormSectionProps {
   cardName: string;
@@ -32,6 +33,8 @@ export const CreditCardFormSection = ({
   isLoading = false,
   showMakeDefaultOption = false,
 }: CreditCardFormSectionProps) => {
+  const [makeDefault, setMakeDefault] = useState(true);
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -57,16 +60,6 @@ export const CreditCardFormSection = ({
             disabled={isLoading}
           />
         </div>
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="billingAddress">Billing Address</Label>
-        <Input 
-          id="billingAddress" 
-          placeholder="123 Main St"
-          required
-          disabled={isLoading}
-        />
       </div>
       
       <div className="grid grid-cols-2 gap-4">
@@ -106,6 +99,20 @@ export const CreditCardFormSection = ({
           disabled={isLoading}
         />
       </div>
+
+      {showMakeDefaultOption && (
+        <div className="flex items-center space-x-2 pt-2">
+          <Checkbox 
+            id="makeDefaultCard"
+            checked={makeDefault}
+            onCheckedChange={(checked) => setMakeDefault(checked as boolean)}
+            disabled={isLoading}
+          />
+          <Label htmlFor="makeDefaultCard" className="text-sm font-medium">
+            Make this my default payment method
+          </Label>
+        </div>
+      )}
     </div>
   );
 };
