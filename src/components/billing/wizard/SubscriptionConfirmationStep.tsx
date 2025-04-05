@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlanData, AddOnData } from "@/types/billing";
 import { CheckIcon, AlertCircle } from "lucide-react";
+import { format, addDays } from "date-fns";
 
 interface SubscriptionConfirmationStepProps {
   selectedPlan: string;
@@ -29,6 +30,9 @@ export const SubscriptionConfirmationStep = ({
   isLoading = false
 }: SubscriptionConfirmationStepProps) => {
   const selectedPlanData = plans.find(p => p.id === selectedPlan);
+  
+  // Calculate trial end date (30 days from now)
+  const trialEndDate = format(addDays(new Date(), 30), 'MMMM d, yyyy');
   
   // Format the overage handling text
   const formatOverageHandling = (option: string | null) => {
@@ -75,9 +79,15 @@ export const SubscriptionConfirmationStep = ({
   return (
     <Card className="border shadow-sm">
       <CardHeader>
-        <CardTitle className="text-xl">Subscription Confirmation</CardTitle>
+        <CardTitle className="text-xl">Subscription Confirmed</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        <div className="bg-green-50 dark:bg-green-950 border border-green-100 dark:border-green-900 rounded-md p-4 text-sm text-green-800 dark:text-green-300 mb-4">
+          <p className="font-medium">
+            Your subscription has been successfully activated. Thank you for choosing our service!
+          </p>
+        </div>
+      
         <div className="space-y-4">
           <h3 className="font-semibold text-lg">Plan Details</h3>
           
@@ -97,6 +107,11 @@ export const SubscriptionConfirmationStep = ({
                 <span className="text-muted-foreground">Base Price</span>
                 <span className="font-medium">{costs.basePrice}/month</span>
               </div>
+              
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">First Bill Date</span>
+                <span className="font-medium">{trialEndDate}</span>
+              </div>
             </div>
             
             <div className="space-y-2">
@@ -108,6 +123,11 @@ export const SubscriptionConfirmationStep = ({
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Overage Handling</span>
                 <span className="font-medium">{formatOverageHandling(overageHandling)}</span>
+              </div>
+              
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">First Charge</span>
+                <span className="font-medium">{costs.total}</span>
               </div>
             </div>
           </div>
@@ -154,8 +174,7 @@ export const SubscriptionConfirmationStep = ({
         
         <div className="bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-900 rounded-md p-4 text-sm text-blue-800 dark:text-blue-300">
           <p>
-            By completing this subscription, you agree to the terms of service and privacy policy. 
-            Your subscription will begin immediately, but you won't be charged until your free trial ends.
+            Your 30-day free trial starts today. You will be billed on {trialEndDate}.
           </p>
         </div>
       </CardContent>
