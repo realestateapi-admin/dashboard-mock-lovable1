@@ -98,16 +98,16 @@ export const AddPaymentMethodDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="sm:max-w-[550px] max-h-[85vh] overflow-hidden flex flex-col">
         <div className="flex flex-col h-full overflow-hidden">
-          <div className="p-6 pb-2">
+          <div className="p-6 pb-2 sticky top-0 z-20 bg-background border-b">
             <PaymentMethodDialogHeader 
               isBackupCardStep={isBackupCardStep}
               onBackClick={handleBackToACHDetails}
             />
           </div>
           
-          <div className="flex-1 overflow-y-auto px-6 py-2">
+          <div className="flex-1 overflow-y-auto px-6 py-4">
             {isBackupCardStep ? (
               <BackupCardForm 
                 newACHMethod={newACHMethod}
@@ -125,7 +125,7 @@ export const AddPaymentMethodDialog = ({
             )}
           </div>
           
-          <div className="p-6 pt-2 border-t mt-auto">
+          <div className="p-6 pt-4 border-t mt-auto sticky bottom-0 bg-background">
             <DialogFooter className="mt-0">
               <Button variant="outline" onClick={handleClose} className="mr-2">
                 Cancel
