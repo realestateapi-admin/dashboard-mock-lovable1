@@ -23,23 +23,31 @@ export const TermsOfServiceStep = ({
   const checkScrollPosition = () => {
     if (scrollAreaRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
-      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 30; // 30px threshold
+      // Consider slightly more lenient threshold (scrollHeight - 50 instead of 30)
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 50;
       
-      if (isAtBottom && !hasScrolledToBottom) {
+      if (isAtBottom) {
         setHasScrolledToBottom(true);
       }
     }
   };
   
-  // Handle scroll event
+  // Handle scroll event with debounce
   useEffect(() => {
     const scrollElement = scrollAreaRef.current;
     
     if (scrollElement) {
-      scrollElement.addEventListener('scroll', checkScrollPosition);
+      const handleScroll = () => {
+        checkScrollPosition();
+      };
+      
+      scrollElement.addEventListener('scroll', handleScroll);
+      
+      // Check initial scroll position (in case content is short)
+      setTimeout(checkScrollPosition, 500);
       
       return () => {
-        scrollElement.removeEventListener('scroll', checkScrollPosition);
+        scrollElement.removeEventListener('scroll', handleScroll);
       };
     }
   }, []);

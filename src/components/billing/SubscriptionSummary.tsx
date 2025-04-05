@@ -1,6 +1,5 @@
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
 import { format, addDays, addYears } from "date-fns";
@@ -176,18 +175,7 @@ export function SubscriptionSummary({
         </div>
       </CardContent>
       
-      {showSubmitButton && onSubmit && (
-        <CardFooter>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="w-full"
-            onClick={onSubmit}
-          >
-            {subscription ? "Update Subscription" : "Confirm Selection"}
-          </Button>
-        </CardFooter>
-      )}
+      {/* We've removed the CardFooter with the "Confirm Selection" button */}
     </Card>
   );
 }

@@ -124,9 +124,9 @@ export function WizardContent({
           costs={costs}
           subscription={null}
           isLoading={isLoading}
-          onSubmit={currentStep === 4 ? onSubmit : undefined}
+          onSubmit={onSubmit}
           billingCycle={billingCycle}
-          showSubmitButton={currentStep === 4}
+          showSubmitButton={false} // Always set to false to remove the button
         />
       </div>
     </div>
