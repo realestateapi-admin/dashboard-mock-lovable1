@@ -57,24 +57,21 @@ const PlanSignupWizard = () => {
             <WizardContent
               currentStep={currentStep}
               billingCycle={billingCycle}
-              isLoading={isLoading}
               selectedPlan={selectedPlan}
               overageHandling={overageHandling}
-              setOverageHandling={setOverageHandling}
               activeAddOns={activeAddOns}
-              toggleAddOn={toggleAddOn}
               costs={costs}
               regularPlans={regularPlans}
               enterprisePlan={enterprisePlan}
               addOns={addOns}
               plans={plans}
-              creditCardInfo={creditCardInfo}
-              termsAccepted={termsAccepted}
-              onTermsAccepted={handleTermsAccepted}
-              onSelectEnterprise={handleSelectEnterprise}
-              onBillingCycleChange={handleBillingCycleChange}
+              isLoading={isLoading}
               onPlanChange={handlePlanChange}
-              onSubmit={handleSubmit}
+              onToggleAddOn={toggleAddOn}
+              onOverageHandlingChange={setOverageHandling}
+              onBillingCycleChange={handleBillingCycleChange}
+              onSelectEnterprise={handleSelectEnterprise}
+              selectedPlanName={plans.find(p => p.id === selectedPlan)?.name || "Selected"}
             />
           </CardContent>
           

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -7,7 +6,7 @@ import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 
 // Import components
 import { TrialAlert } from "@/components/billing/TrialAlert";
-import { BillingTabs } from "@/components/billing/BillingTabs";
+import { BillingTabs } from "@/components/billing/tabs/BillingTabs";
 import { CancellationLink } from "@/components/billing/CancellationLink";
 import { AccountExecutiveWidget } from "@/components/support/AccountExecutiveWidget";
 
@@ -19,6 +18,7 @@ import { useUsageData } from "@/hooks/useUsageData";
 import { useSubscriptionData } from "@/hooks/useSubscriptionData";
 import { useSubscriptionCalculator } from "@/hooks/useSubscriptionCalculator";
 import { isPaidPlan } from "@/services/subscriptionService";
+import { useUpgradeWizard } from "@/components/billing/hooks/useUpgradeWizard";
 
 const Billing = () => {
   const { toast } = useToast();
@@ -53,6 +53,9 @@ const Billing = () => {
 
   // Calculate costs based on billing cycle
   const costs = calculateMonthlyCost(billingCycle);
+
+  // Initialize the upgrade wizard
+  const { startWizard } = useUpgradeWizard();
 
   // Check if user is on a paid plan when subscription data loads
   useEffect(() => {
@@ -101,10 +104,6 @@ const Billing = () => {
       description: `Invoice ${invoiceId} is being downloaded.`,
     });
   };
-  
-  const handleStartUpgradeFlow = () => {
-    // Now handled inside BillingTabs component
-  };
 
   // Determine if we should hide trial banners based on subscription
   const shouldHideTrialBanners = localIsOnPaidPlan || isOnPaidPlan;
@@ -112,17 +111,6 @@ const Billing = () => {
   // Get current plan name from subscription or selected plan
   const currentPlanName = subscription?.plan_name || 
     plans.find(p => p.id === selectedPlan)?.name || "Starter";
-    
-  // Find the enterprise plan
-  const enterprisePlan = plans.find(p => p.id === "enterprise");
-    
-  const handleSelectEnterprise = () => {
-    if (enterprisePlan) {
-      setSelectedPlan(enterprisePlan.id);
-      // Show the sales engineer widget when enterprise is selected
-      setIsEnterprisePlan(true);
-    }
-  };
 
   return (
     <motion.div 
@@ -159,7 +147,7 @@ const Billing = () => {
         onBillingCycleChange={handleBillingCycleChange}
         onSaveBillingPreferences={handleSaveBillingPreferences}
         onDownloadInvoice={handleDownloadInvoice}
-        onStartUpgradeFlow={handleStartUpgradeFlow}
+        onStartUpgradeFlow={startWizard}
       />
       
       {/* Only show cancellation link if user is on a paid plan */}
