@@ -11,12 +11,14 @@ interface TermsOfServiceStepProps {
   termsAccepted: boolean;
   onTermsAccepted: (accepted: boolean) => void;
   isLoading: boolean;
+  updateFormData: (field: string, value: any) => void;
 }
 
 export const TermsOfServiceStep = ({
   termsAccepted,
   onTermsAccepted,
-  isLoading
+  isLoading,
+  updateFormData
 }: TermsOfServiceStepProps) => {
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -52,6 +54,12 @@ export const TermsOfServiceStep = ({
       };
     }
   }, []);
+  
+  // Update form data when terms acceptance changes
+  const handleTermsAcceptedChange = (checked: boolean) => {
+    onTermsAccepted(checked);
+    updateFormData('termsAccepted', checked);
+  };
   
   if (isLoading) {
     return (
@@ -125,7 +133,7 @@ export const TermsOfServiceStep = ({
         <Checkbox 
           id="terms" 
           checked={termsAccepted}
-          onCheckedChange={(checked) => onTermsAccepted(checked === true)}
+          onCheckedChange={(checked) => handleTermsAcceptedChange(checked === true)}
           disabled={!hasScrolledToBottom}
         />
         <Label 
