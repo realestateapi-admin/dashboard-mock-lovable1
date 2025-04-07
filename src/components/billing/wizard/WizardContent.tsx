@@ -1,4 +1,3 @@
-
 import { BillingOptionStep } from "./BillingOptionStep";
 import { AddOnsList } from "@/components/billing/AddOnsList";
 import { OverageHandling } from "@/components/billing/OverageHandling";
@@ -8,6 +7,7 @@ import { TermsOfServiceStep } from "@/components/billing/wizard/TermsOfServiceSt
 import { SubscriptionConfirmationStep } from "@/components/billing/wizard/SubscriptionConfirmationStep";
 import { PlanData, AddOnData } from "@/types/billing";
 import { useState, useEffect } from "react";
+import { EnterpriseCompactCard } from "@/components/billing/EnterpriseCompactCard";
 
 interface WizardContentProps {
   currentStep: number;
@@ -58,13 +58,10 @@ export function WizardContent({
   onTermsAccepted,
   onSubmit
 }: WizardContentProps) {
-  // Find the name of the selected plan for the OverageHandling component
   const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || 'Selected';
   
-  // Track the payment method type selected in step 4
   const [paymentMethodType, setPaymentMethodType] = useState<'card' | 'ach'>('card');
   
-  // Monitor changes to payment method type from PaymentMethodForm component
   useEffect(() => {
     const savedType = localStorage.getItem('paymentMethodType');
     if (savedType === 'card' || savedType === 'ach') {
@@ -72,7 +69,6 @@ export function WizardContent({
     }
   }, [currentStep]);
   
-  // Handle payment method changes from the PaymentMethodForm
   const handlePaymentMethodChange = (type: 'card' | 'ach') => {
     setPaymentMethodType(type);
     localStorage.setItem('paymentMethodType', type);
@@ -80,7 +76,6 @@ export function WizardContent({
   
   return (
     <>
-      {/* For Terms of Service step, show just the Terms of Service content without the sidebar */}
       {currentStep === 4 ? (
         <div className="w-full mx-auto max-w-3xl">
           <TermsOfServiceStep 
@@ -106,7 +101,6 @@ export function WizardContent({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           <div className="md:col-span-8">
-            {/* Step 1: Choose Billing Option */}
             {currentStep === 0 && (
               <BillingOptionStep 
                 selectedPlan={selectedPlan}
@@ -120,7 +114,6 @@ export function WizardContent({
               />
             )}
             
-            {/* Step 2: Select Add-Ons */}
             {currentStep === 1 && (
               <AddOnsList 
                 addOns={addOns}
@@ -131,7 +124,6 @@ export function WizardContent({
               />
             )}
             
-            {/* Step 3: Overage Handling */}
             {currentStep === 2 && (
               <OverageHandling 
                 selectedPlanName={selectedPlanName}
@@ -141,7 +133,6 @@ export function WizardContent({
               />
             )}
             
-            {/* Step 4: Payment Information */}
             {currentStep === 3 && (
               <PaymentMethodForm 
                 isLoading={isLoading} 
@@ -165,7 +156,6 @@ export function WizardContent({
               showSubmitButton={false}
             />
             
-            {/* Show the Enterprise compact card when enterprise is not selected */}
             {enterprisePlan && selectedPlan !== enterprisePlan.id && (
               <EnterpriseCompactCard onSelectEnterprise={onSelectEnterprise} />
             )}
