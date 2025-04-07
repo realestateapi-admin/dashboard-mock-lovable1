@@ -46,7 +46,7 @@ export const BillingTabs = ({
   onSaveBillingPreferences,
   onDownloadInvoice
 }: BillingTabsProps) => {
-  const { showWizard, closeWizard } = useUpgradeWizard();
+  const { showWizard, closeWizard, startWizard } = useUpgradeWizard();
   
   const enterprisePlan = plans.find(p => p.id === "enterprise");
 
@@ -101,7 +101,7 @@ export const BillingTabs = ({
       onBillingCycleChange={onBillingCycleChange}
       onSaveBillingPreferences={onSaveBillingPreferences}
       onDownloadInvoice={onDownloadInvoice}
-      onStartUpgradeFlow={() => {}}
+      onStartUpgradeFlow={startWizard}
       showUpgradeWizard={showWizard}
       setShowUpgradeWizard={closeWizard}
       handleSelectEnterprise={handleSelectEnterprise}

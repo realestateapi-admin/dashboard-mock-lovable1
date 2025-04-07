@@ -6,6 +6,7 @@ import { InvoiceHistory } from "@/components/billing/InvoiceHistory";
 import { TermsOfServiceTab } from "@/components/billing/TermsOfServiceTab";
 import { SubscriptionTab } from "./SubscriptionTab";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
+import { UpgradePrompt } from "./UpgradePrompt";
 
 interface BillingTabsContentProps {
   plans: PlanData[];
@@ -51,6 +52,7 @@ export const BillingTabsContent = ({
   onBillingCycleChange,
   onSaveBillingPreferences,
   onDownloadInvoice,
+  onStartUpgradeFlow,
   handleSelectEnterprise
 }: BillingTabsContentProps) => {
   return (
@@ -71,6 +73,8 @@ export const BillingTabsContent = ({
       </TabsList>
       
       <UITabsContent value="subscription">
+        <UpgradePrompt onStartUpgradeFlow={onStartUpgradeFlow} />
+        
         <SubscriptionTab 
           plans={plans}
           addOns={addOns}

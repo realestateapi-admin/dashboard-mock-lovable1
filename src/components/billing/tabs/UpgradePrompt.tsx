@@ -1,11 +1,12 @@
 
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import { useUpgradeWizard } from "../hooks/useUpgradeWizard";
 
-export const UpgradePrompt = () => {
-  const { startWizard } = useUpgradeWizard();
-  
+interface UpgradePromptProps {
+  onStartUpgradeFlow: () => void;
+}
+
+export const UpgradePrompt = ({ onStartUpgradeFlow }: UpgradePromptProps) => {
   return (
     <div className="p-4 mb-6 bg-purple-50 border border-purple-200 rounded-lg">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
@@ -16,7 +17,7 @@ export const UpgradePrompt = () => {
           </p>
         </div>
         <Button 
-          onClick={startWizard}
+          onClick={onStartUpgradeFlow}
           className="mt-3 md:mt-0 bg-purple-600 hover:bg-purple-700"
         >
           Upgrade Plan
