@@ -1,84 +1,109 @@
 
+import { CheckIcon } from "lucide-react";
 import { motion } from "framer-motion";
-import { LucideIcon } from "lucide-react";
 
-interface WizardStep {
+interface Step {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: React.ElementType;
 }
 
 interface WizardStepIndicatorProps {
-  steps: WizardStep[];
+  steps: Step[];
   currentStep: number;
 }
 
 export const WizardStepIndicator = ({ steps, currentStep }: WizardStepIndicatorProps) => {
-  // Calculate progress percentage
-  const progress = ((currentStep + 1) / steps.length) * 100;
-  
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight text-purple-700">
-            {steps[currentStep].title}
-          </h2>
-          <p className="text-muted-foreground">
-            {steps[currentStep].description}
-          </p>
+    <div className="w-full">
+      <div className="hidden md:flex justify-between mb-8">
+        {steps.map((step, index) => {
+          const StepIcon = step.icon;
+          const isCompleted = index < currentStep;
+          const isActive = index === currentStep;
+          
+          return (
+            <div 
+              key={step.title} 
+              className={`flex flex-col items-center relative ${
+                index === steps.length - 1 ? '' : 'flex-1'
+              }`}
+            >
+              <div className="flex items-center justify-center">
+                <motion.div
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: isActive ? 1.1 : 1 }}
+                  className={`z-10 flex items-center justify-center w-10 h-10 rounded-full ${
+                    isCompleted 
+                      ? 'bg-purple-600 text-white' 
+                      : isActive 
+                        ? 'bg-purple-100 border-2 border-purple-600 text-purple-600'
+                        : 'bg-gray-100 text-gray-400'
+                  }`}
+                >
+                  {isCompleted ? (
+                    <CheckIcon className="h-5 w-5" />
+                  ) : (
+                    <StepIcon className="h-5 w-5" />
+                  )}
+                </motion.div>
+              </div>
+              
+              {index < steps.length - 1 && (
+                <div 
+                  className={`absolute top-5 left-1/2 w-full h-[2px] ${
+                    index < currentStep 
+                      ? 'bg-purple-600' 
+                      : 'bg-gray-200'
+                  }`}
+                ></div>
+              )}
+              
+              <div className="mt-3 text-center">
+                <p className={`text-sm font-medium ${
+                  isActive ? 'text-purple-600' : isCompleted ? 'text-gray-700' : 'text-gray-400'
+                }`}>{step.title}</p>
+                <p className="text-xs text-gray-500 hidden lg:block">{step.description}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      
+      {/* Mobile step indicator */}
+      <div className="md:hidden flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <div className={`flex items-center justify-center w-8 h-8 rounded-full 
+            ${currentStep === steps.length - 1 
+              ? 'bg-purple-600 text-white' 
+              : 'bg-purple-100 border-2 border-purple-600 text-purple-600'
+            }`}
+          >
+            {currentStep === steps.length - 1 ? (
+              <CheckIcon className="h-4 w-4" />
+            ) : (
+              <span className="text-sm font-medium">{currentStep + 1}</span>
+            )}
+          </div>
+          <div className="ml-3">
+            <p className="text-sm font-medium text-gray-900">{steps[currentStep].title}</p>
+            <p className="text-xs text-gray-500">{steps[currentStep].description}</p>
+          </div>
         </div>
-        <div className="text-sm font-medium">
+        
+        <div className="text-sm text-gray-500">
           Step {currentStep + 1} of {steps.length}
         </div>
       </div>
       
       {/* Progress bar */}
-      <div className="w-full bg-slate-100 rounded-full h-2">
+      <div className="w-full bg-gray-200 h-1 rounded-full mt-2 md:hidden">
         <motion.div 
-          className="bg-purple-600 h-2 rounded-full transition-all duration-300 ease-in-out" 
-          style={{ width: `${progress}%` }}
           initial={{ width: 0 }}
-          animate={{ width: `${progress}%` }}
+          animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+          className="bg-purple-600 h-1 rounded-full"
+          transition={{ duration: 0.5 }}
         ></motion.div>
-      </div>
-      
-      {/* Step indicators */}
-      <div className="hidden md:flex items-center w-full justify-between">
-        {steps.map((step, index) => {
-          const Icon = step.icon;
-          return (
-            <div key={index} className="flex flex-col items-center">
-              <div 
-                className={`h-10 w-10 rounded-full flex items-center justify-center border-2 
-                  ${index < currentStep 
-                    ? 'bg-purple-600 border-purple-600 text-white' 
-                    : index === currentStep 
-                      ? 'border-purple-600 text-purple-600' 
-                      : 'border-gray-300 text-gray-300'
-                  }`}
-              >
-                {index < currentStep ? (
-                  <motion.div 
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </motion.div>
-                ) : (
-                  <Icon className="h-5 w-5" />
-                )}
-              </div>
-              <span 
-                className={`text-xs mt-1 text-center max-w-[80px] 
-                  ${index <= currentStep ? 'text-purple-600 font-medium' : 'text-gray-400'}`}
-              >
-                {step.title}
-              </span>
-            </div>
-          );
-        })}
       </div>
     </div>
   );

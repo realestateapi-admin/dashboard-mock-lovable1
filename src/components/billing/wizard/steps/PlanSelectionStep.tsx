@@ -3,6 +3,7 @@ import { BillingCycleSelector } from "@/components/billing/BillingCycleSelector"
 import { PlansList } from "@/components/billing/PlansList";
 import { PlanData } from "@/types/billing";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@/components/ui/card";
 
 interface PlanSelectionStepProps {
   selectedPlan: string;
@@ -55,14 +56,20 @@ export const PlanSelectionStep = ({
   }
   
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-xl font-semibold mb-1">Select Your Plan</h3>
+        <p className="text-muted-foreground">
+          Choose the plan that best fits your needs. You can change or cancel anytime.
+        </p>
+      </div>
+      
       <BillingCycleSelector 
         billingCycle={billingCycle}
         onBillingCycleChange={handleBillingCycleChange}
       />
       
-      <div className="mt-8">
-        <h3 className="text-lg font-medium mb-4">Select Your Plan</h3>
+      <div className="mt-6">
         <PlansList 
           plans={regularPlans} 
           selectedPlan={selectedPlan} 
@@ -72,18 +79,22 @@ export const PlanSelectionStep = ({
       </div>
       
       {enterprisePlan && (
-        <div className="mt-8 p-4 border border-purple-200 rounded-lg bg-purple-50">
-          <h3 className="text-lg font-medium text-purple-800">Need Enterprise Features?</h3>
-          <p className="text-sm text-purple-700 mb-4">
-            Contact our sales team for custom pricing and dedicated support.
-          </p>
-          <button
-            onClick={onSelectEnterprise}
-            className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-          >
-            Explore Enterprise Plan
-          </button>
-        </div>
+        <Card className="mt-6 p-4 border border-purple-200 bg-purple-50">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-medium text-purple-800">Need Enterprise Features?</h3>
+              <p className="text-sm text-purple-700">
+                Contact our sales team for custom pricing and dedicated support.
+              </p>
+            </div>
+            <button
+              onClick={onSelectEnterprise}
+              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+            >
+              Explore Enterprise Plan
+            </button>
+          </div>
+        </Card>
       )}
     </div>
   );
