@@ -15,7 +15,7 @@ export const BillingCycleSelector = ({
 }: BillingCycleSelectorProps) => {
   return (
     <div>
-      <h3 className="text-lg font-medium mb-3">What Works Best For You?</h3>
+      <h3 className="text-lg font-medium mb-3">Need to make a change?</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Monthly Option */}
         <div 

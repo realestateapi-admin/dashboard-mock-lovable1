@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { EnterprisePlanCard } from "./EnterprisePlanCard";
 import { EnterpriseCompactCard } from "./EnterpriseCompactCard";
 import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
+import { Button } from "@/components/ui/button";
 
 interface BillingTabsProps {
   plans: PlanData[];
@@ -33,6 +34,7 @@ interface BillingTabsProps {
   onBillingCycleChange: (cycle: 'monthly' | 'annual') => void;
   onSaveBillingPreferences: () => void;
   onDownloadInvoice: (invoiceId: string) => void;
+  onStartUpgradeFlow: () => void;
 }
 
 export const BillingTabs = ({
@@ -51,11 +53,9 @@ export const BillingTabs = ({
   onOverageHandlingChange,
   onBillingCycleChange,
   onSaveBillingPreferences,
-  onDownloadInvoice
+  onDownloadInvoice,
+  onStartUpgradeFlow
 }: BillingTabsProps) => {
-  // Remove the local billingCycle state since it's now passed as a prop
-  // const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
-  
   // Access the AccountExecutive context to show/hide the widget
   const { showWidget } = useAccountExecutive();
   
@@ -91,6 +91,23 @@ export const BillingTabs = ({
       </TabsList>
       
       <TabsContent value="subscription">
+        <div className="p-4 mb-6 bg-purple-50 border border-purple-200 rounded-lg">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div>
+              <h3 className="text-lg font-medium text-purple-800">Need to make a change?</h3>
+              <p className="text-sm text-purple-700">
+                Upgrade or modify your plan with our guided plan selection wizard
+              </p>
+            </div>
+            <Button 
+              onClick={onStartUpgradeFlow}
+              className="mt-3 md:mt-0 bg-purple-600 hover:bg-purple-700"
+            >
+              Upgrade Plan
+            </Button>
+          </div>
+        </div>
+
         <div className="grid gap-6 md:grid-cols-3">
           <div className="md:col-span-2">
             <BillingPlans 
