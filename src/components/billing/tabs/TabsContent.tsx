@@ -7,7 +7,6 @@ import { TermsOfServiceTab } from "@/components/billing/TermsOfServiceTab";
 import { SubscriptionTab } from "./SubscriptionTab";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
 import { UpgradePrompt } from "./UpgradePrompt";
-import { SubscriptionWizard } from "../wizard/SubscriptionWizard";
 
 interface BillingTabsContentProps {
   plans: PlanData[];
@@ -54,37 +53,8 @@ export const BillingTabsContent = ({
   onSaveBillingPreferences,
   onDownloadInvoice,
   onStartUpgradeFlow,
-  showUpgradeWizard,
-  setShowUpgradeWizard,
   handleSelectEnterprise
 }: BillingTabsContentProps) => {
-  
-  const enterprisePlan = plans.find(p => p.id === "enterprise");
-  
-  if (showUpgradeWizard) {
-    return (
-      <SubscriptionWizard
-        plans={plans}
-        addOns={addOns}
-        selectedPlan={selectedPlan}
-        activeAddOns={activeAddOns}
-        overageHandling={overageHandling}
-        costs={costs}
-        billingCycle={billingCycle}
-        subscription={subscription}
-        isLoadingSubscription={isLoadingSubscription}
-        onPlanChange={onPlanChange}
-        onToggleAddOn={onToggleAddOn}
-        onOverageHandlingChange={onOverageHandlingChange}
-        onBillingCycleChange={onBillingCycleChange}
-        onSaveBillingPreferences={onSaveBillingPreferences}
-        onFinish={() => setShowUpgradeWizard(false)}
-        enterprisePlan={enterprisePlan}
-        onSelectEnterprise={handleSelectEnterprise}
-      />
-    );
-  }
-  
   return (
     <Tabs defaultValue="subscription" className="w-full">
       <TabsList className="mb-4">
@@ -121,7 +91,7 @@ export const BillingTabsContent = ({
           onBillingCycleChange={onBillingCycleChange}
           onSaveBillingPreferences={onSaveBillingPreferences}
           handleSelectEnterprise={handleSelectEnterprise}
-          onStartUpgradeFlow={onStartUpgradeFlow}
+          onStartUpgradeFlow={onStartUpgradeFlow} // Pass the onStartUpgradeFlow prop to SubscriptionTab
         />
       </UITabsContent>
       

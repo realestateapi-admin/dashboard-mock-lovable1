@@ -1,61 +1,93 @@
 
 import { motion } from "framer-motion";
-import { plans, addOns } from "@/data/billingData";
+import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
+
+// Import wizard components
+import { WizardHeader } from "@/components/billing/wizard/WizardHeader";
+import { WizardFooter } from "@/components/billing/wizard/WizardFooter";
+import { WizardContent } from "@/components/billing/wizard/WizardContent";
+
+// Import the refactored useWizardState hook
 import { useWizardState } from "@/hooks/useWizardState";
-import { SubscriptionWizard } from "@/components/billing/wizard/SubscriptionWizard";
-import { useNavigate } from "react-router-dom";
+import { plans, addOns } from "@/data/billingData";
 
 const PlanSignupWizard = () => {
-  const navigate = useNavigate();
-  
   const {
+    currentStep,
+    billingCycle,
+    isLoading,
+    isSubmitting,
     selectedPlan,
     overageHandling,
     setOverageHandling,
     activeAddOns,
     toggleAddOn,
     costs,
-    billingCycle,
+    steps,
     enterprisePlan,
+    regularPlans,
+    creditCardInfo,
+    termsAccepted,
+    handleTermsAccepted,
+    handleSelectEnterprise,
+    handleNext,
+    handleBack,
     handleBillingCycleChange,
     handlePlanChange,
-    handleSubmit,
-    handleSelectEnterprise,
-    isLoading,
-    isSubmitting,
+    handleSubmit
   } = useWizardState();
   
-  const handleFinish = () => {
-    // Navigate back to the dashboard after completing the wizard
-    navigate("/dashboard/billing");
-  };
-  
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="w-full max-w-7xl mx-auto my-8 px-4"
-    >
-      <SubscriptionWizard
-        plans={plans}
-        addOns={addOns}
-        selectedPlan={selectedPlan}
-        activeAddOns={activeAddOns}
-        overageHandling={overageHandling}
-        costs={costs}
-        billingCycle={billingCycle}
-        isLoadingSubscription={isLoading}
-        onPlanChange={handlePlanChange}
-        onToggleAddOn={toggleAddOn}
-        onOverageHandlingChange={setOverageHandling}
-        onBillingCycleChange={handleBillingCycleChange}
-        onSaveBillingPreferences={handleSubmit}
-        onFinish={handleFinish}
-        enterprisePlan={enterprisePlan}
-        onSelectEnterprise={handleSelectEnterprise}
-      />
-    </motion.div>
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-7xl"
+      >
+        <Card className="border shadow-lg">
+          <CardHeader>
+            <WizardHeader 
+              currentStep={currentStep} 
+              steps={steps} 
+            />
+          </CardHeader>
+          
+          <CardContent className="py-6">
+            <WizardContent
+              currentStep={currentStep}
+              billingCycle={billingCycle}
+              selectedPlan={selectedPlan}
+              overageHandling={overageHandling}
+              activeAddOns={activeAddOns}
+              costs={costs}
+              regularPlans={regularPlans}
+              enterprisePlan={enterprisePlan}
+              addOns={addOns}
+              plans={plans}
+              isLoading={isLoading}
+              onPlanChange={handlePlanChange}
+              onToggleAddOn={toggleAddOn}
+              onOverageHandlingChange={setOverageHandling}
+              onBillingCycleChange={handleBillingCycleChange}
+              onSelectEnterprise={handleSelectEnterprise}
+              selectedPlanName={plans.find(p => p.id === selectedPlan)?.name || "Selected"}
+            />
+          </CardContent>
+          
+          <CardFooter>
+            <WizardFooter
+              currentStep={currentStep}
+              totalSteps={steps.length}
+              handleBack={handleBack}
+              handleNext={handleNext}
+              handleSubmit={handleSubmit}
+              isLoading={currentStep === steps.length - 1 ? isSubmitting : isLoading}
+            />
+          </CardFooter>
+        </Card>
+      </motion.div>
+    </div>
   );
 };
 
