@@ -1,6 +1,6 @@
 
 import { CreditCard, CreditCardIcon, FileText, Wallet } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent as UITabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PaymentMethods } from "@/components/billing/PaymentMethods";
 import { InvoiceHistory } from "@/components/billing/InvoiceHistory";
 import { TermsOfServiceTab } from "@/components/billing/TermsOfServiceTab";
@@ -70,7 +70,7 @@ export const BillingTabsContent = ({
         </TabsTrigger>
       </TabsList>
       
-      <TabsContent value="subscription">
+      <UITabsContent value="subscription">
         <SubscriptionTab 
           plans={plans}
           addOns={addOns}
@@ -88,22 +88,22 @@ export const BillingTabsContent = ({
           onSaveBillingPreferences={onSaveBillingPreferences}
           handleSelectEnterprise={handleSelectEnterprise}
         />
-      </TabsContent>
+      </UITabsContent>
       
-      <TabsContent value="payment">
+      <UITabsContent value="payment">
         <PaymentMethods />
-      </TabsContent>
+      </UITabsContent>
       
-      <TabsContent value="invoices">
+      <UITabsContent value="invoices">
         <InvoiceHistory 
           invoices={invoices} 
           onDownloadInvoice={onDownloadInvoice} 
         />
-      </TabsContent>
+      </UITabsContent>
       
-      <TabsContent value="terms">
+      <UITabsContent value="terms">
         <TermsOfServiceTab />
-      </TabsContent>
+      </UITabsContent>
     </Tabs>
   );
 };
