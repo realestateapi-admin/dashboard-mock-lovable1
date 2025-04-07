@@ -1,4 +1,3 @@
-
 import { CreditCard, CreditCardIcon, FileText, Wallet } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BillingPlans } from "@/components/billing/BillingPlans";
@@ -12,7 +11,7 @@ import { EnterprisePlanCard } from "./EnterprisePlanCard";
 import { EnterpriseCompactCard } from "./EnterpriseCompactCard";
 import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 import { Button } from "@/components/ui/button";
-import { UpgradeWizardV2 } from "./UpgradeWizardV2";
+import { UpgradeWizardV2 } from "./wizard/UpgradeWizardV2";
 
 interface BillingTabsProps {
   plans: PlanData[];
@@ -57,31 +56,24 @@ export const BillingTabs = ({
   onDownloadInvoice,
   onStartUpgradeFlow
 }: BillingTabsProps) => {
-  // Access the AccountExecutive context to show/hide the widget
   const { showWidget } = useAccountExecutive();
   const [showUpgradeWizard, setShowUpgradeWizard] = useState(false);
   
-  // Find the enterprise plan
   const enterprisePlan = plans.find(p => p.id === "enterprise");
-  // Filter out enterprise plan from the regular plans list
   const regularPlans = plans.filter(p => p.id !== "enterprise");
 
-  // Handle selecting enterprise plan - now also shows the SE widget
   const handleSelectEnterprise = () => {
     if (enterprisePlan) {
       onPlanChange(enterprisePlan.id);
-      // Show the sales engineer widget when enterprise is selected
       showWidget();
     }
   };
-  
-  // Handle completing the wizard
+
   const handleFinishWizard = () => {
     setShowUpgradeWizard(false);
     onSaveBillingPreferences();
   };
 
-  // Handle starting the upgrade wizard
   const handleStartWizard = () => {
     setShowUpgradeWizard(true);
   };
@@ -173,7 +165,6 @@ export const BillingTabs = ({
               billingCycle={billingCycle}
             />
             
-            {/* Add the compact Enterprise card here - only show when enterprise is NOT selected */}
             {enterprisePlan && selectedPlan !== enterprisePlan.id && (
               <EnterpriseCompactCard onSelectEnterprise={handleSelectEnterprise} />
             )}
