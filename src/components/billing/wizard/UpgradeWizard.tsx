@@ -296,6 +296,7 @@ export const UpgradeWizard = ({
               termsAccepted={termsAccepted}
               onTermsAccepted={handleTermsAccepted}
               isLoading={isLoading}
+              updateFormData={updateFormData}
             />
           )}
           
