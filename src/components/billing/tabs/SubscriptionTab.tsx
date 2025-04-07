@@ -3,7 +3,6 @@ import { BillingPlans } from "@/components/billing/BillingPlans";
 import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
 import { EnterpriseCompactCard } from "@/components/billing/EnterpriseCompactCard";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
-import { UpgradePrompt } from "./UpgradePrompt";
 
 interface SubscriptionTabProps {
   plans: PlanData[];
@@ -25,7 +24,7 @@ interface SubscriptionTabProps {
   onBillingCycleChange: (cycle: 'monthly' | 'annual') => void;
   onSaveBillingPreferences: () => void;
   handleSelectEnterprise: () => void;
-  onStartUpgradeFlow?: () => void; // Added this prop to pass to UpgradePrompt
+  onStartUpgradeFlow?: () => void; // Keep this prop for future use if needed
 }
 
 export const SubscriptionTab = ({
@@ -51,45 +50,40 @@ export const SubscriptionTab = ({
   const enterprisePlan = plans.find(p => p.id === "enterprise");
 
   return (
-    <>
-      {/* If onStartUpgradeFlow is provided, pass it to UpgradePrompt, otherwise use a no-op function */}
-      <UpgradePrompt onStartUpgradeFlow={onStartUpgradeFlow || (() => {})} />
-      
-      <div className="grid gap-6 md:grid-cols-3">
-        <div className="md:col-span-2">
-          <BillingPlans 
-            plans={regularPlans}
-            addOns={addOns}
-            selectedPlan={selectedPlan}
-            activeAddOns={activeAddOns}
-            overageHandling={overageHandling}
-            onPlanChange={onPlanChange}
-            onToggleAddOn={onToggleAddOn}
-            onOverageHandlingChange={onOverageHandlingChange}
-            onSaveBillingPreferences={onSaveBillingPreferences}
-            billingCycle={billingCycle}
-            onBillingCycleChange={onBillingCycleChange}
-          />
-        </div>
-        
-        <div className="md:col-span-1">
-          <SubscriptionSummary 
-            selectedPlan={selectedPlan}
-            plans={plans}
-            activeAddOns={activeAddOns}
-            addOns={addOns}
-            costs={costs}
-            subscription={subscription}
-            isLoading={isLoadingSubscription}
-            onSubmit={onSaveBillingPreferences}
-            billingCycle={billingCycle}
-          />
-          
-          {enterprisePlan && selectedPlan !== enterprisePlan.id && (
-            <EnterpriseCompactCard onSelectEnterprise={handleSelectEnterprise} />
-          )}
-        </div>
+    <div className="grid gap-6 md:grid-cols-3">
+      <div className="md:col-span-2">
+        <BillingPlans 
+          plans={regularPlans}
+          addOns={addOns}
+          selectedPlan={selectedPlan}
+          activeAddOns={activeAddOns}
+          overageHandling={overageHandling}
+          onPlanChange={onPlanChange}
+          onToggleAddOn={onToggleAddOn}
+          onOverageHandlingChange={onOverageHandlingChange}
+          onSaveBillingPreferences={onSaveBillingPreferences}
+          billingCycle={billingCycle}
+          onBillingCycleChange={onBillingCycleChange}
+        />
       </div>
-    </>
+      
+      <div className="md:col-span-1">
+        <SubscriptionSummary 
+          selectedPlan={selectedPlan}
+          plans={plans}
+          activeAddOns={activeAddOns}
+          addOns={addOns}
+          costs={costs}
+          subscription={subscription}
+          isLoading={isLoadingSubscription}
+          onSubmit={onSaveBillingPreferences}
+          billingCycle={billingCycle}
+        />
+        
+        {enterprisePlan && selectedPlan !== enterprisePlan.id && (
+          <EnterpriseCompactCard onSelectEnterprise={handleSelectEnterprise} />
+        )}
+      </div>
+    </div>
   );
 };
