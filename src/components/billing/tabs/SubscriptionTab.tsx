@@ -25,6 +25,7 @@ interface SubscriptionTabProps {
   onBillingCycleChange: (cycle: 'monthly' | 'annual') => void;
   onSaveBillingPreferences: () => void;
   handleSelectEnterprise: () => void;
+  onStartUpgradeFlow?: () => void; // Added this prop to pass to UpgradePrompt
 }
 
 export const SubscriptionTab = ({
@@ -42,7 +43,8 @@ export const SubscriptionTab = ({
   onOverageHandlingChange,
   onBillingCycleChange,
   onSaveBillingPreferences,
-  handleSelectEnterprise
+  handleSelectEnterprise,
+  onStartUpgradeFlow
 }: SubscriptionTabProps) => {
   // Filter out enterprise plan for regular plans list
   const regularPlans = plans.filter(p => p.id !== "enterprise");
@@ -50,7 +52,8 @@ export const SubscriptionTab = ({
 
   return (
     <>
-      <UpgradePrompt />
+      {/* If onStartUpgradeFlow is provided, pass it to UpgradePrompt, otherwise use a no-op function */}
+      <UpgradePrompt onStartUpgradeFlow={onStartUpgradeFlow || (() => {})} />
       
       <div className="grid gap-6 md:grid-cols-3">
         <div className="md:col-span-2">

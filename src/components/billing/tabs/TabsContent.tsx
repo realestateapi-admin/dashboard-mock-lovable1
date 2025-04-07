@@ -91,6 +91,7 @@ export const BillingTabsContent = ({
           onBillingCycleChange={onBillingCycleChange}
           onSaveBillingPreferences={onSaveBillingPreferences}
           handleSelectEnterprise={handleSelectEnterprise}
+          onStartUpgradeFlow={onStartUpgradeFlow} // Pass the onStartUpgradeFlow prop to SubscriptionTab
         />
       </UITabsContent>
       
