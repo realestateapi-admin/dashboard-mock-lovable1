@@ -164,6 +164,11 @@ export function WizardContent({
               billingCycle={billingCycle}
               showSubmitButton={false}
             />
+            
+            {/* Show the Enterprise compact card when enterprise is not selected */}
+            {enterprisePlan && selectedPlan !== enterprisePlan.id && (
+              <EnterpriseCompactCard onSelectEnterprise={onSelectEnterprise} />
+            )}
           </div>
         </div>
       )}

@@ -42,7 +42,7 @@ export const WizardSidebar = ({
   
   return (
     <div className="space-y-4">
-      <SubscriptionSummary
+      <SubscriptionSummary 
         selectedPlan={selectedPlan}
         plans={plans}
         activeAddOns={activeAddOns}
