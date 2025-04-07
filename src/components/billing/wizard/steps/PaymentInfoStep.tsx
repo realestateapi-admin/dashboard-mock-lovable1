@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CreditCardForm } from "@/components/billing/CreditCardForm";
 import { ACHForm } from "@/components/billing/ACHForm";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CreditCard, Building } from "lucide-react";
 
 interface PaymentInfoStepProps {
   paymentMethod: 'card' | 'ach';
@@ -113,8 +114,14 @@ export const PaymentInfoStep = ({
             className="w-full"
           >
             <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="card">Credit Card</TabsTrigger>
-              <TabsTrigger value="ach">Bank Account (ACH)</TabsTrigger>
+              <TabsTrigger value="card" className="flex items-center gap-2">
+                <CreditCard className="h-4 w-4" />
+                Credit Card
+              </TabsTrigger>
+              <TabsTrigger value="ach" className="flex items-center gap-2">
+                <Building className="h-4 w-4" />
+                Bank Account (ACH)
+              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="card">
@@ -128,6 +135,7 @@ export const PaymentInfoStep = ({
               <ACHForm 
                 newACHMethod={newACHMethod}
                 setNewACHMethod={handleNewACHMethodChange}
+                showBackupCardSection={true}
               />
             </TabsContent>
           </Tabs>

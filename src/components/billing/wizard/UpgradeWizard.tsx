@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
@@ -83,13 +82,10 @@ export const UpgradeWizard = ({
   const contentRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
-  // Get selected plan name
   const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || 'Selected';
   
-  // Filter out enterprise plan from the regular plans list
   const regularPlans = plans.filter(p => p.id !== "enterprise");
   
-  // Define the steps
   const steps = [
     { 
       title: "Choose Your Plan", 
@@ -123,7 +119,6 @@ export const UpgradeWizard = ({
     }
   ];
   
-  // Scroll to top when changing steps
   useEffect(() => {
     if (contentRef.current) {
       contentRef.current.scrollTo(0, 0);
@@ -131,7 +126,6 @@ export const UpgradeWizard = ({
     }
   }, [currentStep]);
   
-  // Update form data when props change
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
@@ -143,7 +137,6 @@ export const UpgradeWizard = ({
   }, [selectedPlan, billingCycle, activeAddOns, overageHandling]);
   
   const handleNext = () => {
-    // Validate current step
     if (currentStep === 2 && !overageHandling) {
       toast({
         title: "Selection Required",
@@ -169,7 +162,6 @@ export const UpgradeWizard = ({
         setIsLoading(false);
       }, 300);
     } else {
-      // Final step - save changes
       setIsLoading(true);
       onSaveBillingPreferences();
       setTimeout(() => {
@@ -191,7 +183,6 @@ export const UpgradeWizard = ({
         setIsLoading(false);
       }, 300);
     } else {
-      // Return to the billing page if on first step
       onFinish();
     }
   };
@@ -219,7 +210,6 @@ export const UpgradeWizard = ({
     }));
   };
   
-  // Visually distinct styling with purple accent
   const accentColor = "bg-gradient-to-r from-purple-600 to-indigo-600";
   
   return (
@@ -230,7 +220,6 @@ export const UpgradeWizard = ({
       className="w-full"
     >
       <Card className="border shadow-lg overflow-hidden">
-        {/* Header with accent color */}
         <div className={`${accentColor} h-2 w-full`}></div>
         
         <CardHeader className="pb-0">
@@ -241,7 +230,6 @@ export const UpgradeWizard = ({
         </CardHeader>
         
         <CardContent className="pt-6 pb-2 mt-6" ref={contentRef}>
-          {/* Step 1: Choose Plan */}
           {currentStep === 0 && (
             <PlanSelectionStep 
               selectedPlan={selectedPlan}
@@ -256,7 +244,6 @@ export const UpgradeWizard = ({
             />
           )}
           
-          {/* Step 2: Select Add-Ons */}
           {currentStep === 1 && (
             <AddOnsStep 
               addOns={addOns}
@@ -268,7 +255,6 @@ export const UpgradeWizard = ({
             />
           )}
           
-          {/* Step 3: Overage Handling */}
           {currentStep === 2 && (
             <OverageHandlingStep 
               selectedPlanName={selectedPlanName}
@@ -279,7 +265,6 @@ export const UpgradeWizard = ({
             />
           )}
           
-          {/* Step 4: Payment Information */}
           {currentStep === 3 && (
             <PaymentInfoStep 
               paymentMethod={paymentMethod}
@@ -290,7 +275,6 @@ export const UpgradeWizard = ({
             />
           )}
           
-          {/* Step 5: Terms of Service */}
           {currentStep === 4 && (
             <TermsOfServiceStep 
               termsAccepted={termsAccepted}
@@ -300,7 +284,6 @@ export const UpgradeWizard = ({
             />
           )}
           
-          {/* Step 6: Review & Confirm */}
           {currentStep === 5 && (
             <SummaryStep 
               selectedPlan={selectedPlan}
