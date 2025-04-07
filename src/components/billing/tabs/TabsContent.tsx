@@ -7,7 +7,7 @@ import { TermsOfServiceTab } from "@/components/billing/TermsOfServiceTab";
 import { SubscriptionTab } from "./SubscriptionTab";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
 
-interface TabsContentProps {
+interface BillingTabsContentProps {
   plans: PlanData[];
   addOns: AddOnData[];
   invoices: InvoiceData[];
@@ -34,7 +34,7 @@ interface TabsContentProps {
   handleSelectEnterprise: () => void;
 }
 
-export const TabsContent = ({
+export const BillingTabsContent = ({
   plans,
   addOns,
   invoices,
@@ -52,7 +52,7 @@ export const TabsContent = ({
   onSaveBillingPreferences,
   onDownloadInvoice,
   handleSelectEnterprise
-}: TabsContentProps) => {
+}: BillingTabsContentProps) => {
   return (
     <Tabs defaultValue="subscription" className="w-full">
       <TabsList className="mb-4">

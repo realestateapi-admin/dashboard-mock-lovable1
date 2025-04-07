@@ -2,7 +2,7 @@
 import { UpgradeWizardV2 } from "@/components/billing/wizard/UpgradeWizardV2";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
 import { useUpgradeWizard } from "../hooks/useUpgradeWizard";
-import { TabsContent } from "./TabsContent";
+import { BillingTabsContent } from "./TabsContent";
 
 interface BillingTabsProps {
   plans: PlanData[];
@@ -84,7 +84,7 @@ export const BillingTabs = ({
   }
 
   return (
-    <TabsContent
+    <BillingTabsContent
       plans={plans}
       addOns={addOns}
       invoices={invoices}
