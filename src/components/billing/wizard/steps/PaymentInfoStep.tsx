@@ -21,13 +21,64 @@ export const PaymentInfoStep = ({
   updateFormData,
   isLoading
 }: PaymentInfoStepProps) => {
+  // Create state for credit card form
+  const [newPaymentMethod, setNewPaymentMethod] = useState({
+    cardNumber: formData.cardInfo?.number || '',
+    cardholderName: formData.cardInfo?.name || '',
+    expiry: formData.cardInfo?.expiry || '',
+    cvc: formData.cardInfo?.cvc || '',
+    makeDefault: formData.cardInfo?.makeDefault || false
+  });
   
-  const handleCardInfoChange = (field: string, value: string) => {
-    updateFormData('cardInfo', { ...formData.cardInfo, [field]: value });
+  // Create state for ACH form
+  const [newACHMethod, setNewACHMethod] = useState({
+    accountName: formData.achInfo?.accountName || '',
+    routingNumber: formData.achInfo?.routingNumber || '',
+    accountNumber: formData.achInfo?.accountNumber || '',
+    accountType: formData.achInfo?.accountType || 'checking',
+    makeDefault: formData.achInfo?.makeDefault || false,
+    backupCardNumber: formData.achInfo?.backupCardNumber || '',
+    backupCardholderName: formData.achInfo?.backupCardholderName || '',
+    backupExpiry: formData.achInfo?.backupExpiry || '',
+    backupCvc: formData.achInfo?.backupCvc || ''
+  });
+  
+  // Update form data when credit card info changes
+  const handleCreditCardChange = (newCardData: any) => {
+    updateFormData('cardInfo', {
+      number: newCardData.cardNumber,
+      name: newCardData.cardholderName,
+      expiry: newCardData.expiry,
+      cvc: newCardData.cvc,
+      makeDefault: newCardData.makeDefault
+    });
   };
   
-  const handleACHInfoChange = (field: string, value: string) => {
-    updateFormData('achInfo', { ...formData.achInfo, [field]: value });
+  // Update form data when ACH info changes
+  const handleACHChange = (newACHData: any) => {
+    updateFormData('achInfo', {
+      accountName: newACHData.accountName,
+      routingNumber: newACHData.routingNumber,
+      accountNumber: newACHData.accountNumber,
+      accountType: newACHData.accountType,
+      makeDefault: newACHData.makeDefault,
+      backupCardNumber: newACHData.backupCardNumber,
+      backupCardholderName: newACHData.backupCardholderName,
+      backupExpiry: newACHData.backupExpiry,
+      backupCvc: newACHData.backupCvc
+    });
+  };
+  
+  // Watch for changes to newPaymentMethod and update form data
+  const handleNewPaymentMethodChange = (updatedPaymentMethod: any) => {
+    setNewPaymentMethod(updatedPaymentMethod);
+    handleCreditCardChange(updatedPaymentMethod);
+  };
+  
+  // Watch for changes to newACHMethod and update form data
+  const handleNewACHMethodChange = (updatedACHMethod: any) => {
+    setNewACHMethod(updatedACHMethod);
+    handleACHChange(updatedACHMethod);
   };
   
   if (isLoading) {
@@ -68,15 +119,15 @@ export const PaymentInfoStep = ({
             
             <TabsContent value="card">
               <CreditCardForm 
-                onCardChange={(field, value) => handleCardInfoChange(field, value)} 
-                cardData={formData.cardInfo}
+                newPaymentMethod={newPaymentMethod}
+                setNewPaymentMethod={handleNewPaymentMethodChange}
               />
             </TabsContent>
             
             <TabsContent value="ach">
               <ACHForm 
-                onACHChange={(field, value) => handleACHInfoChange(field, value)}
-                achData={formData.achInfo}
+                newACHMethod={newACHMethod}
+                setNewACHMethod={handleNewACHMethodChange}
               />
             </TabsContent>
           </Tabs>
