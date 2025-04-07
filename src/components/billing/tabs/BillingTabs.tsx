@@ -1,5 +1,5 @@
 
-import { UpgradeWizardV2 } from "@/components/billing/wizard/UpgradeWizardV2";
+import { UpgradeWizard } from "@/components/billing/wizard/UpgradeWizard";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
 import { useUpgradeWizard } from "../hooks/useUpgradeWizard";
 import { BillingTabsContent } from "./TabsContent";
@@ -63,7 +63,7 @@ export const BillingTabs = ({
 
   if (showWizard) {
     return (
-      <UpgradeWizardV2
+      <UpgradeWizard
         plans={plans}
         addOns={addOns}
         selectedPlan={selectedPlan}
