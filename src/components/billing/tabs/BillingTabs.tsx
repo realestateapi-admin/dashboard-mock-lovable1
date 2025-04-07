@@ -1,8 +1,7 @@
 
-import { UpgradeWizardV2 } from "@/components/billing/wizard/UpgradeWizardV2";
-import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
 import { useUpgradeWizard } from "../hooks/useUpgradeWizard";
 import { BillingTabsContent } from "./TabsContent";
+import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
 
 interface BillingTabsProps {
   plans: PlanData[];
@@ -60,28 +59,6 @@ export const BillingTabs = ({
     closeWizard();
     onSaveBillingPreferences();
   };
-
-  if (showWizard) {
-    return (
-      <UpgradeWizardV2
-        plans={plans}
-        addOns={addOns}
-        selectedPlan={selectedPlan}
-        billingCycle={billingCycle}
-        activeAddOns={activeAddOns}
-        overageHandling={overageHandling}
-        costs={costs}
-        onPlanChange={onPlanChange}
-        onToggleAddOn={onToggleAddOn}
-        onOverageHandlingChange={onOverageHandlingChange}
-        onBillingCycleChange={onBillingCycleChange}
-        onSaveBillingPreferences={onSaveBillingPreferences}
-        onFinish={handleFinishWizard}
-        enterprisePlan={enterprisePlan}
-        onSelectEnterprise={handleSelectEnterprise}
-      />
-    );
-  }
 
   return (
     <BillingTabsContent
