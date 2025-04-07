@@ -7,11 +7,12 @@ import { PaymentMethods } from "@/components/billing/PaymentMethods";
 import { InvoiceHistory } from "@/components/billing/InvoiceHistory";
 import { TermsOfServiceTab } from "@/components/billing/TermsOfServiceTab";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { EnterprisePlanCard } from "./EnterprisePlanCard";
 import { EnterpriseCompactCard } from "./EnterpriseCompactCard";
 import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 import { Button } from "@/components/ui/button";
+import { UpgradeWizardV2 } from "./UpgradeWizardV2";
 
 interface BillingTabsProps {
   plans: PlanData[];
@@ -58,6 +59,7 @@ export const BillingTabs = ({
 }: BillingTabsProps) => {
   // Access the AccountExecutive context to show/hide the widget
   const { showWidget } = useAccountExecutive();
+  const [showUpgradeWizard, setShowUpgradeWizard] = useState(false);
   
   // Find the enterprise plan
   const enterprisePlan = plans.find(p => p.id === "enterprise");
@@ -72,6 +74,39 @@ export const BillingTabs = ({
       showWidget();
     }
   };
+  
+  // Handle completing the wizard
+  const handleFinishWizard = () => {
+    setShowUpgradeWizard(false);
+    onSaveBillingPreferences();
+  };
+
+  // Handle starting the upgrade wizard
+  const handleStartWizard = () => {
+    setShowUpgradeWizard(true);
+  };
+
+  if (showUpgradeWizard) {
+    return (
+      <UpgradeWizardV2
+        plans={plans}
+        addOns={addOns}
+        selectedPlan={selectedPlan}
+        billingCycle={billingCycle}
+        activeAddOns={activeAddOns}
+        overageHandling={overageHandling}
+        costs={costs}
+        onPlanChange={onPlanChange}
+        onToggleAddOn={onToggleAddOn}
+        onOverageHandlingChange={onOverageHandlingChange}
+        onBillingCycleChange={onBillingCycleChange}
+        onSaveBillingPreferences={onSaveBillingPreferences}
+        onFinish={handleFinishWizard}
+        enterprisePlan={enterprisePlan}
+        onSelectEnterprise={handleSelectEnterprise}
+      />
+    );
+  }
 
   return (
     <Tabs defaultValue="subscription" className="w-full">
@@ -100,7 +135,7 @@ export const BillingTabs = ({
               </p>
             </div>
             <Button 
-              onClick={onStartUpgradeFlow}
+              onClick={handleStartWizard}
               className="mt-3 md:mt-0 bg-purple-600 hover:bg-purple-700"
             >
               Upgrade Plan
