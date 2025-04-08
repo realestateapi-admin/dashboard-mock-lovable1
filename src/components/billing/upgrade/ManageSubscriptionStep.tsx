@@ -1,10 +1,9 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Check, ArrowsRightLeft } from "lucide-react";
+import { ArrowRight, Check, ArrowRightLeft } from "lucide-react";
 import { PlanData, AddOnData } from "@/types/billing";
 
 interface ManageSubscriptionStepProps {
@@ -28,12 +27,9 @@ export const ManageSubscriptionStep = ({
   onChangeOverage,
   onFinalizePlan
 }: ManageSubscriptionStepProps) => {
-  // Track if any changes have been made to show the comparison view
   const [hasChanges, setHasChanges] = useState(false);
-  // Store the original plan before changes for comparison
   const [originalPlan, setOriginalPlan] = useState<PlanData | null>(null);
-  
-  // Set the original plan when component mounts if not already set
+
   React.useEffect(() => {
     if (!originalPlan) {
       setOriginalPlan(currentPlan);
@@ -55,18 +51,14 @@ export const ManageSubscriptionStep = ({
     }
   };
 
-  // Get the appropriate price based on billing cycle
   const getPlanPrice = (plan: PlanData) => {
     if (billingCycle === 'annual') {
-      // Check if there's an annual price in the data structure
-      // @ts-ignore - We'll handle the case if annualPrice doesn't exist
       const annualPrice = plan.annualPrice;
       return annualPrice || plan.price;
     }
     return plan.price;
   };
 
-  // Track if plan changes have been made
   const planChangedFromOriginal = originalPlan && originalPlan.id !== currentPlan.id;
 
   return (
@@ -83,9 +75,7 @@ export const ManageSubscriptionStep = ({
         </p>
       </div>
 
-      {/* Plan Cards - Side by side when changes exist */}
       <div className={`grid gap-6 ${planChangedFromOriginal ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
-        {/* Original Plan Card (Only shown if plan has changed) */}
         {planChangedFromOriginal && originalPlan && (
           <Card className="border-2 border-muted/20">
             <CardHeader className="pb-3">
@@ -131,7 +121,6 @@ export const ManageSubscriptionStep = ({
           </Card>
         )}
 
-        {/* Current/New Plan Card */}
         <Card className={`border-2 ${planChangedFromOriginal ? 'border-primary/20' : 'border-primary/20'}`}>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center justify-between">
@@ -148,7 +137,6 @@ export const ManageSubscriptionStep = ({
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {/* Plan Details */}
             <div className="space-y-4">
               <div className="flex items-start justify-between">
                 <div>
@@ -176,7 +164,6 @@ export const ManageSubscriptionStep = ({
               </div>
             </div>
 
-            {/* Add-ons */}
             <div className="border-t pt-4">
               <h4 className="text-sm font-medium mb-2">Active Add-ons:</h4>
               {activeAddOns.length > 0 ? (
@@ -193,7 +180,6 @@ export const ManageSubscriptionStep = ({
               )}
             </div>
 
-            {/* Overage Handling */}
             <div className="border-t pt-4">
               <h4 className="text-sm font-medium mb-2">Overage Handling:</h4>
               <p className="text-sm">{formatOverageHandling(overageHandling)}</p>
@@ -202,15 +188,13 @@ export const ManageSubscriptionStep = ({
         </Card>
       </div>
 
-      {/* Plan Comparison Indicator - Only shown when plans are different */}
       {planChangedFromOriginal && (
         <div className="flex items-center justify-center gap-2 py-2">
-          <ArrowsRightLeft className="h-5 w-5 text-muted-foreground" />
+          <ArrowRightLeft className="h-5 w-5 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">Plan has been changed</span>
         </div>
       )}
 
-      {/* What would you like to change? */}
       <Card>
         <CardHeader>
           <CardTitle>What would you like to change?</CardTitle>
