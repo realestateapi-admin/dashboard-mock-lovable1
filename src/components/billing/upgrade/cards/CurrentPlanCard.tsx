@@ -26,13 +26,13 @@ export const CurrentPlanCard = ({
     <Card className="border-2 border-muted/20">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
-          <span>Current Plan</span>
+          <span>Original Plan</span>
           <Badge variant="outline" className="bg-muted/10 text-muted-foreground">
             {billingCycle === 'annual' ? 'Annual Billing' : 'Monthly Billing'}
           </Badge>
         </CardTitle>
         <CardDescription>
-          Your active subscription
+          Your subscription before changes
         </CardDescription>
       </CardHeader>
 

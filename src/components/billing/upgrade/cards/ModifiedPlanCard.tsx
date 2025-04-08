@@ -49,7 +49,7 @@ export const ModifiedPlanCard = ({
     <Card className={`border-2 ${hasAnyChanges ? 'border-primary/20' : 'border-muted/20'}`}>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
-          <span>{hasAnyChanges ? 'Proposed Changes' : 'Modified Plan'}</span>
+          <span>{hasAnyChanges ? 'Proposed Changes' : 'Proposed Plan'}</span>
           <Badge variant="outline" className={`${hasAnyChanges ? 'bg-primary/10 text-primary' : 'bg-muted/10 text-muted-foreground'}`}>
             {billingCycle === 'annual' ? 'Annual Billing' : 'Monthly Billing'}
           </Badge>

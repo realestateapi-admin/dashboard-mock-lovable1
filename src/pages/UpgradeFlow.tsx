@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -31,7 +32,7 @@ const UpgradeFlow = () => {
   const [previousStep, setPreviousStep] = useState<UpgradeStep | null>(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   
-  // Store original subscription state for comparison
+  // Store original subscription state for comparison - never mutated after initial setup
   const originalSubscriptionRef = useRef({
     planId: '',
     addOns: [] as string[],
@@ -56,7 +57,7 @@ const UpgradeFlow = () => {
     isLoading: isLoadingSubscription
   } = useSubscriptionData();
 
-  // Use the subscription calculator hook
+  // Use the subscription calculator hook for proposed changes
   const {
     selectedPlan,
     setSelectedPlan,
@@ -70,15 +71,15 @@ const UpgradeFlow = () => {
   // Calculate costs based on billing cycle
   const costs = calculateMonthlyCost(billingCycle);
 
-  // Effect to initialize original subscription state
+  // Effect to initialize original subscription state ONCE
   useEffect(() => {
     if (subscription && !hasInitializedRef.current) {
-      // Initialize the original subscription state once
+      // Find the plan ID that matches the subscription plan name
       const planId = plans.find(p => 
         p.name.toLowerCase() === subscription.plan_name.toLowerCase()
       )?.id || selectedPlan;
       
-      // Save the original state for comparison
+      // Save the original state for comparison - this never changes during the session
       originalSubscriptionRef.current = {
         planId,
         addOns: subscription.add_ons || [],
@@ -93,7 +94,7 @@ const UpgradeFlow = () => {
 
   // Effect to set billing cycle based on subscription data
   useEffect(() => {
-    if (subscription) {
+    if (subscription && !hasInitializedRef.current) {
       // Check if subscription has a contract end date (which indicates annual billing)
       const isAnnual = Boolean(subscription.contract_end_date);
       setBillingCycle(isAnnual ? 'annual' : 'monthly');
@@ -107,7 +108,7 @@ const UpgradeFlow = () => {
 
   // Effect to set initial add-ons based on the subscription data
   useEffect(() => {
-    if (subscription && subscription.add_ons && subscription.add_ons.length > 0) {
+    if (subscription && subscription.add_ons && subscription.add_ons.length > 0 && !hasInitializedRef.current) {
       // Set the active add-ons from the subscription
       subscription.add_ons.forEach(addOnId => {
         if (!activeAddOns.includes(addOnId)) {
@@ -115,17 +116,17 @@ const UpgradeFlow = () => {
         }
       });
     }
-  }, [subscription]);
+  }, [subscription, activeAddOns, toggleAddOn]);
 
   // Save billing cycle to localStorage when it changes
   useEffect(() => {
     localStorage.setItem('billingCycle', billingCycle);
   }, [billingCycle]);
 
-  // Get the current plan object
+  // Get the current plan object (for proposed changes)
   const currentPlan = plans.find(p => p.id === selectedPlan) || plans[0];
   
-  // Get active add-ons as full objects
+  // Get active add-ons as full objects (for proposed changes)
   const activeAddOnsData = addOns.filter(addon => 
     activeAddOns.includes(addon.id)
   );

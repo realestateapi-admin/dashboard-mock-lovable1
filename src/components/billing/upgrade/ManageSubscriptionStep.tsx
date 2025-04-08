@@ -29,36 +29,58 @@ export const ManageSubscriptionStep = ({
   onChangeOverage,
   onFinalizePlan
 }: ManageSubscriptionStepProps) => {
-  // Store the original state (snapshot of subscription when component mounts)
+  // Store the original state as a deep clone (snapshot of subscription when component first mounts)
+  // These will NEVER change during the component lifecycle
   const [originalPlan, setOriginalPlan] = useState<PlanData | null>(null);
   const [originalAddOns, setOriginalAddOns] = useState<AddOnData[]>([]);
   const [originalOverage, setOriginalOverage] = useState<string>("");
   
   // Store the current proposed state (what the user is configuring)
+  // These will change as user makes selections
   const [proposedPlan, setProposedPlan] = useState<PlanData | null>(null);
   const [proposedAddOns, setProposedAddOns] = useState<AddOnData[]>([]);
   const [proposedOverage, setProposedOverage] = useState<string>("");
   
+  // Flag to track if initialization has happened
+  const [isInitialized, setIsInitialized] = useState(false);
+  
   // Initialize state only once on component mount
   useEffect(() => {
-    // This sets the "snapshot" of the original plan that never changes during the session
-    setOriginalPlan(currentPlan);
-    setOriginalAddOns([...activeAddOns]);
-    setOriginalOverage(overageHandling);
-    
-    // Initialize the proposed state with the current values
-    setProposedPlan(currentPlan);
-    setProposedAddOns([...activeAddOns]);
-    setProposedOverage(overageHandling);
-  }, []); // Empty dependency array ensures this only runs once on mount
+    if (!isInitialized && currentPlan) {
+      // Deep clone objects to prevent reference issues
+      const planClone = JSON.parse(JSON.stringify(currentPlan));
+      const addOnsClone = JSON.parse(JSON.stringify(activeAddOns));
+      
+      // Set the original state that never changes during the session
+      setOriginalPlan(planClone);
+      setOriginalAddOns(addOnsClone);
+      setOriginalOverage(overageHandling);
+      
+      // Initialize the proposed state with copies of the current values
+      setProposedPlan(JSON.parse(JSON.stringify(currentPlan)));
+      setProposedAddOns(JSON.parse(JSON.stringify(activeAddOns)));
+      setProposedOverage(overageHandling);
+      
+      // Mark as initialized to prevent re-initialization
+      setIsInitialized(true);
+      
+      console.log("Initialized original plan state:", planClone);
+      console.log("Initialized original add-ons:", addOnsClone);
+    }
+  }, [currentPlan, activeAddOns, overageHandling, isInitialized]);
 
   // Update proposed state when current values change (after user makes changes)
   useEffect(() => {
-    // Only update the proposed state, never the original state
-    setProposedPlan(currentPlan);
-    setProposedAddOns([...activeAddOns]);
-    setProposedOverage(overageHandling);
-  }, [currentPlan, activeAddOns, overageHandling]);
+    // Only update the proposed state if we've already initialized
+    if (isInitialized) {
+      setProposedPlan(currentPlan);
+      setProposedAddOns([...activeAddOns]);
+      setProposedOverage(overageHandling);
+      
+      console.log("Updated proposed plan state:", currentPlan);
+      console.log("Updated proposed add-ons:", activeAddOns);
+    }
+  }, [currentPlan, activeAddOns, overageHandling, isInitialized]);
 
   // Check if any of the subscription details have changed
   const planChanged = originalPlan && proposedPlan && originalPlan.id !== proposedPlan.id;
@@ -92,7 +114,7 @@ export const ManageSubscriptionStep = ({
   };
 
   // Wait for initialization before rendering
-  if (!originalPlan || !proposedPlan) {
+  if (!isInitialized || !originalPlan || !proposedPlan) {
     return (
       <div className="flex items-center justify-center h-[200px]">
         <div className="animate-pulse text-center">
