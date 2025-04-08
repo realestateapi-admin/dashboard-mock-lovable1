@@ -6,6 +6,7 @@ import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
 import { Skeleton } from "@/components/ui/skeleton";
+import { annualPlanPrices } from "@/data/plans";
 
 interface CurrentPlanSummaryProps {
   plans: PlanData[];
@@ -53,8 +54,14 @@ export const CurrentPlanSummary = ({
       return price; // Return original price if parsing failed
     }
     
-    if (billingCycle === 'annual') {
-      // Apply 20% discount for annual billing
+    // If annual billing cycle, use the correct annual price from the annualPlanPrices object
+    if (billingCycle === 'annual' && currentPlan) {
+      const annualPrice = annualPlanPrices[currentPlan.id as keyof typeof annualPlanPrices];
+      if (annualPrice) {
+        return annualPrice;
+      }
+      
+      // If no specific annual price is set, apply the standard discount
       return `$${(numericPrice * 0.8).toFixed(0)}`;
     } else {
       return `$${numericPrice.toFixed(0)}`;

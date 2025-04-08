@@ -1,6 +1,6 @@
-
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
 import { formatDistanceToNow } from "date-fns";
+import { annualPlanPrices } from "@/data/plans";
 
 interface PlanSummaryProps {
   selectedPlan: string;
@@ -29,8 +29,23 @@ export const PlanSummary = ({
   const calculateEstimatedPayment = () => {
     if (!currentPlan) return { total: 0, fixedAddOns: 0, hasMeteredAddOns: false };
     
-    // Parse the base plan price (removing $ and commas)
-    const basePlanPrice = parseInt(currentPlan.price.replace(/\$|,/g, ""));
+    // Base plan price
+    let basePlanPrice: number;
+    
+    if (billingCycle === 'annual') {
+      // Get annual price if available
+      const annualPriceStr = annualPlanPrices[selectedPlan as keyof typeof annualPlanPrices];
+      if (annualPriceStr) {
+        basePlanPrice = parseInt(annualPriceStr.replace(/\$|,/g, ""));
+      } else {
+        // Parse the base plan price and apply 20% discount
+        const regularPrice = parseInt(currentPlan.price.replace(/\$|,/g, ""));
+        basePlanPrice = regularPrice * 0.8;
+      }
+    } else {
+      // Parse the base plan price (removing $ and commas)
+      basePlanPrice = parseInt(currentPlan.price.replace(/\$|,/g, ""));
+    }
     
     let fixedAddOnsTotal = 0;
     let hasMeteredAddOns = false;
@@ -58,11 +73,12 @@ export const PlanSummary = ({
       }
     });
     
-    // Apply 20% discount for annual billing
-    let total = basePlanPrice + fixedAddOnsTotal;
+    // Apply discount for annual billing for add-ons if needed
     if (billingCycle === 'annual') {
-      total = total * 0.8; // 20% discount
+      fixedAddOnsTotal = fixedAddOnsTotal * 0.8; // 20% discount
     }
+    
+    const total = basePlanPrice + fixedAddOnsTotal;
     
     return { 
       total,
@@ -118,7 +134,11 @@ export const PlanSummary = ({
           <div className="flex justify-between items-baseline">
             <span className="text-sm font-medium">Base Price</span>
             <div className="flex gap-1 items-baseline">
-              <span>{formatPriceString(currentPlan?.price || '')}</span>
+              {billingCycle === 'annual' && annualPlanPrices[selectedPlan as keyof typeof annualPlanPrices] ? (
+                <span>{annualPlanPrices[selectedPlan as keyof typeof annualPlanPrices]}/month</span>
+              ) : (
+                <span>{formatPriceString(currentPlan?.price || '')}</span>
+              )}
               {billingCycle === 'annual' && (
                 <span className="text-xs text-blue-600 ml-1">(annual billing)</span>
               )}
