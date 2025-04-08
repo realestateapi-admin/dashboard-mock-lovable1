@@ -46,16 +46,16 @@ export const ModifiedPlanCard = ({
   const overageChanged = originalOverage !== overageHandling;
   
   return (
-    <Card className={`border-2 ${hasAnyChanges ? 'border-primary/20' : 'border-muted/20'}`}>
+    <Card className={`border-2 ${planChanged ? 'border-primary/20' : 'border-muted/20'}`}>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
-          <span>{hasAnyChanges ? 'New Plan' : 'Your Current Plan'}</span>
-          <Badge variant="outline" className={`${hasAnyChanges ? 'bg-primary/10 text-primary' : 'bg-muted/10 text-muted-foreground'}`}>
+          <span>{planChanged ? 'New Plan' : 'Your Current Plan'}</span>
+          <Badge variant="outline" className={`${planChanged ? 'bg-primary/10 text-primary' : 'bg-muted/10 text-muted-foreground'}`}>
             {billingCycle === 'annual' ? 'Annual Billing' : 'Monthly Billing'}
           </Badge>
         </CardTitle>
         <CardDescription>
-          {hasAnyChanges 
+          {planChanged 
             ? 'Your selected subscription plan'
             : `You're currently on the ${currentPlan.name} plan with ${activeAddOns.length} add-ons`}
         </CardDescription>
@@ -95,7 +95,7 @@ export const ModifiedPlanCard = ({
             <ul className="space-y-2">
               {activeAddOns.map((addon) => {
                 // Check if this addon is new (only when not showing two cards)
-                const isNewAddon = !hasAnyChanges && getAddedAddOns().some(a => a.id === addon.id);
+                const isNewAddon = !planChanged && getAddedAddOns().some(a => a.id === addon.id);
                 
                 return (
                   <li key={addon.id} className="flex justify-between text-sm">
@@ -110,7 +110,7 @@ export const ModifiedPlanCard = ({
               })}
               
               {/* Show removed add-ons with strikethrough when not showing two cards */}
-              {!hasAnyChanges && getRemovedAddOns().map((addon) => (
+              {!planChanged && getRemovedAddOns().map((addon) => (
                 <li key={addon.id} className="flex justify-between text-sm text-red-500 line-through opacity-70">
                   <span>{addon.name} <span className="ml-1 text-xs">(Removed)</span></span>
                   <span>{addon.prices[currentPlan.id]}</span>
@@ -124,9 +124,9 @@ export const ModifiedPlanCard = ({
 
         <div className="border-t pt-4">
           <h4 className="text-sm font-medium mb-2">Overage Handling:</h4>
-          <p className={`text-sm ${!hasAnyChanges && overageChanged ? "font-medium text-amber-600" : ""}`}>
+          <p className={`text-sm ${!planChanged && overageChanged ? "font-medium text-amber-600" : ""}`}>
             {formatOverageHandling(overageHandling)}
-            {!hasAnyChanges && overageChanged && (
+            {!planChanged && overageChanged && (
               <span className="ml-2 text-xs">(Changed from {formatOverageHandling(originalOverage)})</span>
             )}
           </p>

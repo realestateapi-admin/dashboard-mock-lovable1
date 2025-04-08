@@ -33,7 +33,7 @@ export const CurrentPlanCard = ({
           </Badge>
         </CardTitle>
         <CardDescription>
-          Your current subscription plan
+          Your previous subscription plan
         </CardDescription>
       </CardHeader>
 

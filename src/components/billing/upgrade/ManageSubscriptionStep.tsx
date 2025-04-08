@@ -32,11 +32,11 @@ export const ManageSubscriptionStep = ({
   const [originalPlan, setOriginalPlan] = useState<PlanData | null>(null);
   const [originalAddOns, setOriginalAddOns] = useState<AddOnData[]>([]);
   const [originalOverage, setOriginalOverage] = useState<string>("");
-  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
 
   // Save the initial state when the component mounts
   useEffect(() => {
     if (!originalPlan) {
+      console.log("Setting original plan:", currentPlan);
       setOriginalPlan(currentPlan);
       setOriginalAddOns(activeAddOns);
       setOriginalOverage(overageHandling);
@@ -57,19 +57,16 @@ export const ManageSubscriptionStep = ({
     addOnsChangedFromOriginal || 
     overageChangedFromOriginal;
 
-  // Handlers that set hasInteracted to true
+  // Handlers
   const handleChangePlan = () => {
-    setHasInteracted(true);
     onChangePlan();
   };
 
   const handleChangeAddOns = () => {
-    setHasInteracted(true);
     onChangeAddOns();
   };
 
   const handleChangeOverage = () => {
-    setHasInteracted(true);
     onChangeOverage();
   };
 
@@ -91,8 +88,8 @@ export const ManageSubscriptionStep = ({
         </p>
       </div>
 
-      <div className={`grid gap-6 ${hasAnyChanges && (planChangedFromOriginal || addOnsChangedFromOriginal) ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
-        {hasAnyChanges && planChangedFromOriginal && originalPlan && (
+      <div className={`grid gap-6 ${planChangedFromOriginal ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+        {planChangedFromOriginal && originalPlan && (
           <CurrentPlanCard
             plan={originalPlan}
             addOns={originalAddOns}
@@ -112,7 +109,7 @@ export const ManageSubscriptionStep = ({
           billingCycle={billingCycle}
           getPlanPrice={(plan) => getPlanPrice(plan, billingCycle)}
           formatOverageHandling={formatOverageHandling}
-          hasAnyChanges={hasAnyChanges && planChangedFromOriginal}
+          hasAnyChanges={planChangedFromOriginal}
           planChanged={planChangedFromOriginal}
         />
       </div>
