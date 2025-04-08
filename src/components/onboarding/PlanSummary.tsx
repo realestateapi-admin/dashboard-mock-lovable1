@@ -120,7 +120,7 @@ export const PlanSummary = ({
             <div className="flex gap-1 items-baseline">
               <span>{formatPriceString(currentPlan?.price || '')}</span>
               {billingCycle === 'annual' && (
-                <span className="text-xs text-green-600 ml-1">(20% off)</span>
+                <span className="text-xs text-blue-600 ml-1">(annual billing)</span>
               )}
             </div>
           </div>
@@ -170,8 +170,8 @@ export const PlanSummary = ({
       </div>
       
       {billingCycle === 'annual' && (
-        <div className="text-xs text-green-600">
-          Annual billing (20% savings applied)
+        <div className="text-xs text-blue-600">
+          Annual billing (discount applied)
         </div>
       )}
       

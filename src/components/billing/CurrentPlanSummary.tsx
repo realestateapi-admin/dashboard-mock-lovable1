@@ -54,8 +54,8 @@ export const CurrentPlanSummary = ({
     }
     
     if (billingCycle === 'annual') {
-      // Calculate annual price (with 20% discount on base price)
-      return `$${(numericPrice * 12 * 0.8).toFixed(0)}`;
+      // Apply 20% discount for annual billing
+      return `$${(numericPrice * 0.8).toFixed(0)}`;
     } else {
       return `$${numericPrice.toFixed(0)}`;
     }
@@ -103,7 +103,7 @@ export const CurrentPlanSummary = ({
         </div>
         <div className="text-3xl font-bold">
           {currentPlan && formatPrice(currentPlan.price)}
-          {billingCycle === 'annual' && <span className="text-sm text-green-600 block text-right">Save 20%</span>}
+          <span className="text-sm text-muted-foreground block text-right">/month</span>
         </div>
       </div>
       
@@ -140,7 +140,7 @@ export const CurrentPlanSummary = ({
         <p className="text-muted-foreground mb-3">
           {billingCycle === 'monthly' 
             ? 'Monthly flexibility - Pay month to month with no long-term commitment' 
-            : 'Annual contract - 20% savings with a 12-month agreement'}
+            : 'Annual contract - Discounted pricing with a 12-month agreement'}
         </p>
         
         <h4 className="font-medium mb-1">Overage Handling:</h4>
