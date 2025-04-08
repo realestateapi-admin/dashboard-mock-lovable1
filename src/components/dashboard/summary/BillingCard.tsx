@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -60,8 +59,8 @@ export const BillingCard = ({
   const buttonConfig = isOnPaidPlan
     ? { text: "Manage Subscription", link: "/dashboard/upgrade", variant: "outline" }
     : (isFreeUser || isTrialActive 
-      ? { text: "Upgrade Now", link: "/dashboard/plan-signup", variant: "default" }
-      : { text: "Choose a Plan", link: "/dashboard/billing", variant: "outline" }
+      ? { text: "Upgrade Now", link: "/dashboard/upgrade", variant: "default" }
+      : { text: "Choose a Plan", link: "/dashboard/upgrade", variant: "outline" }
     );
   
   return (

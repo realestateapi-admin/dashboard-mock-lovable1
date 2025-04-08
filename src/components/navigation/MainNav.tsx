@@ -27,7 +27,7 @@ export function MainNav() {
     },
     {
       title: "Billing",
-      href: "/dashboard/billing",
+      href: "/dashboard/upgrade", // Changed from /dashboard/billing to /dashboard/upgrade
       allowedRoles: ['admin', 'billing'],
       // Only show billing for paid plan users or admin users
       hideCondition: (isFreeUser && !isOnPaidPlan) || (currentRole !== 'admin' && !isOnPaidPlan)
