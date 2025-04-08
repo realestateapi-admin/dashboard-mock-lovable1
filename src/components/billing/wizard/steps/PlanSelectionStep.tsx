@@ -15,6 +15,7 @@ interface PlanSelectionStepProps {
   onSelectEnterprise?: () => void;
   isLoading: boolean;
   updateFormData: (field: string, value: any) => void;
+  isUpgradeFlow?: boolean; // Add the isUpgradeFlow property
 }
 
 export const PlanSelectionStep = ({
@@ -26,7 +27,8 @@ export const PlanSelectionStep = ({
   onBillingCycleChange,
   onSelectEnterprise,
   isLoading,
-  updateFormData
+  updateFormData,
+  isUpgradeFlow = false // Default to false
 }: PlanSelectionStepProps) => {
   
   const handlePlanChange = (planId: string) => {
@@ -55,10 +57,16 @@ export const PlanSelectionStep = ({
     );
   }
   
+  // Use different accent color based on the flow
+  const accentColor = isUpgradeFlow ? "text-purple-700" : "text-[#04c8c8]";
+  const buttonColor = isUpgradeFlow 
+    ? "bg-purple-600 hover:bg-purple-700" 
+    : "bg-[#04c8c8] hover:bg-teal-600";
+  
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-xl font-semibold mb-1">Select Your Plan</h3>
+        <h3 className={`text-xl font-semibold mb-1 ${accentColor}`}>Select Your Plan</h3>
         <p className="text-muted-foreground">
           Choose the plan that best fits your needs. You can change or cancel anytime.
         </p>
@@ -89,7 +97,7 @@ export const PlanSelectionStep = ({
             </div>
             <button
               onClick={onSelectEnterprise}
-              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+              className={`px-4 py-2 text-white rounded-md transition-colors ${buttonColor}`}
             >
               Explore Enterprise Plan
             </button>
