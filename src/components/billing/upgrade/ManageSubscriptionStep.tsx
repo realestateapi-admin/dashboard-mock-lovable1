@@ -28,15 +28,28 @@ export const ManageSubscriptionStep = ({
 }: ManageSubscriptionStepProps) => {
   const formatOverageHandling = (value: string): string => {
     switch (value) {
-      case 'stop':
+      case 'cut-off':
         return 'Stop API calls when limit is reached';
-      case 'notify':
-        return 'Notify me but continue processing';
-      case 'auto-upgrade':
-        return 'Automatically upgrade my plan';
+      case 'allow-25':
+        return 'Allow 25% overage';
+      case 'allow-100':
+        return 'Allow 100% overage';
+      case 'unlimited':
+        return 'Never cut off API key (mission critical)';
       default:
         return 'Not specified';
     }
+  };
+
+  // Get the appropriate price based on billing cycle
+  const getPlanPrice = () => {
+    if (billingCycle === 'annual') {
+      // Check if there's an annual price in the data structure
+      // @ts-ignore - We'll handle the case if annualPrice doesn't exist
+      const annualPrice = currentPlan.annualPrice;
+      return annualPrice || currentPlan.price;
+    }
+    return currentPlan.price;
   };
 
   return (
@@ -75,7 +88,7 @@ export const ManageSubscriptionStep = ({
                 <h3 className="font-medium text-lg">{currentPlan.name}</h3>
                 <p className="text-muted-foreground">{currentPlan.description}</p>
               </div>
-              <div className="text-2xl font-bold">{billingCycle === 'annual' ? currentPlan.annualPrice : currentPlan.price}</div>
+              <div className="text-2xl font-bold">{getPlanPrice()}</div>
             </div>
 
             <div className="border-t pt-3">

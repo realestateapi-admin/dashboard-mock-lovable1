@@ -160,6 +160,7 @@ const UpgradeFlow = () => {
           onOverageChange={setOverageHandling}
           onBack={goBack}
           onComplete={() => goToStep('manage')}
+          selectedPlan={selectedPlan}
         />
       )}
     </motion.div>

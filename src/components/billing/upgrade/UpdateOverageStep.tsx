@@ -6,24 +6,33 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 interface UpdateOverageStepProps {
   overageHandling: string;
   onOverageChange: (value: string) => void;
   onBack: () => void;
   onComplete: () => void;
+  selectedPlan: string;
 }
 
 export const UpdateOverageStep = ({
   overageHandling,
   onOverageChange,
   onBack,
-  onComplete
+  onComplete,
+  selectedPlan = "growth"
 }: UpdateOverageStepProps) => {
+  const { toast } = useToast();
   const [localOverageHandling, setLocalOverageHandling] = React.useState(overageHandling);
+  const isStarterPlan = selectedPlan === "starter";
 
   const handleSaveChanges = () => {
     onOverageChange(localOverageHandling);
+    toast({
+      title: "Overage settings updated",
+      description: "Your overage handling preferences have been saved."
+    });
     onComplete();
   };
 
@@ -60,37 +69,59 @@ export const UpdateOverageStep = ({
             className="space-y-6"
           >
             <div className="flex items-start space-x-4 rounded-md border p-4">
-              <RadioGroupItem value="stop" id="stop" className="mt-1" />
+              <RadioGroupItem value="cut-off" id="cut-off" className="mt-1" />
               <div className="space-y-2">
-                <Label htmlFor="stop" className="text-base font-medium">
-                  Stop API calls
+                <Label htmlFor="cut-off" className="text-base font-medium">
+                  Stop API calls when plan limit is reached
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  When you reach your plan limit, API calls will be rejected until the next billing cycle or until you upgrade your plan.
+                  API calls will fail once you reach your monthly limit, preventing any overage charges.
                 </p>
               </div>
             </div>
             
             <div className="flex items-start space-x-4 rounded-md border p-4">
-              <RadioGroupItem value="notify" id="notify" className="mt-1" />
+              <RadioGroupItem value="allow-25" id="allow-25" className="mt-1" />
               <div className="space-y-2">
-                <Label htmlFor="notify" className="text-base font-medium">
-                  Notify but continue processing
+                <Label htmlFor="allow-25" className="text-base font-medium">
+                  Allow 25% overage billed at the plan's unit rate
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  When you reach your plan limit, we'll notify you but continue processing API calls at your standard overage rate.
+                  Continue processing requests up to 25% over your plan limit at your standard unit rate.
                 </p>
               </div>
             </div>
             
             <div className="flex items-start space-x-4 rounded-md border p-4">
-              <RadioGroupItem value="auto-upgrade" id="auto-upgrade" className="mt-1" />
+              <RadioGroupItem value="allow-100" id="allow-100" className="mt-1" />
               <div className="space-y-2">
-                <Label htmlFor="auto-upgrade" className="text-base font-medium">
-                  Auto-upgrade to next tier
+                <Label htmlFor="allow-100" className="text-base font-medium">
+                  Allow 100% overage billed at the plan's unit rate
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  When you reach your plan limit, we'll automatically upgrade you to the next plan tier to ensure uninterrupted service.
+                  Continue processing requests up to double your plan limit at your standard unit rate.
+                </p>
+              </div>
+            </div>
+            
+            <div className={`flex items-start space-x-4 rounded-md border p-4 ${isStarterPlan ? 'opacity-50' : ''}`}>
+              <RadioGroupItem 
+                value="unlimited" 
+                id="unlimited" 
+                className="mt-1" 
+                disabled={isStarterPlan}
+              />
+              <div className="space-y-2">
+                <Label htmlFor="unlimited" className={`text-base font-medium ${isStarterPlan ? 'text-muted-foreground' : ''}`}>
+                  Never cut off API key because application is mission critical
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  Always process requests regardless of usage, with overages billed at your standard unit rate.
+                  {isStarterPlan && (
+                    <span className="block mt-1 text-amber-600 font-medium">
+                      This option is only available for Growth plan and above.
+                    </span>
+                  )}
                 </p>
               </div>
             </div>
