@@ -4,14 +4,12 @@ import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
 import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
-import { useNavigate } from "react-router-dom";
 
 // Import components
 import { TrialAlert } from "@/components/billing/TrialAlert";
 import { BillingTabs } from "@/components/billing/BillingTabs";
 import { CancellationLink } from "@/components/billing/CancellationLink";
 import { AccountExecutiveWidget } from "@/components/support/AccountExecutiveWidget";
-import { Button } from "@/components/ui/button";
 
 // Import data from the new modular files
 import { plans, addOns, invoices } from "@/data/billingData";
@@ -28,7 +26,6 @@ const Billing = () => {
   const { setIsEnterprisePlan } = useAccountExecutive();
   const [localIsOnPaidPlan, setLocalIsOnPaidPlan] = useState(false);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
-  const navigate = useNavigate();
   
   // Fetch usage data
   const { 
@@ -104,11 +101,6 @@ const Billing = () => {
       description: `Invoice ${invoiceId} is being downloaded.`,
     });
   };
-  
-  // Navigate to the upgrade flow
-  const handleUpgradePlan = () => {
-    navigate('/dashboard/upgrade');
-  };
 
   // Determine if we should hide trial banners based on subscription
   const shouldHideTrialBanners = localIsOnPaidPlan || isOnPaidPlan;
@@ -126,13 +118,6 @@ const Billing = () => {
     >
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-semibold tracking-tight">Billing & Subscription</h1>
-        
-        <Button 
-          onClick={handleUpgradePlan}
-          className="bg-primary hover:bg-primary/90"
-        >
-          Upgrade Plan
-        </Button>
       </div>
       
       <TrialAlert 

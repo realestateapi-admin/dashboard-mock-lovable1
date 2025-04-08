@@ -1,16 +1,12 @@
 
 import { CreditCard, CreditCardIcon, FileText, Wallet } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BillingPlans } from "@/components/billing/BillingPlans";
-import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
 import { PaymentMethods } from "@/components/billing/PaymentMethods";
 import { InvoiceHistory } from "@/components/billing/InvoiceHistory";
 import { TermsOfServiceTab } from "@/components/billing/TermsOfServiceTab";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
-import { useState, useEffect } from "react";
-import { EnterprisePlanCard } from "./EnterprisePlanCard";
-import { EnterpriseCompactCard } from "./EnterpriseCompactCard";
 import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
+import { CurrentPlanSummary } from "@/components/billing/CurrentPlanSummary";
 
 interface BillingTabsProps {
   plans: PlanData[];
@@ -53,26 +49,9 @@ export const BillingTabs = ({
   onSaveBillingPreferences,
   onDownloadInvoice
 }: BillingTabsProps) => {
-  // Remove the local billingCycle state since it's now passed as a prop
-  // const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
-  
   // Access the AccountExecutive context to show/hide the widget
   const { showWidget } = useAccountExecutive();
   
-  // Find the enterprise plan
-  const enterprisePlan = plans.find(p => p.id === "enterprise");
-  // Filter out enterprise plan from the regular plans list
-  const regularPlans = plans.filter(p => p.id !== "enterprise");
-
-  // Handle selecting enterprise plan - now also shows the SE widget
-  const handleSelectEnterprise = () => {
-    if (enterprisePlan) {
-      onPlanChange(enterprisePlan.id);
-      // Show the sales engineer widget when enterprise is selected
-      showWidget();
-    }
-  };
-
   return (
     <Tabs defaultValue="subscription" className="w-full">
       <TabsList className="mb-4">
@@ -91,41 +70,17 @@ export const BillingTabs = ({
       </TabsList>
       
       <TabsContent value="subscription">
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="md:col-span-2">
-            <BillingPlans 
-              plans={regularPlans}
-              addOns={addOns}
-              selectedPlan={selectedPlan}
-              activeAddOns={activeAddOns}
-              overageHandling={overageHandling}
-              onPlanChange={onPlanChange}
-              onToggleAddOn={onToggleAddOn}
-              onOverageHandlingChange={onOverageHandlingChange}
-              onSaveBillingPreferences={onSaveBillingPreferences}
-              billingCycle={billingCycle}
-              onBillingCycleChange={onBillingCycleChange}
-            />
-          </div>
-          
-          <div className="md:col-span-1">
-            <SubscriptionSummary 
-              selectedPlan={selectedPlan}
-              plans={plans}
-              activeAddOns={activeAddOns}
-              addOns={addOns}
-              costs={costs}
-              subscription={subscription}
-              isLoading={isLoadingSubscription}
-              onSubmit={onSaveBillingPreferences}
-              billingCycle={billingCycle}
-            />
-            
-            {/* Add the compact Enterprise card here - only show when enterprise is NOT selected */}
-            {enterprisePlan && selectedPlan !== enterprisePlan.id && (
-              <EnterpriseCompactCard onSelectEnterprise={handleSelectEnterprise} />
-            )}
-          </div>
+        <div className="max-w-2xl mx-auto">
+          <CurrentPlanSummary 
+            plans={plans}
+            addOns={addOns}
+            subscription={subscription}
+            selectedPlan={selectedPlan}
+            activeAddOns={activeAddOns}
+            overageHandling={overageHandling}
+            billingCycle={billingCycle}
+            isLoading={isLoadingSubscription}
+          />
         </div>
       </TabsContent>
       
