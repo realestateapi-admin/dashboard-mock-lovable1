@@ -2,9 +2,16 @@
 import React, { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlanData, AddOnData } from "@/types/billing";
-import { CheckCircle2, AlertCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format, addMonths, differenceInMonths } from "date-fns";
+
+// Import our new components
+import { ConfirmationHeader } from "./confirmation/ConfirmationHeader";
+import { EarlyTerminationWarning } from "./confirmation/EarlyTerminationWarning";
+import { SubscriptionDetails } from "./confirmation/SubscriptionDetails";
+import { CostSummary } from "./confirmation/CostSummary";
+import { ServiceLevelAgreement } from "./confirmation/ServiceLevelAgreement";
+import { NextStepsSection } from "./confirmation/NextStepsSection";
 
 interface SubscriptionConfirmationStepProps {
   selectedPlan: string;
@@ -116,169 +123,40 @@ export const SubscriptionConfirmationStep = ({
         <CardTitle>Subscription Confirmation</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex items-center gap-3 bg-green-50 text-green-700 p-4 rounded-md border border-green-100">
-          <CheckCircle2 className="h-6 w-6 text-green-500" />
-          <div>
-            <p className="font-medium">Your subscription has been successfully set up!</p>
-            <p className="text-sm mt-1">You will be billed {billingCycle === 'annual' ? 'annually' : 'monthly'}{billingCycle === 'annual' ? ' with a discount for annual payment' : ''}.</p>
-          </div>
-        </div>
+        {/* Confirmation Header */}
+        <ConfirmationHeader billingCycle={billingCycle} />
         
+        {/* Early Termination Warning (Only for Annual Billing) */}
         {billingCycle === 'annual' && earlyTerminationInfo && (
-          <div className="flex items-start gap-3 bg-amber-50 text-amber-700 p-4 rounded-md border border-amber-100">
-            <AlertCircle className="h-6 w-6 text-amber-500 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="font-medium">Annual Contract Early Termination Fee</p>
-              <p className="text-sm mt-1">
-                Your current annual contract started on {format(earlyTerminationInfo.contractStartDate, 'MMMM d, yyyy')} 
-                and ends on {format(earlyTerminationInfo.contractEndDate, 'MMMM d, yyyy')}.
-              </p>
-              <p className="text-sm mt-2">
-                You've completed {earlyTerminationInfo.monthsCompleted} month{earlyTerminationInfo.monthsCompleted !== 1 ? 's' : ''} of your 12-month contract 
-                with {earlyTerminationInfo.remainingMonths} month{earlyTerminationInfo.remainingMonths !== 1 ? 's' : ''} remaining.
-              </p>
-              <div className="mt-3 pt-2 border-t border-amber-200">
-                <div className="flex justify-between text-sm">
-                  <span>Remaining contract value:</span>
-                  <span>{earlyTerminationInfo.remainingContractValue}</span>
-                </div>
-                <div className="flex justify-between font-medium mt-1">
-                  <span>Early termination fee (50%):</span>
-                  <span>{earlyTerminationInfo.earlyTerminationFee}</span>
-                </div>
-              </div>
-              <p className="text-xs mt-2 italic">
-                This fee will be charged if you cancel your annual plan before the contract end date.
-              </p>
-            </div>
-          </div>
+          <EarlyTerminationWarning earlyTerminationInfo={earlyTerminationInfo} />
         )}
         
         <div className="space-y-4">
-          <h3 className="text-lg font-medium">Subscription Details</h3>
+          {/* Subscription Details Section */}
+          <SubscriptionDetails
+            selectedPlanData={selectedPlanData}
+            billingCycle={billingCycle}
+            financialInfo={financialInfo}
+            overageHandling={overageHandling}
+            paymentMethodType={paymentMethodType}
+            activeAddOns={activeAddOns}
+            addOns={addOns}
+          />
           
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-muted-foreground">Selected Plan</p>
-              <p className="font-medium">{selectedPlanData?.name}</p>
-            </div>
-            
-            <div>
-              <p className="text-sm text-muted-foreground">Billing Cycle</p>
-              <p className="font-medium">{billingCycle === 'annual' ? 'Annual' : 'Monthly'}</p>
-            </div>
-            
-            <div>
-              <p className="text-sm text-muted-foreground">First Payment Date</p>
-              <p className="font-medium">{format(financialInfo.firstPaymentDate, 'MMMM 1, yyyy')}</p>
-            </div>
-            
-            <div>
-              <p className="text-sm text-muted-foreground">Overage Handling</p>
-              <p className="font-medium capitalize">{overageHandling || 'Not specified'}</p>
-            </div>
-            
-            <div>
-              <p className="text-sm text-muted-foreground">Payment Method</p>
-              <p className="font-medium">{paymentMethodType === 'card' ? 'Credit Card' : 'Bank Account (ACH)'}</p>
-            </div>
-            
-            <div>
-              <p className="text-sm text-muted-foreground">Contract Term</p>
-              <p className="font-medium">{billingCycle === 'annual' ? '12 months' : '1 month (auto-renewal)'}</p>
-            </div>
-          </div>
+          {/* Cost Summary Section */}
+          <CostSummary
+            costs={costs}
+            financialInfo={financialInfo}
+            formatCurrency={formatCurrency}
+            paymentMethodType={paymentMethodType}
+            billingCycle={billingCycle}
+          />
           
-          {activeAddOns.length > 0 && (
-            <div>
-              <p className="text-sm text-muted-foreground mb-2">Selected Add-ons</p>
-              <ul className="space-y-1">
-                {activeAddOns.map(addOnId => {
-                  const addOn = addOns.find(a => a.id === addOnId);
-                  return addOn ? (
-                    <li key={addOnId} className="text-sm">{addOn.name}</li>
-                  ) : null;
-                })}
-              </ul>
-            </div>
-          )}
+          {/* Service Level Agreement */}
+          <ServiceLevelAgreement selectedPlanData={selectedPlanData} />
           
-          <div className="border-t pt-4 mt-4">
-            <div className="flex justify-between py-1">
-              <span className="text-muted-foreground">Base Plan:</span>
-              <span>{costs.basePrice}</span>
-            </div>
-            
-            {Number(costs.totalAddOns.replace(/[$,]/g, '')) > 0 && (
-              <div className="flex justify-between py-1">
-                <span className="text-muted-foreground">Add-ons:</span>
-                <span>{costs.totalAddOns}</span>
-              </div>
-            )}
-            
-            <div className="flex justify-between py-1">
-              <span className="text-muted-foreground">Subtotal:</span>
-              <span>{costs.total}</span>
-            </div>
-            
-            {paymentMethodType === 'card' && (
-              <div className="flex justify-between py-1">
-                <span className="text-muted-foreground">Transaction Fee (3%):</span>
-                <span>{formatCurrency(financialInfo.transactionFee)}</span>
-              </div>
-            )}
-            
-            <div className="flex justify-between py-2 font-medium border-t mt-1">
-              <span>Total {billingCycle === 'annual' ? 'Annual' : 'Monthly'} Payment:</span>
-              <span>{formatCurrency(financialInfo.totalWithFee)}</span>
-            </div>
-            
-            <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
-              <h4 className="text-sm font-medium text-blue-800">Your first payment</h4>
-              <div className="flex justify-between py-1 text-sm text-blue-700">
-                <span>Prorated amount for current {billingCycle === 'annual' ? 'year' : 'month'} ({financialInfo.remainingDays} days):</span>
-                <span>{formatCurrency(financialInfo.proratedAmount)}</span>
-              </div>
-              <div className="text-xs text-blue-600 mt-1">
-                Your first payment on {format(new Date(), 'MMMM d, yyyy')} will be prorated. Full billing begins on {format(financialInfo.firstPaymentDate, 'MMMM 1, yyyy')}.
-              </div>
-            </div>
-          </div>
-          
-          {paymentMethodType === 'card' && (
-            <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md border border-amber-100 flex items-start gap-2">
-              <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-              <span>A 3% transaction fee applies to all credit card payments. Switch to ACH (bank account) payments to avoid this fee.</span>
-            </div>
-          )}
-          
-          <div className="mt-2 border-t pt-4">
-            <h4 className="text-sm font-medium mb-2">Service Level Agreement</h4>
-            <div className="text-sm space-y-2">
-              <p>• 99.9% uptime guarantee for API services</p>
-              <p>• 24-hour response time for support tickets</p>
-              <p>• Unlimited access to knowledge base and documentation</p>
-              {selectedPlanData?.id === 'growth' && (
-                <p>• Priority support queue access</p>
-              )}
-              {selectedPlanData?.id === 'enterprise' && (
-                <>
-                  <p>• Dedicated account manager</p>
-                  <p>• Custom integration support</p>
-                </>
-              )}
-            </div>
-          </div>
-          
-          <div className="mt-2 border-t pt-4">
-            <h4 className="text-sm font-medium mb-2">Next Steps</h4>
-            <div className="text-sm space-y-2">
-              <p>1. Check your email for confirmation details</p>
-              <p>2. Set up your team members in dashboard settings</p>
-              <p>3. Generate API keys to begin integration</p>
-              <p>4. Access documentation for implementation guides</p>
-            </div>
-          </div>
+          {/* Next Steps */}
+          <NextStepsSection />
         </div>
       </CardContent>
     </Card>
