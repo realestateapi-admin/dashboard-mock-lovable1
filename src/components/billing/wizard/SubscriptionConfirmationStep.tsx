@@ -1,3 +1,5 @@
+
+import React, { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlanData, AddOnData } from "@/types/billing";
 import { CheckCircle2, AlertCircle } from "lucide-react";
@@ -31,34 +33,51 @@ export const SubscriptionConfirmationStep = ({
   isLoading,
   paymentMethodType = 'card' // Default to card
 }: SubscriptionConfirmationStepProps) => {
-  const selectedPlanData = plans.find(p => p.id === selectedPlan);
+  // Find the selected plan data from the plans array
+  const selectedPlanData = useMemo(() => 
+    plans.find(p => p.id === selectedPlan),
+    [plans, selectedPlan]
+  );
   
-  const totalAmount = parseFloat(costs.total.replace(/[$,]/g, ''));
+  // Calculate financial values with useMemo to prevent recalculations
+  const financialInfo = useMemo(() => {
+    const totalAmount = parseFloat(costs.total.replace(/[$,]/g, ''));
+    const transactionFeeRate = 0.03; // 3%
+    const transactionFee = paymentMethodType === 'card' ? totalAmount * transactionFeeRate : 0;
+    const totalWithFee = totalAmount + transactionFee;
+    
+    const today = new Date();
+    const nextMonth = addMonths(today, 1);
+    const firstPaymentDate = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
+    
+    const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+    const remainingDays = daysInMonth - today.getDate();
+    const proratedAmount = (totalWithFee / daysInMonth) * remainingDays;
+    
+    return {
+      totalAmount,
+      transactionFee,
+      totalWithFee,
+      firstPaymentDate,
+      remainingDays,
+      proratedAmount
+    };
+  }, [costs.total, paymentMethodType]);
   
-  const transactionFeeRate = 0.03; // 3%
-  const transactionFee = paymentMethodType === 'card' ? totalAmount * transactionFeeRate : 0;
-  const totalWithFee = totalAmount + transactionFee;
-  
-  const today = new Date();
-  const nextMonth = addMonths(today, 1);
-  const firstPaymentDate = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
-  
-  const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-  const remainingDays = daysInMonth - today.getDate();
-  const proratedAmount = (totalWithFee / daysInMonth) * remainingDays;
-  
+  // Format currency helper
   const formatCurrency = (amount: number) => {
     return `$${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
   };
   
-  const calculateEarlyTerminationFee = () => {
+  // Calculate early termination fee for annual contracts
+  const earlyTerminationInfo = useMemo(() => {
     if (billingCycle !== 'annual') return null;
     
     const contractStartDate = new Date(new Date().setMonth(new Date().getMonth() - 3));
     const contractEndDate = new Date(contractStartDate);
     contractEndDate.setFullYear(contractEndDate.getFullYear() + 1);
     
-    const remainingMonths = Math.ceil(differenceInMonths(contractEndDate, today));
+    const remainingMonths = Math.ceil(differenceInMonths(contractEndDate, new Date()));
     const totalMonthsInContract = 12;
     const monthsCompleted = totalMonthsInContract - remainingMonths;
     
@@ -74,10 +93,9 @@ export const SubscriptionConfirmationStep = ({
       earlyTerminationFee: formatCurrency(earlyTerminationFee),
       remainingContractValue: formatCurrency(remainingContractValue)
     };
-  };
+  }, [billingCycle, costs.total]);
   
-  const earlyTerminationInfo = calculateEarlyTerminationFee();
-  
+  // Loading state
   if (isLoading) {
     return (
       <Card>
@@ -152,7 +170,7 @@ export const SubscriptionConfirmationStep = ({
             
             <div>
               <p className="text-sm text-muted-foreground">First Payment Date</p>
-              <p className="font-medium">{format(firstPaymentDate, 'MMMM 1, yyyy')}</p>
+              <p className="font-medium">{format(financialInfo.firstPaymentDate, 'MMMM 1, yyyy')}</p>
             </div>
             
             <div>
@@ -206,23 +224,23 @@ export const SubscriptionConfirmationStep = ({
             {paymentMethodType === 'card' && (
               <div className="flex justify-between py-1">
                 <span className="text-muted-foreground">Transaction Fee (3%):</span>
-                <span>{formatCurrency(transactionFee)}</span>
+                <span>{formatCurrency(financialInfo.transactionFee)}</span>
               </div>
             )}
             
             <div className="flex justify-between py-2 font-medium border-t mt-1">
               <span>Total {billingCycle === 'annual' ? 'Annual' : 'Monthly'} Payment:</span>
-              <span>{formatCurrency(totalWithFee)}</span>
+              <span>{formatCurrency(financialInfo.totalWithFee)}</span>
             </div>
             
             <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
               <h4 className="text-sm font-medium text-blue-800">Your first payment</h4>
               <div className="flex justify-between py-1 text-sm text-blue-700">
-                <span>Prorated amount for current {billingCycle === 'annual' ? 'year' : 'month'} ({remainingDays} days):</span>
-                <span>{formatCurrency(proratedAmount)}</span>
+                <span>Prorated amount for current {billingCycle === 'annual' ? 'year' : 'month'} ({financialInfo.remainingDays} days):</span>
+                <span>{formatCurrency(financialInfo.proratedAmount)}</span>
               </div>
               <div className="text-xs text-blue-600 mt-1">
-                Your first payment on {format(today, 'MMMM d, yyyy')} will be prorated. Full billing begins on {format(firstPaymentDate, 'MMMM 1, yyyy')}.
+                Your first payment on {format(new Date(), 'MMMM d, yyyy')} will be prorated. Full billing begins on {format(financialInfo.firstPaymentDate, 'MMMM 1, yyyy')}.
               </div>
             </div>
           </div>

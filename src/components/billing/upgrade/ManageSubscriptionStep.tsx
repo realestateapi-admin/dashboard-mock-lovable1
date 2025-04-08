@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { PlanData, AddOnData } from "@/types/billing";
 import { CurrentPlanCard } from "./cards/CurrentPlanCard";
@@ -29,68 +29,82 @@ export const ManageSubscriptionStep = ({
   onChangeOverage,
   onFinalizePlan
 }: ManageSubscriptionStepProps) => {
-  // Use useRef to store the initial values that should NEVER change
-  // This guarantees they remain completely static throughout component lifecycle
-  const initialValuesRef = useRef<{
+  // Use immutable ref to store the original values that will NEVER change during the component lifecycle
+  const originalStateRef = useRef<{
     plan: PlanData | null;
     addOns: AddOnData[];
     overageHandling: string;
+    initialized: boolean;
   }>({
     plan: null,
     addOns: [],
-    overageHandling: ""
+    overageHandling: "",
+    initialized: false
   });
   
   // Store the current proposed state (what the user is configuring)
-  // These will change as user makes selections
   const [proposedPlan, setProposedPlan] = useState<PlanData | null>(null);
   const [proposedAddOns, setProposedAddOns] = useState<AddOnData[]>([]);
   const [proposedOverage, setProposedOverage] = useState<string>("");
   
-  // Flag to track if initialization has happened
-  const [isInitialized, setIsInitialized] = useState(false);
+  // Track component initialization (loading state)
+  const [isLoading, setIsLoading] = useState(true);
   
-  // Initialize state only once on component mount
+  // Initialize the original state ONCE on first mount only
   useEffect(() => {
-    if (!isInitialized && currentPlan) {
-      // Store initial values in ref - these NEVER change during component lifecycle
-      initialValuesRef.current = {
+    const initializeOriginalState = () => {
+      // Only initialize once
+      if (originalStateRef.current.initialized) {
+        return;
+      }
+
+      // Deep clone the initial props to prevent any reference sharing
+      originalStateRef.current = {
         plan: JSON.parse(JSON.stringify(currentPlan)),
         addOns: JSON.parse(JSON.stringify(activeAddOns)),
-        overageHandling: overageHandling
+        overageHandling: overageHandling,
+        initialized: true
       };
       
-      // Initialize the proposed state with copies of the current values
+      console.log("✅ Initialized IMMUTABLE original plan state:", originalStateRef.current.plan);
+      console.log("✅ Initialized IMMUTABLE original add-ons:", originalStateRef.current.addOns);
+    };
+
+    // Initialize the original values if not already done
+    if (currentPlan && !originalStateRef.current.initialized) {
+      initializeOriginalState();
+      
+      // Also initialize the proposed state with deep clones
       setProposedPlan(JSON.parse(JSON.stringify(currentPlan)));
       setProposedAddOns(JSON.parse(JSON.stringify(activeAddOns)));
       setProposedOverage(overageHandling);
       
-      // Mark as initialized to prevent re-initialization
-      setIsInitialized(true);
-      
-      console.log("Initialized original plan state:", initialValuesRef.current.plan);
-      console.log("Initialized original add-ons:", initialValuesRef.current.addOns);
+      // Mark loading as complete
+      setIsLoading(false);
     }
-  }, [currentPlan, activeAddOns, overageHandling, isInitialized]);
+  }, [currentPlan, activeAddOns, overageHandling]);
 
-  // Update proposed state when current values change (after user makes changes)
+  // Update the proposed state when current props change
+  // Only run this after initialization
   useEffect(() => {
-    // Only update the proposed state if we've already initialized
-    if (isInitialized) {
-      // Create completely new objects through deep cloning
-      setProposedPlan(JSON.parse(JSON.stringify(currentPlan)));
-      setProposedAddOns(JSON.parse(JSON.stringify(activeAddOns)));
+    if (originalStateRef.current.initialized && !isLoading) {
+      // Always create new objects with deep cloning to prevent reference issues
+      const newProposedPlan = JSON.parse(JSON.stringify(currentPlan));
+      const newProposedAddOns = JSON.parse(JSON.stringify(activeAddOns));
+      
+      setProposedPlan(newProposedPlan);
+      setProposedAddOns(newProposedAddOns);
       setProposedOverage(overageHandling);
       
-      console.log("Updated proposed plan state with deep clone:", currentPlan);
-      console.log("Updated proposed add-ons with deep clone:", activeAddOns);
+      console.log("Updated proposed plan with deep clone:", newProposedPlan);
+      console.log("Updated proposed add-ons with deep clone:", newProposedAddOns);
     }
-  }, [currentPlan, activeAddOns, overageHandling, isInitialized]);
+  }, [currentPlan, activeAddOns, overageHandling, isLoading]);
 
-  // Get the original values from the ref (these never change)
-  const originalPlan = initialValuesRef.current.plan;
-  const originalAddOns = initialValuesRef.current.addOns;
-  const originalOverage = initialValuesRef.current.overageHandling;
+  // Access the immutable original values safely
+  const originalPlan = originalStateRef.current.plan;
+  const originalAddOns = originalStateRef.current.addOns;
+  const originalOverage = originalStateRef.current.overageHandling;
 
   // Check if any of the subscription details have changed
   const planChanged = originalPlan && proposedPlan && originalPlan.id !== proposedPlan.id;
@@ -106,7 +120,7 @@ export const ManageSubscriptionStep = ({
     addOnsChangedFromOriginal || 
     overageChangedFromOriginal;
 
-  // Handlers
+  // Action handlers
   const handleChangePlan = () => {
     onChangePlan();
   };
@@ -123,8 +137,8 @@ export const ManageSubscriptionStep = ({
     onFinalizePlan();
   };
 
-  // Wait for initialization before rendering
-  if (!isInitialized || !originalPlan || !proposedPlan) {
+  // Show loading state
+  if (isLoading || !originalStateRef.current.initialized || !originalPlan || !proposedPlan) {
     return (
       <div className="flex items-center justify-center h-[200px]">
         <div className="animate-pulse text-center">
