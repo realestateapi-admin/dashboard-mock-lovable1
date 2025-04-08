@@ -26,11 +26,13 @@ export const BillingCard = ({
   subscriptionStartDate,
   subscriptionRenewalDate
 }: BillingCardProps) => {
-  // State to store the plan name
+  // State to store the plan name and billing cycle
   const [planName, setPlanName] = useState("Professional Plan");
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   
-  // Get the selected plan from localStorage on component mount
+  // Get the selected plan and billing cycle from localStorage on component mount
   useEffect(() => {
+    // Get plan ID
     const storedPlanId = localStorage.getItem('selectedPlan') || sessionStorage.getItem('selectedPlan');
     
     if (storedPlanId) {
@@ -39,6 +41,12 @@ export const BillingCard = ({
       if (selectedPlan) {
         setPlanName(selectedPlan.name + " Plan");
       }
+    }
+    
+    // Get billing cycle
+    const storedBillingCycle = localStorage.getItem('billingCycle');
+    if (storedBillingCycle === 'annual' || storedBillingCycle === 'monthly') {
+      setBillingCycle(storedBillingCycle);
     }
   }, []);
 
@@ -64,6 +72,9 @@ export const BillingCard = ({
       : { text: "Choose a Plan", link: "/dashboard/billing", variant: "outline" }
     );
   
+  // Calculate display price based on billing cycle
+  const displayPrice = billingCycle === 'annual' ? "$792.00" : "$99.00";
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -77,7 +88,7 @@ export const BillingCard = ({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {isOnPaidPlan ? "$99.00" : (isFreeUser ? "$0.00" : (isTrialActive ? "Free Trial" : "$99.00"))}
+            {isOnPaidPlan ? displayPrice : (isFreeUser ? "$0.00" : (isTrialActive ? "Free Trial" : displayPrice))}
           </div>
           <p className="text-xs text-muted-foreground">
             {isOnPaidPlan 
@@ -106,6 +117,11 @@ export const BillingCard = ({
                 )
               }
             </Badge>
+            {billingCycle === 'annual' && (
+              <Badge variant="outline" className="ml-2 bg-blue-50 text-blue-600">
+                Annual
+              </Badge>
+            )}
           </div>
           {isOnPaidPlan && formattedStartDate && (
             <p className="mt-2 text-xs text-muted-foreground">

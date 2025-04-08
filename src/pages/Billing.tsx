@@ -40,6 +40,14 @@ const Billing = () => {
     isLoading: isLoadingSubscription
   } = useSubscriptionData();
 
+  // Get stored plan selection from localStorage
+  useEffect(() => {
+    const storedBillingCycle = localStorage.getItem('billingCycle');
+    if (storedBillingCycle && (storedBillingCycle === 'monthly' || storedBillingCycle === 'annual')) {
+      setBillingCycle(storedBillingCycle as 'monthly' | 'annual');
+    }
+  }, []);
+
   // Use the subscription calculator hook
   const {
     selectedPlan,
@@ -69,11 +77,6 @@ const Billing = () => {
     
     // Update the enterprise status in the AccountExecutiveContext
     setIsEnterprisePlan(isEnterprise);
-    
-    // Store the selected plan in localStorage for persistence
-    if (selectedPlan) {
-      localStorage.setItem('selectedPlan', selectedPlan);
-    }
   }, [selectedPlan, setIsEnterprisePlan]);
 
   const handleSaveBillingPreferences = () => {
@@ -93,6 +96,7 @@ const Billing = () => {
 
   const handleBillingCycleChange = (cycle: 'monthly' | 'annual') => {
     setBillingCycle(cycle);
+    localStorage.setItem('billingCycle', cycle);
   };
 
   const handleDownloadInvoice = (invoiceId: string) => {

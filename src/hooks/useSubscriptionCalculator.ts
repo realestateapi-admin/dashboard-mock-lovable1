@@ -25,9 +25,31 @@ export const useSubscriptionCalculator = (
   addOns: AddOnData[],
   subscription?: SubscriptionData | null
 ): SubscriptionCalculatorReturn => {
-  const [selectedPlan, setSelectedPlan] = useState("growth");
-  const [overageHandling, setOverageHandling] = useState("cut-off"); // Default to cut-off
-  const [activeAddOns, setActiveAddOns] = useState<string[]>([]);
+  // Get initial plan from localStorage or default to "growth"
+  const getInitialPlan = () => {
+    const storedPlan = localStorage.getItem('selectedPlan') || sessionStorage.getItem('selectedPlan');
+    return storedPlan && plans.some(p => p.id === storedPlan) ? storedPlan : "growth";
+  };
+  
+  // Get initial add-ons from localStorage or default to empty array
+  const getInitialAddOns = () => {
+    try {
+      const storedAddOns = localStorage.getItem('activeAddOns');
+      return storedAddOns ? JSON.parse(storedAddOns) : [];
+    } catch (e) {
+      console.error("Error parsing stored add-ons:", e);
+      return [];
+    }
+  };
+  
+  // Get initial overage handling from localStorage or default to "cut-off"
+  const getInitialOverageHandling = () => {
+    return localStorage.getItem('overageHandling') || "cut-off";
+  };
+  
+  const [selectedPlan, setSelectedPlan] = useState(getInitialPlan());
+  const [overageHandling, setOverageHandling] = useState(getInitialOverageHandling());
+  const [activeAddOns, setActiveAddOns] = useState<string[]>(getInitialAddOns());
   
   // Get access to the trial context
   let trialContext;
@@ -38,6 +60,19 @@ export const useSubscriptionCalculator = (
     trialContext = { isOnPaidPlan: false };
   }
   const { isOnPaidPlan } = trialContext;
+
+  // Store plan choices in localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('selectedPlan', selectedPlan);
+  }, [selectedPlan]);
+  
+  useEffect(() => {
+    localStorage.setItem('overageHandling', overageHandling);
+  }, [overageHandling]);
+  
+  useEffect(() => {
+    localStorage.setItem('activeAddOns', JSON.stringify(activeAddOns));
+  }, [activeAddOns]);
 
   const toggleAddOn = (addOnId: string) => {
     setActiveAddOns(prev => 
