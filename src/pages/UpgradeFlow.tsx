@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import WizardProgress from "@/components/onboarding/wizard/WizardProgress";
 
 // Import hooks and services
 import { useSubscriptionData } from "@/hooks/useSubscriptionData";
@@ -12,12 +13,21 @@ import { useSubscriptionCalculator } from "@/hooks/useSubscriptionCalculator";
 import { plans, addOns } from "@/data/billingData";
 
 // Import components
-import { CurrentPlanView } from "@/components/billing/upgrade/CurrentPlanView";
+import { ManageSubscriptionStep } from "@/components/billing/upgrade/ManageSubscriptionStep";
+import { ChangePlanStep } from "@/components/billing/upgrade/ChangePlanStep";
+import { ModifyAddOnsStep } from "@/components/billing/upgrade/ModifyAddOnsStep";
+import { UpdateOverageStep } from "@/components/billing/upgrade/UpdateOverageStep";
+
+// Wizard step type
+type UpgradeStep = 'manage' | 'plan' | 'addons' | 'overage' | 'summary';
 
 const UpgradeFlow = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(0);
+  
+  // Wizard state
+  const [currentStep, setCurrentStep] = useState<UpgradeStep>('manage');
+  const [previousStep, setPreviousStep] = useState<UpgradeStep | null>(null);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   
   // Fetch subscription data
@@ -57,33 +67,27 @@ const UpgradeFlow = () => {
     activeAddOns.includes(addon.id)
   );
 
-  // Handle navigation to different sections
-  const handleChangePlan = () => {
-    toast({
-      title: "Change Plan",
-      description: "This will navigate to the plan selection page (to be implemented)",
-    });
-    // Placeholder: navigate to plan selection
-    // setCurrentStep(1);
+  // Navigation handlers
+  const goToStep = (step: UpgradeStep) => {
+    setPreviousStep(currentStep);
+    setCurrentStep(step);
   };
 
-  const handleChangeAddOns = () => {
-    toast({
-      title: "Modify Add-ons",
-      description: "This will navigate to the add-ons selection page (to be implemented)",
-    });
-    // Placeholder: navigate to add-ons selection
-    // setCurrentStep(2);
+  const goBack = () => {
+    if (previousStep) {
+      setCurrentStep(previousStep);
+      setPreviousStep(null);
+    } else {
+      // If no previous step is recorded, go to the manage step
+      setCurrentStep('manage');
+    }
   };
 
-  const handleChangeOverage = () => {
-    toast({
-      title: "Change Overage Settings",
-      description: "This will navigate to the overage settings page (to be implemented)",
-    });
-    // Placeholder: navigate to overage settings
-    // setCurrentStep(3);
-  };
+  // Calculate current step index for progress bar
+  const getStepIndex = () => {
+    const stepOrder: UpgradeStep[] = ['manage', 'plan', 'addons', 'overage', 'summary'];
+    return stepOrder.indexOf(currentStep);
+  }
 
   // Show loading state while fetching subscription data
   if (isLoadingSubscription) {
@@ -104,19 +108,60 @@ const UpgradeFlow = () => {
       transition={{ duration: 0.3 }}
       className="container max-w-4xl"
     >
-      {currentStep === 0 && (
-        <CurrentPlanView 
+      {/* Progress Bar - Only show if not on the first step */}
+      {currentStep !== 'manage' && (
+        <div className="mb-8">
+          <WizardProgress step={getStepIndex()} totalSteps={5} />
+        </div>
+      )}
+
+      {/* Step 1: Manage Subscription */}
+      {currentStep === 'manage' && (
+        <ManageSubscriptionStep 
           currentPlan={currentPlan}
           activeAddOns={activeAddOnsData}
           overageHandling={overageHandling}
           billingCycle={billingCycle}
-          onChangePlan={handleChangePlan}
-          onChangeAddOns={handleChangeAddOns}
-          onChangeOverage={handleChangeOverage}
+          onChangePlan={() => goToStep('plan')}
+          onChangeAddOns={() => goToStep('addons')}
+          onChangeOverage={() => goToStep('overage')}
         />
       )}
       
-      {/* We'll implement the other steps in future updates */}
+      {/* Step 2: Change Plan */}
+      {currentStep === 'plan' && (
+        <ChangePlanStep
+          plans={plans}
+          currentPlan={currentPlan}
+          billingCycle={billingCycle}
+          onBillingCycleChange={setBillingCycle}
+          onSelectPlan={setSelectedPlan}
+          onBack={goBack}
+          onComplete={() => goToStep('manage')}
+        />
+      )}
+      
+      {/* Step 3: Modify Add-ons */}
+      {currentStep === 'addons' && (
+        <ModifyAddOnsStep
+          addOns={addOns}
+          selectedPlan={selectedPlan}
+          activeAddOns={activeAddOns}
+          onToggleAddOn={toggleAddOn}
+          onBack={goBack}
+          onComplete={() => goToStep('manage')}
+        />
+      )}
+      
+      {/* Step 4: Update Overage Handling */}
+      {currentStep === 'overage' && (
+        <UpdateOverageStep
+          overageHandling={overageHandling}
+          onOverageChange={setOverageHandling}
+          onBack={goBack}
+          onComplete={() => goToStep('manage')}
+        />
+      )}
     </motion.div>
   );
 };
