@@ -38,8 +38,8 @@ export const CurrentPlanSummary = ({
   // Find active add-ons
   const currentAddOns = addOns.filter(addon => activeAddOns.includes(addon.id));
   
-  // Format price for display
-  const formatPrice = (price: string | number) => {
+  // Format price for display - ensure it always returns a string
+  const formatPrice = (price: string | number): string => {
     return formatPriceUtil(price, billingCycle, currentPlan?.id);
   };
   

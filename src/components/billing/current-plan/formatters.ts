@@ -5,7 +5,7 @@ export const formatPrice = (
   price: string | number,
   billingCycle: 'monthly' | 'annual',
   planId?: string
-) => {
+): string => {
   // Parse the price to a number if it's a string (removing $ and comma symbols)
   let numericPrice: number;
   
@@ -18,7 +18,7 @@ export const formatPrice = (
   
   // Check if parsing resulted in a valid number
   if (isNaN(numericPrice)) {
-    return price; // Return original price if parsing failed
+    return String(price); // Convert to string if parsing failed
   }
   
   // If annual billing cycle, use the correct annual price from the annualPlanPrices object
