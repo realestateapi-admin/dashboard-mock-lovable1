@@ -102,7 +102,7 @@ const UpgradeFlow = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="container max-w-4xl py-8"
+      className="container max-w-4xl"
     >
       {currentStep === 0 && (
         <CurrentPlanView 

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -103,6 +104,11 @@ const Billing = () => {
       description: `Invoice ${invoiceId} is being downloaded.`,
     });
   };
+  
+  // Navigate to the upgrade flow
+  const handleUpgradePlan = () => {
+    navigate('/dashboard/upgrade');
+  };
 
   // Determine if we should hide trial banners based on subscription
   const shouldHideTrialBanners = localIsOnPaidPlan || isOnPaidPlan;
@@ -123,7 +129,7 @@ const Billing = () => {
         
         {/* Add Upgrade button to navigate to the new flow */}
         <Button 
-          onClick={() => navigate('/dashboard/upgrade')} 
+          onClick={handleUpgradePlan}
           className="bg-primary hover:bg-primary/90"
         >
           Upgrade Plan

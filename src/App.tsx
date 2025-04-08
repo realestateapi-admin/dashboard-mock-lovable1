@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -79,6 +80,12 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 
+                <Route path="upgrade" element={
+                  <ProtectedRoute allowedRoles={['admin', 'billing']}>
+                    <UpgradeFlow />
+                  </ProtectedRoute>
+                } />
+                
                 <Route path="support" element={<Support />} />
                 
                 <Route path="profile" element={<Profile />} />
@@ -96,8 +103,6 @@ const App = () => (
                   <Route path="profile" element={<ProfileSettings />} />
                 </Route>
               </Route>
-              
-              <Route path="/dashboard/upgrade" element={<UpgradeFlow />} />
               
               <Route path="*" element={<NotFound />} />
             </Routes>
