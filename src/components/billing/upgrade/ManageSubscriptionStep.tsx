@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -5,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Check, ArrowRightLeft } from "lucide-react";
 import { PlanData, AddOnData } from "@/types/billing";
+import { annualPlanPrices } from "@/data/plans";
 
 interface ManageSubscriptionStepProps {
   currentPlan: PlanData;
@@ -53,7 +55,8 @@ export const ManageSubscriptionStep = ({
 
   const getPlanPrice = (plan: PlanData) => {
     if (billingCycle === 'annual') {
-      const annualPrice = plan.annualPrice;
+      // Check if this plan has an annual price in the annualPlanPrices object
+      const annualPrice = annualPlanPrices[plan.id as keyof typeof annualPlanPrices];
       return annualPrice || plan.price;
     }
     return plan.price;
