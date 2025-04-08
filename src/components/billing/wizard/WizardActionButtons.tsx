@@ -28,7 +28,7 @@ export const WizardActionButtons = ({
     <div className="flex justify-between w-full">
       <Button
         onClick={handleBack}
-        disabled={currentStep === 0}
+        disabled={isLoading}
         variant="outline"
         className="flex items-center gap-1"
       >
