@@ -29,46 +29,36 @@ export const ManageSubscriptionStep = ({
   onChangeOverage,
   onFinalizePlan
 }: ManageSubscriptionStepProps) => {
-  // Store the original state on first render
+  // Store the original state (snapshot of subscription when component mounts)
   const [originalPlan, setOriginalPlan] = useState<PlanData | null>(null);
   const [originalAddOns, setOriginalAddOns] = useState<AddOnData[]>([]);
   const [originalOverage, setOriginalOverage] = useState<string>("");
   
-  // Store the current proposed state
+  // Store the current proposed state (what the user is configuring)
   const [proposedPlan, setProposedPlan] = useState<PlanData | null>(null);
   const [proposedAddOns, setProposedAddOns] = useState<AddOnData[]>([]);
   const [proposedOverage, setProposedOverage] = useState<string>("");
-
-  // Use a ref to track if this is the first render
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  // Initialize the original and proposed states on first render only
+  
+  // Initialize state only once on component mount
   useEffect(() => {
-    if (!isInitialized) {
-      console.log("Initializing original plan state:", currentPlan);
-      // Set original state (never changes until finalization)
-      setOriginalPlan(currentPlan);
-      setOriginalAddOns([...activeAddOns]);
-      setOriginalOverage(overageHandling);
-      
-      // Set initial proposed state (will update with user changes)
-      setProposedPlan(currentPlan);
-      setProposedAddOns([...activeAddOns]);
-      setProposedOverage(overageHandling);
-      
-      setIsInitialized(true);
-    }
-  }, [currentPlan, activeAddOns, overageHandling, isInitialized]);
+    // This sets the "snapshot" of the original plan that never changes during the session
+    setOriginalPlan(currentPlan);
+    setOriginalAddOns([...activeAddOns]);
+    setOriginalOverage(overageHandling);
+    
+    // Initialize the proposed state with the current values
+    setProposedPlan(currentPlan);
+    setProposedAddOns([...activeAddOns]);
+    setProposedOverage(overageHandling);
+  }, []); // Empty dependency array ensures this only runs once on mount
 
-  // Update proposed state when current values change (happens after user makes changes)
+  // Update proposed state when current values change (after user makes changes)
   useEffect(() => {
-    if (isInitialized) {
-      console.log("Updating proposed plan state:", currentPlan);
-      setProposedPlan(currentPlan);
-      setProposedAddOns([...activeAddOns]);
-      setProposedOverage(overageHandling);
-    }
-  }, [currentPlan, activeAddOns, overageHandling, isInitialized]);
+    // Only update the proposed state, never the original state
+    setProposedPlan(currentPlan);
+    setProposedAddOns([...activeAddOns]);
+    setProposedOverage(overageHandling);
+  }, [currentPlan, activeAddOns, overageHandling]);
 
   // Check if any of the subscription details have changed
   const planChanged = originalPlan && proposedPlan && originalPlan.id !== proposedPlan.id;
@@ -102,7 +92,7 @@ export const ManageSubscriptionStep = ({
   };
 
   // Wait for initialization before rendering
-  if (!isInitialized || !originalPlan || !proposedPlan) {
+  if (!originalPlan || !proposedPlan) {
     return (
       <div className="flex items-center justify-center h-[200px]">
         <div className="animate-pulse text-center">
@@ -128,7 +118,7 @@ export const ManageSubscriptionStep = ({
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Always show the original plan on the left */}
+        {/* Always show the original plan on the left - this never changes during the session */}
         <CurrentPlanCard
           plan={originalPlan}
           addOns={originalAddOns}
@@ -138,7 +128,7 @@ export const ManageSubscriptionStep = ({
           formatOverageHandling={formatOverageHandling}
         />
 
-        {/* Show the proposed plan on the right */}
+        {/* Show the proposed/modified plan on the right - this updates with user changes */}
         <ModifiedPlanCard
           currentPlan={proposedPlan}
           activeAddOns={proposedAddOns}
