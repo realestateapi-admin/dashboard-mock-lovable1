@@ -1,13 +1,13 @@
 
-import React, { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
-import { Skeleton } from "@/components/ui/skeleton";
-import { annualPlanPrices } from "@/data/plans";
-import { format, addYears } from "date-fns";
+import { CurrentPlanHeader } from "./current-plan/CurrentPlanHeader";
+import { PlanDetails } from "./current-plan/PlanDetails";
+import { AddOnsList } from "./current-plan/AddOnsList";
+import { BillingDetails } from "./current-plan/BillingDetails";
+import { PlanSummaryLoading } from "./current-plan/PlanSummaryLoading";
+import { formatPrice as formatPriceUtil } from "./current-plan/formatters";
 
 interface CurrentPlanSummaryProps {
   plans: PlanData[];
@@ -38,167 +38,43 @@ export const CurrentPlanSummary = ({
   // Find active add-ons
   const currentAddOns = addOns.filter(addon => activeAddOns.includes(addon.id));
   
-  // Format price based on billing cycle
+  // Format price for display
   const formatPrice = (price: string | number) => {
-    // Parse the price to a number if it's a string (removing $ and comma symbols)
-    let numericPrice: number;
-    
-    if (typeof price === 'string') {
-      // Remove $ and commas from the price string
-      numericPrice = parseFloat(price.replace(/[$,]/g, ''));
-    } else {
-      numericPrice = price;
-    }
-    
-    // Check if parsing resulted in a valid number
-    if (isNaN(numericPrice)) {
-      return price; // Return original price if parsing failed
-    }
-    
-    // If annual billing cycle, use the correct annual price from the annualPlanPrices object
-    if (billingCycle === 'annual' && currentPlan) {
-      const annualPrice = annualPlanPrices[currentPlan.id as keyof typeof annualPlanPrices];
-      if (annualPrice) {
-        return annualPrice;
-      }
-      
-      // If no specific annual price is set, apply the standard discount
-      return `$${(numericPrice * 0.8).toFixed(0)}`;
-    } else {
-      return `$${numericPrice.toFixed(0)}`;
-    }
+    return formatPriceUtil(price, billingCycle, currentPlan?.id);
   };
-  
-  // Calculate renewal date based on subscription start date or current date
-  const calculateRenewalDate = () => {
-    // If we have subscription data with a contract end date, use that
-    if (subscription?.contract_end_date) {
-      try {
-        return format(new Date(subscription.contract_end_date), 'MMM d, yyyy');
-      } catch (e) {
-        console.error("Error formatting contract end date:", e);
-      }
-    }
-    
-    // If we have a subscription start date, calculate renewal as 1 year from start
-    if (subscription?.subscription_start_date || subscription?.contract_start_date) {
-      try {
-        const startDate = new Date(
-          subscription.subscription_start_date || 
-          subscription.contract_start_date || 
-          new Date()
-        );
-        return format(addYears(startDate, 1), 'MMM d, yyyy');
-      } catch (e) {
-        console.error("Error calculating renewal date:", e);
-      }
-    }
-    
-    // Fallback to 1 year from today
-    return format(addYears(new Date(), 1), 'MMM d, yyyy');
-  };
-  
-  const renewalDate = billingCycle === 'annual' ? calculateRenewalDate() : null;
   
   const handleManageSubscription = () => {
     navigate('/dashboard/upgrade');
   };
   
   if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-8 w-1/3" />
-        <Skeleton className="h-6 w-2/3" />
-        <Skeleton className="h-10 w-full" />
-        <div className="space-y-2 mt-6">
-          <Skeleton className="h-4 w-1/4" />
-          <Skeleton className="h-4 w-1/2" />
-          <Skeleton className="h-4 w-1/3" />
-        </div>
-      </div>
-    );
+    return <PlanSummaryLoading />;
   }
   
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-start">
-        <div>
-          <h2 className="text-2xl font-bold">Your Current Plan</h2>
-          <p className="text-muted-foreground mt-1">
-            You're currently on the {currentPlan?.name} plan with {activeAddOns.length} add-ons
-          </p>
-        </div>
-        {billingCycle === 'annual' && (
-          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-            Annual Billing
-          </Badge>
-        )}
-      </div>
+      <CurrentPlanHeader 
+        planName={currentPlan?.name || "No Plan"}
+        addOnCount={activeAddOns.length}
+        billingCycle={billingCycle}
+      />
       
-      <div className="flex justify-between items-start pt-2">
-        <div>
-          <h3 className="text-xl font-semibold">{currentPlan?.name}</h3>
-          <p className="text-muted-foreground">{currentPlan?.description}</p>
-        </div>
-        <div className="text-3xl font-bold">
-          {currentPlan && formatPrice(currentPlan.price)}
-          <span className="text-sm text-muted-foreground block text-right">/month</span>
-        </div>
-      </div>
+      <PlanDetails 
+        currentPlan={currentPlan}
+        formatPrice={formatPrice}
+        billingCycle={billingCycle}
+      />
       
-      <div className="border-t border-b py-6">
-        <h4 className="font-medium mb-3">Plan includes:</h4>
-        <ul className="space-y-2">
-          {currentPlan?.features.slice(0, 4).map((feature, index) => (
-            <li key={index} className="flex items-center">
-              <Check className="h-5 w-5 text-primary-teal mr-2" />
-              <span>{feature}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <AddOnsList 
+        currentAddOns={currentAddOns}
+      />
       
-      <div>
-        <h4 className="font-medium mb-3">Active Add-ons:</h4>
-        {currentAddOns.length > 0 ? (
-          <ul className="space-y-2">
-            {currentAddOns.map((addon) => (
-              <li key={addon.id} className="flex items-center">
-                <Check className="h-5 w-5 text-primary-teal mr-2" />
-                <span>{addon.name}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-muted-foreground">No add-ons currently active</p>
-        )}
-      </div>
-      
-      <div>
-        <h4 className="font-medium mb-1">Billing Cycle:</h4>
-        <p className="text-muted-foreground mb-3">
-          {billingCycle === 'monthly' 
-            ? 'Monthly flexibility - Pay month to month with no long-term commitment' 
-            : 'Annual contract - Discounted pricing with a 12-month agreement'}
-        </p>
-        
-        {billingCycle === 'annual' && renewalDate && (
-          <div className="mb-3">
-            <h4 className="font-medium mb-1">Renewal Date:</h4>
-            <p className="text-muted-foreground">{renewalDate}</p>
-          </div>
-        )}
-        
-        <h4 className="font-medium mb-1">Overage Handling:</h4>
-        <p className="text-muted-foreground mb-6">{overageHandling}</p>
-        
-        <Button 
-          onClick={handleManageSubscription} 
-          className="w-full"
-        >
-          Manage Your Subscription
-        </Button>
-      </div>
+      <BillingDetails 
+        billingCycle={billingCycle}
+        overageHandling={overageHandling}
+        subscription={subscription}
+        onManageSubscription={handleManageSubscription}
+      />
     </div>
   );
 };
