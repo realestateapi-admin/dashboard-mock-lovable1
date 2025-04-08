@@ -1,9 +1,8 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlanData, AddOnData } from "@/types/billing";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { format, addMonths } from "date-fns";
+import { format, addMonths, differenceInMonths } from "date-fns";
 
 interface SubscriptionConfirmationStepProps {
   selectedPlan: string;
@@ -34,28 +33,50 @@ export const SubscriptionConfirmationStep = ({
 }: SubscriptionConfirmationStepProps) => {
   const selectedPlanData = plans.find(p => p.id === selectedPlan);
   
-  // Parse the total amount from the costs.total string (remove $ and commas)
   const totalAmount = parseFloat(costs.total.replace(/[$,]/g, ''));
   
-  // Calculate transaction fee if using credit card
   const transactionFeeRate = 0.03; // 3%
   const transactionFee = paymentMethodType === 'card' ? totalAmount * transactionFeeRate : 0;
   const totalWithFee = totalAmount + transactionFee;
   
-  // Calculate first payment date (1st of next month)
   const today = new Date();
   const nextMonth = addMonths(today, 1);
   const firstPaymentDate = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
   
-  // Calculate proration amount for current month
   const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
   const remainingDays = daysInMonth - today.getDate();
   const proratedAmount = (totalWithFee / daysInMonth) * remainingDays;
   
-  // Format as currency
   const formatCurrency = (amount: number) => {
     return `$${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
   };
+  
+  const calculateEarlyTerminationFee = () => {
+    if (billingCycle !== 'annual') return null;
+    
+    const contractStartDate = new Date(new Date().setMonth(new Date().getMonth() - 3));
+    const contractEndDate = new Date(contractStartDate);
+    contractEndDate.setFullYear(contractEndDate.getFullYear() + 1);
+    
+    const remainingMonths = Math.ceil(differenceInMonths(contractEndDate, today));
+    const totalMonthsInContract = 12;
+    const monthsCompleted = totalMonthsInContract - remainingMonths;
+    
+    const monthlyAmount = parseFloat(costs.total.replace(/[$,]/g, ''));
+    const remainingContractValue = monthlyAmount * remainingMonths;
+    const earlyTerminationFee = remainingContractValue * 0.5;
+    
+    return {
+      contractStartDate,
+      contractEndDate,
+      remainingMonths,
+      monthsCompleted,
+      earlyTerminationFee: formatCurrency(earlyTerminationFee),
+      remainingContractValue: formatCurrency(remainingContractValue)
+    };
+  };
+  
+  const earlyTerminationInfo = calculateEarlyTerminationFee();
   
   if (isLoading) {
     return (
@@ -84,6 +105,36 @@ export const SubscriptionConfirmationStep = ({
             <p className="text-sm mt-1">You will be billed {billingCycle === 'annual' ? 'annually' : 'monthly'}{billingCycle === 'annual' ? ' with a discount for annual payment' : ''}.</p>
           </div>
         </div>
+        
+        {billingCycle === 'annual' && earlyTerminationInfo && (
+          <div className="flex items-start gap-3 bg-amber-50 text-amber-700 p-4 rounded-md border border-amber-100">
+            <AlertCircle className="h-6 w-6 text-amber-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium">Annual Contract Early Termination Fee</p>
+              <p className="text-sm mt-1">
+                Your current annual contract started on {format(earlyTerminationInfo.contractStartDate, 'MMMM d, yyyy')} 
+                and ends on {format(earlyTerminationInfo.contractEndDate, 'MMMM d, yyyy')}.
+              </p>
+              <p className="text-sm mt-2">
+                You've completed {earlyTerminationInfo.monthsCompleted} month{earlyTerminationInfo.monthsCompleted !== 1 ? 's' : ''} of your 12-month contract 
+                with {earlyTerminationInfo.remainingMonths} month{earlyTerminationInfo.remainingMonths !== 1 ? 's' : ''} remaining.
+              </p>
+              <div className="mt-3 pt-2 border-t border-amber-200">
+                <div className="flex justify-between text-sm">
+                  <span>Remaining contract value:</span>
+                  <span>{earlyTerminationInfo.remainingContractValue}</span>
+                </div>
+                <div className="flex justify-between font-medium mt-1">
+                  <span>Early termination fee (50%):</span>
+                  <span>{earlyTerminationInfo.earlyTerminationFee}</span>
+                </div>
+              </div>
+              <p className="text-xs mt-2 italic">
+                This fee will be charged if you cancel your annual plan before the contract end date.
+              </p>
+            </div>
+          </div>
+        )}
         
         <div className="space-y-4">
           <h3 className="text-lg font-medium">Subscription Details</h3>
@@ -164,7 +215,6 @@ export const SubscriptionConfirmationStep = ({
               <span>{formatCurrency(totalWithFee)}</span>
             </div>
             
-            {/* Prorated amount section */}
             <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
               <h4 className="text-sm font-medium text-blue-800">Your first payment</h4>
               <div className="flex justify-between py-1 text-sm text-blue-700">
@@ -184,7 +234,6 @@ export const SubscriptionConfirmationStep = ({
             </div>
           )}
           
-          {/* Service Level Agreement section */}
           <div className="mt-2 border-t pt-4">
             <h4 className="text-sm font-medium mb-2">Service Level Agreement</h4>
             <div className="text-sm space-y-2">
@@ -203,7 +252,6 @@ export const SubscriptionConfirmationStep = ({
             </div>
           </div>
           
-          {/* Next Steps section */}
           <div className="mt-2 border-t pt-4">
             <h4 className="text-sm font-medium mb-2">Next Steps</h4>
             <div className="text-sm space-y-2">
