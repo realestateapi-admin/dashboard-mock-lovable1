@@ -91,8 +91,8 @@ export const ManageSubscriptionStep = ({
         </p>
       </div>
 
-      <div className={`grid gap-6 ${hasInteracted && hasAnyChanges ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
-        {hasInteracted && hasAnyChanges && originalPlan && (
+      <div className={`grid gap-6 ${hasAnyChanges && (planChangedFromOriginal || addOnsChangedFromOriginal) ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+        {hasAnyChanges && planChangedFromOriginal && originalPlan && (
           <CurrentPlanCard
             plan={originalPlan}
             addOns={originalAddOns}
@@ -112,12 +112,12 @@ export const ManageSubscriptionStep = ({
           billingCycle={billingCycle}
           getPlanPrice={(plan) => getPlanPrice(plan, billingCycle)}
           formatOverageHandling={formatOverageHandling}
-          hasAnyChanges={hasInteracted && hasAnyChanges}
+          hasAnyChanges={hasAnyChanges && planChangedFromOriginal}
           planChanged={planChangedFromOriginal}
         />
       </div>
 
-      {hasInteracted && hasAnyChanges && (
+      {hasAnyChanges && (
         <PlanChangeIndicator 
           hasChanges={hasAnyChanges} 
           planChanged={planChangedFromOriginal}
