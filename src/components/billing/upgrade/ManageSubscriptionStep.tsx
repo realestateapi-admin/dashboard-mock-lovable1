@@ -31,12 +31,16 @@ export const ManageSubscriptionStep = ({
 }: ManageSubscriptionStepProps) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [originalPlan, setOriginalPlan] = useState<PlanData | null>(null);
+  const [originalAddOns, setOriginalAddOns] = useState<AddOnData[]>([]);
+  const [originalOverage, setOriginalOverage] = useState<string>("");
 
   React.useEffect(() => {
     if (!originalPlan) {
       setOriginalPlan(currentPlan);
+      setOriginalAddOns(activeAddOns);
+      setOriginalOverage(overageHandling);
     }
-  }, [currentPlan, originalPlan]);
+  }, [currentPlan, activeAddOns, overageHandling, originalPlan]);
 
   const formatOverageHandling = (value: string): string => {
     switch (value) {
@@ -62,7 +66,25 @@ export const ManageSubscriptionStep = ({
     return plan.price;
   };
 
+  // Check if any of the subscription details have changed
   const planChangedFromOriginal = originalPlan && originalPlan.id !== currentPlan.id;
+  
+  // Check if add-ons have changed
+  const addOnsChanged = () => {
+    if (originalAddOns.length !== activeAddOns.length) return true;
+    
+    // Check if any add-on IDs are different
+    const originalIds = originalAddOns.map(a => a.id).sort();
+    const currentIds = activeAddOns.map(a => a.id).sort();
+    
+    return originalIds.some((id, index) => id !== currentIds[index]);
+  };
+  
+  // Check if overage handling has changed
+  const overageChanged = originalOverage !== overageHandling;
+  
+  // Determine if any changes have been made
+  const hasAnyChanges = planChangedFromOriginal || addOnsChanged() || overageChanged;
 
   return (
     <motion.div
@@ -78,8 +100,8 @@ export const ManageSubscriptionStep = ({
         </p>
       </div>
 
-      <div className={`grid gap-6 ${planChangedFromOriginal ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
-        {planChangedFromOriginal && originalPlan && (
+      <div className={`grid gap-6 ${hasAnyChanges ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+        {hasAnyChanges && originalPlan && (
           <Card className="border-2 border-muted/20">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center justify-between">
@@ -124,16 +146,16 @@ export const ManageSubscriptionStep = ({
           </Card>
         )}
 
-        <Card className={`border-2 ${planChangedFromOriginal ? 'border-primary/20' : 'border-primary/20'}`}>
+        <Card className={`border-2 ${hasAnyChanges ? 'border-primary/20' : 'border-primary/20'}`}>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center justify-between">
-              <span>{planChangedFromOriginal ? 'New Plan' : 'Your Current Plan'}</span>
+              <span>{hasAnyChanges ? 'New Plan' : 'Your Current Plan'}</span>
               <Badge variant="outline" className="bg-primary/10 text-primary">
                 {billingCycle === 'annual' ? 'Annual Billing' : 'Monthly Billing'}
               </Badge>
             </CardTitle>
             <CardDescription>
-              {planChangedFromOriginal 
+              {hasAnyChanges 
                 ? 'Your selected subscription plan'
                 : `You're currently on the ${currentPlan.name} plan with ${activeAddOns.length} add-ons`}
             </CardDescription>
@@ -191,7 +213,7 @@ export const ManageSubscriptionStep = ({
         </Card>
       </div>
 
-      {planChangedFromOriginal && (
+      {hasAnyChanges && (
         <div className="flex items-center justify-center gap-2 py-2">
           <ArrowRightLeft className="h-5 w-5 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">Plan has been changed</span>
