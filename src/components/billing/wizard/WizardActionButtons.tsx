@@ -17,7 +17,7 @@ export const WizardActionButtons = ({
   isLoading,
   handleBack,
   handleNext,
-  isUpgradeFlow = false
+  isUpgradeFlow = true
 }: WizardActionButtonsProps) => {
   // Set button colors based on flow
   const primaryButtonClass = isUpgradeFlow 

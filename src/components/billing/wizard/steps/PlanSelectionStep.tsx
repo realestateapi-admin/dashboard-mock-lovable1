@@ -27,7 +27,7 @@ export const PlanSelectionStep = ({
   onSelectEnterprise,
   isLoading,
   updateFormData,
-  isUpgradeFlow = false // Default to false
+  isUpgradeFlow = true // Default to true for upgrade flow
 }: PlanSelectionStepProps) => {
   
   const handlePlanChange = (planId: string) => {

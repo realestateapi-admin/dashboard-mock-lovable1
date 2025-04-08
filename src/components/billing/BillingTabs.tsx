@@ -11,7 +11,7 @@ import { EnterprisePlanCard } from "./EnterprisePlanCard";
 import { EnterpriseCompactCard } from "./EnterpriseCompactCard";
 import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 import { Button } from "@/components/ui/button";
-import { UpgradeWizardV2 } from "./wizard/UpgradeWizardV2";
+import { UpgradeWizard } from "./wizard/UpgradeWizard";
 
 interface BillingTabsProps {
   plans: PlanData[];
@@ -80,7 +80,7 @@ export const BillingTabs = ({
 
   if (showUpgradeWizard) {
     return (
-      <UpgradeWizardV2
+      <UpgradeWizard
         plans={plans}
         addOns={addOns}
         selectedPlan={selectedPlan}
@@ -96,6 +96,7 @@ export const BillingTabs = ({
         onFinish={handleFinishWizard}
         enterprisePlan={enterprisePlan}
         onSelectEnterprise={handleSelectEnterprise}
+        isUpgradeFlow={true}
       />
     );
   }
