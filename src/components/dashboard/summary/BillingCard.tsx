@@ -56,6 +56,14 @@ export const BillingCard = ({
   const formattedStartDate = formatDate(subscriptionStartDate);
   const formattedRenewalDate = formatDate(subscriptionRenewalDate);
   
+  // Determine button text and link based on plan status
+  const buttonConfig = isOnPaidPlan
+    ? { text: "Manage Subscription", link: "/dashboard/upgrade", variant: "outline" }
+    : (isFreeUser || isTrialActive 
+      ? { text: "Upgrade Now", link: "/dashboard/plan-signup", variant: "default" }
+      : { text: "Choose a Plan", link: "/dashboard/billing", variant: "outline" }
+    );
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -106,13 +114,13 @@ export const BillingCard = ({
           )}
           <div className="mt-4">
             <Button 
-              variant={isFreeUser || isTrialActive ? "default" : "outline"} 
+              variant={buttonConfig.variant as "default" | "outline"} 
               size="sm" 
               className="w-full" 
               asChild
             >
-              <Link to={isFreeUser || isTrialActive ? "/dashboard/plan-signup" : "/dashboard/billing"}>
-                {isFreeUser || isTrialActive ? "Upgrade Now" : (isOnPaidPlan ? "Manage Subscription" : "Choose a Plan")}
+              <Link to={buttonConfig.link}>
+                {buttonConfig.text}
               </Link>
             </Button>
           </div>
