@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { plans, addOns } from "@/data/billingData";
+import { annualPlanPrices } from "@/data/plans";
 
 interface BillingCardProps {
   isTrialActive: boolean;
@@ -49,10 +50,17 @@ export const BillingCard = ({
             // Get billing cycle to determine price display
             const storedBillingCycle = localStorage.getItem('billingCycle');
             if (storedBillingCycle === 'annual') {
-              setDisplayPrice(`$${(numericPrice * 12 * 0.8).toFixed(0)}.00`);
+              // For annual billing, get the per-month price from annualPlanPrices
+              const annualPrice = annualPlanPrices[storedPlanId as keyof typeof annualPlanPrices];
+              if (annualPrice) {
+                setDisplayPrice(annualPrice);
+              } else {
+                // If no specific annual price found, apply standard discount
+                setDisplayPrice(`$${(numericPrice * 0.8).toFixed(0)}`);
+              }
               setBillingCycle('annual');
             } else {
-              setDisplayPrice(`$${numericPrice.toFixed(0)}.00`);
+              setDisplayPrice(`$${numericPrice.toFixed(0)}`);
               setBillingCycle('monthly');
             }
           }
