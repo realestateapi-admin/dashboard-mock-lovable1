@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,7 +18,7 @@ import Billing from "./pages/Billing";
 import Support from "./pages/Support";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
-import PlanSignupWizard from "./pages/PlanSignupWizard"; // Add the new page
+import PlanSignupWizard from "./pages/PlanSignupWizard";
 import SettingsPage from "./components/settings/SettingsPage";
 import ProfileSettings from "./components/settings/ProfileSettings";
 import { TrialAlertProvider } from "./contexts/TrialAlertContext";
@@ -27,8 +26,8 @@ import { AuthProvider, ProtectedRoute } from "./contexts/AuthContext";
 import AccessDenied from "./pages/AccessDenied";
 import ImplementationNotes from "./pages/ImplementationNotes";
 import SalesFlowPage from "./pages/SalesFlowPage";
+import UpgradeFlow from "./pages/UpgradeFlow";
 
-// Initialize the query client for data fetching
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -40,7 +39,6 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              {/* Public routes */}
               <Route path="/" element={<Index />} />
               <Route path="/sign-in" element={<SignIn />} />
               <Route path="/sign-up" element={<SignUp />} />
@@ -48,7 +46,6 @@ const App = () => (
               <Route path="/onboarding-wizard" element={<OnboardingWizardPage />} />
               <Route path="/sales-flow" element={<SalesFlowPage />} />
               
-              {/* Dashboard routes */}
               <Route path="/dashboard" element={
                 <ProtectedRoute allowedRoles={['admin', 'billing', 'developer', 'viewer']}>
                   <DashboardLayout />
@@ -57,10 +54,8 @@ const App = () => (
                 <Route index element={<Dashboard />} />
                 <Route path="access-denied" element={<AccessDenied />} />
                 
-                {/* New Plan Signup Wizard */}
                 <Route path="plan-signup" element={<PlanSignupWizard />} />
                 
-                {/* API Usage - accessible to all except viewers */}
                 <Route path="usage" element={
                   <ProtectedRoute allowedRoles={['admin', 'billing', 'developer']}>
                     <ApiUsage />
@@ -72,33 +67,26 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 
-                {/* API Keys - accessible to admins and developers */}
                 <Route path="api-keys" element={
                   <ProtectedRoute allowedRoles={['admin', 'developer']}>
                     <ApiKeys />
                   </ProtectedRoute>
                 } />
                 
-                {/* Billing - accessible to admins and billing roles */}
                 <Route path="billing" element={
                   <ProtectedRoute allowedRoles={['admin', 'billing']}>
                     <Billing />
                   </ProtectedRoute>
                 } />
                 
-                {/* Support - accessible to all roles */}
                 <Route path="support" element={<Support />} />
                 
-                {/* Profile - accessible to all roles */}
                 <Route path="profile" element={<Profile />} />
                 
-                {/* Implementation Notes - accessible to all roles */}
                 <Route path="implementation-notes" element={<ImplementationNotes />} />
                 
-                {/* Sales Flow - accessible to all roles */}
                 <Route path="sales-flow" element={<SalesFlowPage />} />
                 
-                {/* Settings - accessible to admins only */}
                 <Route path="settings" element={
                   <ProtectedRoute allowedRoles={['admin']}>
                     <Settings />
@@ -109,7 +97,8 @@ const App = () => (
                 </Route>
               </Route>
               
-              {/* Fallback for unknown routes */}
+              <Route path="/dashboard/upgrade" element={<UpgradeFlow />} />
+              
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
