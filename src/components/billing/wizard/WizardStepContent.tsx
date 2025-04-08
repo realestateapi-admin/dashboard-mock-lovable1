@@ -66,40 +66,44 @@ export const WizardStepContent = ({
   // Filter out enterprise plan for display in plan selection
   const regularPlans = plans.filter(p => p.id !== "enterprise");
   
+  // Find the selected plan's name for the overage handling step
+  const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || 'Selected';
+  
   return (
     <div ref={contentRef} className="min-h-[400px]">
       {currentStep === 0 && (
         <PlanSelectionStep 
           selectedPlan={selectedPlan}
           billingCycle={billingCycle}
-          plans={regularPlans}
+          regularPlans={regularPlans}
           enterprisePlan={enterprisePlan}
           onPlanChange={onPlanChange}
           onBillingCycleChange={onBillingCycleChange}
           onSelectEnterprise={onSelectEnterprise}
           isLoading={isLoading}
           isUpgradeFlow={isUpgradeFlow}
+          updateFormData={updateFormData}
         />
       )}
       
       {currentStep === 1 && (
         <AddOnsStep 
           addOns={addOns}
+          selectedPlan={selectedPlan}
           activeAddOns={activeAddOns}
           onToggleAddOn={onToggleAddOn}
           isLoading={isLoading}
-          isUpgradeFlow={isUpgradeFlow}
+          updateFormData={updateFormData}
         />
       )}
       
       {currentStep === 2 && (
         <OverageHandlingStep 
-          selectedPlan={selectedPlan}
-          plans={plans}
+          selectedPlanName={selectedPlanName}
           overageHandling={overageHandling}
           onOverageHandlingChange={onOverageHandlingChange}
           isLoading={isLoading}
-          isUpgradeFlow={isUpgradeFlow}
+          updateFormData={updateFormData}
         />
       )}
       
@@ -117,9 +121,9 @@ export const WizardStepContent = ({
       {currentStep === 4 && (
         <TermsOfServiceStep 
           termsAccepted={termsAccepted}
-          handleTermsAccepted={handleTermsAccepted}
+          onTermsAccepted={handleTermsAccepted}
           isLoading={isLoading}
-          isUpgradeFlow={isUpgradeFlow}
+          updateFormData={updateFormData}
         />
       )}
       
@@ -133,7 +137,7 @@ export const WizardStepContent = ({
           overageHandling={overageHandling}
           costs={costs}
           isLoading={isLoading}
-          isUpgradeFlow={isUpgradeFlow}
+          formData={formData}
         />
       )}
     </div>
