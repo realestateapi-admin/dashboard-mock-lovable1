@@ -46,11 +46,11 @@ export const ModifiedPlanCard = ({
   const overageChanged = originalOverage !== overageHandling;
   
   return (
-    <Card className={`border-2 ${hasAnyChanges ? 'border-primary/20' : 'border-primary/20'}`}>
+    <Card className={`border-2 ${hasAnyChanges ? 'border-primary/20' : 'border-muted/20'}`}>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
           <span>{hasAnyChanges ? 'New Plan' : 'Your Current Plan'}</span>
-          <Badge variant="outline" className="bg-primary/10 text-primary">
+          <Badge variant="outline" className={`${hasAnyChanges ? 'bg-primary/10 text-primary' : 'bg-muted/10 text-muted-foreground'}`}>
             {billingCycle === 'annual' ? 'Annual Billing' : 'Monthly Billing'}
           </Badge>
         </CardTitle>

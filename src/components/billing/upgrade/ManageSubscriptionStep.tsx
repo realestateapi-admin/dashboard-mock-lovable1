@@ -32,6 +32,7 @@ export const ManageSubscriptionStep = ({
   const [originalPlan, setOriginalPlan] = useState<PlanData | null>(null);
   const [originalAddOns, setOriginalAddOns] = useState<AddOnData[]>([]);
   const [originalOverage, setOriginalOverage] = useState<string>("");
+  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
 
   // Save the initial state when the component mounts
   useEffect(() => {
@@ -56,6 +57,26 @@ export const ManageSubscriptionStep = ({
     addOnsChangedFromOriginal || 
     overageChangedFromOriginal;
 
+  // Handlers that set hasInteracted to true
+  const handleChangePlan = () => {
+    setHasInteracted(true);
+    onChangePlan();
+  };
+
+  const handleChangeAddOns = () => {
+    setHasInteracted(true);
+    onChangeAddOns();
+  };
+
+  const handleChangeOverage = () => {
+    setHasInteracted(true);
+    onChangeOverage();
+  };
+
+  const handleFinalizePlan = () => {
+    onFinalizePlan();
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -70,8 +91,8 @@ export const ManageSubscriptionStep = ({
         </p>
       </div>
 
-      <div className={`grid gap-6 ${hasAnyChanges ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
-        {hasAnyChanges && originalPlan && (
+      <div className={`grid gap-6 ${hasInteracted && hasAnyChanges ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+        {hasInteracted && hasAnyChanges && originalPlan && (
           <CurrentPlanCard
             plan={originalPlan}
             addOns={originalAddOns}
@@ -91,23 +112,25 @@ export const ManageSubscriptionStep = ({
           billingCycle={billingCycle}
           getPlanPrice={(plan) => getPlanPrice(plan, billingCycle)}
           formatOverageHandling={formatOverageHandling}
-          hasAnyChanges={hasAnyChanges}
+          hasAnyChanges={hasInteracted && hasAnyChanges}
           planChanged={planChangedFromOriginal}
         />
       </div>
 
-      <PlanChangeIndicator 
-        hasChanges={hasAnyChanges} 
-        planChanged={planChangedFromOriginal}
-        addOnsChanged={addOnsChangedFromOriginal}
-        overageChanged={overageChangedFromOriginal}
-      />
+      {hasInteracted && hasAnyChanges && (
+        <PlanChangeIndicator 
+          hasChanges={hasAnyChanges} 
+          planChanged={planChangedFromOriginal}
+          addOnsChanged={addOnsChangedFromOriginal}
+          overageChanged={overageChangedFromOriginal}
+        />
+      )}
 
       <PlanOptionsCard
-        onChangePlan={onChangePlan}
-        onChangeAddOns={onChangeAddOns}
-        onChangeOverage={onChangeOverage}
-        onFinalizePlan={onFinalizePlan}
+        onChangePlan={handleChangePlan}
+        onChangeAddOns={handleChangeAddOns}
+        onChangeOverage={handleChangeOverage}
+        onFinalizePlan={handleFinalizePlan}
         setHasChanges={() => {}}
       />
     </motion.div>
