@@ -71,7 +71,7 @@ const OnboardingWizard = ({ userName = "" }: OnboardingWizardProps) => {
               </div>
             </div>
             
-            <WizardProgress step={step} totalSteps={steps.length} />
+            <WizardProgress step={step} totalSteps={steps.length} showProgress={true} />
           </CardHeader>
           
           <CardContent className="py-4">

@@ -81,7 +81,7 @@ export const SubscriptionConfirmationStep = ({
           <CheckCircle2 className="h-6 w-6 text-green-500" />
           <div>
             <p className="font-medium">Your subscription has been successfully set up!</p>
-            <p className="text-sm mt-1">You will be billed {billingCycle === 'annual' ? 'monthly with a 12-month commitment' : 'monthly with no long-term commitment'}.</p>
+            <p className="text-sm mt-1">You will be billed {billingCycle === 'annual' ? 'annually' : 'monthly'}{billingCycle === 'annual' ? ' with a discount for annual payment' : ''}.</p>
           </div>
         </div>
         
@@ -96,7 +96,7 @@ export const SubscriptionConfirmationStep = ({
             
             <div>
               <p className="text-sm text-muted-foreground">Billing Cycle</p>
-              <p className="font-medium">{billingCycle === 'annual' ? 'Annual (12-month commitment)' : 'Monthly'}</p>
+              <p className="font-medium">{billingCycle === 'annual' ? 'Annual' : 'Monthly'}</p>
             </div>
             
             <div>
@@ -112,6 +112,11 @@ export const SubscriptionConfirmationStep = ({
             <div>
               <p className="text-sm text-muted-foreground">Payment Method</p>
               <p className="font-medium">{paymentMethodType === 'card' ? 'Credit Card' : 'Bank Account (ACH)'}</p>
+            </div>
+            
+            <div>
+              <p className="text-sm text-muted-foreground">Contract Term</p>
+              <p className="font-medium">{billingCycle === 'annual' ? '12 months' : '1 month (auto-renewal)'}</p>
             </div>
           </div>
           
@@ -155,7 +160,7 @@ export const SubscriptionConfirmationStep = ({
             )}
             
             <div className="flex justify-between py-2 font-medium border-t mt-1">
-              <span>Total Monthly Payment:</span>
+              <span>Total {billingCycle === 'annual' ? 'Annual' : 'Monthly'} Payment:</span>
               <span>{formatCurrency(totalWithFee)}</span>
             </div>
             
@@ -163,7 +168,7 @@ export const SubscriptionConfirmationStep = ({
             <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
               <h4 className="text-sm font-medium text-blue-800">Your first payment</h4>
               <div className="flex justify-between py-1 text-sm text-blue-700">
-                <span>Prorated amount for current month ({remainingDays} days):</span>
+                <span>Prorated amount for current {billingCycle === 'annual' ? 'year' : 'month'} ({remainingDays} days):</span>
                 <span>{formatCurrency(proratedAmount)}</span>
               </div>
               <div className="text-xs text-blue-600 mt-1">
@@ -173,10 +178,41 @@ export const SubscriptionConfirmationStep = ({
           </div>
           
           {paymentMethodType === 'card' && (
-            <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md border border-amber-100">
-              A 3% transaction fee applies to all credit card payments. Switch to ACH (bank account) payments to avoid this fee.
+            <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md border border-amber-100 flex items-start gap-2">
+              <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <span>A 3% transaction fee applies to all credit card payments. Switch to ACH (bank account) payments to avoid this fee.</span>
             </div>
           )}
+          
+          {/* Service Level Agreement section */}
+          <div className="mt-2 border-t pt-4">
+            <h4 className="text-sm font-medium mb-2">Service Level Agreement</h4>
+            <div className="text-sm space-y-2">
+              <p>• 99.9% uptime guarantee for API services</p>
+              <p>• 24-hour response time for support tickets</p>
+              <p>• Unlimited access to knowledge base and documentation</p>
+              {selectedPlanData?.id === 'growth' && (
+                <p>• Priority support queue access</p>
+              )}
+              {selectedPlanData?.id === 'enterprise' && (
+                <>
+                  <p>• Dedicated account manager</p>
+                  <p>• Custom integration support</p>
+                </>
+              )}
+            </div>
+          </div>
+          
+          {/* Next Steps section */}
+          <div className="mt-2 border-t pt-4">
+            <h4 className="text-sm font-medium mb-2">Next Steps</h4>
+            <div className="text-sm space-y-2">
+              <p>1. Check your email for confirmation details</p>
+              <p>2. Set up your team members in dashboard settings</p>
+              <p>3. Generate API keys to begin integration</p>
+              <p>4. Access documentation for implementation guides</p>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

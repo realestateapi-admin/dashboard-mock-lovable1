@@ -4,10 +4,16 @@ import { motion } from "framer-motion";
 interface WizardProgressProps {
   step: number;
   totalSteps: number;
+  showProgress?: boolean; // Add option to hide progress bar
 }
 
-const WizardProgress = ({ step, totalSteps }: WizardProgressProps) => {
+const WizardProgress = ({ step, totalSteps, showProgress = true }: WizardProgressProps) => {
   const progress = ((step + 1) / totalSteps) * 100;
+  
+  // If showProgress is false, don't render anything
+  if (!showProgress) {
+    return null;
+  }
   
   return (
     <div className="w-full h-2 bg-gray-200 rounded-full mt-4">

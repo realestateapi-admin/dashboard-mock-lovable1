@@ -50,6 +50,7 @@ const PlanSignupWizard = () => {
             <WizardHeader 
               currentStep={currentStep} 
               steps={steps} 
+              hideProgressBar={true} // Added to hide the progress bar
             />
           </CardHeader>
           
