@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import ApiUsage from "./pages/ApiUsage";
 import UsageHistory from "./pages/UsageHistory";
 import ApiKeys from "./pages/ApiKeys";
+import Billing from "./pages/Billing";
 import Support from "./pages/Support";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
@@ -73,10 +74,9 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 
-                {/* Redirect from billing to upgrade */}
                 <Route path="billing" element={
                   <ProtectedRoute allowedRoles={['admin', 'billing']}>
-                    <Navigate to="/dashboard/upgrade" replace />
+                    <Billing />
                   </ProtectedRoute>
                 } />
                 
