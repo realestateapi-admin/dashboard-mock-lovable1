@@ -19,7 +19,7 @@ import { ModifyAddOnsStep } from "@/components/billing/upgrade/ModifyAddOnsStep"
 import { UpdateOverageStep } from "@/components/billing/upgrade/UpdateOverageStep";
 
 // Wizard step type
-type UpgradeStep = 'manage' | 'plan' | 'addons' | 'overage' | 'summary';
+type UpgradeStep = 'manage' | 'plan' | 'addons' | 'overage';
 
 const UpgradeFlow = () => {
   const { toast } = useToast();
@@ -85,7 +85,7 @@ const UpgradeFlow = () => {
 
   // Calculate current step index for progress bar
   const getStepIndex = () => {
-    const stepOrder: UpgradeStep[] = ['manage', 'plan', 'addons', 'overage', 'summary'];
+    const stepOrder: UpgradeStep[] = ['manage', 'plan', 'addons', 'overage'];
     return stepOrder.indexOf(currentStep);
   }
 
@@ -106,12 +106,12 @@ const UpgradeFlow = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="container max-w-4xl"
+      className="container max-w-4xl mx-auto"
     >
       {/* Progress Bar - Only show if not on the first step */}
       {currentStep !== 'manage' && (
         <div className="mb-8">
-          <WizardProgress step={getStepIndex()} totalSteps={5} />
+          <WizardProgress step={getStepIndex()} totalSteps={4} />
         </div>
       )}
 

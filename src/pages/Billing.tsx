@@ -127,7 +127,6 @@ const Billing = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-semibold tracking-tight">Billing & Subscription</h1>
         
-        {/* Add Upgrade button to navigate to the new flow */}
         <Button 
           onClick={handleUpgradePlan}
           className="bg-primary hover:bg-primary/90"

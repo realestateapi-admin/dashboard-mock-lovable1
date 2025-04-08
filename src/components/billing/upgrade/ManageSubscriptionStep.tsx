@@ -75,7 +75,7 @@ export const ManageSubscriptionStep = ({
                 <h3 className="font-medium text-lg">{currentPlan.name}</h3>
                 <p className="text-muted-foreground">{currentPlan.description}</p>
               </div>
-              <div className="text-2xl font-bold">{currentPlan.price}</div>
+              <div className="text-2xl font-bold">{billingCycle === 'annual' ? currentPlan.annualPrice : currentPlan.price}</div>
             </div>
 
             <div className="border-t pt-3">
