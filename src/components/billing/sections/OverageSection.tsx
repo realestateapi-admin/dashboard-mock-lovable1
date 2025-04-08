@@ -5,12 +5,14 @@ interface OverageSectionProps {
   selectedPlanName: string;
   overageHandling: string;
   onOverageHandlingChange: (value: string) => void;
+  selectedPlan?: string;
 }
 
 export const OverageSection = ({
   selectedPlanName,
   overageHandling,
-  onOverageHandlingChange
+  onOverageHandlingChange,
+  selectedPlan = "growth"
 }: OverageSectionProps) => {
   return (
     <div className="mt-6">
@@ -18,6 +20,7 @@ export const OverageSection = ({
         selectedPlanName={selectedPlanName}
         overageHandling={overageHandling}
         onOverageHandlingChange={onOverageHandlingChange}
+        selectedPlan={selectedPlan}
       />
     </div>
   );

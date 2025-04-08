@@ -27,7 +27,24 @@ export const UpdateOverageStep = ({
   const [localOverageHandling, setLocalOverageHandling] = React.useState(overageHandling);
   const isStarterPlan = selectedPlan === "starter";
 
+  // Reset to a valid option if current selection is "unlimited" and we're on a Starter plan
+  React.useEffect(() => {
+    if (isStarterPlan && localOverageHandling === "unlimited") {
+      setLocalOverageHandling("allow-100");
+    }
+  }, [isStarterPlan, localOverageHandling]);
+
   const handleSaveChanges = () => {
+    // Ensure we don't save "unlimited" for Starter plans
+    if (isStarterPlan && localOverageHandling === "unlimited") {
+      toast({
+        title: "Invalid selection",
+        description: "Unlimited overage is not available for Starter plans.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     onOverageChange(localOverageHandling);
     toast({
       title: "Overage settings updated",

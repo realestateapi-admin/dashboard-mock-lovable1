@@ -8,14 +8,17 @@ interface OverageHandlingProps {
   overageHandling: string;
   onOverageHandlingChange: (value: string) => void;
   isLoading?: boolean;
+  selectedPlan?: string;
 }
 
 export const OverageHandling = ({
   selectedPlanName,
   overageHandling,
   onOverageHandlingChange,
-  isLoading = false
+  isLoading = false,
+  selectedPlan = "growth"
 }: OverageHandlingProps) => {
+  const isStarterPlan = selectedPlan === "starter";
   
   if (isLoading) {
     return <OverageHandlingSkeleton />;
@@ -76,14 +79,24 @@ export const OverageHandling = ({
           </div>
         </div>
         
-        <div className="flex items-start space-x-3 border p-4 rounded-md">
-          <RadioGroupItem value="unlimited" id="unlimited" className="mt-1" />
+        <div className={`flex items-start space-x-3 border p-4 rounded-md ${isStarterPlan ? 'opacity-50' : ''}`}>
+          <RadioGroupItem 
+            value="unlimited" 
+            id="unlimited" 
+            className="mt-1" 
+            disabled={isStarterPlan}
+          />
           <div>
-            <Label htmlFor="unlimited" className="text-base font-medium">
+            <Label htmlFor="unlimited" className={`text-base font-medium ${isStarterPlan ? 'text-muted-foreground' : ''}`}>
               My app is mission critical. Do not cut off access no matter the amount of overage
             </Label>
             <p className="text-sm text-muted-foreground mt-1">
               Always process requests regardless of usage, with overages billed at your standard unit rate.
+              {isStarterPlan && (
+                <span className="block mt-1 text-amber-600 font-medium">
+                  This option is only available for Growth plan and above.
+                </span>
+              )}
             </p>
           </div>
         </div>
