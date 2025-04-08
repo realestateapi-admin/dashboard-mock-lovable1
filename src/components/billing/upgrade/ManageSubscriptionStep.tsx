@@ -73,12 +73,16 @@ export const ManageSubscriptionStep = ({
   useEffect(() => {
     // Only update the proposed state if we've already initialized
     if (isInitialized) {
-      setProposedPlan(currentPlan);
-      setProposedAddOns([...activeAddOns]);
+      // ✅ FIX: Deep clone currentPlan and activeAddOns before setting as proposed state
+      const clonedPlan = JSON.parse(JSON.stringify(currentPlan));
+      const clonedAddOns = JSON.parse(JSON.stringify(activeAddOns));
+      
+      setProposedPlan(clonedPlan);
+      setProposedAddOns(clonedAddOns);
       setProposedOverage(overageHandling);
       
-      console.log("Updated proposed plan state:", currentPlan);
-      console.log("Updated proposed add-ons:", activeAddOns);
+      console.log("Updated proposed plan state:", clonedPlan);
+      console.log("Updated proposed add-ons:", clonedAddOns);
     }
   }, [currentPlan, activeAddOns, overageHandling, isInitialized]);
 

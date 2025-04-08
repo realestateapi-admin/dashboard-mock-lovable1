@@ -60,7 +60,7 @@ export const ChangePlanStep = ({
       </div>
 
       {isAnnualBilling && (
-        <Alert variant="info" className="bg-blue-50 border-blue-200">
+        <Alert variant="default" className="bg-blue-50 border-blue-200">
           <AlertCircle className="h-4 w-4 text-blue-600" />
           <AlertDescription className="text-blue-700">
             You're currently on an annual billing cycle. Once on an annual plan, you cannot switch back to monthly billing until your contract ends.
