@@ -17,9 +17,11 @@ import { ManageSubscriptionStep } from "@/components/billing/upgrade/ManageSubsc
 import { ChangePlanStep } from "@/components/billing/upgrade/ChangePlanStep";
 import { ModifyAddOnsStep } from "@/components/billing/upgrade/ModifyAddOnsStep";
 import { UpdateOverageStep } from "@/components/billing/upgrade/UpdateOverageStep";
+import { TermsOfServiceStep } from "@/components/billing/wizard/TermsOfServiceStep";
+import { SubscriptionConfirmationStep } from "@/components/billing/wizard/SubscriptionConfirmationStep";
 
 // Wizard step type
-type UpgradeStep = 'manage' | 'plan' | 'addons' | 'overage';
+type UpgradeStep = 'manage' | 'plan' | 'addons' | 'overage' | 'terms' | 'confirmation';
 
 const UpgradeFlow = () => {
   const { toast } = useToast();
@@ -29,6 +31,7 @@ const UpgradeFlow = () => {
   const [currentStep, setCurrentStep] = useState<UpgradeStep>('manage');
   const [previousStep, setPreviousStep] = useState<UpgradeStep | null>(null);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  const [termsAccepted, setTermsAccepted] = useState(false);
   
   // Fetch subscription data
   const {
@@ -85,9 +88,32 @@ const UpgradeFlow = () => {
 
   // Calculate current step index for progress bar
   const getStepIndex = () => {
-    const stepOrder: UpgradeStep[] = ['manage', 'plan', 'addons', 'overage'];
+    const stepOrder: UpgradeStep[] = ['manage', 'plan', 'addons', 'overage', 'terms', 'confirmation'];
     return stepOrder.indexOf(currentStep);
   }
+
+  // Handle terms acceptance
+  const handleTermsAccepted = (accepted: boolean) => {
+    setTermsAccepted(accepted);
+  };
+
+  // Handle plan finalization
+  const handleFinalizePlan = () => {
+    goToStep('terms');
+  };
+
+  // Handle submission after terms acceptance
+  const handleSubmitChanges = () => {
+    if (termsAccepted) {
+      goToStep('confirmation');
+    } else {
+      toast({
+        title: "Terms of Service Required",
+        description: "Please accept the Terms of Service to continue.",
+        variant: "destructive"
+      });
+    }
+  };
 
   // Show loading state while fetching subscription data
   if (isLoadingSubscription) {
@@ -108,10 +134,10 @@ const UpgradeFlow = () => {
       transition={{ duration: 0.3 }}
       className="container max-w-4xl mx-auto"
     >
-      {/* Progress Bar - Only show if not on the first step */}
-      {currentStep !== 'manage' && (
+      {/* Progress Bar - Only show if not on the first step and not on the confirmation step */}
+      {currentStep !== 'manage' && currentStep !== 'confirmation' && (
         <div className="mb-8">
-          <WizardProgress step={getStepIndex()} totalSteps={4} />
+          <WizardProgress step={getStepIndex()} totalSteps={6} />
         </div>
       )}
 
@@ -125,6 +151,7 @@ const UpgradeFlow = () => {
           onChangePlan={() => goToStep('plan')}
           onChangeAddOns={() => goToStep('addons')}
           onChangeOverage={() => goToStep('overage')}
+          onFinalizePlan={handleFinalizePlan}
         />
       )}
       
@@ -161,6 +188,57 @@ const UpgradeFlow = () => {
           onBack={goBack}
           onComplete={() => goToStep('manage')}
           selectedPlan={selectedPlan}
+        />
+      )}
+
+      {/* Step 5: Terms of Service */}
+      {currentStep === 'terms' && (
+        <div className="space-y-8">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight">Terms of Service</h1>
+              <p className="text-muted-foreground mt-2">
+                Please review and accept our terms of service to finalize your plan changes
+              </p>
+            </div>
+          </div>
+          
+          <TermsOfServiceStep
+            isLoading={false}
+            termsAccepted={termsAccepted}
+            onTermsAccepted={handleTermsAccepted}
+          />
+          
+          <div className="flex justify-end space-x-4 mt-8">
+            <button
+              onClick={goBack}
+              className="px-4 py-2 border rounded-md hover:bg-gray-50"
+            >
+              Back
+            </button>
+            <button
+              onClick={handleSubmitChanges}
+              disabled={!termsAccepted}
+              className={`px-4 py-2 rounded-md bg-primary text-white ${!termsAccepted ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/90'}`}
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Step 6: Confirmation */}
+      {currentStep === 'confirmation' && (
+        <SubscriptionConfirmationStep
+          selectedPlan={selectedPlan}
+          plans={plans}
+          activeAddOns={activeAddOns}
+          addOns={addOns}
+          overageHandling={overageHandling}
+          costs={costs}
+          billingCycle={billingCycle}
+          isLoading={false}
+          paymentMethodType="card"
         />
       )}
     </motion.div>

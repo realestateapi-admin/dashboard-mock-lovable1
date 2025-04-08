@@ -15,6 +15,7 @@ interface ManageSubscriptionStepProps {
   onChangePlan: () => void;
   onChangeAddOns: () => void;
   onChangeOverage: () => void;
+  onFinalizePlan: () => void;
 }
 
 export const ManageSubscriptionStep = ({
@@ -24,7 +25,8 @@ export const ManageSubscriptionStep = ({
   billingCycle,
   onChangePlan,
   onChangeAddOns,
-  onChangeOverage
+  onChangeOverage,
+  onFinalizePlan
 }: ManageSubscriptionStepProps) => {
   const formatOverageHandling = (value: string): string => {
     switch (value) {
@@ -185,6 +187,14 @@ export const ManageSubscriptionStep = ({
             <ArrowRight className="h-5 w-5 text-muted-foreground" />
           </Button>
         </CardContent>
+        <CardFooter className="pt-2">
+          <Button 
+            className="w-full"
+            onClick={onFinalizePlan}
+          >
+            Finalize Plan Changes
+          </Button>
+        </CardFooter>
       </Card>
     </motion.div>
   );
