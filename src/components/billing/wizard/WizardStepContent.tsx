@@ -1,16 +1,16 @@
 
-import { RefObject } from "react";
-import { PlanData, AddOnData } from "@/types/billing";
+import React from "react";
 import { PlanSelectionStep } from "./steps/PlanSelectionStep";
 import { AddOnsStep } from "./steps/AddOnsStep";
 import { OverageHandlingStep } from "./steps/OverageHandlingStep";
 import { PaymentInfoStep } from "./steps/PaymentInfoStep";
 import { TermsOfServiceStep } from "./steps/TermsOfServiceStep";
 import { SummaryStep } from "./steps/SummaryStep";
+import { PlanData, AddOnData } from "@/types/billing";
 
 interface WizardStepContentProps {
   currentStep: number;
-  contentRef: RefObject<HTMLDivElement>;
+  contentRef: React.RefObject<HTMLDivElement>;
   plans: PlanData[];
   addOns: AddOnData[];
   selectedPlan: string;
@@ -35,6 +35,7 @@ interface WizardStepContentProps {
   handleTermsAccepted: (accepted: boolean) => void;
   handlePaymentMethodChange: (method: 'card' | 'ach') => void;
   updateFormData: (field: string, value: any) => void;
+  isUpgradeFlow?: boolean;
 }
 
 export const WizardStepContent = ({
@@ -59,45 +60,46 @@ export const WizardStepContent = ({
   onBillingCycleChange,
   handleTermsAccepted,
   handlePaymentMethodChange,
-  updateFormData
+  updateFormData,
+  isUpgradeFlow = false
 }: WizardStepContentProps) => {
-  const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || 'Selected';
+  // Filter out enterprise plan for display in plan selection
   const regularPlans = plans.filter(p => p.id !== "enterprise");
-
+  
   return (
-    <div className="pt-6 pb-2 mt-6" ref={contentRef}>
+    <div ref={contentRef} className="min-h-[400px]">
       {currentStep === 0 && (
         <PlanSelectionStep 
           selectedPlan={selectedPlan}
           billingCycle={billingCycle}
-          regularPlans={regularPlans}
+          plans={regularPlans}
           enterprisePlan={enterprisePlan}
           onPlanChange={onPlanChange}
           onBillingCycleChange={onBillingCycleChange}
           onSelectEnterprise={onSelectEnterprise}
           isLoading={isLoading}
-          updateFormData={updateFormData}
+          isUpgradeFlow={isUpgradeFlow}
         />
       )}
       
       {currentStep === 1 && (
         <AddOnsStep 
           addOns={addOns}
-          selectedPlan={selectedPlan}
           activeAddOns={activeAddOns}
           onToggleAddOn={onToggleAddOn}
           isLoading={isLoading}
-          updateFormData={updateFormData}
+          isUpgradeFlow={isUpgradeFlow}
         />
       )}
       
       {currentStep === 2 && (
         <OverageHandlingStep 
-          selectedPlanName={selectedPlanName}
+          selectedPlan={selectedPlan}
+          plans={plans}
           overageHandling={overageHandling}
           onOverageHandlingChange={onOverageHandlingChange}
           isLoading={isLoading}
-          updateFormData={updateFormData}
+          isUpgradeFlow={isUpgradeFlow}
         />
       )}
       
@@ -108,29 +110,30 @@ export const WizardStepContent = ({
           formData={formData}
           updateFormData={updateFormData}
           isLoading={isLoading}
+          isUpgradeFlow={isUpgradeFlow}
         />
       )}
       
       {currentStep === 4 && (
         <TermsOfServiceStep 
           termsAccepted={termsAccepted}
-          onTermsAccepted={handleTermsAccepted}
+          handleTermsAccepted={handleTermsAccepted}
           isLoading={isLoading}
-          updateFormData={updateFormData}
+          isUpgradeFlow={isUpgradeFlow}
         />
       )}
       
       {currentStep === 5 && (
         <SummaryStep 
           selectedPlan={selectedPlan}
+          billingCycle={billingCycle}
           plans={plans}
           activeAddOns={activeAddOns}
           addOns={addOns}
           overageHandling={overageHandling}
           costs={costs}
-          billingCycle={billingCycle}
-          formData={formData}
           isLoading={isLoading}
+          isUpgradeFlow={isUpgradeFlow}
         />
       )}
     </div>

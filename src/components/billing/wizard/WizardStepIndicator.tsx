@@ -11,9 +11,14 @@ interface Step {
 interface WizardStepIndicatorProps {
   steps: Step[];
   currentStep: number;
+  isUpgradeFlow?: boolean; // Add flag to determine which flow we're in
 }
 
-export const WizardStepIndicator = ({ steps, currentStep }: WizardStepIndicatorProps) => {
+export const WizardStepIndicator = ({ 
+  steps, 
+  currentStep, 
+  isUpgradeFlow = false 
+}: WizardStepIndicatorProps) => {
   return (
     <div className="w-full">
       <div className="hidden md:flex justify-between mb-8">
@@ -35,9 +40,9 @@ export const WizardStepIndicator = ({ steps, currentStep }: WizardStepIndicatorP
                   animate={{ scale: isActive ? 1.1 : 1 }}
                   className={`z-10 flex items-center justify-center w-10 h-10 rounded-full ${
                     isCompleted 
-                      ? 'bg-purple-600 text-white' 
+                      ? isUpgradeFlow ? 'bg-purple-600 text-white' : 'bg-[#04c8c8] text-white'
                       : isActive 
-                        ? 'bg-purple-100 border-2 border-purple-600 text-purple-600'
+                        ? isUpgradeFlow ? 'bg-purple-100 border-2 border-purple-600 text-purple-600' : 'border-2 border-[#04c8c8] text-[#04c8c8]'
                         : 'bg-gray-100 text-gray-400'
                   }`}
                 >
@@ -53,7 +58,7 @@ export const WizardStepIndicator = ({ steps, currentStep }: WizardStepIndicatorP
                 <div 
                   className={`absolute top-5 left-1/2 w-full h-[2px] ${
                     index < currentStep 
-                      ? 'bg-purple-600' 
+                      ? isUpgradeFlow ? 'bg-purple-600' : 'bg-[#04c8c8]'
                       : 'bg-gray-200'
                   }`}
                 ></div>
@@ -61,7 +66,9 @@ export const WizardStepIndicator = ({ steps, currentStep }: WizardStepIndicatorP
               
               <div className="mt-3 text-center">
                 <p className={`text-sm font-medium ${
-                  isActive ? 'text-purple-600' : isCompleted ? 'text-gray-700' : 'text-gray-400'
+                  isActive 
+                    ? isUpgradeFlow ? 'text-purple-600' : 'text-[#04c8c8]' 
+                    : isCompleted ? 'text-gray-700' : 'text-gray-400'
                 }`}>{step.title}</p>
                 <p className="text-xs text-gray-500 hidden lg:block">{step.description}</p>
               </div>
@@ -75,8 +82,8 @@ export const WizardStepIndicator = ({ steps, currentStep }: WizardStepIndicatorP
         <div className="flex items-center">
           <div className={`flex items-center justify-center w-8 h-8 rounded-full 
             ${currentStep === steps.length - 1 
-              ? 'bg-purple-600 text-white' 
-              : 'bg-purple-100 border-2 border-purple-600 text-purple-600'
+              ? isUpgradeFlow ? 'bg-purple-600 text-white' : 'bg-[#04c8c8] text-white'
+              : isUpgradeFlow ? 'bg-purple-100 border-2 border-purple-600 text-purple-600' : 'border-2 border-[#04c8c8] text-[#04c8c8]'
             }`}
           >
             {currentStep === steps.length - 1 ? (
@@ -96,15 +103,17 @@ export const WizardStepIndicator = ({ steps, currentStep }: WizardStepIndicatorP
         </div>
       </div>
       
-      {/* Progress bar */}
-      <div className="w-full bg-gray-200 h-1 rounded-full mt-2 md:hidden">
-        <motion.div 
-          initial={{ width: 0 }}
-          animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-          className="bg-purple-600 h-1 rounded-full"
-          transition={{ duration: 0.5 }}
-        ></motion.div>
-      </div>
+      {/* Progress bar - only for upgrade flow */}
+      {isUpgradeFlow && (
+        <div className="w-full bg-gray-200 h-1 rounded-full mt-2 md:hidden">
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+            className="bg-purple-600 h-1 rounded-full"
+            transition={{ duration: 0.5 }}
+          ></motion.div>
+        </div>
+      )}
     </div>
   );
 };

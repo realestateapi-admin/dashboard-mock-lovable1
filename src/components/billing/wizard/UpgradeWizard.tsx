@@ -28,6 +28,7 @@ interface UpgradeWizardProps {
   onFinish: () => void;
   enterprisePlan?: PlanData;
   onSelectEnterprise?: () => void;
+  isUpgradeFlow?: boolean; // Add flag to determine which flow we're in
 }
 
 export const UpgradeWizard = ({
@@ -45,7 +46,8 @@ export const UpgradeWizard = ({
   onSaveBillingPreferences,
   onFinish,
   enterprisePlan,
-  onSelectEnterprise
+  onSelectEnterprise,
+  isUpgradeFlow = false // Default to false for signup flow
 }: UpgradeWizardProps) => {
   const steps = getWizardSteps();
   
@@ -70,7 +72,10 @@ export const UpgradeWizard = ({
     onFinish
   });
   
-  const accentColor = "bg-gradient-to-r from-purple-600 to-indigo-600";
+  // Set accent color based on flow
+  const accentColor = isUpgradeFlow 
+    ? "bg-gradient-to-r from-purple-600 to-indigo-600" 
+    : "bg-gradient-to-r from-[#04c8c8] to-teal-500";
   
   return (
     <motion.div
@@ -85,7 +90,8 @@ export const UpgradeWizard = ({
         <CardHeader className="pb-0">
           <WizardStepIndicator 
             steps={steps} 
-            currentStep={currentStep} 
+            currentStep={currentStep}
+            isUpgradeFlow={isUpgradeFlow}
           />
         </CardHeader>
         
@@ -113,6 +119,7 @@ export const UpgradeWizard = ({
             handleTermsAccepted={handleTermsAccepted}
             handlePaymentMethodChange={handlePaymentMethodChange}
             updateFormData={updateFormData}
+            isUpgradeFlow={isUpgradeFlow}
           />
         </CardContent>
         
@@ -123,6 +130,7 @@ export const UpgradeWizard = ({
             isLoading={isLoading}
             handleBack={handleBack}
             handleNext={handleNext}
+            isUpgradeFlow={isUpgradeFlow}
           />
         </CardFooter>
       </Card>

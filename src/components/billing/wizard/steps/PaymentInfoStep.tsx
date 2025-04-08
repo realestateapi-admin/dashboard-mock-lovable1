@@ -13,6 +13,7 @@ interface PaymentInfoStepProps {
   formData: any;
   updateFormData: (field: string, value: any) => void;
   isLoading: boolean;
+  isUpgradeFlow?: boolean;
 }
 
 export const PaymentInfoStep = ({
@@ -20,7 +21,8 @@ export const PaymentInfoStep = ({
   onPaymentMethodChange,
   formData,
   updateFormData,
-  isLoading
+  isLoading,
+  isUpgradeFlow = false
 }: PaymentInfoStepProps) => {
   // Create state for credit card form
   const [newPaymentMethod, setNewPaymentMethod] = useState({
@@ -72,6 +74,9 @@ export const PaymentInfoStep = ({
     });
   };
   
+  // Determine the primary color based on the flow
+  const primaryColor = isUpgradeFlow ? "purple" : "[#04c8c8]";
+  
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -104,11 +109,11 @@ export const PaymentInfoStep = ({
             className="w-full"
           >
             <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="card" className="flex items-center gap-2">
+              <TabsTrigger value="card" className={`flex items-center gap-2 data-[state=active]:bg-${primaryColor} data-[state=active]:text-white`}>
                 <CreditCard className="h-4 w-4" />
                 Credit Card
               </TabsTrigger>
-              <TabsTrigger value="ach" className="flex items-center gap-2">
+              <TabsTrigger value="ach" className={`flex items-center gap-2 data-[state=active]:bg-${primaryColor} data-[state=active]:text-white`}>
                 <Building className="h-4 w-4" />
                 Bank Account (ACH)
               </TabsTrigger>

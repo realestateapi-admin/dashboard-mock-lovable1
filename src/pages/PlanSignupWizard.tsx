@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card"
 import { UpgradeWizard } from "@/components/billing/wizard/UpgradeWizard";
 import { useWizardState } from "@/hooks/useWizardState";
 import { plans, addOns } from "@/data/billingData";
+import OnboardingSteps from "@/components/onboarding/OnboardingSteps";
 
 const PlanSignupWizard = () => {
   const {
@@ -33,6 +34,12 @@ const PlanSignupWizard = () => {
     handleSubmit
   } = useWizardState();
   
+  // Map steps to the format expected by OnboardingSteps
+  const onboardingSteps = steps.map((step, index) => ({
+    name: step.title,
+    status: index === currentStep ? "current" : index < currentStep ? "completed" : "upcoming"
+  }));
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <motion.div
@@ -41,6 +48,7 @@ const PlanSignupWizard = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-7xl"
       >
+        {/* No progress bar for signup wizard to maintain visual differentiation */}
         <UpgradeWizard
           plans={plans}
           addOns={addOns}
