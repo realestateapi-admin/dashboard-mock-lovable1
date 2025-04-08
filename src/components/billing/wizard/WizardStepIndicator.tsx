@@ -105,7 +105,7 @@ export const WizardStepIndicator = ({
       
       {/* Progress bar - only for upgrade flow */}
       {isUpgradeFlow && (
-        <div className="w-full bg-gray-200 h-1 rounded-full mt-2 md:hidden">
+        <div className="w-full bg-gray-200 h-1 rounded-full mt-2">
           <motion.div 
             initial={{ width: 0 }}
             animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
