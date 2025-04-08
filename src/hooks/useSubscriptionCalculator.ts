@@ -34,8 +34,30 @@ export const useSubscriptionCalculator = (
   // Get initial add-ons from localStorage or default to empty array
   const getInitialAddOns = () => {
     try {
+      // Try first from localStorage - this would be from the signup flow
       const storedAddOns = localStorage.getItem('activeAddOns');
-      return storedAddOns ? JSON.parse(storedAddOns) : [];
+      if (storedAddOns) {
+        const parsed = JSON.parse(storedAddOns);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          console.log("Loaded add-ons from localStorage:", parsed);
+          return parsed;
+        }
+      }
+      
+      // Try from selectedAddOns - this could be from the StepTwo component
+      const selectedAddOns = localStorage.getItem('selectedAddOns');
+      if (selectedAddOns) {
+        const parsed = JSON.parse(selectedAddOns);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          console.log("Loaded add-ons from selectedAddOns:", parsed);
+          // Also store in activeAddOns for consistency
+          localStorage.setItem('activeAddOns', selectedAddOns);
+          return parsed;
+        }
+      }
+      
+      // Default to empty array if nothing found
+      return [];
     } catch (e) {
       console.error("Error parsing stored add-ons:", e);
       return [];
@@ -44,7 +66,8 @@ export const useSubscriptionCalculator = (
   
   // Get initial overage handling from localStorage or default to "cut-off"
   const getInitialOverageHandling = () => {
-    return localStorage.getItem('overageHandling') || "cut-off";
+    const storedOverageHandling = localStorage.getItem('overageHandling');
+    return storedOverageHandling || "cut-off";
   };
   
   const [selectedPlan, setSelectedPlan] = useState(getInitialPlan());

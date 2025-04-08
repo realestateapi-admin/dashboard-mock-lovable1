@@ -44,6 +44,15 @@ export const StepTwo = ({
       // Store both the plan ID and name
       localStorage.setItem('selectedPlan', selectedPlan);
       localStorage.setItem('selectedPlanName', selectedPlanObj.name);
+      
+      // Store the selected add-ons as well
+      localStorage.setItem('selectedAddOns', JSON.stringify(selectedAddOns));
+      localStorage.setItem('activeAddOns', JSON.stringify(selectedAddOns));
+      
+      // Store overage handling (default to cut-off if not already set)
+      if (!localStorage.getItem('overageHandling')) {
+        localStorage.setItem('overageHandling', 'cut-off');
+      }
     }
     
     // Call the original handleSubscribe function

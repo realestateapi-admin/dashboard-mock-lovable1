@@ -7,7 +7,7 @@ import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
-import { plans } from "@/data/plans";
+import { plans, addOns } from "@/data/billingData";
 
 interface BillingCardProps {
   isTrialActive: boolean;
@@ -29,8 +29,9 @@ export const BillingCard = ({
   // State to store the plan name and billing cycle
   const [planName, setPlanName] = useState("Professional Plan");
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  const [displayPrice, setDisplayPrice] = useState("$99.00");
   
-  // Get the selected plan and billing cycle from localStorage on component mount
+  // Get the selected plan, billing cycle, and add-ons from localStorage on component mount
   useEffect(() => {
     // Get plan ID
     const storedPlanId = localStorage.getItem('selectedPlan') || sessionStorage.getItem('selectedPlan');
@@ -40,6 +41,22 @@ export const BillingCard = ({
       const selectedPlan = plans.find(p => p.id === storedPlanId);
       if (selectedPlan) {
         setPlanName(selectedPlan.name + " Plan");
+        
+        // Update display price based on the plan
+        try {
+          const numericPrice = parseFloat(selectedPlan.price.replace(/[$,]/g, ''));
+          if (!isNaN(numericPrice)) {
+            // Get billing cycle to determine price display
+            const storedBillingCycle = localStorage.getItem('billingCycle');
+            if (storedBillingCycle === 'annual') {
+              setDisplayPrice(`$${(numericPrice * 12 * 0.8).toFixed(0)}.00`);
+            } else {
+              setDisplayPrice(`$${numericPrice.toFixed(0)}.00`);
+            }
+          }
+        } catch (e) {
+          console.error("Error calculating price:", e);
+        }
       }
     }
     
@@ -47,6 +64,20 @@ export const BillingCard = ({
     const storedBillingCycle = localStorage.getItem('billingCycle');
     if (storedBillingCycle === 'annual' || storedBillingCycle === 'monthly') {
       setBillingCycle(storedBillingCycle);
+    }
+    
+    // Get add-ons to potentially adjust price
+    try {
+      const storedAddOns = localStorage.getItem('activeAddOns') || localStorage.getItem('selectedAddOns');
+      if (storedAddOns && storedPlanId) {
+        const activeAddOnIds = JSON.parse(storedAddOns);
+        if (Array.isArray(activeAddOnIds) && activeAddOnIds.length > 0) {
+          // Could calculate add-on prices here if needed
+          console.log("Active add-ons:", activeAddOnIds);
+        }
+      }
+    } catch (e) {
+      console.error("Error loading add-ons:", e);
     }
   }, []);
 
@@ -71,9 +102,6 @@ export const BillingCard = ({
       ? { text: "Upgrade Now", link: "/dashboard/plan-signup", variant: "default" }
       : { text: "Choose a Plan", link: "/dashboard/billing", variant: "outline" }
     );
-  
-  // Calculate display price based on billing cycle
-  const displayPrice = billingCycle === 'annual' ? "$792.00" : "$99.00";
   
   return (
     <motion.div
