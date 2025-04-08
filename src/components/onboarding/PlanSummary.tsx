@@ -1,3 +1,4 @@
+
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
 import { formatDistanceToNow } from "date-fns";
 
@@ -7,6 +8,7 @@ interface PlanSummaryProps {
   plans: PlanData[];
   addOns: AddOnData[];
   subscription?: SubscriptionData | null;
+  billingCycle?: 'monthly' | 'annual';
 }
 
 export const PlanSummary = ({ 
@@ -14,7 +16,8 @@ export const PlanSummary = ({
   selectedAddOns,
   plans,
   addOns,
-  subscription
+  subscription,
+  billingCycle = 'monthly'
 }: PlanSummaryProps) => {
   const currentPlan = plans.find(p => p.id === selectedPlan);
   
@@ -55,8 +58,14 @@ export const PlanSummary = ({
       }
     });
     
+    // Apply 20% discount for annual billing
+    let total = basePlanPrice + fixedAddOnsTotal;
+    if (billingCycle === 'annual') {
+      total = total * 0.8; // 20% discount
+    }
+    
     return { 
-      total: basePlanPrice + fixedAddOnsTotal,
+      total,
       fixedAddOns: fixedAddOnsTotal,
       hasMeteredAddOns
     };
@@ -110,6 +119,9 @@ export const PlanSummary = ({
             <span className="text-sm font-medium">Base Price</span>
             <div className="flex gap-1 items-baseline">
               <span>{formatPriceString(currentPlan?.price || '')}</span>
+              {billingCycle === 'annual' && (
+                <span className="text-xs text-green-600 ml-1">(20% off)</span>
+              )}
             </div>
           </div>
         </>
@@ -156,6 +168,12 @@ export const PlanSummary = ({
         <span>Estimated Monthly Payment</span>
         <span>${payment.total.toLocaleString()}/month</span>
       </div>
+      
+      {billingCycle === 'annual' && (
+        <div className="text-xs text-green-600">
+          Annual billing (20% savings applied)
+        </div>
+      )}
       
       {payment.hasMeteredAddOns && (
         <div className="text-xs text-muted-foreground italic">
