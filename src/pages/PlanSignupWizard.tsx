@@ -65,6 +65,7 @@ const PlanSignupWizard = () => {
           onFinish={() => {}}
           enterprisePlan={enterprisePlan}
           onSelectEnterprise={handleSelectEnterprise}
+          isUpgradeFlow={false} // Explicitly set to false for signup flow
         />
       </motion.div>
     </div>

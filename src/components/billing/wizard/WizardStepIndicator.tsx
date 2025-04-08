@@ -19,6 +19,11 @@ export const WizardStepIndicator = ({
   currentStep, 
   isUpgradeFlow = false 
 }: WizardStepIndicatorProps) => {
+  // If it's not the upgrade flow, don't render anything
+  if (!isUpgradeFlow) {
+    return null;
+  }
+
   return (
     <div className="w-full">
       <div className="hidden md:flex justify-between mb-8">
@@ -104,16 +109,14 @@ export const WizardStepIndicator = ({
       </div>
       
       {/* Progress bar - only for upgrade flow */}
-      {isUpgradeFlow && (
-        <div className="w-full bg-gray-200 h-1 rounded-full mt-2">
-          <motion.div 
-            initial={{ width: 0 }}
-            animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-            className="bg-purple-600 h-1 rounded-full"
-            transition={{ duration: 0.5 }}
-          ></motion.div>
-        </div>
-      )}
+      <div className="w-full bg-gray-200 h-1 rounded-full mt-2">
+        <motion.div 
+          initial={{ width: 0 }}
+          animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+          className="bg-purple-600 h-1 rounded-full"
+          transition={{ duration: 0.5 }}
+        ></motion.div>
+      </div>
     </div>
   );
 };

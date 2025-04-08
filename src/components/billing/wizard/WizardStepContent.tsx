@@ -81,8 +81,8 @@ export const WizardStepContent = ({
           onBillingCycleChange={onBillingCycleChange}
           onSelectEnterprise={onSelectEnterprise}
           isLoading={isLoading}
-          isUpgradeFlow={isUpgradeFlow}
           updateFormData={updateFormData}
+          isUpgradeFlow={isUpgradeFlow}
         />
       )}
       
