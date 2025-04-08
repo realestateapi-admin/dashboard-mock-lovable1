@@ -86,6 +86,18 @@ export const ManageSubscriptionStep = ({
   // Determine if any changes have been made
   const hasAnyChanges = planChangedFromOriginal || addOnsChanged() || overageChanged;
 
+  // Find addon IDs that were added
+  const getAddedAddOns = () => {
+    const originalIds = originalAddOns.map(a => a.id);
+    return activeAddOns.filter(addon => !originalIds.includes(addon.id));
+  };
+
+  // Find addon IDs that were removed
+  const getRemovedAddOns = () => {
+    const currentIds = activeAddOns.map(a => a.id);
+    return originalAddOns.filter(addon => !currentIds.includes(addon.id));
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -193,10 +205,27 @@ export const ManageSubscriptionStep = ({
               <h4 className="text-sm font-medium mb-2">Active Add-ons:</h4>
               {activeAddOns.length > 0 ? (
                 <ul className="space-y-2">
-                  {activeAddOns.map((addon) => (
-                    <li key={addon.id} className="flex justify-between text-sm">
-                      <span>{addon.name}</span>
-                      <span className="font-medium">{addon.prices[currentPlan.id]}</span>
+                  {activeAddOns.map((addon) => {
+                    // Check if this addon is new (only when not showing two cards)
+                    const isNewAddon = !hasAnyChanges && getAddedAddOns().some(a => a.id === addon.id);
+                    
+                    return (
+                      <li key={addon.id} className="flex justify-between text-sm">
+                        <span className={isNewAddon ? "font-medium text-green-600" : ""}>
+                          {addon.name} {isNewAddon && <span className="ml-1 text-xs">(Added)</span>}
+                        </span>
+                        <span className={`font-medium ${isNewAddon ? "text-green-600" : ""}`}>
+                          {addon.prices[currentPlan.id]}
+                        </span>
+                      </li>
+                    );
+                  })}
+                  
+                  {/* Show removed add-ons with strikethrough when not showing two cards */}
+                  {!hasAnyChanges && getRemovedAddOns().map((addon) => (
+                    <li key={addon.id} className="flex justify-between text-sm text-red-500 line-through opacity-70">
+                      <span>{addon.name} <span className="ml-1 text-xs">(Removed)</span></span>
+                      <span>{addon.prices[currentPlan.id]}</span>
                     </li>
                   ))}
                 </ul>
@@ -207,7 +236,12 @@ export const ManageSubscriptionStep = ({
 
             <div className="border-t pt-4">
               <h4 className="text-sm font-medium mb-2">Overage Handling:</h4>
-              <p className="text-sm">{formatOverageHandling(overageHandling)}</p>
+              <p className={`text-sm ${!hasAnyChanges && overageChanged ? "font-medium text-amber-600" : ""}`}>
+                {formatOverageHandling(overageHandling)}
+                {!hasAnyChanges && overageChanged && (
+                  <span className="ml-2 text-xs">(Changed from {formatOverageHandling(originalOverage)})</span>
+                )}
+              </p>
             </div>
           </CardContent>
         </Card>
