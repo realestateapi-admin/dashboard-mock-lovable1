@@ -6,7 +6,7 @@ import { CurrentPlanCard } from "./cards/CurrentPlanCard";
 import { ModifiedPlanCard } from "./cards/ModifiedPlanCard";
 import { PlanOptionsCard } from "./cards/PlanOptionsCard";
 import { PlanChangeIndicator } from "./indicators/PlanChangeIndicator";
-import { formatOverageHandling, getPlanPrice, addOnsChanged } from "./utils/planChangeUtils";
+import { formatOverageHandling, getPlanPrice, addOnsChanged, overageHandlingChanged } from "./utils/planChangeUtils";
 
 interface ManageSubscriptionStepProps {
   currentPlan: PlanData;
@@ -29,11 +29,11 @@ export const ManageSubscriptionStep = ({
   onChangeOverage,
   onFinalizePlan
 }: ManageSubscriptionStepProps) => {
-  const [hasChanges, setHasChanges] = useState(false);
   const [originalPlan, setOriginalPlan] = useState<PlanData | null>(null);
   const [originalAddOns, setOriginalAddOns] = useState<AddOnData[]>([]);
   const [originalOverage, setOriginalOverage] = useState<string>("");
 
+  // Save the initial state when the component mounts
   useEffect(() => {
     if (!originalPlan) {
       setOriginalPlan(currentPlan);
@@ -45,13 +45,16 @@ export const ManageSubscriptionStep = ({
   // Check if any of the subscription details have changed
   const planChangedFromOriginal = originalPlan && originalPlan.id !== currentPlan.id;
   
+  // Check if add-ons have changed
+  const addOnsChangedFromOriginal = originalAddOns && addOnsChanged(originalAddOns, activeAddOns);
+  
   // Check if overage handling has changed
-  const overageChanged = originalOverage !== overageHandling;
+  const overageChangedFromOriginal = originalOverage !== overageHandling;
   
   // Determine if any changes have been made
   const hasAnyChanges = planChangedFromOriginal || 
-    (originalAddOns && addOnsChanged(originalAddOns, activeAddOns)) || 
-    overageChanged;
+    addOnsChangedFromOriginal || 
+    overageChangedFromOriginal;
 
   return (
     <motion.div
@@ -93,14 +96,19 @@ export const ManageSubscriptionStep = ({
         />
       </div>
 
-      <PlanChangeIndicator hasChanges={hasAnyChanges} />
+      <PlanChangeIndicator 
+        hasChanges={hasAnyChanges} 
+        planChanged={planChangedFromOriginal}
+        addOnsChanged={addOnsChangedFromOriginal}
+        overageChanged={overageChangedFromOriginal}
+      />
 
       <PlanOptionsCard
         onChangePlan={onChangePlan}
         onChangeAddOns={onChangeAddOns}
         onChangeOverage={onChangeOverage}
         onFinalizePlan={onFinalizePlan}
-        setHasChanges={setHasChanges}
+        setHasChanges={() => {}}
       />
     </motion.div>
   );

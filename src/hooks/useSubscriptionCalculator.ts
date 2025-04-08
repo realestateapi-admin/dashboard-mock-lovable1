@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
 import { isPaidPlan } from "@/services/subscriptionService";
@@ -25,7 +26,7 @@ export const useSubscriptionCalculator = (
   subscription?: SubscriptionData | null
 ): SubscriptionCalculatorReturn => {
   const [selectedPlan, setSelectedPlan] = useState("growth");
-  const [overageHandling, setOverageHandling] = useState("stop");
+  const [overageHandling, setOverageHandling] = useState("cut-off"); // Default to cut-off
   const [activeAddOns, setActiveAddOns] = useState<string[]>([]);
   
   // Get access to the trial context
@@ -86,8 +87,6 @@ export const useSubscriptionCalculator = (
         // Handle both formats: "$X/month" or just "$X"
         const numericPrice = parseInt(priceStr.replace(/\$|,|\/month/g, ""));
         if (!isNaN(numericPrice)) {
-          // REMOVED: No longer apply 20% discount for add-ons if annual billing
-          // Add-on prices remain the same regardless of billing cycle
           addOnTotal += numericPrice;
         }
       }
@@ -113,6 +112,16 @@ export const useSubscriptionCalculator = (
       
       if (planId) {
         setSelectedPlan(planId);
+      }
+      
+      // Set overage handling if provided in subscription
+      if (subscription.overage_handling) {
+        setOverageHandling(subscription.overage_handling);
+      }
+      
+      // Set active add-ons if provided in subscription
+      if (subscription.add_ons && subscription.add_ons.length > 0) {
+        setActiveAddOns(subscription.add_ons);
       }
     }
   }, [subscription, plans]);

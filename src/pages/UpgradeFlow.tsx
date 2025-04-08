@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -59,6 +58,23 @@ const UpgradeFlow = () => {
       // Check if subscription has a contract end date (which indicates annual billing)
       const isAnnual = Boolean(subscription.contract_end_date);
       setBillingCycle(isAnnual ? 'annual' : 'monthly');
+      
+      // Set the overage handling from the subscription if available
+      if (subscription.overage_handling) {
+        setOverageHandling(subscription.overage_handling);
+      }
+    }
+  }, [subscription]);
+
+  // Effect to set initial add-ons based on the subscription data
+  useEffect(() => {
+    if (subscription && subscription.add_ons && subscription.add_ons.length > 0) {
+      // Set the active add-ons from the subscription
+      subscription.add_ons.forEach(addOnId => {
+        if (!activeAddOns.includes(addOnId)) {
+          toggleAddOn(addOnId);
+        }
+      });
     }
   }, [subscription]);
 

@@ -51,4 +51,6 @@ export interface SubscriptionData {
   trial_end_date?: string;
   isFree?: boolean;
   subscription_start_date?: string; // Date when user signed up for paid plan
+  overage_handling?: string; // Added field for overage handling
+  add_ons?: string[]; // Added field for active add-ons
 }

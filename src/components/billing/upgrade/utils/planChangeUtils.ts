@@ -36,3 +36,8 @@ export const addOnsChanged = (originalAddOns: AddOnData[], activeAddOns: AddOnDa
   
   return originalIds.some((id, index) => id !== currentIds[index]);
 };
+
+// Helper to check if overage setting has changed
+export const overageHandlingChanged = (original: string, current: string) => {
+  return original !== current;
+};
