@@ -21,9 +21,6 @@ export const OverageHandling = ({
     return <OverageHandlingSkeleton />;
   }
   
-  // Check if the selected plan is the Starter plan
-  const isStarterPlan = selectedPlanName.toLowerCase() === 'starter';
-  
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-medium">Overage Handling <span className="text-red-500">*</span></h3>
@@ -79,28 +76,15 @@ export const OverageHandling = ({
           </div>
         </div>
         
-        <div className={`flex items-start space-x-3 border p-4 rounded-md ${isStarterPlan ? 'opacity-50' : ''}`}>
-          <RadioGroupItem 
-            value="unlimited" 
-            id="unlimited" 
-            className="mt-1" 
-            disabled={isStarterPlan}
-          />
+        <div className="flex items-start space-x-3 border p-4 rounded-md">
+          <RadioGroupItem value="unlimited" id="unlimited" className="mt-1" />
           <div>
-            <Label 
-              htmlFor="unlimited" 
-              className={`text-base font-medium ${isStarterPlan ? 'text-muted-foreground' : ''}`}
-            >
+            <Label htmlFor="unlimited" className="text-base font-medium">
               My app is mission critical. Do not cut off access no matter the amount of overage
             </Label>
             <p className="text-sm text-muted-foreground mt-1">
               Always process requests regardless of usage, with overages billed at your standard unit rate.
             </p>
-            {isStarterPlan && (
-              <p className="text-xs italic text-amber-600 mt-1">
-                This option is only available for Growth plans and above.
-              </p>
-            )}
           </div>
         </div>
       </RadioGroup>

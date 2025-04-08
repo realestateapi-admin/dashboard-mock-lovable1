@@ -2,104 +2,171 @@
 import { BillingOptionStep } from "./BillingOptionStep";
 import { AddOnsList } from "@/components/billing/AddOnsList";
 import { OverageHandling } from "@/components/billing/OverageHandling";
-import { ReviewStep } from "./ReviewStep";
+import { PaymentMethodForm } from "@/components/billing/PaymentMethodForm";
+import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
+import { TermsOfServiceStep } from "@/components/billing/wizard/TermsOfServiceStep";
+import { SubscriptionConfirmationStep } from "@/components/billing/wizard/SubscriptionConfirmationStep";
 import { PlanData, AddOnData } from "@/types/billing";
+import { useState, useEffect } from "react";
 
 interface WizardContentProps {
   currentStep: number;
-  selectedPlan: string;
   billingCycle: 'monthly' | 'annual';
+  isLoading: boolean;
+  selectedPlan: string;
+  overageHandling: string | null;
   activeAddOns: string[];
-  overageHandling: string;
-  plans: PlanData[];
-  regularPlans: PlanData[];
-  enterprisePlan: PlanData | undefined;
-  addOns: AddOnData[];
   costs: {
     basePrice: string;
     totalAddOns: string;
     total: string;
   };
-  selectedPlanName: string;
-  isLoading: boolean;
-  onPlanChange: (planId: string) => void;
-  onToggleAddOn: (addOnId: string) => void;
-  onOverageHandlingChange: (value: string) => void;
-  onBillingCycleChange: (cycle: 'monthly' | 'annual') => void;
+  regularPlans: PlanData[];
+  enterprisePlan: PlanData | undefined;
+  addOns: AddOnData[];
+  plans: PlanData[];
+  creditCardInfo?: any;
+  termsAccepted: boolean;
+  setOverageHandling: (option: string) => void;
+  toggleAddOn: (addOnId: string) => void;
   onSelectEnterprise: () => void;
+  onBillingCycleChange: (cycle: 'monthly' | 'annual') => void;
+  onPlanChange: (planId: string) => void;
+  onTermsAccepted: (accepted: boolean) => void;
+  onSubmit: () => void;
 }
 
-export const WizardContent = ({
+export function WizardContent({
   currentStep,
-  selectedPlan,
   billingCycle,
-  activeAddOns,
+  isLoading,
+  selectedPlan,
   overageHandling,
-  plans,
+  activeAddOns,
+  costs,
   regularPlans,
   enterprisePlan,
   addOns,
-  costs,
-  selectedPlanName,
-  isLoading,
-  onPlanChange,
-  onToggleAddOn,
-  onOverageHandlingChange,
+  plans,
+  creditCardInfo,
+  termsAccepted,
+  setOverageHandling,
+  toggleAddOn,
+  onSelectEnterprise,
   onBillingCycleChange,
-  onSelectEnterprise
-}: WizardContentProps) => {
-  // Step 1: Choose Plan
-  if (currentStep === 0) {
-    return (
-      <BillingOptionStep 
-        selectedPlan={selectedPlan}
-        billingCycle={billingCycle}
-        adjustedPlans={regularPlans}
-        enterprisePlan={enterprisePlan}
-        onPlanChange={onPlanChange}
-        onBillingCycleChange={onBillingCycleChange}
-        onSelectEnterprise={onSelectEnterprise}
-        isLoading={isLoading}
-      />
-    );
-  }
+  onPlanChange,
+  onTermsAccepted,
+  onSubmit
+}: WizardContentProps) {
+  // Find the name of the selected plan for the OverageHandling component
+  const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || 'Selected';
   
-  // Step 2: Select Add-Ons
-  if (currentStep === 1) {
-    return (
-      <AddOnsList 
-        addOns={addOns}
-        selectedPlan={selectedPlan}
-        activeAddOns={activeAddOns}
-        onToggleAddOn={onToggleAddOn}
-        isLoading={isLoading}
-      />
-    );
-  }
+  // Track the payment method type selected in step 4
+  const [paymentMethodType, setPaymentMethodType] = useState<'card' | 'ach'>('card');
   
-  // Step 3: Overage Handling
-  if (currentStep === 2) {
-    return (
-      <OverageHandling 
-        selectedPlanName={selectedPlanName}
-        overageHandling={overageHandling}
-        onOverageHandlingChange={onOverageHandlingChange}
-        isLoading={isLoading}
-      />
-    );
-  }
+  // Monitor changes to payment method type from PaymentMethodForm component
+  useEffect(() => {
+    const savedType = localStorage.getItem('paymentMethodType');
+    if (savedType === 'card' || savedType === 'ach') {
+      setPaymentMethodType(savedType as 'card' | 'ach');
+    }
+  }, [currentStep]);
   
-  // Step 4: Review & Confirm
+  // Handle payment method changes from the PaymentMethodForm
+  const handlePaymentMethodChange = (type: 'card' | 'ach') => {
+    setPaymentMethodType(type);
+    localStorage.setItem('paymentMethodType', type);
+  };
+  
   return (
-    <ReviewStep 
-      selectedPlan={selectedPlan}
-      plans={plans}
-      activeAddOns={activeAddOns}
-      addOns={addOns}
-      overageHandling={overageHandling}
-      costs={costs}
-      billingCycle={billingCycle}
-      isLoading={isLoading}
-    />
+    <>
+      {/* For Terms of Service step, show just the Terms of Service content without the sidebar */}
+      {currentStep === 4 ? (
+        <div className="w-full mx-auto max-w-3xl">
+          <TermsOfServiceStep 
+            isLoading={isLoading}
+            termsAccepted={termsAccepted}
+            onTermsAccepted={onTermsAccepted}
+          />
+        </div>
+      ) : currentStep === 5 ? (
+        <div className="w-full mx-auto max-w-4xl">
+          <SubscriptionConfirmationStep
+            selectedPlan={selectedPlan}
+            plans={plans}
+            activeAddOns={activeAddOns}
+            addOns={addOns}
+            overageHandling={overageHandling}
+            costs={costs}
+            billingCycle={billingCycle}
+            isLoading={isLoading}
+            paymentMethodType={paymentMethodType}
+          />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div className="md:col-span-8">
+            {/* Step 1: Choose Billing Option */}
+            {currentStep === 0 && (
+              <BillingOptionStep 
+                selectedPlan={selectedPlan}
+                billingCycle={billingCycle}
+                adjustedPlans={regularPlans}
+                enterprisePlan={enterprisePlan}
+                onPlanChange={onPlanChange}
+                onBillingCycleChange={onBillingCycleChange}
+                onSelectEnterprise={onSelectEnterprise}
+                isLoading={isLoading}
+              />
+            )}
+            
+            {/* Step 2: Select Add-Ons */}
+            {currentStep === 1 && (
+              <AddOnsList 
+                addOns={addOns}
+                selectedPlan={selectedPlan}
+                activeAddOns={activeAddOns}
+                onToggleAddOn={toggleAddOn}
+                isLoading={isLoading}
+              />
+            )}
+            
+            {/* Step 3: Overage Handling */}
+            {currentStep === 2 && (
+              <OverageHandling 
+                selectedPlanName={selectedPlanName}
+                overageHandling={overageHandling || ''}
+                onOverageHandlingChange={setOverageHandling}
+                isLoading={isLoading}
+              />
+            )}
+            
+            {/* Step 4: Payment Information */}
+            {currentStep === 3 && (
+              <PaymentMethodForm 
+                isLoading={isLoading} 
+                creditCardInfo={creditCardInfo}
+                onPaymentMethodTypeChange={handlePaymentMethodChange}
+              />
+            )}
+          </div>
+          
+          <div className="md:col-span-4">
+            <SubscriptionSummary 
+              selectedPlan={selectedPlan}
+              plans={plans}
+              activeAddOns={activeAddOns}
+              addOns={addOns}
+              costs={costs}
+              subscription={null}
+              isLoading={isLoading}
+              onSubmit={onSubmit}
+              billingCycle={billingCycle}
+              showSubmitButton={false}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
-};
+}

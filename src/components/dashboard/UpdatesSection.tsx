@@ -29,8 +29,8 @@ const mockUpdates: Update[] = [
   {
     id: '2',
     type: 'release',
-    title: 'Unlimited Skip Tracing API',
-    content: "We've launched a new Skip Tracing API with tier 1 credit bureau level data. And best of all, it now provides unlimited volume for a fixed price. Speak to your SE for details.",
+    title: 'New Service: Skip Tracing API',
+    content: "We've launched a new Skip Tracing API to help you locate property owners. Available as a metered add-on at $0.08 per successful lookup.",
     date: '2025-04-04',
     isNew: true
   },

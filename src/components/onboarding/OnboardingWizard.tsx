@@ -15,6 +15,7 @@ import VolumeStep from "./wizard/VolumeStep";
 import ReferralStep from "./wizard/ReferralStep";
 import CreditCardStep from "./wizard/CreditCardStep";
 import WizardFooter from "./wizard/WizardFooter";
+import WizardProgress from "./wizard/WizardProgress";
 import { WizardStep, IndustryData, VolumeOption, ReferralOption } from "./types/OnboardingTypes";
 
 interface OnboardingWizardProps {
@@ -69,6 +70,8 @@ const OnboardingWizard = ({ userName = "" }: OnboardingWizardProps) => {
                 Step {step + 1} of {steps.length}
               </div>
             </div>
+            
+            <WizardProgress step={step} totalSteps={steps.length} />
           </CardHeader>
           
           <CardContent className="py-4">

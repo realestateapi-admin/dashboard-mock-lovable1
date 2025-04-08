@@ -12,6 +12,8 @@ interface WizardHeaderProps {
 }
 
 export const WizardHeader = ({ currentStep, steps }: WizardHeaderProps) => {
+  const progress = ((currentStep + 1) / steps.length) * 100;
+  
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -26,6 +28,16 @@ export const WizardHeader = ({ currentStep, steps }: WizardHeaderProps) => {
         <div className="text-sm font-medium">
           Step {currentStep + 1} of {steps.length}
         </div>
+      </div>
+      
+      {/* Progress bar */}
+      <div className="w-full bg-slate-100 rounded-full h-2 mt-4">
+        <motion.div 
+          className="bg-primary h-2 rounded-full transition-all duration-300 ease-in-out" 
+          style={{ width: `${progress}%` }}
+          initial={{ width: 0 }}
+          animate={{ width: `${progress}%` }}
+        ></motion.div>
       </div>
     </div>
   );

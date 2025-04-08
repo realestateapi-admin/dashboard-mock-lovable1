@@ -1,20 +1,17 @@
 
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
-import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
-// Import the UpgradeWizard component that includes all steps
-import { UpgradeWizard } from "@/components/billing/wizard/UpgradeWizard";
+// Import wizard components
+import { WizardHeader } from "@/components/billing/wizard/WizardHeader";
+import { WizardFooter } from "@/components/billing/wizard/WizardFooter";
+import { WizardContent } from "@/components/billing/wizard/WizardContent";
+
+// Import the refactored useWizardState hook
 import { useWizardState } from "@/hooks/useWizardState";
 import { plans, addOns } from "@/data/billingData";
-import OnboardingSteps from "@/components/onboarding/OnboardingSteps";
-import { WizardSidebar } from "@/components/billing/wizard/WizardSidebar";
 
 const PlanSignupWizard = () => {
-  const navigate = useNavigate();
-  const { setIsOnPaidPlan } = useTrialAlert();
-  
   const {
     currentStep,
     billingCycle,
@@ -40,31 +37,6 @@ const PlanSignupWizard = () => {
     handleSubmit
   } = useWizardState();
   
-  // Map steps to the format expected by OnboardingSteps
-  const onboardingSteps = steps.map((step, index) => ({
-    name: step.title,
-    status: index === currentStep ? "current" : index < currentStep ? "completed" : "upcoming"
-  }));
-  
-  // Define a function to go to the dashboard
-  const goToDashboard = () => {
-    // Set user as on a paid plan before redirecting
-    if (setIsOnPaidPlan) {
-      setIsOnPaidPlan(true);
-      localStorage.setItem('isOnPaidPlan', 'true');
-      localStorage.setItem('isFreeUser', 'false');
-    }
-    
-    // Save selected plan to localStorage
-    localStorage.setItem('selectedPlan', selectedPlan);
-    
-    // Find the plan name for the selected plan
-    const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || "Growth";
-    localStorage.setItem('selectedPlanName', selectedPlanName);
-    
-    navigate('/dashboard');
-  };
-  
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <motion.div
@@ -73,46 +45,50 @@ const PlanSignupWizard = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-7xl"
       >
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          <div className="md:col-span-8">
-            {/* Main wizard content */}
-            <UpgradeWizard
-              plans={plans}
-              addOns={addOns}
-              selectedPlan={selectedPlan}
-              billingCycle={billingCycle}
-              activeAddOns={activeAddOns}
-              overageHandling={overageHandling}
-              costs={costs}
-              onPlanChange={handlePlanChange}
-              onToggleAddOn={toggleAddOn}
-              onOverageHandlingChange={setOverageHandling}
-              onBillingCycleChange={handleBillingCycleChange}
-              onSaveBillingPreferences={handleSubmit}
-              onFinish={goToDashboard} // Use the new function here
-              enterprisePlan={enterprisePlan}
-              onSelectEnterprise={handleSelectEnterprise}
-              isUpgradeFlow={false} // Explicitly set to false for signup flow
+        <Card className="border shadow-lg">
+          <CardHeader>
+            <WizardHeader 
+              currentStep={currentStep} 
+              steps={steps} 
             />
-          </div>
+          </CardHeader>
           
-          <div className="md:col-span-4">
-            {/* Subscription summary sidebar */}
-            <WizardSidebar
+          <CardContent className="py-6">
+            <WizardContent
               currentStep={currentStep}
-              selectedPlan={selectedPlan}
-              plans={plans}
-              activeAddOns={activeAddOns}
-              addOns={addOns}
-              costs={costs}
               billingCycle={billingCycle}
-              enterprisePlan={enterprisePlan}
-              onSelectEnterprise={handleSelectEnterprise}
-              onSubmit={goToDashboard} // Use the new function here
               isLoading={isLoading}
+              selectedPlan={selectedPlan}
+              overageHandling={overageHandling}
+              setOverageHandling={setOverageHandling}
+              activeAddOns={activeAddOns}
+              toggleAddOn={toggleAddOn}
+              costs={costs}
+              regularPlans={regularPlans}
+              enterprisePlan={enterprisePlan}
+              addOns={addOns}
+              plans={plans}
+              creditCardInfo={creditCardInfo}
+              termsAccepted={termsAccepted}
+              onTermsAccepted={handleTermsAccepted}
+              onSelectEnterprise={handleSelectEnterprise}
+              onBillingCycleChange={handleBillingCycleChange}
+              onPlanChange={handlePlanChange}
+              onSubmit={handleSubmit}
             />
-          </div>
-        </div>
+          </CardContent>
+          
+          <CardFooter>
+            <WizardFooter
+              currentStep={currentStep}
+              totalSteps={steps.length}
+              handleBack={handleBack}
+              handleNext={handleNext}
+              handleSubmit={handleSubmit}
+              isLoading={currentStep === steps.length - 1 ? isSubmitting : isLoading}
+            />
+          </CardFooter>
+        </Card>
       </motion.div>
     </div>
   );
