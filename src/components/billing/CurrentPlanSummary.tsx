@@ -103,6 +103,7 @@ export const CurrentPlanSummary = ({
         </div>
         <div className="text-3xl font-bold">
           {currentPlan && formatPrice(currentPlan.price)}
+          {billingCycle === 'annual' && <span className="text-sm text-green-600 block text-right">Save 20%</span>}
         </div>
       </div>
       
@@ -135,6 +136,13 @@ export const CurrentPlanSummary = ({
       </div>
       
       <div>
+        <h4 className="font-medium mb-1">Billing Cycle:</h4>
+        <p className="text-muted-foreground mb-3">
+          {billingCycle === 'monthly' 
+            ? 'Monthly flexibility - Pay month to month with no long-term commitment' 
+            : 'Annual contract - 20% savings with a 12-month agreement'}
+        </p>
+        
         <h4 className="font-medium mb-1">Overage Handling:</h4>
         <p className="text-muted-foreground mb-6">{overageHandling}</p>
         

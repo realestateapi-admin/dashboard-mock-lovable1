@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckCircle, CheckIcon } from "lucide-react";
@@ -13,6 +13,22 @@ export const BillingCycleSelector = ({
   billingCycle,
   onBillingCycleChange
 }: BillingCycleSelectorProps) => {
+  // Initialize from localStorage if needed
+  useEffect(() => {
+    const storedCycle = localStorage.getItem('billingCycle');
+    if (storedCycle === 'annual' || storedCycle === 'monthly') {
+      if (storedCycle !== billingCycle) {
+        onBillingCycleChange(storedCycle as 'monthly' | 'annual');
+      }
+    }
+  }, []);
+
+  // Update localStorage when billing cycle changes
+  const handleBillingCycleChange = (cycle: 'monthly' | 'annual') => {
+    onBillingCycleChange(cycle);
+    localStorage.setItem('billingCycle', cycle);
+  };
+  
   return (
     <div>
       <h3 className="text-lg font-medium mb-3">What Works Best For You?</h3>
@@ -24,7 +40,7 @@ export const BillingCycleSelector = ({
               ? 'border-primary ring-2 ring-primary ring-offset-2' 
               : 'border-border hover:border-primary/50'
           }`}
-          onClick={() => onBillingCycleChange('monthly')}
+          onClick={() => handleBillingCycleChange('monthly')}
         >
           <div className="flex justify-between items-start">
             <h4 className="text-xl font-semibold">Monthly Flexibility</h4>
@@ -55,7 +71,7 @@ export const BillingCycleSelector = ({
               ? 'border-primary ring-2 ring-primary ring-offset-2' 
               : 'border-border hover:border-primary/50'
           }`}
-          onClick={() => onBillingCycleChange('annual')}
+          onClick={() => handleBillingCycleChange('annual')}
         >
           <div className="flex justify-between items-start">
             <h4 className="text-xl font-semibold">Annual Value</h4>

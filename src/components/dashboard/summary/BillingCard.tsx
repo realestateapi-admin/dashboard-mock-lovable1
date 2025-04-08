@@ -50,8 +50,10 @@ export const BillingCard = ({
             const storedBillingCycle = localStorage.getItem('billingCycle');
             if (storedBillingCycle === 'annual') {
               setDisplayPrice(`$${(numericPrice * 12 * 0.8).toFixed(0)}.00`);
+              setBillingCycle('annual');
             } else {
               setDisplayPrice(`$${numericPrice.toFixed(0)}.00`);
+              setBillingCycle('monthly');
             }
           }
         } catch (e) {

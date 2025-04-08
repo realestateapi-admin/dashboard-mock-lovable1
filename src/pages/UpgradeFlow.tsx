@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -29,8 +30,15 @@ const UpgradeFlow = () => {
   // Wizard state
   const [currentStep, setCurrentStep] = useState<UpgradeStep>('manage');
   const [previousStep, setPreviousStep] = useState<UpgradeStep | null>(null);
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   const [termsAccepted, setTermsAccepted] = useState(false);
+  
+  // Initialize billing cycle from localStorage or default to monthly
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>(() => {
+    const storedCycle = localStorage.getItem('billingCycle');
+    return (storedCycle === 'annual' || storedCycle === 'monthly') 
+      ? storedCycle as 'monthly' | 'annual' 
+      : 'monthly';
+  });
   
   // Fetch subscription data
   const {
@@ -78,6 +86,11 @@ const UpgradeFlow = () => {
     }
   }, [subscription]);
 
+  // Save billing cycle to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('billingCycle', billingCycle);
+  }, [billingCycle]);
+
   // Get the current plan object
   const currentPlan = plans.find(p => p.id === selectedPlan) || plans[0];
   
@@ -116,6 +129,12 @@ const UpgradeFlow = () => {
   // Handle plan finalization
   const handleFinalizePlan = () => {
     goToStep('terms');
+  };
+
+  // Handle billing cycle change
+  const handleBillingCycleChange = (cycle: 'monthly' | 'annual') => {
+    setBillingCycle(cycle);
+    localStorage.setItem('billingCycle', cycle);
   };
 
   // Handle submission after terms acceptance
@@ -177,7 +196,7 @@ const UpgradeFlow = () => {
           plans={plans}
           currentPlan={currentPlan}
           billingCycle={billingCycle}
-          onBillingCycleChange={setBillingCycle}
+          onBillingCycleChange={handleBillingCycleChange}
           onSelectPlan={setSelectedPlan}
           onBack={goBack}
           onComplete={() => goToStep('manage')}

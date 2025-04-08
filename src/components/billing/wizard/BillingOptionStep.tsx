@@ -1,4 +1,5 @@
 
+import { useEffect } from "react";
 import { BillingCycleSelector } from "@/components/billing/BillingCycleSelector";
 import { PlansList } from "@/components/billing/PlansList";
 import { PlanData } from "@/types/billing";
@@ -25,6 +26,21 @@ export const BillingOptionStep = ({
   onSelectEnterprise,
   isLoading = false
 }: BillingOptionStepProps) => {
+  // Check localStorage for billing cycle on component mount
+  useEffect(() => {
+    const storedCycle = localStorage.getItem('billingCycle');
+    if (storedCycle === 'annual' || storedCycle === 'monthly') {
+      if (storedCycle !== billingCycle) {
+        onBillingCycleChange(storedCycle as 'monthly' | 'annual');
+      }
+    }
+  }, []);
+  
+  // Handle billing cycle change and update localStorage
+  const handleBillingCycleChange = (cycle: 'monthly' | 'annual') => {
+    onBillingCycleChange(cycle);
+    localStorage.setItem('billingCycle', cycle);
+  };
   
   if (isLoading) {
     return <PlanOptionSkeleton />;
@@ -34,7 +50,7 @@ export const BillingOptionStep = ({
     <div className="space-y-8">
       <BillingCycleSelector 
         billingCycle={billingCycle}
-        onBillingCycleChange={onBillingCycleChange}
+        onBillingCycleChange={handleBillingCycleChange}
       />
       
       <div className="mt-8">

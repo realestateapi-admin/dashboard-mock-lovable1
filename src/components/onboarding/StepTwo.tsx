@@ -23,6 +23,7 @@ interface StepTwoProps {
   isLoading: boolean;
   handleSubscribe: () => void; 
   handleBack: () => void;
+  billingCycle?: 'monthly' | 'annual';
 }
 
 export const StepTwo = ({
@@ -33,7 +34,8 @@ export const StepTwo = ({
   toggleAddOn = () => {},
   isLoading,
   handleSubscribe,
-  handleBack
+  handleBack,
+  billingCycle = 'monthly'
 }: StepTwoProps) => {
   // Find the plan name from the selected plan ID
   const selectedPlanObj = plans.find(p => p.id === selectedPlan);
@@ -48,6 +50,9 @@ export const StepTwo = ({
       // Store the selected add-ons as well
       localStorage.setItem('selectedAddOns', JSON.stringify(selectedAddOns));
       localStorage.setItem('activeAddOns', JSON.stringify(selectedAddOns));
+      
+      // Store billing cycle
+      localStorage.setItem('billingCycle', billingCycle);
       
       // Store overage handling (default to cut-off if not already set)
       if (!localStorage.getItem('overageHandling')) {
@@ -92,6 +97,7 @@ export const StepTwo = ({
             selectedAddOns={selectedAddOns}
             plans={plans}
             addOns={addOns}
+            billingCycle={billingCycle}
           />
         </CardContent>
         <CardFooter>

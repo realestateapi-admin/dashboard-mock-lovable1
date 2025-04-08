@@ -26,11 +26,13 @@ export const useWizardState = () => {
     handleBack: prevStep 
   } = useWizardSteps();
   
-  // Use the billing cycle hook
-  const { 
-    billingCycle, 
-    handleBillingCycleChange 
-  } = useBillingCycle();
+  // Initialize billing cycle from localStorage
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>(() => {
+    const storedCycle = localStorage.getItem('billingCycle');
+    return (storedCycle === 'annual' || storedCycle === 'monthly') 
+      ? storedCycle as 'monthly' | 'annual' 
+      : 'monthly';
+  });
   
   // Use the credit card info hook
   const { 
@@ -110,9 +112,16 @@ export const useWizardState = () => {
     setTermsAccepted(accepted);
   };
   
+  const handleBillingCycleChange = (cycle: 'monthly' | 'annual') => {
+    setBillingCycle(cycle);
+    localStorage.setItem('billingCycle', cycle);
+  };
+  
   const handleSubmit = () => {
     // Only allow submission if terms have been accepted
     if (termsAccepted) {
+      // Save billing cycle to localStorage
+      localStorage.setItem('billingCycle', billingCycle);
       submitSubscription(selectedPlan);
     }
   };
