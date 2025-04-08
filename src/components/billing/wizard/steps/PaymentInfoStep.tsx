@@ -46,6 +46,7 @@ export const PaymentInfoStep = ({
   
   // Update form data when credit card info changes
   const handleCreditCardChange = (newCardData: any) => {
+    setNewPaymentMethod(newCardData);
     updateFormData('cardInfo', {
       number: newCardData.cardNumber,
       name: newCardData.cardholderName,
@@ -57,6 +58,7 @@ export const PaymentInfoStep = ({
   
   // Update form data when ACH info changes
   const handleACHChange = (newACHData: any) => {
+    setNewACHMethod(newACHData);
     updateFormData('achInfo', {
       accountName: newACHData.accountName,
       routingNumber: newACHData.routingNumber,
@@ -68,18 +70,6 @@ export const PaymentInfoStep = ({
       backupExpiry: newACHData.backupExpiry,
       backupCvc: newACHData.backupCvc
     });
-  };
-  
-  // Watch for changes to newPaymentMethod and update form data
-  const handleNewPaymentMethodChange = (updatedPaymentMethod: any) => {
-    setNewPaymentMethod(updatedPaymentMethod);
-    handleCreditCardChange(updatedPaymentMethod);
-  };
-  
-  // Watch for changes to newACHMethod and update form data
-  const handleNewACHMethodChange = (updatedACHMethod: any) => {
-    setNewACHMethod(updatedACHMethod);
-    handleACHChange(updatedACHMethod);
   };
   
   if (isLoading) {
@@ -127,14 +117,14 @@ export const PaymentInfoStep = ({
             <TabsContent value="card">
               <CreditCardForm 
                 newPaymentMethod={newPaymentMethod}
-                setNewPaymentMethod={handleNewPaymentMethodChange}
+                setNewPaymentMethod={handleCreditCardChange}
               />
             </TabsContent>
             
             <TabsContent value="ach">
               <ACHForm 
                 newACHMethod={newACHMethod}
-                setNewACHMethod={handleNewACHMethodChange}
+                setNewACHMethod={handleACHChange}
                 showBackupCardSection={true}
               />
             </TabsContent>

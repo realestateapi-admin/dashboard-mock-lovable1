@@ -2,12 +2,8 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 
-// Import wizard components
-import { WizardHeader } from "@/components/billing/wizard/WizardHeader";
-import { WizardFooter } from "@/components/billing/wizard/WizardFooter";
-import { WizardContent } from "@/components/billing/wizard/WizardContent";
-
-// Import the refactored useWizardState hook
+// Import the UpgradeWizard component that includes all steps
+import { UpgradeWizard } from "@/components/billing/wizard/UpgradeWizard";
 import { useWizardState } from "@/hooks/useWizardState";
 import { plans, addOns } from "@/data/billingData";
 
@@ -45,47 +41,23 @@ const PlanSignupWizard = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-7xl"
       >
-        <Card className="border shadow-lg">
-          <CardHeader>
-            <WizardHeader 
-              currentStep={currentStep} 
-              steps={steps} 
-            />
-          </CardHeader>
-          
-          <CardContent className="py-6">
-            <WizardContent
-              currentStep={currentStep}
-              billingCycle={billingCycle}
-              selectedPlan={selectedPlan}
-              overageHandling={overageHandling}
-              activeAddOns={activeAddOns}
-              costs={costs}
-              regularPlans={regularPlans}
-              enterprisePlan={enterprisePlan}
-              addOns={addOns}
-              plans={plans}
-              isLoading={isLoading}
-              onPlanChange={handlePlanChange}
-              onToggleAddOn={toggleAddOn}
-              onOverageHandlingChange={setOverageHandling}
-              onBillingCycleChange={handleBillingCycleChange}
-              onSelectEnterprise={handleSelectEnterprise}
-              selectedPlanName={plans.find(p => p.id === selectedPlan)?.name || "Selected"}
-            />
-          </CardContent>
-          
-          <CardFooter>
-            <WizardFooter
-              currentStep={currentStep}
-              totalSteps={steps.length}
-              handleBack={handleBack}
-              handleNext={handleNext}
-              handleSubmit={handleSubmit}
-              isLoading={currentStep === steps.length - 1 ? isSubmitting : isLoading}
-            />
-          </CardFooter>
-        </Card>
+        <UpgradeWizard
+          plans={plans}
+          addOns={addOns}
+          selectedPlan={selectedPlan}
+          billingCycle={billingCycle}
+          activeAddOns={activeAddOns}
+          overageHandling={overageHandling}
+          costs={costs}
+          onPlanChange={handlePlanChange}
+          onToggleAddOn={toggleAddOn}
+          onOverageHandlingChange={setOverageHandling}
+          onBillingCycleChange={handleBillingCycleChange}
+          onSaveBillingPreferences={handleSubmit}
+          onFinish={() => {}}
+          enterprisePlan={enterprisePlan}
+          onSelectEnterprise={handleSelectEnterprise}
+        />
       </motion.div>
     </div>
   );
