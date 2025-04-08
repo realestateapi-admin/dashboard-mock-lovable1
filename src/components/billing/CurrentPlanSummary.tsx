@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { PlanData, AddOnData, SubscriptionData } from "@/types/billing";
 import { Skeleton } from "@/components/ui/skeleton";
 import { annualPlanPrices } from "@/data/plans";
+import { format, addYears } from "date-fns";
 
 interface CurrentPlanSummaryProps {
   plans: PlanData[];
@@ -67,6 +68,37 @@ export const CurrentPlanSummary = ({
       return `$${numericPrice.toFixed(0)}`;
     }
   };
+  
+  // Calculate renewal date based on subscription start date or current date
+  const calculateRenewalDate = () => {
+    // If we have subscription data with a contract end date, use that
+    if (subscription?.contract_end_date) {
+      try {
+        return format(new Date(subscription.contract_end_date), 'MMM d, yyyy');
+      } catch (e) {
+        console.error("Error formatting contract end date:", e);
+      }
+    }
+    
+    // If we have a subscription start date, calculate renewal as 1 year from start
+    if (subscription?.subscription_start_date || subscription?.contract_start_date) {
+      try {
+        const startDate = new Date(
+          subscription.subscription_start_date || 
+          subscription.contract_start_date || 
+          new Date()
+        );
+        return format(addYears(startDate, 1), 'MMM d, yyyy');
+      } catch (e) {
+        console.error("Error calculating renewal date:", e);
+      }
+    }
+    
+    // Fallback to 1 year from today
+    return format(addYears(new Date(), 1), 'MMM d, yyyy');
+  };
+  
+  const renewalDate = billingCycle === 'annual' ? calculateRenewalDate() : null;
   
   const handleManageSubscription = () => {
     navigate('/dashboard/upgrade');
@@ -149,6 +181,13 @@ export const CurrentPlanSummary = ({
             ? 'Monthly flexibility - Pay month to month with no long-term commitment' 
             : 'Annual contract - Discounted pricing with a 12-month agreement'}
         </p>
+        
+        {billingCycle === 'annual' && renewalDate && (
+          <div className="mb-3">
+            <h4 className="font-medium mb-1">Renewal Date:</h4>
+            <p className="text-muted-foreground">{renewalDate}</p>
+          </div>
+        )}
         
         <h4 className="font-medium mb-1">Overage Handling:</h4>
         <p className="text-muted-foreground mb-6">{overageHandling}</p>
