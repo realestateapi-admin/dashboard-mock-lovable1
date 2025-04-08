@@ -151,8 +151,18 @@ export const useUpgradeFlowState = () => {
     goToStep('terms');
   };
 
-  // Handle billing cycle change
+  // Handle billing cycle change with annual plan restriction
   const handleBillingCycleChange = (cycle: 'monthly' | 'annual') => {
+    // If user is on annual plan, don't allow switching to monthly
+    if (billingCycle === 'annual' && cycle === 'monthly') {
+      toast({
+        title: "Cannot change to monthly billing",
+        description: "Annual plans require a 12-month commitment. You cannot switch back to monthly billing until your contract ends.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setBillingCycle(cycle);
     localStorage.setItem('billingCycle', cycle);
   };

@@ -11,6 +11,12 @@ export const useBillingCycle = () => {
   });
   
   const handleBillingCycleChange = (cycle: 'monthly' | 'annual') => {
+    // If user is on annual plan, don't allow switching to monthly
+    if (billingCycle === 'annual' && cycle === 'monthly') {
+      console.log("Cannot switch from annual to monthly billing");
+      return;
+    }
+    
     setBillingCycle(cycle);
     localStorage.setItem('billingCycle', cycle);
   };

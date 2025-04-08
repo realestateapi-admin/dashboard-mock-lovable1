@@ -3,10 +3,11 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, AlertCircle } from "lucide-react";
 import { PlanData } from "@/types/billing";
 import { PlansSection } from "@/components/billing/sections/PlansSection";
 import { BillingCycleSelector } from "@/components/billing/BillingCycleSelector";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ChangePlanStepProps {
   plans: PlanData[];
@@ -28,6 +29,7 @@ export const ChangePlanStep = ({
   onComplete
 }: ChangePlanStepProps) => {
   const [selectedPlanId, setSelectedPlanId] = React.useState(currentPlan.id);
+  const isAnnualBilling = billingCycle === 'annual';
 
   const handlePlanChange = (planId: string) => {
     setSelectedPlanId(planId);
@@ -56,6 +58,15 @@ export const ChangePlanStep = ({
           </p>
         </div>
       </div>
+
+      {isAnnualBilling && (
+        <Alert variant="info" className="bg-blue-50 border-blue-200">
+          <AlertCircle className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-blue-700">
+            You're currently on an annual billing cycle. Once on an annual plan, you cannot switch back to monthly billing until your contract ends.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <Card>
         <CardHeader>

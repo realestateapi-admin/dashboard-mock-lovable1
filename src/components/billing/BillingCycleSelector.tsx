@@ -2,7 +2,8 @@
 import { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, CheckIcon } from "lucide-react";
+import { CheckCircle, CheckIcon, Lock } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface BillingCycleSelectorProps {
   billingCycle: 'monthly' | 'annual';
@@ -25,6 +26,11 @@ export const BillingCycleSelector = ({
 
   // Update localStorage when billing cycle changes
   const handleBillingCycleChange = (cycle: 'monthly' | 'annual') => {
+    // If user is on annual plan, don't allow switching to monthly
+    if (billingCycle === 'annual' && cycle === 'monthly') {
+      return;
+    }
+    
     onBillingCycleChange(cycle);
     localStorage.setItem('billingCycle', cycle);
   };
@@ -34,35 +40,50 @@ export const BillingCycleSelector = ({
       <h3 className="text-lg font-medium mb-3">What Works Best For You?</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Monthly Option */}
-        <div 
-          className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
-            billingCycle === 'monthly' 
-              ? 'border-primary ring-2 ring-primary ring-offset-2' 
-              : 'border-border hover:border-primary/50'
-          }`}
-          onClick={() => handleBillingCycleChange('monthly')}
-        >
-          <div className="flex justify-between items-start">
-            <h4 className="text-xl font-semibold">Monthly Flexibility</h4>
-            {billingCycle === 'monthly' && (
-              <CheckIcon className="h-5 w-5 text-primary" />
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div 
+                className={`border-2 rounded-lg p-6 transition-all ${
+                  billingCycle === 'monthly' 
+                    ? 'border-primary ring-2 ring-primary ring-offset-2' 
+                    : 'border-border hover:border-primary/50'
+                } ${billingCycle === 'annual' ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
+                onClick={() => billingCycle !== 'annual' && handleBillingCycleChange('monthly')}
+              >
+                <div className="flex justify-between items-start">
+                  <h4 className="text-xl font-semibold">Monthly Flexibility</h4>
+                  {billingCycle === 'monthly' ? (
+                    <CheckIcon className="h-5 w-5 text-primary" />
+                  ) : billingCycle === 'annual' ? (
+                    <Lock className="h-5 w-5 text-muted-foreground" />
+                  ) : null}
+                </div>
+                <ul className="mt-4 space-y-2 text-sm">
+                  <li className="flex items-center">
+                    <span>Pay month-to-month</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span>Cancel anytime</span>
+                  </li>
+                  <li className="flex items-center">
+                    <span>No long-term commitment</span>
+                  </li>
+                </ul>
+                <div className="mt-4 text-center text-sm font-medium">
+                  Standard Price
+                </div>
+              </div>
+            </TooltipTrigger>
+            {billingCycle === 'annual' && (
+              <TooltipContent>
+                <p className="w-64 text-sm">
+                  You can't switch back to monthly billing when on an annual plan. Annual plans require a 12-month commitment.
+                </p>
+              </TooltipContent>
             )}
-          </div>
-          <ul className="mt-4 space-y-2 text-sm">
-            <li className="flex items-center">
-              <span>Pay month-to-month</span>
-            </li>
-            <li className="flex items-center">
-              <span>Cancel anytime</span>
-            </li>
-            <li className="flex items-center">
-              <span>No long-term commitment</span>
-            </li>
-          </ul>
-          <div className="mt-4 text-center text-sm font-medium">
-            Standard Price
-          </div>
-        </div>
+          </Tooltip>
+        </TooltipProvider>
         
         {/* Annual Option */}
         <div 
