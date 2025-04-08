@@ -29,31 +29,58 @@ export const ManageSubscriptionStep = ({
   onChangeOverage,
   onFinalizePlan
 }: ManageSubscriptionStepProps) => {
+  // Store the original state on first render
   const [originalPlan, setOriginalPlan] = useState<PlanData | null>(null);
   const [originalAddOns, setOriginalAddOns] = useState<AddOnData[]>([]);
   const [originalOverage, setOriginalOverage] = useState<string>("");
+  
+  // Store the current proposed state
+  const [proposedPlan, setProposedPlan] = useState<PlanData | null>(null);
+  const [proposedAddOns, setProposedAddOns] = useState<AddOnData[]>([]);
+  const [proposedOverage, setProposedOverage] = useState<string>("");
 
-  // Save the initial state when the component mounts
+  // Use a ref to track if this is the first render
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Initialize the original and proposed states on first render only
   useEffect(() => {
-    if (!originalPlan) {
-      console.log("Setting original plan:", currentPlan);
+    if (!isInitialized) {
+      console.log("Initializing original plan state:", currentPlan);
+      // Set original state (never changes until finalization)
       setOriginalPlan(currentPlan);
-      setOriginalAddOns(activeAddOns);
+      setOriginalAddOns([...activeAddOns]);
       setOriginalOverage(overageHandling);
+      
+      // Set initial proposed state (will update with user changes)
+      setProposedPlan(currentPlan);
+      setProposedAddOns([...activeAddOns]);
+      setProposedOverage(overageHandling);
+      
+      setIsInitialized(true);
     }
-  }, [currentPlan, activeAddOns, overageHandling, originalPlan]);
+  }, [currentPlan, activeAddOns, overageHandling, isInitialized]);
+
+  // Update proposed state when current values change (happens after user makes changes)
+  useEffect(() => {
+    if (isInitialized) {
+      console.log("Updating proposed plan state:", currentPlan);
+      setProposedPlan(currentPlan);
+      setProposedAddOns([...activeAddOns]);
+      setProposedOverage(overageHandling);
+    }
+  }, [currentPlan, activeAddOns, overageHandling, isInitialized]);
 
   // Check if any of the subscription details have changed
-  const planChangedFromOriginal = originalPlan && originalPlan.id !== currentPlan.id;
+  const planChanged = originalPlan && proposedPlan && originalPlan.id !== proposedPlan.id;
   
   // Check if add-ons have changed
-  const addOnsChangedFromOriginal = originalAddOns && addOnsChanged(originalAddOns, activeAddOns);
+  const addOnsChangedFromOriginal = addOnsChanged(originalAddOns, proposedAddOns);
   
   // Check if overage handling has changed
-  const overageChangedFromOriginal = originalOverage !== overageHandling;
+  const overageChangedFromOriginal = originalOverage !== proposedOverage;
   
   // Determine if any changes have been made
-  const hasAnyChanges = planChangedFromOriginal || 
+  const hasAnyChanges = planChanged || 
     addOnsChangedFromOriginal || 
     overageChangedFromOriginal;
 
@@ -74,6 +101,18 @@ export const ManageSubscriptionStep = ({
     onFinalizePlan();
   };
 
+  // Wait for initialization before rendering
+  if (!isInitialized || !originalPlan || !proposedPlan) {
+    return (
+      <div className="flex items-center justify-center h-[200px]">
+        <div className="animate-pulse text-center">
+          <div className="h-8 bg-gray-200 rounded w-64 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-48 mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -88,36 +127,36 @@ export const ManageSubscriptionStep = ({
         </p>
       </div>
 
-      <div className={`grid gap-6 ${planChangedFromOriginal ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
-        {planChangedFromOriginal && originalPlan && (
-          <CurrentPlanCard
-            plan={originalPlan}
-            addOns={originalAddOns}
-            overageHandling={originalOverage}
-            billingCycle={billingCycle}
-            getPlanPrice={(plan) => getPlanPrice(plan, billingCycle)}
-            formatOverageHandling={formatOverageHandling}
-          />
-        )}
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Always show the original plan on the left */}
+        <CurrentPlanCard
+          plan={originalPlan}
+          addOns={originalAddOns}
+          overageHandling={originalOverage}
+          billingCycle={billingCycle}
+          getPlanPrice={(plan) => getPlanPrice(plan, billingCycle)}
+          formatOverageHandling={formatOverageHandling}
+        />
 
+        {/* Show the proposed plan on the right */}
         <ModifiedPlanCard
-          currentPlan={currentPlan}
-          activeAddOns={activeAddOns}
+          currentPlan={proposedPlan}
+          activeAddOns={proposedAddOns}
           originalAddOns={originalAddOns}
-          overageHandling={overageHandling}
+          overageHandling={proposedOverage}
           originalOverage={originalOverage}
           billingCycle={billingCycle}
           getPlanPrice={(plan) => getPlanPrice(plan, billingCycle)}
           formatOverageHandling={formatOverageHandling}
-          hasAnyChanges={planChangedFromOriginal}
-          planChanged={planChangedFromOriginal}
+          hasAnyChanges={hasAnyChanges}
+          planChanged={planChanged}
         />
       </div>
 
       {hasAnyChanges && (
         <PlanChangeIndicator 
           hasChanges={hasAnyChanges} 
-          planChanged={planChangedFromOriginal}
+          planChanged={planChanged}
           addOnsChanged={addOnsChangedFromOriginal}
           overageChanged={overageChangedFromOriginal}
         />

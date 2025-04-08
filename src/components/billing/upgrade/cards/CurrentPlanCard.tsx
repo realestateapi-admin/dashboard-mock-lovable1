@@ -1,6 +1,5 @@
 
 import React from "react";
-import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
@@ -33,7 +32,7 @@ export const CurrentPlanCard = ({
           </Badge>
         </CardTitle>
         <CardDescription>
-          Your previous subscription plan
+          Your current subscription
         </CardDescription>
       </CardHeader>
 
@@ -63,6 +62,31 @@ export const CurrentPlanCard = ({
               )}
             </ul>
           </div>
+        </div>
+
+        <div className="border-t pt-4">
+          <h4 className="text-sm font-medium mb-2">Active Add-ons:</h4>
+          {addOns.length > 0 ? (
+            <ul className="space-y-2">
+              {addOns.map((addon) => (
+                <li key={addon.id} className="flex justify-between text-sm">
+                  <span>{addon.name}</span>
+                  <span className="font-medium">
+                    {addon.prices[plan.id]}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-muted-foreground">No add-ons currently active</p>
+          )}
+        </div>
+
+        <div className="border-t pt-4">
+          <h4 className="text-sm font-medium mb-2">Overage Handling:</h4>
+          <p className="text-sm">
+            {formatOverageHandling(overageHandling)}
+          </p>
         </div>
       </CardContent>
     </Card>

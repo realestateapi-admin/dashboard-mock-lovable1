@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +31,17 @@ const UpgradeFlow = () => {
   const [previousStep, setPreviousStep] = useState<UpgradeStep | null>(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   
+  // Store original subscription state for comparison
+  const originalSubscriptionRef = useRef({
+    planId: '',
+    addOns: [] as string[],
+    overageHandling: '',
+    billingCycle: 'monthly' as 'monthly' | 'annual'
+  });
+  
+  // Track if we've initialized the original subscription state
+  const hasInitializedRef = useRef(false);
+  
   // Initialize billing cycle from localStorage or default to monthly
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>(() => {
     const storedCycle = localStorage.getItem('billingCycle');
@@ -59,6 +69,27 @@ const UpgradeFlow = () => {
 
   // Calculate costs based on billing cycle
   const costs = calculateMonthlyCost(billingCycle);
+
+  // Effect to initialize original subscription state
+  useEffect(() => {
+    if (subscription && !hasInitializedRef.current) {
+      // Initialize the original subscription state once
+      const planId = plans.find(p => 
+        p.name.toLowerCase() === subscription.plan_name.toLowerCase()
+      )?.id || selectedPlan;
+      
+      // Save the original state for comparison
+      originalSubscriptionRef.current = {
+        planId,
+        addOns: subscription.add_ons || [],
+        overageHandling: subscription.overage_handling || 'cut-off',
+        billingCycle: Boolean(subscription.contract_end_date) ? 'annual' : 'monthly'
+      };
+      
+      hasInitializedRef.current = true;
+      console.log("Initialized original subscription state:", originalSubscriptionRef.current);
+    }
+  }, [subscription, selectedPlan]);
 
   // Effect to set billing cycle based on subscription data
   useEffect(() => {
