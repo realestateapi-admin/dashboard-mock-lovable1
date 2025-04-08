@@ -3,7 +3,6 @@ import { BillingCycleSelector } from "@/components/billing/BillingCycleSelector"
 import { PlansList } from "@/components/billing/PlansList";
 import { PlanData } from "@/types/billing";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card } from "@/components/ui/card";
 
 interface PlanSelectionStepProps {
   selectedPlan: string;
@@ -86,8 +85,9 @@ export const PlanSelectionStep = ({
         />
       </div>
       
-      {enterprisePlan && (
-        <Card className="mt-6 p-4 border border-purple-200 bg-purple-50">
+      {/* Enterprise card only shown in upgrade flow, not in signup flow */}
+      {isUpgradeFlow && enterprisePlan && (
+        <div className="mt-6 p-4 border border-purple-200 bg-purple-50 rounded-lg">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h3 className="text-lg font-medium text-purple-800">Need Enterprise Features?</h3>
@@ -102,7 +102,7 @@ export const PlanSelectionStep = ({
               Explore Enterprise Plan
             </button>
           </div>
-        </Card>
+        </div>
       )}
     </div>
   );
