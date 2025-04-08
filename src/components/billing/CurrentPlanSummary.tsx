@@ -37,12 +37,27 @@ export const CurrentPlanSummary = ({
   const currentAddOns = addOns.filter(addon => activeAddOns.includes(addon.id));
   
   // Format price based on billing cycle
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: string | number) => {
+    // Parse the price to a number if it's a string (removing $ and comma symbols)
+    let numericPrice: number;
+    
+    if (typeof price === 'string') {
+      // Remove $ and commas from the price string
+      numericPrice = parseFloat(price.replace(/[$,]/g, ''));
+    } else {
+      numericPrice = price;
+    }
+    
+    // Check if parsing resulted in a valid number
+    if (isNaN(numericPrice)) {
+      return price; // Return original price if parsing failed
+    }
+    
     if (billingCycle === 'annual') {
       // Calculate annual price (with 20% discount on base price)
-      return `$${(price * 12 * 0.8).toFixed(0)}`;
+      return `$${(numericPrice * 12 * 0.8).toFixed(0)}`;
     } else {
-      return `$${price.toFixed(0)}`;
+      return `$${numericPrice.toFixed(0)}`;
     }
   };
   
