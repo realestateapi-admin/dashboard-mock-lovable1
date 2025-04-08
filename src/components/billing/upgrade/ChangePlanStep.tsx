@@ -28,6 +28,7 @@ export const ChangePlanStep = ({
   onBack,
   onComplete
 }: ChangePlanStepProps) => {
+  // Store only the ID, not the object reference
   const [selectedPlanId, setSelectedPlanId] = React.useState(currentPlan.id);
   const isAnnualBilling = billingCycle === 'annual';
 
@@ -36,9 +37,16 @@ export const ChangePlanStep = ({
   };
 
   const handleSavePlan = () => {
+    // Only pass the ID, not the plan object
     onSelectPlan(selectedPlanId);
     onComplete();
   };
+
+  // Create a deep copy of the plans array to prevent mutations
+  const plansCopy = React.useMemo(() => 
+    JSON.parse(JSON.stringify(plans)), 
+    [plans]
+  );
 
   return (
     <motion.div
@@ -92,7 +100,7 @@ export const ChangePlanStep = ({
         </CardHeader>
         <CardContent>
           <PlansSection
-            plans={plans}
+            plans={plansCopy}
             selectedPlan={selectedPlanId}
             onPlanChange={handlePlanChange}
             billingCycle={billingCycle}

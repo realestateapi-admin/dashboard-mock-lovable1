@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { PlanData, AddOnData } from "@/types/billing";
 import { CurrentPlanCard } from "./cards/CurrentPlanCard";
@@ -29,11 +29,17 @@ export const ManageSubscriptionStep = ({
   onChangeOverage,
   onFinalizePlan
 }: ManageSubscriptionStepProps) => {
-  // Store the original state as a deep clone (snapshot of subscription when component first mounts)
-  // These will NEVER change during the component lifecycle
-  const [originalPlan, setOriginalPlan] = useState<PlanData | null>(null);
-  const [originalAddOns, setOriginalAddOns] = useState<AddOnData[]>([]);
-  const [originalOverage, setOriginalOverage] = useState<string>("");
+  // Use useRef to store the initial values that should NEVER change
+  // This guarantees they remain completely static throughout component lifecycle
+  const initialValuesRef = useRef<{
+    plan: PlanData | null;
+    addOns: AddOnData[];
+    overageHandling: string;
+  }>({
+    plan: null,
+    addOns: [],
+    overageHandling: ""
+  });
   
   // Store the current proposed state (what the user is configuring)
   // These will change as user makes selections
@@ -47,14 +53,12 @@ export const ManageSubscriptionStep = ({
   // Initialize state only once on component mount
   useEffect(() => {
     if (!isInitialized && currentPlan) {
-      // Deep clone objects to prevent reference issues
-      const planClone = JSON.parse(JSON.stringify(currentPlan));
-      const addOnsClone = JSON.parse(JSON.stringify(activeAddOns));
-      
-      // Set the original state that never changes during the session
-      setOriginalPlan(planClone);
-      setOriginalAddOns(addOnsClone);
-      setOriginalOverage(overageHandling);
+      // Store initial values in ref - these NEVER change during component lifecycle
+      initialValuesRef.current = {
+        plan: JSON.parse(JSON.stringify(currentPlan)),
+        addOns: JSON.parse(JSON.stringify(activeAddOns)),
+        overageHandling: overageHandling
+      };
       
       // Initialize the proposed state with copies of the current values
       setProposedPlan(JSON.parse(JSON.stringify(currentPlan)));
@@ -64,8 +68,8 @@ export const ManageSubscriptionStep = ({
       // Mark as initialized to prevent re-initialization
       setIsInitialized(true);
       
-      console.log("Initialized original plan state:", planClone);
-      console.log("Initialized original add-ons:", addOnsClone);
+      console.log("Initialized original plan state:", initialValuesRef.current.plan);
+      console.log("Initialized original add-ons:", initialValuesRef.current.addOns);
     }
   }, [currentPlan, activeAddOns, overageHandling, isInitialized]);
 
@@ -73,8 +77,7 @@ export const ManageSubscriptionStep = ({
   useEffect(() => {
     // Only update the proposed state if we've already initialized
     if (isInitialized) {
-      // ✅ FIX: Use JSON.parse(JSON.stringify()) for proper deep cloning
-      // This ensures we're creating entirely new objects with no shared references
+      // Create completely new objects through deep cloning
       setProposedPlan(JSON.parse(JSON.stringify(currentPlan)));
       setProposedAddOns(JSON.parse(JSON.stringify(activeAddOns)));
       setProposedOverage(overageHandling);
@@ -83,6 +86,11 @@ export const ManageSubscriptionStep = ({
       console.log("Updated proposed add-ons with deep clone:", activeAddOns);
     }
   }, [currentPlan, activeAddOns, overageHandling, isInitialized]);
+
+  // Get the original values from the ref (these never change)
+  const originalPlan = initialValuesRef.current.plan;
+  const originalAddOns = initialValuesRef.current.addOns;
+  const originalOverage = initialValuesRef.current.overageHandling;
 
   // Check if any of the subscription details have changed
   const planChanged = originalPlan && proposedPlan && originalPlan.id !== proposedPlan.id;
