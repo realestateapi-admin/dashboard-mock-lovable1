@@ -1,6 +1,7 @@
 
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom"; // Add this import
 
 // Import the UpgradeWizard component that includes all steps
 import { UpgradeWizard } from "@/components/billing/wizard/UpgradeWizard";
@@ -10,6 +11,8 @@ import OnboardingSteps from "@/components/onboarding/OnboardingSteps";
 import { WizardSidebar } from "@/components/billing/wizard/WizardSidebar";
 
 const PlanSignupWizard = () => {
+  const navigate = useNavigate(); // Initialize useNavigate hook
+  
   const {
     currentStep,
     billingCycle,
@@ -41,6 +44,11 @@ const PlanSignupWizard = () => {
     status: index === currentStep ? "current" : index < currentStep ? "completed" : "upcoming"
   }));
   
+  // Define a function to go to the dashboard
+  const goToDashboard = () => {
+    navigate('/dashboard'); // Navigate to the dashboard route
+  };
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <motion.div
@@ -65,7 +73,7 @@ const PlanSignupWizard = () => {
               onOverageHandlingChange={setOverageHandling}
               onBillingCycleChange={handleBillingCycleChange}
               onSaveBillingPreferences={handleSubmit}
-              onFinish={() => {}}
+              onFinish={goToDashboard} // Use the new function here
               enterprisePlan={enterprisePlan}
               onSelectEnterprise={handleSelectEnterprise}
               isUpgradeFlow={false} // Explicitly set to false for signup flow
@@ -84,7 +92,7 @@ const PlanSignupWizard = () => {
               billingCycle={billingCycle}
               enterprisePlan={enterprisePlan}
               onSelectEnterprise={handleSelectEnterprise}
-              onSubmit={handleSubmit}
+              onSubmit={goToDashboard} // Use the new function here
               isLoading={isLoading}
             />
           </div>

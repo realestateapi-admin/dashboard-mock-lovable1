@@ -44,7 +44,7 @@ export const WizardActionButtons = ({
         {isLoading ? (
           "Processing..."
         ) : currentStep === totalSteps - 1 ? (
-          "Complete"
+          "Go to dashboard"
         ) : (
           <>
             Next
