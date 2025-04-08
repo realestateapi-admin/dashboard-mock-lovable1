@@ -1,121 +1,72 @@
 
 import { CheckIcon } from "lucide-react";
-import { motion } from "framer-motion";
-
-interface Step {
-  title: string;
-  description: string;
-  icon: React.ElementType;
-}
+import { WizardStep } from "./WizardStepsConfig";
 
 interface WizardStepIndicatorProps {
-  steps: Step[];
+  steps: WizardStep[];
   currentStep: number;
-  isUpgradeFlow?: boolean; // Add flag to determine which flow we're in
+  isUpgradeFlow?: boolean;
 }
 
 export const WizardStepIndicator = ({ 
   steps, 
-  currentStep, 
-  isUpgradeFlow = false 
+  currentStep,
+  isUpgradeFlow = true
 }: WizardStepIndicatorProps) => {
-  // If it's not the upgrade flow, don't render anything
-  if (!isUpgradeFlow) {
-    return null;
-  }
-
+  // Set the accent color based on flow
+  const accentColor = isUpgradeFlow ? "purple" : "[#04c8c8]";
+  
   return (
     <div className="w-full">
-      <div className="hidden md:flex justify-between mb-8">
-        {steps.map((step, index) => {
-          const StepIcon = step.icon;
-          const isCompleted = index < currentStep;
-          const isActive = index === currentStep;
-          
-          return (
-            <div 
-              key={step.title} 
-              className={`flex flex-col items-center relative ${
-                index === steps.length - 1 ? '' : 'flex-1'
-              }`}
-            >
-              <div className="flex items-center justify-center">
-                <motion.div
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: isActive ? 1.1 : 1 }}
-                  className={`z-10 flex items-center justify-center w-10 h-10 rounded-full ${
-                    isCompleted 
-                      ? isUpgradeFlow ? 'bg-purple-600 text-white' : 'bg-[#04c8c8] text-white'
-                      : isActive 
-                        ? isUpgradeFlow ? 'bg-purple-100 border-2 border-purple-600 text-purple-600' : 'border-2 border-[#04c8c8] text-[#04c8c8]'
-                        : 'bg-gray-100 text-gray-400'
-                  }`}
-                >
-                  {isCompleted ? (
-                    <CheckIcon className="h-5 w-5" />
-                  ) : (
-                    <StepIcon className="h-5 w-5" />
-                  )}
-                </motion.div>
-              </div>
-              
-              {index < steps.length - 1 && (
-                <div 
-                  className={`absolute top-5 left-1/2 w-full h-[2px] ${
-                    index < currentStep 
-                      ? isUpgradeFlow ? 'bg-purple-600' : 'bg-[#04c8c8]'
-                      : 'bg-gray-200'
-                  }`}
-                ></div>
-              )}
-              
-              <div className="mt-3 text-center">
-                <p className={`text-sm font-medium ${
-                  isActive 
-                    ? isUpgradeFlow ? 'text-purple-600' : 'text-[#04c8c8]' 
-                    : isCompleted ? 'text-gray-700' : 'text-gray-400'
-                }`}>{step.title}</p>
-                <p className="text-xs text-gray-500 hidden lg:block">{step.description}</p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      
-      {/* Mobile step indicator */}
-      <div className="md:hidden flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <div className={`flex items-center justify-center w-8 h-8 rounded-full 
-            ${currentStep === steps.length - 1 
-              ? isUpgradeFlow ? 'bg-purple-600 text-white' : 'bg-[#04c8c8] text-white'
-              : isUpgradeFlow ? 'bg-purple-100 border-2 border-purple-600 text-purple-600' : 'border-2 border-[#04c8c8] text-[#04c8c8]'
-            }`}
-          >
-            {currentStep === steps.length - 1 ? (
-              <CheckIcon className="h-4 w-4" />
-            ) : (
-              <span className="text-sm font-medium">{currentStep + 1}</span>
-            )}
-          </div>
-          <div className="ml-3">
-            <p className="text-sm font-medium text-gray-900">{steps[currentStep].title}</p>
-            <p className="text-xs text-gray-500">{steps[currentStep].description}</p>
-          </div>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className={`text-2xl font-bold tracking-tight text-${accentColor}-700`}>
+            {steps[currentStep].title}
+          </h2>
+          <p className="text-muted-foreground">
+            {steps[currentStep].description}
+          </p>
         </div>
-        
-        <div className="text-sm text-gray-500">
+        <div className="text-sm font-medium">
           Step {currentStep + 1} of {steps.length}
         </div>
       </div>
       
-      {/* Progress bar - only for upgrade flow */}
-      <div className="w-full bg-gray-200 h-1 rounded-full mt-2">
-        <motion.div 
-          initial={{ width: 0 }}
-          animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-          className="bg-purple-600 h-1 rounded-full"
-          transition={{ duration: 0.5 }}
-        ></motion.div>
+      <div className="w-full">
+        <div className="flex items-center w-full">
+          {steps.map((step, index) => (
+            <div key={index} className="flex-1 relative">
+              <div className="flex items-center">
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center border-2 
+                  ${index < currentStep 
+                    ? `bg-${accentColor}-600 border-${accentColor}-600 text-white` 
+                    : index === currentStep 
+                      ? `border-${accentColor}-600 text-${accentColor}-600` 
+                      : 'border-gray-300 text-gray-300'
+                  }`}
+                >
+                  {index < currentStep ? (
+                    <CheckIcon className="h-4 w-4" />
+                  ) : (
+                    <span>{index + 1}</span>
+                  )}
+                </div>
+                
+                {index < steps.length - 1 && (
+                  <div className={`h-0.5 flex-1 ml-2 mr-2 
+                    ${index < currentStep ? `bg-${accentColor}-600` : 'bg-gray-200'}`}
+                  ></div>
+                )}
+              </div>
+              
+              <span className={`absolute text-xs mt-1 transform -translate-x-1/4
+                ${index <= currentStep ? `text-${accentColor}-600 font-medium` : 'text-gray-400'}`}
+              >
+                {step.title}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

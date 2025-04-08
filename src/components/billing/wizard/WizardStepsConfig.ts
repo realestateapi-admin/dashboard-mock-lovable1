@@ -1,43 +1,34 @@
 
-import { Package, ListChecks, Settings, CreditCard, FileText, FileCheck } from "lucide-react";
-
 export interface WizardStep {
   title: string;
   description: string;
-  icon: React.ElementType;
 }
 
 export const getWizardSteps = (): WizardStep[] => {
   return [
-    { 
-      title: "Choose Your Plan", 
-      description: "Select the right plan for your needs",
-      icon: Package
+    {
+      title: "Plan Selection",
+      description: "Choose a subscription plan that fits your needs"
     },
-    { 
-      title: "Select Add-Ons", 
-      description: "Enhance your plan with additional features",
-      icon: ListChecks
+    {
+      title: "Add-Ons",
+      description: "Select additional features and capabilities"
     },
-    { 
-      title: "Configure Overage", 
-      description: "Decide how to handle usage beyond plan limits",
-      icon: Settings
+    {
+      title: "Overage Handling",
+      description: "Configure how to handle usage beyond your plan limits"
     },
-    { 
-      title: "Payment Information", 
-      description: "Enter your payment details",
-      icon: CreditCard
+    {
+      title: "Payment Method",
+      description: "Update or confirm your payment information"
     },
-    { 
-      title: "Terms of Service", 
-      description: "Review and accept our terms",
-      icon: FileText
+    {
+      title: "Terms of Service",
+      description: "Review and accept the terms of service"
     },
-    { 
-      title: "Review & Confirm", 
-      description: "Confirm your subscription changes",
-      icon: FileCheck
+    {
+      title: "Confirmation",
+      description: "Review your subscription changes before finalizing"
     }
   ];
 };

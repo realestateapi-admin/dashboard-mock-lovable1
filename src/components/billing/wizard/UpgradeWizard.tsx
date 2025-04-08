@@ -47,7 +47,7 @@ export const UpgradeWizard = ({
   onFinish,
   enterprisePlan,
   onSelectEnterprise,
-  isUpgradeFlow = false // Default to false for signup flow
+  isUpgradeFlow = true // Default to true for upgrade flow
 }: UpgradeWizardProps) => {
   const steps = getWizardSteps();
   

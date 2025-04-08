@@ -7,6 +7,7 @@ import { PaymentInfoStep } from "./steps/PaymentInfoStep";
 import { TermsOfServiceStep } from "./steps/TermsOfServiceStep";
 import { SummaryStep } from "./steps/SummaryStep";
 import { PlanData, AddOnData } from "@/types/billing";
+import { ReviewStep } from "./steps/ReviewStep";
 
 interface WizardStepContentProps {
   currentStep: number;
@@ -61,7 +62,7 @@ export const WizardStepContent = ({
   handleTermsAccepted,
   handlePaymentMethodChange,
   updateFormData,
-  isUpgradeFlow = false
+  isUpgradeFlow = true
 }: WizardStepContentProps) => {
   // Filter out enterprise plan for display in plan selection
   const regularPlans = plans.filter(p => p.id !== "enterprise");
@@ -128,16 +129,15 @@ export const WizardStepContent = ({
       )}
       
       {currentStep === 5 && (
-        <SummaryStep 
+        <ReviewStep 
           selectedPlan={selectedPlan}
-          billingCycle={billingCycle}
           plans={plans}
           activeAddOns={activeAddOns}
           addOns={addOns}
           overageHandling={overageHandling}
           costs={costs}
+          billingCycle={billingCycle}
           isLoading={isLoading}
-          formData={formData}
         />
       )}
     </div>
