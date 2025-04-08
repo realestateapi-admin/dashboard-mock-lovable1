@@ -1,7 +1,8 @@
 
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom"; // Add this import
+import { useNavigate } from "react-router-dom";
+import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 // Import the UpgradeWizard component that includes all steps
 import { UpgradeWizard } from "@/components/billing/wizard/UpgradeWizard";
@@ -11,7 +12,8 @@ import OnboardingSteps from "@/components/onboarding/OnboardingSteps";
 import { WizardSidebar } from "@/components/billing/wizard/WizardSidebar";
 
 const PlanSignupWizard = () => {
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
+  const { setIsOnPaidPlan } = useTrialAlert();
   
   const {
     currentStep,
@@ -46,7 +48,21 @@ const PlanSignupWizard = () => {
   
   // Define a function to go to the dashboard
   const goToDashboard = () => {
-    navigate('/dashboard'); // Navigate to the dashboard route
+    // Set user as on a paid plan before redirecting
+    if (setIsOnPaidPlan) {
+      setIsOnPaidPlan(true);
+      localStorage.setItem('isOnPaidPlan', 'true');
+      localStorage.setItem('isFreeUser', 'false');
+    }
+    
+    // Save selected plan to localStorage
+    localStorage.setItem('selectedPlan', selectedPlan);
+    
+    // Find the plan name for the selected plan
+    const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || "Growth";
+    localStorage.setItem('selectedPlanName', selectedPlanName);
+    
+    navigate('/dashboard');
   };
   
   return (

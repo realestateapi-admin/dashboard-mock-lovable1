@@ -42,6 +42,10 @@ export const useSubscriptionSubmit = () => {
         description: "Your subscription has been successfully processed.",
       });
       
+      // Make sure local storage is updated to show user as being on a paid plan
+      // This ensures that the billing menu options will be shown
+      localStorage.setItem('isFreeUser', 'false');
+      
       // Redirect to dashboard
       navigate("/dashboard");
     }, 2000);
