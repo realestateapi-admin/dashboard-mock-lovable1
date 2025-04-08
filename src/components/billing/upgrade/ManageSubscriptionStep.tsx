@@ -73,16 +73,14 @@ export const ManageSubscriptionStep = ({
   useEffect(() => {
     // Only update the proposed state if we've already initialized
     if (isInitialized) {
-      // ✅ FIX: Deep clone currentPlan and activeAddOns before setting as proposed state
-      const clonedPlan = JSON.parse(JSON.stringify(currentPlan));
-      const clonedAddOns = JSON.parse(JSON.stringify(activeAddOns));
-      
-      setProposedPlan(clonedPlan);
-      setProposedAddOns(clonedAddOns);
+      // ✅ FIX: Use JSON.parse(JSON.stringify()) for proper deep cloning
+      // This ensures we're creating entirely new objects with no shared references
+      setProposedPlan(JSON.parse(JSON.stringify(currentPlan)));
+      setProposedAddOns(JSON.parse(JSON.stringify(activeAddOns)));
       setProposedOverage(overageHandling);
       
-      console.log("Updated proposed plan state:", clonedPlan);
-      console.log("Updated proposed add-ons:", clonedAddOns);
+      console.log("Updated proposed plan state with deep clone:", currentPlan);
+      console.log("Updated proposed add-ons with deep clone:", activeAddOns);
     }
   }, [currentPlan, activeAddOns, overageHandling, isInitialized]);
 
