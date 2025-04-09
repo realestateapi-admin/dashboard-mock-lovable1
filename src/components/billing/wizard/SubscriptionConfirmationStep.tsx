@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlanData, AddOnData } from "@/types/billing";
 import { Skeleton } from "@/components/ui/skeleton";
-import { format, addMonths, differenceInMonths } from "date-fns";
+import { format, addMonths, differenceInMonths, addYears } from "date-fns";
 
 // Import our new components
 import { ConfirmationHeader } from "./confirmation/ConfirmationHeader";
@@ -80,13 +80,13 @@ export const SubscriptionConfirmationStep = ({
   const earlyTerminationInfo = useMemo(() => {
     if (billingCycle !== 'annual') return null;
     
-    const contractStartDate = new Date(new Date().setMonth(new Date().getMonth() - 3));
-    const contractEndDate = new Date(contractStartDate);
-    contractEndDate.setFullYear(contractEndDate.getFullYear() + 1);
+    // For new signups, the contract starts today
+    const contractStartDate = new Date();
+    const contractEndDate = addYears(contractStartDate, 1);
     
-    const remainingMonths = Math.ceil(differenceInMonths(contractEndDate, new Date()));
-    const totalMonthsInContract = 12;
-    const monthsCompleted = totalMonthsInContract - remainingMonths;
+    // For new signups, no months have been completed yet, and 12 months remain
+    const remainingMonths = 12;
+    const monthsCompleted = 0;
     
     const monthlyAmount = parseFloat(costs.total.replace(/[$,]/g, ''));
     const remainingContractValue = monthlyAmount * remainingMonths;
