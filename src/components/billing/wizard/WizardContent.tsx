@@ -138,6 +138,7 @@ export function WizardContent({
                 overageHandling={overageHandling || ''}
                 onOverageHandlingChange={setOverageHandling}
                 isLoading={isLoading}
+                selectedPlan={selectedPlan} // Pass the selectedPlan to handle Starter plan restrictions
               />
             )}
             
