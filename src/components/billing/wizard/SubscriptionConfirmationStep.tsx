@@ -90,7 +90,8 @@ export const SubscriptionConfirmationStep = ({
     
     const monthlyAmount = parseFloat(costs.total.replace(/[$,]/g, ''));
     const remainingContractValue = monthlyAmount * remainingMonths;
-    const earlyTerminationFee = remainingContractValue * 0.5;
+    // Early termination fee is now the full remaining contract value
+    const earlyTerminationFee = remainingContractValue;
     
     return {
       contractStartDate,

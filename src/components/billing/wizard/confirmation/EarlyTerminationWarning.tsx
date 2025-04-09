@@ -25,7 +25,7 @@ export const EarlyTerminationWarning: React.FC<EarlyTerminationWarningProps> = (
     <div className="flex items-start gap-3 bg-amber-50 text-amber-700 p-4 rounded-md border border-amber-100">
       <AlertCircle className="h-6 w-6 text-amber-500 flex-shrink-0 mt-0.5" />
       <div>
-        <p className="font-medium">Annual Contract Early Termination Fee</p>
+        <p className="font-medium">Annual Contract Early Termination</p>
         <p className="text-sm mt-1">
           {isNewContract ? (
             <>Your annual contract will start on {format(earlyTerminationInfo.contractStartDate, 'MMMM d, yyyy')} 
@@ -49,12 +49,12 @@ export const EarlyTerminationWarning: React.FC<EarlyTerminationWarningProps> = (
             <span>{earlyTerminationInfo.remainingContractValue}</span>
           </div>
           <div className="flex justify-between font-medium mt-1">
-            <span>Early termination fee (50%):</span>
-            <span>{earlyTerminationInfo.earlyTerminationFee}</span>
+            <span>Early termination fee:</span>
+            <span>{earlyTerminationInfo.remainingContractValue}</span>
           </div>
         </div>
         <p className="text-xs mt-2 italic">
-          This fee will be charged if you cancel your annual plan before the contract end date.
+          Early termination will require satisfying all unpaid fees due for the remainder of the subscription term.
         </p>
       </div>
     </div>
