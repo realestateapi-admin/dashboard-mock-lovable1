@@ -37,13 +37,10 @@ export const useSubscriptionState = ({
   
   // Initialize the original state ONCE on first mount only
   useEffect(() => {
-    const initializeOriginalState = () => {
-      // Only initialize once
-      if (originalStateRef.current.initialized) {
-        return;
-      }
-
-      // Deep clone the initial props to prevent any reference sharing
+    // Only run once on initial mount
+    if (!originalStateRef.current.initialized && currentPlan) {
+      // Store the original subscription state (immutable after initialization)
+      // This represents what's already in the database, not changing during this session
       originalStateRef.current = {
         plan: JSON.parse(JSON.stringify(currentPlan)),
         addOns: JSON.parse(JSON.stringify(activeAddOns)),
@@ -51,21 +48,19 @@ export const useSubscriptionState = ({
         initialized: true
       };
       
-      console.log("✅ Initialized IMMUTABLE original plan state:", originalStateRef.current.plan);
-      console.log("✅ Initialized IMMUTABLE original add-ons:", originalStateRef.current.addOns);
-    };
-
-    // Initialize the original values if not already done
-    if (currentPlan && !originalStateRef.current.initialized) {
-      initializeOriginalState();
-      
-      // Also initialize the proposed state with deep clones
+      // Also initialize the proposed state with the same values initially
       setProposedPlan(JSON.parse(JSON.stringify(currentPlan)));
       setProposedAddOns(JSON.parse(JSON.stringify(activeAddOns)));
       setProposedOverage(overageHandling);
       
       // Mark loading as complete
       setIsLoading(false);
+      
+      console.log("✅ Original subscription state initialized:", {
+        plan: originalStateRef.current.plan?.name,
+        addOns: originalStateRef.current.addOns.map(a => a.name),
+        overageHandling: originalStateRef.current.overageHandling
+      });
     }
   }, [currentPlan, activeAddOns, overageHandling]);
 
@@ -73,16 +68,15 @@ export const useSubscriptionState = ({
   // Only run this after initialization
   useEffect(() => {
     if (originalStateRef.current.initialized && !isLoading) {
-      // Always create new objects with deep cloning to prevent reference issues
-      const newProposedPlan = JSON.parse(JSON.stringify(currentPlan));
-      const newProposedAddOns = JSON.parse(JSON.stringify(activeAddOns));
-      
-      setProposedPlan(newProposedPlan);
-      setProposedAddOns(newProposedAddOns);
+      setProposedPlan(JSON.parse(JSON.stringify(currentPlan)));
+      setProposedAddOns(JSON.parse(JSON.stringify(activeAddOns)));
       setProposedOverage(overageHandling);
       
-      console.log("Updated proposed plan with deep clone:", newProposedPlan);
-      console.log("Updated proposed add-ons with deep clone:", newProposedAddOns);
+      console.log("📝 Updated proposed subscription:", {
+        plan: currentPlan?.name,
+        addOns: activeAddOns.map(a => a.name),
+        overageHandling
+      });
     }
   }, [currentPlan, activeAddOns, overageHandling, isLoading]);
 

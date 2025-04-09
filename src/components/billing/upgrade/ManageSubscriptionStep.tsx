@@ -79,7 +79,7 @@ export const ManageSubscriptionStep = ({
           formatOverageHandling={formatOverageHandling}
         />
 
-        {/* Show the proposed/modified plan on the right - this updates with user changes */}
+        {/* Right card: Proposed Plan (modified subscription details) */}
         <ModifiedPlanCard
           currentPlan={proposedPlan}
           activeAddOns={proposedAddOns}
