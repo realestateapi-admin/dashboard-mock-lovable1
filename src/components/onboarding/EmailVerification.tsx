@@ -4,7 +4,6 @@ import { Mail } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
 
 interface EmailVerificationProps {
   userEmail: string;
@@ -14,7 +13,6 @@ interface EmailVerificationProps {
 const EmailVerification = ({ userEmail, onVerify }: EmailVerificationProps) => {
   const [showVerifyDemo, setShowVerifyDemo] = useState(false);
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   const handleResendEmail = () => {
     toast({
@@ -34,8 +32,7 @@ const EmailVerification = ({ userEmail, onVerify }: EmailVerificationProps) => {
       description: "You can now proceed with your free trial.",
     });
     
-    // Navigate to the onboarding wizard instead of directly completing onboarding
-    navigate("/onboarding-wizard");
+    // No longer navigate directly - we'll let the parent component handle navigation
   };
 
   return (

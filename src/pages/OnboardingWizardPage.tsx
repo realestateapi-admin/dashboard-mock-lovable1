@@ -47,7 +47,9 @@ const OnboardingWizardPage = () => {
   // If the user already completed onboarding, send them to the dashboard
   useEffect(() => {
     const hasCompletedOnboarding = localStorage.getItem('hasCompletedOnboarding');
-    if (hasCompletedOnboarding && isAuthenticated) {
+    
+    // Only redirect if explicitly marked as completed
+    if (hasCompletedOnboarding === 'true' && isAuthenticated) {
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);

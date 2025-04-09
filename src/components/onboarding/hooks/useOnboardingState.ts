@@ -57,6 +57,8 @@ export const useOnboardingState = () => {
     
     localStorage.setItem('isAuthenticated', 'true');
     localStorage.setItem('userRole', 'admin');
+    
+    // Explicitly mark onboarding as completed
     localStorage.setItem('hasCompletedOnboarding', 'true');
     
     toast({

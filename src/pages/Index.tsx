@@ -12,11 +12,19 @@ const Index = () => {
       return; // Don't redirect if accessing documentation
     }
     
-    // If the user is authenticated, redirect to the dashboard
+    // If the user is authenticated, check if they've completed onboarding
     if (isAuthenticated) {
-      navigate("/dashboard");
+      const hasCompletedOnboarding = localStorage.getItem('hasCompletedOnboarding');
+      
+      // If they haven't completed onboarding, send them there
+      if (hasCompletedOnboarding !== 'true') {
+        navigate("/onboarding-wizard");
+      } else {
+        // Otherwise, redirect to the dashboard
+        navigate("/dashboard");
+      }
     } else {
-      // Otherwise, redirect to the sign-in page
+      // If not authenticated, redirect to the sign-in page
       navigate("/sign-in");
     }
   }, [navigate, isAuthenticated]);

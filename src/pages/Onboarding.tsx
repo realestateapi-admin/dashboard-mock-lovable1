@@ -77,6 +77,11 @@ const Onboarding = () => {
     // Short timeout to show loading state, then navigate to the wizard
     setTimeout(() => {
       setIsLoading(false);
+      
+      // Ensure we're explicitly marking that onboarding has not been completed
+      localStorage.removeItem('hasCompletedOnboarding');
+      
+      // Navigate to the wizard
       navigate("/onboarding-wizard");
     }, 500);
   };
