@@ -9,6 +9,33 @@ export const MongoSchemaSection: React.FC = () => {
       
       <p className="mb-2"><strong>subscriptions:</strong> Already exists, stores plan and billing information</p>
       
+      <pre className="bg-gray-800 text-white p-4 rounded mb-3 overflow-x-auto">
+{`{
+  _id: ObjectId,
+  account_id: Number,
+  subscription_id: String,
+  customer_name: String,
+  contract_start_date: Date,
+  contract_end_date: Date,
+  plan_name: String,
+  plan_id: Number,
+  plan_type: String,
+  usage_amount: Number,
+  minimum_bill_amount: Number,
+  unit_price: Number,
+  credit: Number,
+  trial_begin_date: Date,
+  trial_end_date: Date,
+  early_termination_policy: {
+    requires_full_term_payment: Boolean,
+    prorated_refund_available: Boolean
+  },
+  subscription_start_date: Date,
+  overage_handling: String,
+  add_ons: Array
+}`}
+      </pre>
+      
       <p className="mb-2"><strong>usage_reports:</strong> Already exists, stores aggregate usage by billing period</p>
       
       <p className="mb-2"><strong>activity_logs (new):</strong> Detailed logs of every API request</p>
