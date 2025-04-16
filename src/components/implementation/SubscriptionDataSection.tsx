@@ -19,6 +19,10 @@ export const SubscriptionDataSection: React.FC = () => {
   credit: number;
   trial_begin_date: string;
   trial_end_date: string;
+  early_termination_policy: {
+    requires_full_term_payment: boolean;
+    prorated_refund_available: boolean;
+  }
 }`;
 
   return (
@@ -26,11 +30,12 @@ export const SubscriptionDataSection: React.FC = () => {
       title="6. Subscription Data"
       api="/api/subscription"
       collection="subscriptions"
-      purpose="Fetch current subscription details"
+      purpose="Fetch current subscription details with updated early termination policy"
       responseStructure={responseStructure}
       implementationNotes={[
         "This should match your existing subscription model",
-        "Expose only the necessary fields for the frontend"
+        "Expose subscription details including early termination policy",
+        "Early termination requires satisfying all unpaid fees for the remainder of the subscription term"
       ]}
     />
   );
