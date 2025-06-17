@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Key, Shield } from "lucide-react";
+import { Eye, EyeOff, Shield } from "lucide-react";
 import { ApiKeyCard } from "./ApiKeyCard";
 import { ApiKeyScopes } from "@/components/dashboard/ApiKeyScopes";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
@@ -12,18 +12,18 @@ interface ApiKeyTabsProps {
 }
 
 export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) => {
-  const [testApiKey, setTestApiKey] = useState("test_k6ftg5s7d8v9t3f2r1o9p8m7n6b5v4c3x2");
-  const [prodApiKey, setProdApiKey] = useState("prod_j8k9l0m1n2o3p4q5r6s7t8u9v0w1x2y3z");
+  const [publicApiKey, setPublicApiKey] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6");
+  const [privateApiKey, setPrivateApiKey] = useState("****-****-****-****");
   const [isLoadingScopes, setIsLoadingScopes] = useState(true);
-  const [testKeyScopes, setTestKeyScopes] = useState<string[]>([]);
-  const [prodKeyScopes, setProdKeyScopes] = useState<string[]>([]);
+  const [publicKeyScopes, setPublicKeyScopes] = useState<string[]>([]);
+  const [privateKeyScopes, setPrivateKeyScopes] = useState<string[]>([]);
   
-  // Get isOnPaidPlan from context to determine if production keys should be restricted
+  // Get isOnPaidPlan from context to determine if private keys should be restricted
   const { isOnPaidPlan } = useTrialAlert();
 
   useEffect(() => {
     setTimeout(() => {
-      setTestKeyScopes([
+      setPublicKeyScopes([
         "PropertySearch",
         "PropertyDetail",
         "PropertyComps",
@@ -31,7 +31,7 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
         "PropertyParcel"
       ]);
       
-      setProdKeyScopes([
+      setPrivateKeyScopes([
         "PropertySearch",
         "PropertyDetail",
         "PropertyComps",
@@ -47,66 +47,74 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
     }, 1500);
   }, []);
 
-  const handleRotateTestKey = async () => {
+  const handleRotatePublicKey = async () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
-    const newKey = "test_" + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    setTestApiKey(newKey);
+    const newKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." + Math.random().toString(36).substring(2, 15);
+    setPublicApiKey(newKey);
   };
 
-  const handleRotateProductionKey = async () => {
+  const handleRotatePrivateKey = async () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
-    const newKey = "prod_" + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    setProdApiKey(newKey);
+    const newKey = "****-****-****-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+    setPrivateApiKey(newKey);
   };
 
   return (
-    <Tabs defaultValue="test" className="w-full">
-      <TabsList className="mb-4">
-        <TabsTrigger value="test" className="flex items-center gap-2">
-          <Key className="h-4 w-4" /> Test Keys
-        </TabsTrigger>
-        <TabsTrigger value="production" className="flex items-center gap-2">
-          <Shield className="h-4 w-4" /> Production Keys
-        </TabsTrigger>
-      </TabsList>
-      
-      <TabsContent value="test">
-        <div className="grid gap-6 md:grid-cols-2">
-          <ApiKeyCard
-            title="Test API Key"
-            description="Use this key for development and testing. It provides access to test data and doesn't affect your usage limits."
-            keyValue={testApiKey}
-            icon={<Key className="h-5 w-5 text-primary-teal" />}
-            onRotateKey={handleRotateTestKey}
-          />
-          
-          <ApiKeyScopes 
-            scopes={testKeyScopes}
-            isLoading={isLoadingScopes}
-            isTestKey={true}
-          />
-        </div>
-      </TabsContent>
-      
-      <TabsContent value="production">
-        <div className="grid gap-6 md:grid-cols-2">
-          <ApiKeyCard
-            title="Production API Key"
-            description="Use this key for your live applications. API calls made with this key will count towards your usage limits."
-            keyValue={prodApiKey}
-            icon={<Shield className="h-5 w-5 text-primary-teal" />}
-            isTrialActive={isTrialActive && !isOnPaidPlan}
-            trialDaysLeft={trialDaysLeft}
-            onRotateKey={handleRotateProductionKey}
-          />
-          
-          <ApiKeyScopes 
-            scopes={prodKeyScopes}
-            isLoading={isLoadingScopes}
-            isTestKey={false}
-          />
-        </div>
-      </TabsContent>
-    </Tabs>
+    <div className="space-y-6">
+      <Tabs defaultValue="public" className="w-full">
+        <TabsList className="mb-4">
+          <TabsTrigger value="public" className="flex items-center gap-2">
+            <Eye className="h-4 w-4" /> API Keys
+          </TabsTrigger>
+          <TabsTrigger value="private" className="flex items-center gap-2">
+            <EyeOff className="h-4 w-4" /> New API Keys (Coming Soon)
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="public">
+          <div className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <ApiKeyCard
+                title="anon"
+                subtitle="public"
+                description="This key is safe to use in a browser if you have enabled Row Level Security for your tables and configured policies. Prefer using Secret API keys instead."
+                keyValue={publicApiKey}
+                icon={<Eye className="h-5 w-5 text-primary-teal" />}
+                onRotateKey={handleRotatePublicKey}
+                lastRequest="Last request was a minute ago."
+                isPublicKey={true}
+              />
+              
+              <ApiKeyCard
+                title="service_role"
+                subtitle="secret"
+                description="This key has the ability to bypass Row Level Security. Never share it publicly. If leaked, generate a new JWT secret immediately. Prefer using Publishable API keys instead."
+                keyValue={privateApiKey}
+                icon={<Shield className="h-5 w-5 text-red-500" />}
+                isTrialActive={isTrialActive && !isOnPaidPlan}
+                trialDaysLeft={trialDaysLeft}
+                onRotateKey={handleRotatePrivateKey}
+                lastRequest="Last request was 22 minutes ago."
+                isPublicKey={false}
+              />
+            </div>
+            
+            <ApiKeyScopes 
+              scopes={publicKeyScopes}
+              isLoading={isLoadingScopes}
+              isTestKey={true}
+            />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="private">
+          <div className="text-center py-12 text-muted-foreground">
+            <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <h3 className="text-lg font-medium mb-2">New API Keys Coming Soon</h3>
+            <p>Enhanced API key management with advanced security features will be available soon.</p>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };

@@ -4,37 +4,45 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Copy, Loader2, RefreshCw, Key, Shield, AlertCircle } from "lucide-react";
+import { Copy, Loader2, RefreshCw, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface ApiKeyCardProps {
   title: string;
+  subtitle?: string;
   description: string;
   keyValue: string;
   icon: React.ReactNode;
   isTrialActive?: boolean;
   trialDaysLeft?: number;
   onRotateKey: () => Promise<void>;
+  lastRequest?: string;
+  isPublicKey?: boolean;
 }
 
 export const ApiKeyCard = ({
   title,
+  subtitle,
   description,
   keyValue,
   icon,
   isTrialActive,
   trialDaysLeft,
   onRotateKey,
+  lastRequest,
+  isPublicKey = true,
 }: ApiKeyCardProps) => {
   const [isRotating, setIsRotating] = useState(false);
   const [isConfirmingRotation, setIsConfirmingRotation] = useState(false);
+  const [isRevealed, setIsRevealed] = useState(isPublicKey);
   const { toast } = useToast();
 
   const handleCopyApiKey = () => {
     navigator.clipboard.writeText(keyValue);
     toast({
-      title: `${title} copied`,
+      title: "API key copied",
       description: "Your API key has been copied to clipboard.",
     });
   };
@@ -44,7 +52,7 @@ export const ApiKeyCard = ({
     try {
       await onRotateKey();
       toast({
-        title: `${title} rotated`,
+        title: "API key rotated",
         description: "Your new API key has been generated. Update your applications accordingly.",
       });
       setIsConfirmingRotation(false);
@@ -59,63 +67,75 @@ export const ApiKeyCard = ({
     }
   };
 
-  const isProdKey = title.toLowerCase().includes('production');
-  // Only restrict if it's a production key AND trial is active (not on paid plan)
-  const isRestricted = isProdKey && isTrialActive;
+  const isPrivateKey = !isPublicKey;
+  // Only restrict if it's a private key AND trial is active (not on paid plan)
+  const isRestricted = isPrivateKey && isTrialActive;
+  
+  const displayValue = isRevealed ? keyValue : "****-****-****-****";
   
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          {icon}
-          {title}
-        </CardTitle>
-        <CardDescription>
-          {description}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-end gap-4">
-          <div className="space-y-2 flex-1">
-            <Label htmlFor={`${title.toLowerCase().replace(' ', '-')}-api-key`}>
+    <Card className="relative">
+      <CardHeader className="pb-4">
+        <div className="flex items-start gap-3">
+          <div className="flex items-center gap-2 flex-1">
+            <Badge variant="outline" className="text-xs font-mono">
               {title}
-            </Label>
-            <div className="flex items-center">
-              <Input 
-                id={`${title.toLowerCase().replace(' ', '-')}-api-key`}
-                value={keyValue}
-                readOnly
-                className="font-mono text-sm bg-muted"
-              />
-              <Button 
-                variant="ghost" 
-                size="icon"
-                className="ml-2"
-                onClick={handleCopyApiKey}
+            </Badge>
+            {subtitle && (
+              <Badge 
+                variant={subtitle === 'secret' ? 'destructive' : 'secondary'} 
+                className="text-xs"
               >
-                <Copy className="h-4 w-4" />
-                <span className="sr-only">Copy</span>
-              </Button>
-            </div>
+                {subtitle}
+              </Badge>
+            )}
           </div>
-          
           <Button 
-            variant="outline" 
-            className="flex items-center gap-2"
-            onClick={() => setIsConfirmingRotation(true)}
-            disabled={isRestricted || isRotating}
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8"
+            onClick={handleCopyApiKey}
           >
-            {isRotating ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-            Rotate Key
+            <Copy className="h-4 w-4" />
+            <span className="sr-only">Copy</span>
           </Button>
         </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center justify-between border rounded-lg p-3 bg-muted/50">
+          <div className="font-mono text-sm text-muted-foreground overflow-hidden">
+            {displayValue}
+          </div>
+          {isPrivateKey && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsRevealed(!isRevealed)}
+              disabled={isRestricted}
+              className="ml-2"
+            >
+              {isRevealed ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              <span className="sr-only">{isRevealed ? 'Hide' : 'Reveal'}</span>
+            </Button>
+          )}
+        </div>
+        
+        <p className="text-sm text-muted-foreground">
+          {description}
+        </p>
+        
+        {lastRequest && (
+          <p className="text-xs text-muted-foreground">
+            {lastRequest}
+          </p>
+        )}
         
         {isConfirmingRotation && !isRestricted && (
           <Alert variant="destructive" className="mt-4">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Confirm Key Rotation</AlertTitle>
             <AlertDescription className="space-y-4">
-              <p>Rotating your {isProdKey ? "production" : "test"} API key will invalidate the current key. Make sure to update all your applications after rotation.</p>
+              <p>Rotating your {isPrivateKey ? "private" : "public"} API key will invalidate the current key. Make sure to update all your applications after rotation.</p>
               <div className="flex items-center gap-2">
                 <Button 
                   size="sm" 
@@ -143,7 +163,7 @@ export const ApiKeyCard = ({
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Trial Restriction</AlertTitle>
             <AlertDescription>
-              Production API keys are only available after upgrading to a paid plan. You have {trialDaysLeft} days left in your trial.
+              Private API keys are only available after upgrading to a paid plan. You have {trialDaysLeft} days left in your trial.
             </AlertDescription>
           </Alert>
         )}
