@@ -15,6 +15,7 @@ import TeamStep from "./wizard/TeamStep";
 import VolumeStep from "./wizard/VolumeStep";
 import ReferralStep from "./wizard/ReferralStep";
 import CreditCardStep from "./wizard/CreditCardStep";
+import PendingInvitationsStep from "./wizard/PendingInvitationsStep";
 import WizardFooter from "./wizard/WizardFooter";
 import WizardProgress from "./wizard/WizardProgress";
 import { WizardStep, IndustryData, TeamData, VolumeOption, ReferralOption } from "./types/OnboardingTypes";
@@ -54,8 +55,14 @@ const OnboardingWizard = ({ userName = "" }: OnboardingWizardProps) => {
     }
   ];
 
-  const currentStep = steps[step];
-  const isCurrentStepValid = !!data[currentStep.field];
+  // Check if user selected "join-team" to show different flow
+  const isJoinTeamFlow = data.team?.action === "join-team";
+  const showPendingInvitations = isJoinTeamFlow && step === 1;
+
+  const currentStep = showPendingInvitations 
+    ? { title: "Pending Team Invitation", description: "Waiting for your team administrator to send an invitation", field: "pending" }
+    : steps[step];
+  const isCurrentStepValid = showPendingInvitations || !!data[currentStep.field];
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -73,15 +80,21 @@ const OnboardingWizard = ({ userName = "" }: OnboardingWizardProps) => {
                 <CardDescription className="mt-1">{currentStep.description}</CardDescription>
               </div>
               <div className="text-sm font-medium">
-                Step {step + 1} of {steps.length}
+                {showPendingInvitations ? "Waiting for invitation" : `Step ${step + 1} of ${steps.length}`}
               </div>
             </div>
             
-            <WizardProgress step={step} totalSteps={steps.length} showProgress={true} />
+            {!showPendingInvitations && (
+              <WizardProgress step={step} totalSteps={steps.length} showProgress={true} />
+            )}
           </CardHeader>
           
           <CardContent className="py-4">
-            {step === 0 && (
+            {showPendingInvitations && (
+              <PendingInvitationsStep userName={userName} />
+            )}
+            
+            {!showPendingInvitations && step === 0 && (
               <TeamStep 
                 team={data.team as TeamData | null} 
                 updateField={updateField}
@@ -89,28 +102,28 @@ const OnboardingWizard = ({ userName = "" }: OnboardingWizardProps) => {
               />
             )}
             
-            {step === 1 && (
+            {!showPendingInvitations && step === 1 && (
               <IndustryStep 
                 industry={data.industry as IndustryData | null} 
                 updateField={updateField}
               />
             )}
             
-            {step === 2 && (
+            {!showPendingInvitations && step === 2 && (
               <VolumeStep 
                 volume={data.volume as VolumeOption | null} 
                 updateField={updateField}
               />
             )}
             
-            {step === 3 && (
+            {!showPendingInvitations && step === 3 && (
               <ReferralStep
                 referralSource={data.referralSource as ReferralOption | null}
                 updateField={updateField}
               />
             )}
 
-            {step === 4 && (
+            {!showPendingInvitations && step === 4 && (
               <CreditCardStep
                 creditCardInfo={data.creditCardInfo}
                 updateField={updateField}
@@ -126,6 +139,7 @@ const OnboardingWizard = ({ userName = "" }: OnboardingWizardProps) => {
               handleBack={handleBack}
               handleNext={handleNext}
               isCurrentStepValid={isCurrentStepValid}
+              showPendingInvitations={showPendingInvitations}
             />
           </CardFooter>
         </Card>

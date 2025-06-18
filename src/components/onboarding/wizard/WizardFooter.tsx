@@ -8,6 +8,7 @@ interface WizardFooterProps {
   handleBack: () => void;
   handleNext: () => void;
   isCurrentStepValid: boolean;
+  showPendingInvitations?: boolean;
 }
 
 const WizardFooter = ({
@@ -15,8 +16,29 @@ const WizardFooter = ({
   totalSteps,
   handleBack,
   handleNext,
-  isCurrentStepValid
+  isCurrentStepValid,
+  showPendingInvitations = false
 }: WizardFooterProps) => {
+  if (showPendingInvitations) {
+    return (
+      <div className="flex justify-between">
+        <Button
+          variant="outline"
+          onClick={handleBack}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Team Setup
+        </Button>
+        
+        <Button
+          variant="outline"
+          disabled
+        >
+          Waiting for invitation...
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex justify-between">
       <Button
