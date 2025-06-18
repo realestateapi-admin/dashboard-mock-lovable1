@@ -28,14 +28,14 @@ const OnboardingWizard = ({ userName = "" }: OnboardingWizardProps) => {
   
   const steps: WizardStep[] = [
     {
-      title: "What industry are you in?",
-      description: "This helps us personalize your experience",
-      field: "industry",
-    },
-    {
       title: "Set up your team",
       description: "Create a new team or join an existing one",
       field: "team",
+    },
+    {
+      title: "What industry are you in?",
+      description: "This helps us personalize your experience",
+      field: "industry",
     },
     {
       title: "How many property addresses do you need data for monthly?",
@@ -82,17 +82,17 @@ const OnboardingWizard = ({ userName = "" }: OnboardingWizardProps) => {
           
           <CardContent className="py-4">
             {step === 0 && (
-              <IndustryStep 
-                industry={data.industry as IndustryData | null} 
-                updateField={updateField}
-              />
-            )}
-            
-            {step === 1 && (
               <TeamStep 
                 team={data.team as TeamData | null} 
                 updateField={updateField}
                 userName={userName}
+              />
+            )}
+            
+            {step === 1 && (
+              <IndustryStep 
+                industry={data.industry as IndustryData | null} 
+                updateField={updateField}
               />
             )}
             
