@@ -10,8 +10,14 @@ export interface IndustryData {
   name?: string;
 }
 
+export interface TeamData {
+  action: TeamAction;
+  teamName?: string;
+}
+
 export interface WizardData {
   industry: IndustryData | null;
+  team: TeamData | null;
   volume: VolumeOption | null;
   referralSource: ReferralOption | null;
   creditCardInfo: any | null;
@@ -26,6 +32,10 @@ export type IndustryOption =
   | "lead-generation" 
   | "e-commerce" 
   | "other";
+
+export type TeamAction = 
+  | "create-team" 
+  | "join-team";
 
 export type VolumeOption = 
   | "under-2k" 

@@ -12,7 +12,6 @@ import TermsOfServiceModal from "@/components/modals/TermsOfServiceModal";
 
 const SignUp = () => {
   const [name, setName] = useState("");
-  const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +33,6 @@ const SignUp = () => {
       
       const userMetadata = {
         name,
-        companyName,
         email,
         solutionsEngineer: {
           id: "alex-grant",
@@ -91,19 +89,6 @@ const SignUp = () => {
               required
               className="input-with-focus-ring"
               autoComplete="name"
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="company">Company Name</Label>
-            <Input
-              id="company"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              placeholder="Your Company"
-              required
-              className="input-with-focus-ring"
-              autoComplete="organization"
             />
           </div>
           

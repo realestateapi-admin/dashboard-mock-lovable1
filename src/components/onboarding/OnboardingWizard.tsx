@@ -11,12 +11,13 @@ import {
 
 import { useOnboardingState } from "./hooks/useOnboardingState";
 import IndustryStep from "./wizard/IndustryStep";
+import TeamStep from "./wizard/TeamStep";
 import VolumeStep from "./wizard/VolumeStep";
 import ReferralStep from "./wizard/ReferralStep";
 import CreditCardStep from "./wizard/CreditCardStep";
 import WizardFooter from "./wizard/WizardFooter";
 import WizardProgress from "./wizard/WizardProgress";
-import { WizardStep, IndustryData, VolumeOption, ReferralOption } from "./types/OnboardingTypes";
+import { WizardStep, IndustryData, TeamData, VolumeOption, ReferralOption } from "./types/OnboardingTypes";
 
 interface OnboardingWizardProps {
   userName?: string;
@@ -30,6 +31,11 @@ const OnboardingWizard = ({ userName = "" }: OnboardingWizardProps) => {
       title: "What industry are you in?",
       description: "This helps us personalize your experience",
       field: "industry",
+    },
+    {
+      title: "Set up your team",
+      description: "Create a new team or join an existing one",
+      field: "team",
     },
     {
       title: "How many property addresses do you need data for monthly?",
@@ -83,20 +89,28 @@ const OnboardingWizard = ({ userName = "" }: OnboardingWizardProps) => {
             )}
             
             {step === 1 && (
+              <TeamStep 
+                team={data.team as TeamData | null} 
+                updateField={updateField}
+                userName={userName}
+              />
+            )}
+            
+            {step === 2 && (
               <VolumeStep 
                 volume={data.volume as VolumeOption | null} 
                 updateField={updateField}
               />
             )}
             
-            {step === 2 && (
+            {step === 3 && (
               <ReferralStep
                 referralSource={data.referralSource as ReferralOption | null}
                 updateField={updateField}
               />
             )}
 
-            {step === 3 && (
+            {step === 4 && (
               <CreditCardStep
                 creditCardInfo={data.creditCardInfo}
                 updateField={updateField}
