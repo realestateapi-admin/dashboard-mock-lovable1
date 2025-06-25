@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, Plus, Mail } from "lucide-react";
+import { Users, Plus, Mail, AlertCircle, CheckCircle } from "lucide-react";
 import { TeamData, TeamAction } from "../types/OnboardingTypes";
 
 interface TeamStepProps {
@@ -17,14 +17,45 @@ interface TeamStepProps {
 
 const TeamStep = ({ team, updateField, userName }: TeamStepProps) => {
   const [teamName, setTeamName] = useState("");
+  const [teamNameError, setTeamNameError] = useState("");
+  const [isTeamNameValid, setIsTeamNameValid] = useState(false);
   
   // Set default team name when component mounts or userName changes
   useEffect(() => {
     if (userName && !teamName) {
       const defaultName = `${userName.split(' ')[0]}'s Team`;
       setTeamName(defaultName);
+      validateTeamName(defaultName);
     }
   }, [userName, teamName]);
+
+  const validateTeamName = (name: string) => {
+    // Check minimum length
+    if (name.length < 1) {
+      setTeamNameError("Team name is required");
+      setIsTeamNameValid(false);
+      return false;
+    }
+    
+    // Check maximum length
+    if (name.length > 50) {
+      setTeamNameError("Team name must be 50 characters or less");
+      setIsTeamNameValid(false);
+      return false;
+    }
+    
+    // Check for at least one alphanumeric character
+    const hasAlphanumeric = /[a-zA-Z0-9]/.test(name);
+    if (!hasAlphanumeric) {
+      setTeamNameError("Team name must contain at least one letter or number");
+      setIsTeamNameValid(false);
+      return false;
+    }
+    
+    setTeamNameError("");
+    setIsTeamNameValid(true);
+    return true;
+  };
 
   const handleActionChange = (action: TeamAction) => {
     const updatedTeam: TeamData = {
@@ -36,6 +67,8 @@ const TeamStep = ({ team, updateField, userName }: TeamStepProps) => {
 
   const handleTeamNameChange = (name: string) => {
     setTeamName(name);
+    validateTeamName(name);
+    
     if (team?.action === "create-team") {
       updateField("team", {
         ...team,
@@ -84,13 +117,37 @@ const TeamStep = ({ team, updateField, userName }: TeamStepProps) => {
                       className="space-y-2"
                     >
                       <Label htmlFor="teamName" className="text-sm">Team Name</Label>
-                      <Input
-                        id="teamName"
-                        value={teamName}
-                        onChange={(e) => handleTeamNameChange(e.target.value)}
-                        placeholder="Enter team name"
-                        className="w-full"
-                      />
+                      <div className="relative">
+                        <Input
+                          id="teamName"
+                          value={teamName}
+                          onChange={(e) => handleTeamNameChange(e.target.value)}
+                          placeholder="Enter team name"
+                          className={`w-full pr-10 ${
+                            teamNameError ? 'border-red-500 focus-visible:ring-red-500' : 
+                            isTeamNameValid ? 'border-green-500 focus-visible:ring-green-500' : ''
+                          }`}
+                          maxLength={50}
+                        />
+                        {teamName && (
+                          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                            {isTeamNameValid ? (
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                            ) : teamNameError ? (
+                              <AlertCircle className="h-4 w-4 text-red-500" />
+                            ) : null}
+                          </div>
+                        )}
+                      </div>
+                      {teamNameError && (
+                        <p className="text-sm text-red-600 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
+                          {teamNameError}
+                        </p>
+                      )}
+                      <p className="text-xs text-muted-foreground">
+                        1-50 characters, must include at least one letter or number
+                      </p>
                     </motion.div>
                   )}
                 </div>
