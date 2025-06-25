@@ -12,6 +12,8 @@ interface CreditCardFormFieldsProps {
   cardNumberError?: string;
   displayCvc?: string;
   cvcMasked?: boolean;
+  displayCardNumber?: string;
+  cardNumberMasked?: boolean;
 }
 
 const CreditCardFormFields: React.FC<CreditCardFormFieldsProps> = ({ 
@@ -19,7 +21,9 @@ const CreditCardFormFields: React.FC<CreditCardFormFieldsProps> = ({
   handleInputChange, 
   cardNumberError,
   displayCvc,
-  cvcMasked 
+  cvcMasked,
+  displayCardNumber,
+  cardNumberMasked
 }) => {
   return (
     <Form {...form}>
@@ -52,7 +56,7 @@ const CreditCardFormFields: React.FC<CreditCardFormFieldsProps> = ({
                 <div className="relative">
                   <Input 
                     placeholder="1234 5678 9012 3456" 
-                    value={field.value}
+                    value={displayCardNumber || field.value}
                     onChange={(e) => handleInputChange("cardNumber", e.target.value)}
                     className={cardNumberError ? "border-red-500 focus-visible:ring-red-500" : ""}
                   />

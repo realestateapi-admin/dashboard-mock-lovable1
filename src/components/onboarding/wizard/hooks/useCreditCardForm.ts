@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,6 +28,8 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
   const [cardNumberError, setCardNumberError] = useState<string>("");
   const [cvcMasked, setCvcMasked] = useState<boolean>(false);
   const [displayCvc, setDisplayCvc] = useState<string>("");
+  const [cardNumberMasked, setCardNumberMasked] = useState<boolean>(false);
+  const [displayCardNumber, setDisplayCardNumber] = useState<string>("");
   const cvcTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   const form = useForm<CreditCardFormValues>({
@@ -49,6 +52,10 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
       value = value.replace(/(.{4})/g, "$1 ").trim();
       // Limit to 16 digits plus spaces (19 characters total)
       value = value.substring(0, 19);
+      
+      // Show the actual value while typing and unmask
+      setDisplayCardNumber(value);
+      setCardNumberMasked(false);
       
       // Real-time Luhn validation
       const digits = value.replace(/\s/g, '');
@@ -113,12 +120,29 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
     };
   }, []);
 
-  // Initialize display CVC from existing data
+  // Initialize display values from existing data (when returning to page)
   useEffect(() => {
     const currentCvc = form.getValues("cvc");
+    const currentCardNumber = form.getValues("cardNumber");
+    
     if (currentCvc) {
       setDisplayCvc("•".repeat(currentCvc.length));
       setCvcMasked(true);
+    }
+    
+    if (currentCardNumber) {
+      // Mask all but last 4 digits when returning to page
+      const digits = currentCardNumber.replace(/\s/g, '');
+      if (digits.length >= 4) {
+        const lastFour = digits.slice(-4);
+        const maskedPortion = "•".repeat(digits.length - 4);
+        const maskedCardNumber = (maskedPortion + lastFour).replace(/(.{4})/g, "$1 ").trim();
+        setDisplayCardNumber(maskedCardNumber);
+        setCardNumberMasked(true);
+      } else {
+        setDisplayCardNumber(currentCardNumber);
+        setCardNumberMasked(false);
+      }
     }
   }, []);
 
@@ -139,6 +163,8 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
     isStepValid,
     cardNumberError,
     displayCvc,
-    cvcMasked
+    cvcMasked,
+    displayCardNumber,
+    cardNumberMasked
   };
 };
