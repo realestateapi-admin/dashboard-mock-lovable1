@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -73,7 +72,7 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
       value = value.substring(0, 5); // MM/YY format (5 chars total)
     }
 
-    // Handle CVC with timed masking
+    // Handle CVC with timed masking (only after 3+ digits)
     if (field === "cvc") {
       value = value.replace(/[^0-9]/g, "").substring(0, 4);
       
@@ -86,11 +85,13 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
         clearTimeout(cvcTimerRef.current);
       }
       
-      // Set new timer to mask after 2 seconds
-      cvcTimerRef.current = setTimeout(() => {
-        setCvcMasked(true);
-        setDisplayCvc("•".repeat(value.length));
-      }, 2000);
+      // Only set timer to mask if 3 or more digits are entered
+      if (value.length >= 3) {
+        cvcTimerRef.current = setTimeout(() => {
+          setCvcMasked(true);
+          setDisplayCvc("•".repeat(value.length));
+        }, 2000);
+      }
     }
 
     // Format ZIP code
