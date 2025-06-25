@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -7,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import { AlertCircle, CheckCircle } from "lucide-react";
 
 const SignIn = () => {
@@ -17,6 +17,7 @@ const SignIn = () => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { setIsAuthenticated } = useAuth();
 
   const validateEmail = (emailValue: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -68,6 +69,9 @@ const SignIn = () => {
       // Set authentication state
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('userRole', 'admin');
+      
+      // Update AuthContext state
+      setIsAuthenticated(true);
       
       navigate("/dashboard");
     } catch (error) {
