@@ -41,7 +41,7 @@ const OnboardingWizard = ({
     field: "referralSource"
   }, {
     title: "Set up your free trial",
-    description: "Your card won't be charged until you select a subscription plan.",
+    description: "Provide a credit card for identification purposes.",
     field: "creditCardInfo"
   }];
 
