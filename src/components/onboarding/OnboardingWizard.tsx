@@ -32,7 +32,7 @@ const OnboardingWizard = ({
     description: "This helps us personalize your experience",
     field: "industry"
   }, {
-    title: "How many property addresses do you need data for monthly?",
+    title: "How many property addresses are needed monthly?",
     description: "We'll recommend the right plan for your needs",
     field: "volume"
   }, {
