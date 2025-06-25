@@ -19,15 +19,21 @@ const TeamStep = ({ team, updateField, userName }: TeamStepProps) => {
   const [teamName, setTeamName] = useState("");
   const [teamNameError, setTeamNameError] = useState("");
   const [isTeamNameValid, setIsTeamNameValid] = useState(false);
+  const [hasSetDefault, setHasSetDefault] = useState(false);
   
-  // Set default team name when component mounts or userName changes
+  // Set default team name only once when component mounts
   useEffect(() => {
-    if (userName && !teamName) {
+    if (userName && !hasSetDefault && !team?.teamName) {
       const defaultName = `${userName.split(' ')[0]}'s Team`;
       setTeamName(defaultName);
       validateTeamName(defaultName);
+      setHasSetDefault(true);
+    } else if (team?.teamName) {
+      setTeamName(team.teamName);
+      validateTeamName(team.teamName);
+      setHasSetDefault(true);
     }
-  }, [userName, teamName]);
+  }, [userName, team?.teamName, hasSetDefault]);
 
   const validateTeamName = (name: string) => {
     // Check minimum length
