@@ -10,6 +10,7 @@ interface CreditCardFormFieldsProps {
   form: UseFormReturn<CreditCardFormValues>;
   handleInputChange: (field: keyof CreditCardFormValues, value: string) => void;
   cardNumberError?: string;
+  expiryError?: string;
   displayCvc?: string;
   cvcMasked?: boolean;
   displayCardNumber?: string;
@@ -20,6 +21,7 @@ const CreditCardFormFields: React.FC<CreditCardFormFieldsProps> = ({
   form, 
   handleInputChange, 
   cardNumberError,
+  expiryError,
   displayCvc,
   cvcMasked,
   displayCardNumber,
@@ -83,8 +85,12 @@ const CreditCardFormFields: React.FC<CreditCardFormFieldsProps> = ({
                     placeholder="MM/YY" 
                     value={field.value}
                     onChange={(e) => handleInputChange("expiry", e.target.value)}
+                    className={expiryError ? "border-red-500 focus-visible:ring-red-500" : ""}
                   />
                 </FormControl>
+                {expiryError && (
+                  <p className="text-sm text-red-600">{expiryError}</p>
+                )}
                 <FormMessage />
               </FormItem>
             )}

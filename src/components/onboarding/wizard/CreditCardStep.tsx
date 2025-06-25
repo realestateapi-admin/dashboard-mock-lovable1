@@ -18,7 +18,8 @@ const CreditCardStep = ({ updateField, creditCardInfo, userName }: CreditCardSte
     form, 
     handleInputChange, 
     isStepValid, 
-    cardNumberError, 
+    cardNumberError,
+    expiryError,
     displayCvc, 
     cvcMasked,
     displayCardNumber,
@@ -66,6 +67,7 @@ const CreditCardStep = ({ updateField, creditCardInfo, userName }: CreditCardSte
         form={form} 
         handleInputChange={handleInputChange} 
         cardNumberError={cardNumberError}
+        expiryError={expiryError}
         displayCvc={displayCvc}
         cvcMasked={cvcMasked}
         displayCardNumber={displayCardNumber}
