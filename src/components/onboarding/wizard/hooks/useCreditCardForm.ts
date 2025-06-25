@@ -41,8 +41,12 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
   const handleInputChange = (field: keyof CreditCardFormValues, value: string) => {
     // Format card number with spaces for readability
     if (field === "cardNumber") {
-      value = value.replace(/\s/g, "").replace(/(.{4})/g, "$1 ").trim();
-      value = value.substring(0, 19); // Limit to 16 digits plus spaces
+      // Remove all non-digit characters first
+      value = value.replace(/\D/g, "");
+      // Add spaces every 4 digits
+      value = value.replace(/(.{4})/g, "$1 ").trim();
+      // Limit to 16 digits plus spaces (19 characters total)
+      value = value.substring(0, 19);
       
       // Real-time Luhn validation
       const digits = value.replace(/\s/g, '');
