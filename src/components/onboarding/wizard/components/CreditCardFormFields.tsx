@@ -10,9 +10,17 @@ interface CreditCardFormFieldsProps {
   form: UseFormReturn<CreditCardFormValues>;
   handleInputChange: (field: keyof CreditCardFormValues, value: string) => void;
   cardNumberError?: string;
+  displayCvc?: string;
+  cvcMasked?: boolean;
 }
 
-const CreditCardFormFields: React.FC<CreditCardFormFieldsProps> = ({ form, handleInputChange, cardNumberError }) => {
+const CreditCardFormFields: React.FC<CreditCardFormFieldsProps> = ({ 
+  form, 
+  handleInputChange, 
+  cardNumberError,
+  displayCvc,
+  cvcMasked 
+}) => {
   return (
     <Form {...form}>
       <form className="space-y-4">
@@ -87,9 +95,8 @@ const CreditCardFormFields: React.FC<CreditCardFormFieldsProps> = ({ form, handl
                 <FormControl>
                   <Input 
                     placeholder="123" 
-                    value={field.value}
+                    value={displayCvc || field.value}
                     onChange={(e) => handleInputChange("cvc", e.target.value)}
-                    type="password"
                   />
                 </FormControl>
                 <FormMessage />

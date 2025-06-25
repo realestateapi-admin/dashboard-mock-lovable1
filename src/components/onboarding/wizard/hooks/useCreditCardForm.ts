@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -26,6 +26,9 @@ interface UseCreditCardFormProps {
 
 export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: UseCreditCardFormProps) => {
   const [cardNumberError, setCardNumberError] = useState<string>("");
+  const [cvcMasked, setCvcMasked] = useState<boolean>(false);
+  const [displayCvc, setDisplayCvc] = useState<string>("");
+  const cvcTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   const form = useForm<CreditCardFormValues>({
     resolver: zodResolver(formSchema),
@@ -70,9 +73,24 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
       value = value.substring(0, 5); // MM/YY format (5 chars total)
     }
 
-    // Limit CVC to 3-4 digits
+    // Handle CVC with timed masking
     if (field === "cvc") {
       value = value.replace(/[^0-9]/g, "").substring(0, 4);
+      
+      // Show the actual value while typing
+      setDisplayCvc(value);
+      setCvcMasked(false);
+      
+      // Clear existing timer
+      if (cvcTimerRef.current) {
+        clearTimeout(cvcTimerRef.current);
+      }
+      
+      // Set new timer to mask after 2 seconds
+      cvcTimerRef.current = setTimeout(() => {
+        setCvcMasked(true);
+        setDisplayCvc("•".repeat(value.length));
+      }, 2000);
     }
 
     // Format ZIP code
@@ -84,6 +102,24 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
     const formValues = { ...form.getValues(), [field]: value };
     updateField("creditCardInfo", formValues);
   };
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (cvcTimerRef.current) {
+        clearTimeout(cvcTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Initialize display CVC from existing data
+  useEffect(() => {
+    const currentCvc = form.getValues("cvc");
+    if (currentCvc) {
+      setDisplayCvc("•".repeat(currentCvc.length));
+      setCvcMasked(true);
+    }
+  }, []);
 
   // Check if all fields are filled for real-time validation
   const cardNumberDigits = form.getValues("cardNumber").replace(/\s/g, "");
@@ -100,6 +136,8 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
     form,
     handleInputChange,
     isStepValid,
-    cardNumberError
+    cardNumberError,
+    displayCvc,
+    cvcMasked
   };
 };

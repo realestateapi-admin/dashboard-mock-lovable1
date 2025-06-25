@@ -14,7 +14,7 @@ interface CreditCardStepProps {
 const CreditCardStep = ({ updateField, creditCardInfo, userName }: CreditCardStepProps) => {
   const secureMessage = "Your card won't be charged until you sign up for a subscription";
   
-  const { form, handleInputChange, isStepValid, cardNumberError } = useCreditCardForm({
+  const { form, handleInputChange, isStepValid, cardNumberError, displayCvc, cvcMasked } = useCreditCardForm({
     updateField,
     creditCardInfo,
     userName
@@ -57,6 +57,8 @@ const CreditCardStep = ({ updateField, creditCardInfo, userName }: CreditCardSte
         form={form} 
         handleInputChange={handleInputChange} 
         cardNumberError={cardNumberError}
+        displayCvc={displayCvc}
+        cvcMasked={cvcMasked}
       />
       
       {/* Trust indicators */}
