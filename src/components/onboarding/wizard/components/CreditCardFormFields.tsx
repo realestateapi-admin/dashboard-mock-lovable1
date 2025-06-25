@@ -9,9 +9,10 @@ import { UseFormReturn } from "react-hook-form";
 interface CreditCardFormFieldsProps {
   form: UseFormReturn<CreditCardFormValues>;
   handleInputChange: (field: keyof CreditCardFormValues, value: string) => void;
+  cardNumberError?: string;
 }
 
-const CreditCardFormFields: React.FC<CreditCardFormFieldsProps> = ({ form, handleInputChange }) => {
+const CreditCardFormFields: React.FC<CreditCardFormFieldsProps> = ({ form, handleInputChange, cardNumberError }) => {
   return (
     <Form {...form}>
       <form className="space-y-4">
@@ -45,10 +46,14 @@ const CreditCardFormFields: React.FC<CreditCardFormFieldsProps> = ({ form, handl
                     placeholder="1234 5678 9012 3456" 
                     value={field.value}
                     onChange={(e) => handleInputChange("cardNumber", e.target.value)}
+                    className={cardNumberError ? "border-red-500 focus-visible:ring-red-500" : ""}
                   />
                   <Lock className="absolute top-1/2 transform -translate-y-1/2 right-3 h-4 w-4 text-gray-400" />
                 </div>
               </FormControl>
+              {cardNumberError && (
+                <p className="text-sm text-red-600">{cardNumberError}</p>
+              )}
               <FormMessage />
             </FormItem>
           )}

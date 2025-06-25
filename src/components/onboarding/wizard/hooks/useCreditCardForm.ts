@@ -3,10 +3,14 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { validateLuhn } from "@/utils/luhnValidation";
 
 const formSchema = z.object({
   cardName: z.string().min(2, { message: "Name is required" }),
-  cardNumber: z.string().min(16, { message: "Enter a valid card number" }).max(19),
+  cardNumber: z.string().min(16, { message: "Enter a valid card number" }).max(19).refine((value) => {
+    const digits = value.replace(/\s/g, '');
+    return validateLuhn(digits);
+  }, { message: "Invalid card number" }),
   expiry: z.string().min(5, { message: "Enter a valid expiry date (MM/YY)" }),
   cvc: z.string().min(3, { message: "Enter a valid CVC" }).max(4),
   zipCode: z.string().min(5, { message: "Enter a valid ZIP code" }).max(10),
@@ -21,6 +25,8 @@ interface UseCreditCardFormProps {
 }
 
 export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: UseCreditCardFormProps) => {
+  const [cardNumberError, setCardNumberError] = useState<string>("");
+  
   const form = useForm<CreditCardFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,6 +43,18 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
     if (field === "cardNumber") {
       value = value.replace(/\s/g, "").replace(/(.{4})/g, "$1 ").trim();
       value = value.substring(0, 19); // Limit to 16 digits plus spaces
+      
+      // Real-time Luhn validation
+      const digits = value.replace(/\s/g, '');
+      if (digits.length >= 13) {
+        if (!validateLuhn(digits)) {
+          setCardNumberError("Invalid card number");
+        } else {
+          setCardNumberError("");
+        }
+      } else {
+        setCardNumberError("");
+      }
     }
 
     // Format expiry date with slash
@@ -64,9 +82,12 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
   };
 
   // Check if all fields are filled for real-time validation
+  const cardNumberDigits = form.getValues("cardNumber").replace(/\s/g, "");
+  const isCardNumberValid = cardNumberDigits.length >= 16 && validateLuhn(cardNumberDigits) && !cardNumberError;
+  
   const isStepValid = 
     !!form.getValues("cardName") && 
-    form.getValues("cardNumber").replace(/\s/g, "").length >= 16 &&
+    isCardNumberValid &&
     form.getValues("expiry").length === 5 &&
     form.getValues("cvc").length >= 3 &&
     form.getValues("zipCode").length >= 5;
@@ -74,6 +95,7 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
   return {
     form,
     handleInputChange,
-    isStepValid
+    isStepValid,
+    cardNumberError
   };
 };

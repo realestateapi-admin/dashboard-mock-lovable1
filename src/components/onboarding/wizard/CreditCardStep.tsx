@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { useCreditCardForm } from "./hooks/useCreditCardForm";
 import CreditCardSecurityBanner from "./components/CreditCardSecurityBanner";
@@ -13,7 +14,7 @@ interface CreditCardStepProps {
 const CreditCardStep = ({ updateField, creditCardInfo, userName }: CreditCardStepProps) => {
   const secureMessage = "Your card won't be charged until you sign up for a subscription";
   
-  const { form, handleInputChange, isStepValid } = useCreditCardForm({
+  const { form, handleInputChange, isStepValid, cardNumberError } = useCreditCardForm({
     updateField,
     creditCardInfo,
     userName
@@ -52,7 +53,11 @@ const CreditCardStep = ({ updateField, creditCardInfo, userName }: CreditCardSte
       <CreditCardSecurityBanner message={secureMessage} />
 
       {/* Credit card form fields */}
-      <CreditCardFormFields form={form} handleInputChange={handleInputChange} />
+      <CreditCardFormFields 
+        form={form} 
+        handleInputChange={handleInputChange} 
+        cardNumberError={cardNumberError}
+      />
       
       {/* Trust indicators */}
       <CreditCardTrustIndicators />
