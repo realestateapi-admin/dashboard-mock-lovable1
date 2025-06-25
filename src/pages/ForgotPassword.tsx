@@ -7,16 +7,50 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Mail } from "lucide-react";
+import { ArrowLeft, Mail, AlertCircle, CheckCircle } from "lucide-react";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [isEmailValid, setIsEmailValid] = useState(false);
   const { toast } = useToast();
+
+  const validateEmail = (emailValue: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!emailValue.trim()) {
+      setEmailError("");
+      setIsEmailValid(false);
+      return false;
+    }
+    
+    if (!emailRegex.test(emailValue)) {
+      setEmailError("Please enter a valid email address");
+      setIsEmailValid(false);
+      return false;
+    }
+    
+    setEmailError("");
+    setIsEmailValid(true);
+    return true;
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const emailValue = e.target.value;
+    setEmail(emailValue);
+    validateEmail(emailValue);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate email before submission
+    if (!validateEmail(email)) {
+      return;
+    }
+    
     setIsLoading(true);
     
     // Simulate password reset request
@@ -101,23 +135,43 @@ const ForgotPassword = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-              className="input-with-focus-ring"
-              autoComplete="email"
-              autoFocus
-            />
+            <div className="relative">
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={handleEmailChange}
+                placeholder="you@example.com"
+                required
+                className={`input-with-focus-ring pr-10 ${
+                  emailError ? 'border-red-500 focus-visible:ring-red-500' : 
+                  isEmailValid ? 'border-green-500 focus-visible:ring-green-500' : ''
+                }`}
+                autoComplete="email"
+                autoFocus
+              />
+              {email && (
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  {isEmailValid ? (
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                  ) : emailError ? (
+                    <AlertCircle className="h-4 w-4 text-red-500" />
+                  ) : null}
+                </div>
+              )}
+            </div>
+            {emailError && (
+              <p className="text-sm text-red-600 flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                {emailError}
+              </p>
+            )}
           </div>
           
           <Button 
             type="submit" 
             className="w-full" 
-            disabled={isLoading}
+            disabled={isLoading || !isEmailValid}
           >
             {isLoading ? "Sending reset link..." : "Send reset link"}
           </Button>
