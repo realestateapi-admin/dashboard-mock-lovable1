@@ -36,12 +36,11 @@ export const DailyUsageChart = ({ dailyUsageData }: DailyUsageChartProps) => {
         />
         <Tooltip 
           contentStyle={{ 
-            backgroundColor: 'var(--background)', 
-            borderColor: 'var(--border)',
-            borderRadius: 'var(--radius)',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-            opacity: 1,
-            backdropFilter: 'blur(8px)'
+            backgroundColor: '#ffffff', 
+            borderColor: '#e2e8f0',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            border: '1px solid #e2e8f0'
           }}
           formatter={(value, name) => [value.toLocaleString(), name === 'calls' ? 'API Calls' : 'Records Used']}
           wrapperStyle={{ zIndex: 1000 }}
