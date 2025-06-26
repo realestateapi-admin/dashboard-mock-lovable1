@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, EyeOff, Shield } from "lucide-react";
@@ -66,9 +65,6 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
           <TabsTrigger value="public" className="flex items-center gap-2">
             <Eye className="h-4 w-4" /> API Keys
           </TabsTrigger>
-          <TabsTrigger value="private" className="flex items-center gap-2">
-            <EyeOff className="h-4 w-4" /> New API Keys (Coming Soon)
-          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="public">
@@ -104,14 +100,6 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
               isLoading={isLoadingScopes}
               isTestKey={true}
             />
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="private">
-          <div className="text-center py-12 text-muted-foreground">
-            <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <h3 className="text-lg font-medium mb-2">New API Keys Coming Soon</h3>
-            <p>Enhanced API key management with advanced security features will be available soon.</p>
           </div>
         </TabsContent>
       </Tabs>
