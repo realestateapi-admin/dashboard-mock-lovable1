@@ -90,6 +90,20 @@ export const ApiKeyCard = ({
               </Badge>
             )}
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsConfirmingRotation(true)}
+            disabled={isRestricted || isRotating}
+            className="h-8"
+          >
+            {isRotating ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="h-4 w-4" />
+            )}
+            <span className="ml-1 text-xs">Rotate</span>
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
