@@ -3,7 +3,7 @@ import React from "react";
 import { Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { type CreditCardFormValues } from "../hooks/useCreditCardForm";
+import { type CreditCardFormValues } from "../hooks/useCreditCardFormRefactored";
 import { UseFormReturn } from "react-hook-form";
 
 interface CreditCardFormFieldsProps {
