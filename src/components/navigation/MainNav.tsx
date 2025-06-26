@@ -51,6 +51,7 @@ export function MainNav() {
         <NavLink
           key={item.title}
           to={item.href}
+          end={item.href === "/dashboard"}
           className={({ isActive }) =>
             `transition-colors ${
               isActive 
