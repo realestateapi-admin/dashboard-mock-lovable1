@@ -33,6 +33,38 @@ export const fetchApiUsageData = async () => {
       creditCost: "1 credit per record"
     },
     {
+      endpoint: 'CSV',
+      description: 'Download property data in CSV format',
+      calls: 1243,
+      records: 850,
+      percentage: 10.2,
+      creditCost: "1 credit per record"
+    },
+    {
+      endpoint: 'Property Detail Bulk',
+      description: 'Get detailed information for multiple properties at once',
+      calls: 892,
+      records: 1205,
+      percentage: 14.5,
+      creditCost: "1 credit per record"
+    },
+    {
+      endpoint: 'Property Boundaries',
+      description: 'Get property boundary and parcel information',
+      calls: 634,
+      records: 425,
+      percentage: 5.1,
+      creditCost: "2 credits per record"
+    },
+    {
+      endpoint: 'Property Maps',
+      description: 'Get satellite and aerial imagery of properties',
+      calls: 456,
+      records: 320,
+      percentage: 3.8,
+      creditCost: "3 credits per record"
+    },
+    {
       endpoint: 'Autocomplete',
       description: 'Get address suggestions as the user types',
       calls: 2142,
@@ -53,7 +85,12 @@ export const fetchApiUsageData = async () => {
       name: endpoint.endpoint,
       value: endpoint.records,
       fill: endpoint.endpoint === 'Property Search' ? '#1d4ed8' : 
-            endpoint.endpoint === 'Property Detail' ? '#047857' : '#b45309'
+            endpoint.endpoint === 'Property Detail' ? '#047857' : 
+            endpoint.endpoint === 'Property Comps' ? '#b45309' :
+            endpoint.endpoint === 'CSV' ? '#7c3aed' :
+            endpoint.endpoint === 'Property Detail Bulk' ? '#dc2626' :
+            endpoint.endpoint === 'Property Boundaries' ? '#059669' :
+            endpoint.endpoint === 'Property Maps' ? '#d97706' : '#6b7280'
     }));
   
   return {

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,8 +23,10 @@ export const EndpointListItem = ({ endpoint }: EndpointListItemProps) => {
       return "/icons/ps.svg";
     } else if (endpoint.includes("Detail")) {
       return "/icons/ps2.svg";
-    } else if (endpoint.includes("Count") || endpoint.includes("Pin")) {
+    } else if (endpoint.includes("Count") || endpoint.includes("Pin") || endpoint.includes("Boundaries")) {
       return "/icons/map-pin.svg";
+    } else if (endpoint.includes("CSV") || endpoint.includes("Maps")) {
+      return "/icons/ps.svg"; // Using property search icon as fallback
     }
     return "";
   };
