@@ -10,7 +10,15 @@ export const fetchAvmData = async () => {
       description: 'Get automated valuation model estimates for properties',
       calls: 2847,
       records: 2847,
-      percentage: 100,
+      percentage: 85,
+      creditCost: "1 credit per record"
+    },
+    {
+      endpoint: 'AVM Bulk',
+      description: 'Bulk automated valuation model estimates for multiple properties',
+      calls: 500,
+      records: 500,
+      percentage: 15,
       creditCost: "1 credit per record"
     }
   ];
