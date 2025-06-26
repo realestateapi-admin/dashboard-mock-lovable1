@@ -89,7 +89,7 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
   const handleInputChange = (field: keyof CreditCardFormValues, value: string) => {
     // Format card number with spaces for readability
     if (field === "cardNumber") {
-      // Remove all non-digit characters first
+      // Remove all non-digit characters first (including spaces, dashes, etc.)
       value = value.replace(/\D/g, "");
       // Add spaces every 4 digits
       value = value.replace(/(.{4})/g, "$1 ").trim();
