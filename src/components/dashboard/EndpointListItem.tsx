@@ -78,14 +78,12 @@ export const EndpointListItem = ({ endpoint }: EndpointListItemProps) => {
           )}
         </div>
       </div>
-      {endpoint.records > 0 && (
-        <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-[#04c8c8] rounded-full transition-all duration-500 ease-in-out"
-            style={{ width: `${endpoint.percentage}%` }}
-          />
-        </div>
-      )}
+      <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+        <div 
+          className="h-full bg-[#04c8c8] rounded-full transition-all duration-500 ease-in-out"
+          style={{ width: `${endpoint.percentage}%` }}
+        />
+      </div>
     </div>
   );
 };
