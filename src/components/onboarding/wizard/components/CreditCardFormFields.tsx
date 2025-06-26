@@ -60,23 +60,30 @@ const CreditCardFormFields: React.FC<CreditCardFormFieldsProps> = ({
                     placeholder="1234 5678 9012 3456" 
                     value={displayCardNumber || field.value}
                     onChange={(e) => {
-                      // Only allow digits and spaces, remove any other characters
+                      // Only allow digits and spaces, remove any other characters immediately
                       const value = e.target.value.replace(/[^\d\s]/g, '');
                       handleInputChange("cardNumber", value);
                     }}
                     onKeyDown={(e) => {
                       // Allow: backspace, delete, tab, escape, enter, home, end, left, right arrows
                       if ([8, 9, 27, 13, 46, 35, 36, 37, 39].indexOf(e.keyCode) !== -1 ||
-                          // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-                          (e.keyCode === 65 && e.ctrlKey === true) ||
-                          (e.keyCode === 67 && e.ctrlKey === true) ||
-                          (e.keyCode === 86 && e.ctrlKey === true) ||
-                          (e.keyCode === 88 && e.ctrlKey === true)) {
+                          // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+Z
+                          (e.ctrlKey && [65, 67, 86, 88, 90].includes(e.keyCode))) {
                         return;
                       }
-                      // Ensure that it is a number and stop the keypress
-                      if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                      // Only allow numbers (0-9) and space
+                      if (!((e.keyCode >= 48 && e.keyCode <= 57) || 
+                            (e.keyCode >= 96 && e.keyCode <= 105) || 
+                            e.keyCode === 32)) {
                         e.preventDefault();
+                      }
+                    }}
+                    onInput={(e) => {
+                      // Additional safety net - filter out any non-digit/space characters
+                      const target = e.target as HTMLInputElement;
+                      const value = target.value.replace(/[^\d\s]/g, '');
+                      if (value !== target.value) {
+                        target.value = value;
                       }
                     }}
                     className={cardNumberError ? "border-red-500 focus-visible:ring-red-500" : ""}
