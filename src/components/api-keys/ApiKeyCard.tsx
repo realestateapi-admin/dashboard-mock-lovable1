@@ -68,9 +68,6 @@ export const ApiKeyCard = ({
   };
 
   const isPrivateKey = !isPublicKey;
-  // Only restrict if it's a private key AND trial is active (not on paid plan)
-  const isRestricted = isPrivateKey && isTrialActive;
-  
   const displayValue = isRevealed ? keyValue : "****-****-****-****";
   
   return (
@@ -94,7 +91,7 @@ export const ApiKeyCard = ({
             variant="outline"
             size="sm"
             onClick={() => setIsConfirmingRotation(true)}
-            disabled={isRestricted || isRotating}
+            disabled={isRotating}
             className="h-8"
           >
             {isRotating ? (
@@ -116,7 +113,6 @@ export const ApiKeyCard = ({
               variant="ghost"
               size="sm"
               onClick={() => setIsRevealed(!isRevealed)}
-              disabled={isRestricted}
               className="ml-2"
             >
               {isRevealed ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -135,7 +131,7 @@ export const ApiKeyCard = ({
           </p>
         )}
         
-        {isConfirmingRotation && !isRestricted && (
+        {isConfirmingRotation && (
           <Alert variant="destructive" className="mt-4">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Confirm Key Rotation</AlertTitle>
@@ -159,16 +155,6 @@ export const ApiKeyCard = ({
                   Cancel
                 </Button>
               </div>
-            </AlertDescription>
-          </Alert>
-        )}
-        
-        {isRestricted && (
-          <Alert className="mt-4">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Trial Restriction</AlertTitle>
-            <AlertDescription>
-              Private API keys are only available after upgrading to a paid plan. You have {trialDaysLeft} days left in your trial.
             </AlertDescription>
           </Alert>
         )}
