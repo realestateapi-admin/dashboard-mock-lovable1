@@ -18,6 +18,9 @@ import { DemographicEndpointCharts } from '@/components/api-usage/demographic/De
 import { AvmUsageSummary } from '@/components/api-usage/avm/AvmUsageSummary';
 import { fetchAvmData } from '@/components/api-usage/avm/AvmService';
 import { AvmCharts } from '@/components/api-usage/avm/AvmCharts';
+import { LiensUsageSummary } from '@/components/api-usage/liens/LiensUsageSummary';
+import { fetchLiensData } from '@/components/api-usage/liens/LiensService';
+import { LiensEndpointCharts } from '@/components/api-usage/liens/LiensEndpointCharts';
 
 const ApiUsage = () => {
   // State to track which data category the user is viewing
@@ -58,6 +61,15 @@ const ApiUsage = () => {
   } = useQuery({
     queryKey: ['avmData'],
     queryFn: fetchAvmData,
+  });
+
+  // Liens data query
+  const {
+    data: liensData,
+    isLoading: isLiensLoading
+  } = useQuery({
+    queryKey: ['liensData'],
+    queryFn: fetchLiensData,
   });
 
   // Initialize default empty values for property data
@@ -151,7 +163,7 @@ const ApiUsage = () => {
               />
             </>
           )
-        ) : (
+        ) : dataCategory === 'avm' ? (
           // AVM Data View
           <>
             <AvmUsageSummary
@@ -160,6 +172,18 @@ const ApiUsage = () => {
               recordsLimit={safeAvmData.recordsLimit}
               increasePercentage={safeAvmData.increasePercentage}
               isLoading={isAvmLoading}
+            />
+            <ActiveEndUsersCard 
+              activeEndUsers={endUserData?.activeEndUsers || null}
+              isLoading={isEndUserLoading}
+            />
+          </>
+        ) : (
+          // Liens Data View
+          <>
+            <LiensUsageSummary
+              propertyLiensRequests={liensData?.propertyLiensRequests || 0}
+              isLoading={isLiensLoading}
             />
             <ActiveEndUsersCard 
               activeEndUsers={endUserData?.activeEndUsers || null}
@@ -181,13 +205,16 @@ const ApiUsage = () => {
       ) : dataCategory === 'demographic' ? (
         // Demographic Data Charts
         <DemographicEndpointCharts isLoading={isSkiptraceLoading} />
-      ) : (
+      ) : dataCategory === 'avm' ? (
         // AVM Data Charts
         <AvmCharts 
           dailyUsageData={safeAvmData.dailyUsageData}
           monthlyUsageData={safeAvmData.monthlyUsageData}
           isLoading={isAvmLoading}
         />
+      ) : (
+        // Liens Data Charts
+        <LiensEndpointCharts isLoading={isLiensLoading} />
       )}
 
       {/* Endpoint usage section - only for property and AVM data */}
