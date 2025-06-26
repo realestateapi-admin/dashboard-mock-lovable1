@@ -1,6 +1,6 @@
+
 import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Eye, EyeOff, Shield } from "lucide-react";
+import { Shield } from "lucide-react";
 import { ApiKeyCard } from "./ApiKeyCard";
 import { ApiKeyScopes } from "@/components/dashboard/ApiKeyScopes";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
@@ -60,49 +60,37 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="public" className="w-full">
-        <TabsList className="mb-4">
-          <TabsTrigger value="public" className="flex items-center gap-2">
-            <Eye className="h-4 w-4" /> API Keys
-          </TabsTrigger>
-        </TabsList>
+      <div className="grid gap-6 md:grid-cols-2">
+        <ApiKeyCard
+          title="anon"
+          subtitle="public"
+          description="This key is safe to use in a browser if you have enabled Row Level Security for your tables and configured policies. Prefer using Secret API keys instead."
+          keyValue={publicApiKey}
+          icon={<Shield className="h-5 w-5 text-primary-teal" />}
+          onRotateKey={handleRotatePublicKey}
+          lastRequest="Last request was a minute ago."
+          isPublicKey={true}
+        />
         
-        <TabsContent value="public">
-          <div className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              <ApiKeyCard
-                title="anon"
-                subtitle="public"
-                description="This key is safe to use in a browser if you have enabled Row Level Security for your tables and configured policies. Prefer using Secret API keys instead."
-                keyValue={publicApiKey}
-                icon={<Eye className="h-5 w-5 text-primary-teal" />}
-                onRotateKey={handleRotatePublicKey}
-                lastRequest="Last request was a minute ago."
-                isPublicKey={true}
-              />
-              
-              <ApiKeyCard
-                title="service_role"
-                subtitle="secret"
-                description="This key has the ability to bypass Row Level Security. Never share it publicly. If leaked, generate a new JWT secret immediately. Prefer using Publishable API keys instead."
-                keyValue={privateApiKey}
-                icon={<Shield className="h-5 w-5 text-red-500" />}
-                isTrialActive={isTrialActive && !isOnPaidPlan}
-                trialDaysLeft={trialDaysLeft}
-                onRotateKey={handleRotatePrivateKey}
-                lastRequest="Last request was 22 minutes ago."
-                isPublicKey={false}
-              />
-            </div>
-            
-            <ApiKeyScopes 
-              scopes={publicKeyScopes}
-              isLoading={isLoadingScopes}
-              isTestKey={true}
-            />
-          </div>
-        </TabsContent>
-      </Tabs>
+        <ApiKeyCard
+          title="service_role"
+          subtitle="secret"
+          description="This key has the ability to bypass Row Level Security. Never share it publicly. If leaked, generate a new JWT secret immediately. Prefer using Publishable API keys instead."
+          keyValue={privateApiKey}
+          icon={<Shield className="h-5 w-5 text-red-500" />}
+          isTrialActive={isTrialActive && !isOnPaidPlan}
+          trialDaysLeft={trialDaysLeft}
+          onRotateKey={handleRotatePrivateKey}
+          lastRequest="Last request was 22 minutes ago."
+          isPublicKey={false}
+        />
+      </div>
+      
+      <ApiKeyScopes 
+        scopes={publicKeyScopes}
+        isLoading={isLoadingScopes}
+        isTestKey={true}
+      />
     </div>
   );
 };
