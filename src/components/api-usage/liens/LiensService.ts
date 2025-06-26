@@ -5,6 +5,7 @@
  */
 export interface LiensData {
   propertyLiensRequests: number;
+  lienRecords: number;
   timestamp: string;
 }
 
@@ -15,9 +16,11 @@ export const fetchLiensData = async (): Promise<LiensData> => {
   
   // Generate random data for demo purposes
   const propertyLiensRequests = Math.floor(Math.random() * 200) + 150; // 150-350 requests
+  const lienRecords = Math.floor(Math.random() * 500) + 300; // 300-800 records
   
   return {
     propertyLiensRequests,
+    lienRecords,
     timestamp: new Date().toISOString()
   };
 };

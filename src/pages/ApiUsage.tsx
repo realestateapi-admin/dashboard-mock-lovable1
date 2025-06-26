@@ -21,6 +21,7 @@ import { AvmCharts } from '@/components/api-usage/avm/AvmCharts';
 import { LiensUsageSummary } from '@/components/api-usage/liens/LiensUsageSummary';
 import { fetchLiensData } from '@/components/api-usage/liens/LiensService';
 import { LiensEndpointCharts } from '@/components/api-usage/liens/LiensEndpointCharts';
+import { LienRecordsCard } from '@/components/api-usage/liens/LienRecordsCard';
 
 const ApiUsage = () => {
   // State to track which data category the user is viewing
@@ -183,6 +184,10 @@ const ApiUsage = () => {
           <>
             <LiensUsageSummary
               propertyLiensRequests={liensData?.propertyLiensRequests || 0}
+              isLoading={isLiensLoading}
+            />
+            <LienRecordsCard
+              lienRecords={liensData?.lienRecords || 0}
               isLoading={isLiensLoading}
             />
             <ActiveEndUsersCard 
