@@ -71,11 +71,9 @@ export const EndpointListItem = ({ endpoint }: EndpointListItemProps) => {
               <span className={`${isMobile ? 'text-xs' : 'text-sm'}`}>{endpoint.records.toLocaleString()}</span>
             </div>
           </div>
-          {endpoint.records > 0 && (
-            <Badge variant="outline" className="text-xs bg-primary-teal/10 text-primary-teal">
-              {endpoint.percentage}% of record usage
-            </Badge>
-          )}
+          <Badge variant="outline" className="text-xs bg-primary-teal/10 text-primary-teal">
+            {endpoint.percentage}% of record usage
+          </Badge>
         </div>
       </div>
       <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
