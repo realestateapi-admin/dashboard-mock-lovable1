@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,8 @@ type TimePeriod = 'mtd' | 'ytd' | 'all';
 export const EndpointUsageSection = ({ endpointUsage = [], isLoading = false }: EndpointUsageSectionProps) => {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('mtd');
   
+  console.log('EndpointUsageSection - received endpointUsage:', endpointUsage);
+  
   // Calculate total records for correct percentage calculations
   const totalRecords = endpointUsage.reduce((sum, endpoint) => sum + endpoint.records, 0);
 
@@ -26,6 +27,8 @@ export const EndpointUsageSection = ({ endpointUsage = [], isLoading = false }: 
     ...endpoint,
     percentage: totalRecords > 0 ? Math.round((endpoint.records / totalRecords) * 100 * 10) / 10 : 0
   }));
+
+  console.log('EndpointUsageSection - processed endpoints:', endpointUsageWithCorrectPercentages);
 
   // Get time period display text
   const getTimePeriodText = () => {
