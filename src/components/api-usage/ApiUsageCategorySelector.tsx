@@ -8,7 +8,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 
-export type DataCategory = 'property' | 'demographic';
+export type DataCategory = 'property' | 'demographic' | 'avm';
 
 interface ApiUsageCategorySelectorProps {
   value: DataCategory;
@@ -33,6 +33,7 @@ export const ApiUsageCategorySelector = ({
           <SelectContent>
             <SelectItem value="property">Property Data</SelectItem>
             <SelectItem value="demographic">Demographic Data</SelectItem>
+            <SelectItem value="avm">AVM Data</SelectItem>
           </SelectContent>
         </Select>
       </div>

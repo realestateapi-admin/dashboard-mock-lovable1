@@ -15,6 +15,9 @@ import { ApiUsageCategorySelector, DataCategory } from '@/components/api-usage/A
 import { DemographicUsageSummary } from '@/components/api-usage/demographic/DemographicUsageSummary';
 import { fetchSkiptraceData } from '@/components/api-usage/demographic/SkiptraceService';
 import { DemographicEndpointCharts } from '@/components/api-usage/demographic/DemographicEndpointCharts';
+import { AvmUsageSummary } from '@/components/api-usage/avm/AvmUsageSummary';
+import { fetchAvmData } from '@/components/api-usage/avm/AvmService';
+import { AvmCharts } from '@/components/api-usage/avm/AvmCharts';
 
 const ApiUsage = () => {
   // State to track which data category the user is viewing
@@ -48,6 +51,15 @@ const ApiUsage = () => {
     queryFn: fetchSkiptraceData,
   });
 
+  // AVM data query
+  const {
+    data: avmData,
+    isLoading: isAvmLoading
+  } = useQuery({
+    queryKey: ['avmData'],
+    queryFn: fetchAvmData,
+  });
+
   // Initialize default empty values for property data
   const safeData = {
     totalApiCalls: data?.totalApiCalls || 0,
@@ -58,6 +70,17 @@ const ApiUsage = () => {
     monthlyUsageData: data?.monthlyUsageData || [],
     endpointUsage: data?.endpointUsage || [],
     usageDistributionData: data?.usageDistributionData || []
+  };
+
+  // Initialize default empty values for AVM data
+  const safeAvmData = {
+    totalApiCalls: avmData?.totalApiCalls || 0,
+    totalRecords: avmData?.totalRecords || 0,
+    recordsLimit: avmData?.recordsLimit || 0,
+    increasePercentage: avmData?.increasePercentage || 0,
+    dailyUsageData: avmData?.dailyUsageData || [],
+    monthlyUsageData: avmData?.monthlyUsageData || [],
+    endpointUsage: avmData?.endpointUsage || []
   };
 
   if (isError) {
@@ -107,7 +130,7 @@ const ApiUsage = () => {
               />
             </>
           )
-        ) : (
+        ) : dataCategory === 'demographic' ? (
           // Demographic Data View
           isSkiptraceLoading ? (
             <>
@@ -128,6 +151,21 @@ const ApiUsage = () => {
               />
             </>
           )
+        ) : (
+          // AVM Data View
+          <>
+            <AvmUsageSummary
+              totalApiCalls={safeAvmData.totalApiCalls}
+              totalRecords={safeAvmData.totalRecords}
+              recordsLimit={safeAvmData.recordsLimit}
+              increasePercentage={safeAvmData.increasePercentage}
+              isLoading={isAvmLoading}
+            />
+            <ActiveEndUsersCard 
+              activeEndUsers={endUserData?.activeEndUsers || null}
+              isLoading={isEndUserLoading}
+            />
+          </>
         )}
       </div>
 
@@ -140,17 +178,24 @@ const ApiUsage = () => {
           usageDistributionData={safeData.usageDistributionData}
           isLoading={isLoading}
         />
-      ) : (
+      ) : dataCategory === 'demographic' ? (
         // Demographic Data Charts
         <DemographicEndpointCharts isLoading={isSkiptraceLoading} />
+      ) : (
+        // AVM Data Charts
+        <AvmCharts 
+          dailyUsageData={safeAvmData.dailyUsageData}
+          monthlyUsageData={safeAvmData.monthlyUsageData}
+          isLoading={isAvmLoading}
+        />
       )}
 
-      {/* Only show endpoint usage section for property data */}
-      {dataCategory === 'property' && (
+      {/* Endpoint usage section - only for property and AVM data */}
+      {(dataCategory === 'property' || dataCategory === 'avm') && (
         <div>
           <EndpointUsageSection 
-            endpointUsage={safeData.endpointUsage} 
-            isLoading={isLoading}
+            endpointUsage={dataCategory === 'property' ? safeData.endpointUsage : safeAvmData.endpointUsage} 
+            isLoading={dataCategory === 'property' ? isLoading : isAvmLoading}
           />
         </div>
       )}
