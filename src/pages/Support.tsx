@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import KnowledgeBaseTab from "@/components/support/KnowledgeBaseTab";
@@ -22,11 +21,31 @@ const Support = () => {
       </div>
       
       <Tabs defaultValue="ai-assistant" className="space-y-6">
-        <TabsList className="grid grid-cols-4 max-w-md">
-          <TabsTrigger value="ai-assistant">AI Copilot</TabsTrigger>
-          <TabsTrigger value="knowledge-base">Knowledge Base</TabsTrigger>
-          <TabsTrigger value="api-docs">API Documentation</TabsTrigger>
-          <TabsTrigger value="submit-ticket">Submit Ticket</TabsTrigger>
+        <TabsList className="grid grid-cols-4 max-w-2xl gap-2 h-auto p-2 bg-muted/50 border">
+          <TabsTrigger 
+            value="ai-assistant" 
+            className="px-4 py-3 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
+            AI Copilot
+          </TabsTrigger>
+          <TabsTrigger 
+            value="knowledge-base"
+            className="px-4 py-3 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
+            Knowledge Base
+          </TabsTrigger>
+          <TabsTrigger 
+            value="api-docs"
+            className="px-4 py-3 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
+            API Documentation
+          </TabsTrigger>
+          <TabsTrigger 
+            value="submit-ticket"
+            className="px-4 py-3 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
+            Submit Ticket
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="ai-assistant">
