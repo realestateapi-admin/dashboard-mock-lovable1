@@ -32,7 +32,7 @@ export const ApiUsageCategorySelector = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="property">Property Data</SelectItem>
-            <SelectItem value="demographic">Demographic Data</SelectItem>
+            <SelectItem value="demographic">Skip Trace Data</SelectItem>
             <SelectItem value="avm">AVM Data</SelectItem>
             <SelectItem value="liens">Liens Data</SelectItem>
           </SelectContent>
