@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { UsageBreakdownSkeleton } from "./LoadingState";
 import { UsageDistributionItem } from "@/types/usage";
@@ -104,15 +104,6 @@ export const RecordUsageBreakdown = ({
                       <Cell key={`cell-${index}`} fill={entry.fill} />
                     ))}
                   </Pie>
-                  <Tooltip 
-                    formatter={(value) => [`${value} records`, ""]}
-                    contentStyle={{ 
-                      backgroundColor: 'var(--background)', 
-                      borderColor: 'var(--border)',
-                      borderRadius: 'var(--radius)',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                    }}
-                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
