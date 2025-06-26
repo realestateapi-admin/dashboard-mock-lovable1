@@ -23,8 +23,6 @@ export const fetchAvmData = async () => {
     }
   ];
   
-  console.log('AVM Service - endpointUsage data:', endpointUsage);
-  
   // Calculate totals based on the endpoint data
   const totalRecords = endpointUsage.reduce((sum, endpoint) => sum + endpoint.records, 0);
   const totalApiCalls = endpointUsage.reduce((sum, endpoint) => sum + endpoint.calls, 0);
@@ -54,6 +52,5 @@ export const fetchAvmData = async () => {
     endpointUsage
   };
   
-  console.log('AVM Service - returning result:', result);
   return result;
 };
