@@ -90,15 +90,6 @@ export const ApiKeyCard = ({
               </Badge>
             )}
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            className="h-8 w-8"
-            onClick={handleCopyApiKey}
-          >
-            <Copy className="h-4 w-4" />
-            <span className="sr-only">Copy</span>
-          </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
