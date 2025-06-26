@@ -53,7 +53,7 @@ export function MainNav() {
           to={item.href}
           className={({ isActive }) =>
             `transition-colors hover:text-[#5014d0] ${
-              isActive ? "text-[#5014d0] font-medium" : "text-muted-foreground"
+              isActive ? "text-[#5014d0] font-medium" : "text-foreground/70 hover:text-foreground"
             }`
           }
         >
