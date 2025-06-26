@@ -1,5 +1,4 @@
 
-
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +11,27 @@ const formSchema = z.object({
     const digits = value.replace(/\s/g, '');
     return validateLuhn(digits);
   }, { message: "Invalid card number" }),
-  expiry: z.string().min(5, { message: "Enter a valid expiry date (MM/YY)" }),
+  expiry: z.string().min(5, { message: "Enter a valid expiry date (MM/YY)" }).refine((value) => {
+    if (value.length !== 5) return true; // Don't validate incomplete dates
+    
+    const [month, year] = value.split('/');
+    const monthNum = parseInt(month, 10);
+    const yearNum = parseInt(`20${year}`, 10);
+    
+    // Check if month is valid
+    if (monthNum < 1 || monthNum > 12) return false;
+    
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+    
+    // Check if the expiry date is in the future
+    if (yearNum < currentYear || (yearNum === currentYear && monthNum < currentMonth)) {
+      return false;
+    }
+    
+    return true;
+  }, { message: "Expiry date must be in the future" }),
   cvc: z.string().min(3, { message: "Enter a valid CVC" }).max(4),
   zipCode: z.string().min(5, { message: "Enter a valid ZIP code" }).max(10),
 });
@@ -59,7 +78,7 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-11
     
-    // Check if the expiry date is in the past
+    // Check if the expiry date is in the future
     if (yearNum < currentYear || (yearNum === currentYear && monthNum < currentMonth)) {
       return false;
     }
@@ -105,7 +124,7 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
       // Validate expiry date
       if (value.length === 5) {
         if (!validateExpiryDate(value)) {
-          setExpiryError("Expiry date should be in the future");
+          setExpiryError("Expiry date must be in the future");
         } else {
           setExpiryError("");
         }
@@ -184,7 +203,7 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
     // Validate existing expiry date
     if (currentExpiry && currentExpiry.length === 5) {
       if (!validateExpiryDate(currentExpiry)) {
-        setExpiryError("Expiry date should be in the future");
+        setExpiryError("Expiry date must be in the future");
       }
     }
   }, []);
@@ -213,4 +232,3 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
     cardNumberMasked
   };
 };
-
