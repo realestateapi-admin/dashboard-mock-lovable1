@@ -1,9 +1,12 @@
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { validateLuhn } from "@/utils/luhnValidation";
+import { validateExpiryDate, validateCardNumber } from "./utils/creditCardValidation";
+import { formatCardNumber, formatExpiryDate, formatCvc, formatZipCode } from "./utils/creditCardFormatting";
+import { useCreditCardDisplay } from "./utils/useCreditCardDisplay";
 
 const formSchema = z.object({
   cardName: z.string().min(2, { message: "Name is required" }),
@@ -47,11 +50,16 @@ interface UseCreditCardFormProps {
 export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: UseCreditCardFormProps) => {
   const [cardNumberError, setCardNumberError] = useState<string>("");
   const [expiryError, setExpiryError] = useState<string>("");
-  const [cvcMasked, setCvcMasked] = useState<boolean>(false);
-  const [displayCvc, setDisplayCvc] = useState<string>("");
-  const [cardNumberMasked, setCardNumberMasked] = useState<boolean>(false);
-  const [displayCardNumber, setDisplayCardNumber] = useState<string>("");
-  const cvcTimerRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const {
+    cvcMasked,
+    displayCvc,
+    cardNumberMasked,
+    displayCardNumber,
+    updateCvcDisplay,
+    updateCardNumberDisplay,
+    initializeDisplayFromExistingData
+  } = useCreditCardDisplay();
   
   const form = useForm<CreditCardFormValues>({
     resolver: zodResolver(formSchema),
@@ -64,41 +72,10 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
     },
   });
 
-  const validateExpiryDate = (value: string): boolean => {
-    if (value.length !== 5) return true; // Don't validate incomplete dates
-    
-    const [month, year] = value.split('/');
-    const monthNum = parseInt(month, 10);
-    const yearNum = parseInt(`20${year}`, 10);
-    
-    // Check if month is valid
-    if (monthNum < 1 || monthNum > 12) return false;
-    
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-11
-    
-    // Check if the expiry date is in the future
-    if (yearNum < currentYear || (yearNum === currentYear && monthNum < currentMonth)) {
-      return false;
-    }
-    
-    return true;
-  };
-
   const handleInputChange = (field: keyof CreditCardFormValues, value: string) => {
-    // Format card number with spaces for readability
     if (field === "cardNumber") {
-      // Remove all non-digit characters first (including spaces, dashes, etc.)
-      value = value.replace(/\D/g, "");
-      // Add spaces every 4 digits
-      value = value.replace(/(.{4})/g, "$1 ").trim();
-      // Limit to 16 digits plus spaces (19 characters total)
-      value = value.substring(0, 19);
-      
-      // Show the actual value while typing and unmask
-      setDisplayCardNumber(value);
-      setCardNumberMasked(false);
+      value = formatCardNumber(value);
+      updateCardNumberDisplay(value);
       
       // Real-time Luhn validation
       const digits = value.replace(/\s/g, '');
@@ -113,13 +90,8 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
       }
     }
 
-    // Format expiry date with slash and validate
     if (field === "expiry") {
-      value = value.replace(/\s/g, "").replace(/[^0-9]/g, "");
-      if (value.length > 2) {
-        value = `${value.substring(0, 2)}/${value.substring(2, 4)}`;
-      }
-      value = value.substring(0, 5); // MM/YY format (5 chars total)
+      value = formatExpiryDate(value);
       
       // Validate expiry date
       if (value.length === 5) {
@@ -133,31 +105,13 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
       }
     }
 
-    // Handle CVC with timed masking (only after 3+ digits)
     if (field === "cvc") {
-      value = value.replace(/[^0-9]/g, "").substring(0, 4);
-      
-      // Show the actual value while typing
-      setDisplayCvc(value);
-      setCvcMasked(false);
-      
-      // Clear existing timer
-      if (cvcTimerRef.current) {
-        clearTimeout(cvcTimerRef.current);
-      }
-      
-      // Only set timer to mask if 3 or more digits are entered
-      if (value.length >= 3) {
-        cvcTimerRef.current = setTimeout(() => {
-          setCvcMasked(true);
-          setDisplayCvc("•".repeat(value.length));
-        }, 2000);
-      }
+      value = formatCvc(value);
+      updateCvcDisplay(value);
     }
 
-    // Format ZIP code
     if (field === "zipCode") {
-      value = value.replace(/[^0-9-]/g, "").substring(0, 10);
+      value = formatZipCode(value);
     }
 
     form.setValue(field, value);
@@ -165,40 +119,13 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
     updateField("creditCardInfo", formValues);
   };
 
-  // Clean up timer on unmount
-  useEffect(() => {
-    return () => {
-      if (cvcTimerRef.current) {
-        clearTimeout(cvcTimerRef.current);
-      }
-    };
-  }, []);
-
   // Initialize display values from existing data (when returning to page)
   useEffect(() => {
     const currentCvc = form.getValues("cvc");
     const currentCardNumber = form.getValues("cardNumber");
     const currentExpiry = form.getValues("expiry");
     
-    if (currentCvc) {
-      setDisplayCvc("•".repeat(currentCvc.length));
-      setCvcMasked(true);
-    }
-    
-    if (currentCardNumber) {
-      // Mask all but last 4 digits when returning to page
-      const digits = currentCardNumber.replace(/\s/g, '');
-      if (digits.length >= 4) {
-        const lastFour = digits.slice(-4);
-        const maskedPortion = "•".repeat(digits.length - 4);
-        const maskedCardNumber = (maskedPortion + lastFour).replace(/(.{4})/g, "$1 ").trim();
-        setDisplayCardNumber(maskedCardNumber);
-        setCardNumberMasked(true);
-      } else {
-        setDisplayCardNumber(currentCardNumber);
-        setCardNumberMasked(false);
-      }
-    }
+    initializeDisplayFromExistingData(currentCardNumber, currentCvc);
     
     // Validate existing expiry date
     if (currentExpiry && currentExpiry.length === 5) {
@@ -210,7 +137,7 @@ export const useCreditCardForm = ({ updateField, creditCardInfo, userName }: Use
 
   // Check if all fields are filled for real-time validation
   const cardNumberDigits = form.getValues("cardNumber").replace(/\s/g, "");
-  const isCardNumberValid = cardNumberDigits.length >= 16 && validateLuhn(cardNumberDigits) && !cardNumberError;
+  const isCardNumberValid = cardNumberDigits.length >= 16 && validateCardNumber(cardNumberDigits) && !cardNumberError;
   const isExpiryValid = form.getValues("expiry").length === 5 && !expiryError;
   
   const isStepValid = 

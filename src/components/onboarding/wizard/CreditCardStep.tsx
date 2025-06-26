@@ -1,6 +1,6 @@
 
 import React, { useEffect } from "react";
-import { useCreditCardForm } from "./hooks/useCreditCardForm";
+import { useCreditCardForm } from "./hooks/useCreditCardFormRefactored";
 import CreditCardSecurityBanner from "./components/CreditCardSecurityBanner";
 import CreditCardFormFields from "./components/CreditCardFormFields";
 import CreditCardTrustIndicators from "./components/CreditCardTrustIndicators";
