@@ -54,17 +54,17 @@ export const BillingTabs = ({
   
   return (
     <Tabs defaultValue="subscription" className="w-full">
-      <TabsList className="mb-4">
-        <TabsTrigger value="subscription" className="flex items-center gap-2">
+      <TabsList className="mb-4 gap-1 h-auto p-1 bg-muted/50 border">
+        <TabsTrigger value="subscription" className="flex items-center gap-2 px-3 py-2 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm">
           <Wallet className="h-4 w-4" /> Subscription
         </TabsTrigger>
-        <TabsTrigger value="payment" className="flex items-center gap-2">
+        <TabsTrigger value="payment" className="flex items-center gap-2 px-3 py-2 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm">
           <CreditCardIcon className="h-4 w-4" /> Payment Methods
         </TabsTrigger>
-        <TabsTrigger value="invoices" className="flex items-center gap-2">
+        <TabsTrigger value="invoices" className="flex items-center gap-2 px-3 py-2 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm">
           <CreditCard className="h-4 w-4" /> Invoices
         </TabsTrigger>
-        <TabsTrigger value="terms" className="flex items-center gap-2">
+        <TabsTrigger value="terms" className="flex items-center gap-2 px-3 py-2 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm">
           <FileText className="h-4 w-4" /> Terms of Service
         </TabsTrigger>
       </TabsList>
