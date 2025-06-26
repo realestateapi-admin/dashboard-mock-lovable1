@@ -1,4 +1,3 @@
-
 import { Home, BarChart, FileText, LifeBuoy, Settings, User, BookOpen } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
@@ -117,6 +116,7 @@ export const DashboardSidebar = () => {
                   <SidebarMenuButton asChild>
                     <NavLink 
                       to={item.href}
+                      end={item.href === "/dashboard"}
                       className={({ isActive }) => 
                         isActive ? "text-[#5014d0] font-medium" : "text-foreground/70 hover:text-foreground"
                       }
