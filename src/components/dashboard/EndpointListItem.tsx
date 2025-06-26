@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,8 +32,12 @@ export const EndpointListItem = ({ endpoint }: EndpointListItemProps) => {
     return "";
   };
 
+  // Check if this endpoint should be grayed out (bottom four endpoints)
+  const isGrayedOut = ['CSV', 'Property Detail Bulk', 'Property Boundaries', 'Property Maps'].includes(endpoint.endpoint);
+  const grayedOutClasses = isGrayedOut ? 'opacity-50' : '';
+
   return (
-    <div className="space-y-2">
+    <div className={`space-y-2 ${grayedOutClasses}`}>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
         <div>
           <div className="flex items-center gap-2">
