@@ -40,7 +40,7 @@ export const MonthlyUsageChart = ({ monthlyUsageData }: MonthlyUsageChartProps) 
             borderColor: 'var(--border)',
             borderRadius: 'var(--radius)',
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-            opacity: 1,
+            opacity: 0.8,
             backdropFilter: 'blur(8px)'
           }}
           formatter={(value, name) => [value.toLocaleString(), name === 'calls' ? 'API Calls' : 'Records Used']}
