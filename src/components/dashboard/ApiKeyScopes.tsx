@@ -66,7 +66,7 @@ export const ApiKeyScopes = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>API Key Scopes</CardTitle>
+        <CardTitle>APIs Key Scope</CardTitle>
         <CardDescription>
           {isTestKey 
             ? "Available endpoints for your API key" 
