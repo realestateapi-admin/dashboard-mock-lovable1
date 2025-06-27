@@ -17,28 +17,40 @@ export const ApiKeyScopes = ({
   isLoading = false,
   isTestKey = true
 }: ApiKeyScopesProps) => {
-  // All available scopes from the updated list
-  const allAvailableScopes = [
-    "Property Search",
-    "Property Detail",
-    "Property Detail Bulk",
-    "Property Comps",
-    "CSV Generator",
-    "PropGPT",
-    "Address Verification",
-    "Property Portfolio",
-    "Property Boundary",
-    "Auto Complete",
-    "Skip Trace",
-    "Bulk Skip Trace Await",
-    "Bulk Skip Trace",
-    "Lender Grade AVM",
-    "Bulk Lender grade AVM",
-    "Involuntary Liens",
-    "Mapping (Pins)",
-    "MLS Search",
-    "MLS Detail"
-  ];
+  // Grouped scopes by category
+  const scopeCategories = {
+    "Property Data": [
+      "Property Search",
+      "Property Detail", 
+      "Property Detail Bulk",
+      "Property Comps",
+      "CSV Generator",
+      "PropGPT",
+      "Address Verification",
+      "Property Portfolio",
+      "Property Boundary",
+      "Auto Complete"
+    ],
+    "Skip Trace Data": [
+      "Skip Trace",
+      "Bulk Skip Trace Await",
+      "Bulk Skip Trace"
+    ],
+    "AVM Data": [
+      "Lender Grade AVM",
+      "Bulk Lender grade AVM"
+    ],
+    "Liens Data": [
+      "Involuntary Liens"
+    ],
+    "Property Mapping": [
+      "Mapping (Pins)"
+    ],
+    "MLS Data": [
+      "MLS Search",
+      "MLS Detail"
+    ]
+  };
 
   // Get human-readable descriptions for each scope
   const getScopeDescription = (scope: string) => {
@@ -120,38 +132,47 @@ export const ApiKeyScopes = ({
           </div>
         ) : (
           <TooltipProvider>
-            <div className="space-y-4">
-              {allAvailableScopes.map((scope) => {
-                const enabled = isScopeEnabled(scope);
-                return (
-                  <div key={scope} className="flex items-center justify-between border-b pb-2">
-                    <div>
-                      <p className="font-medium">{scope}</p>
-                      <p className="text-sm text-muted-foreground">{getScopeDescription(scope)}</p>
-                    </div>
-                    <div className="flex items-center">
-                      {enabled ? (
-                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex gap-1 items-center">
-                          <CheckCircle className="h-3.5 w-3.5" />
-                          Enabled
-                        </Badge>
-                      ) : (
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Badge variant="outline" className="bg-gray-50 text-gray-500 border-gray-200 flex gap-1 items-center">
-                              <XCircle className="h-3.5 w-3.5" />
-                              Disabled
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{getDisabledTooltipMessage()}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      )}
-                    </div>
+            <div className="space-y-6">
+              {Object.entries(scopeCategories).map(([category, categoryScopes]) => (
+                <div key={category} className="relative border border-gray-200 rounded-lg p-4 bg-gray-50/30">
+                  <div className="absolute -top-3 left-3 bg-white px-2 py-1 text-sm font-semibold text-gray-700 border border-gray-200 rounded">
+                    {category}
                   </div>
-                );
-              })}
+                  <div className="space-y-3 mt-2">
+                    {categoryScopes.map((scope) => {
+                      const enabled = isScopeEnabled(scope);
+                      return (
+                        <div key={scope} className="flex items-center justify-between border-b border-gray-100 pb-2 last:border-b-0">
+                          <div>
+                            <p className="font-medium">{scope}</p>
+                            <p className="text-sm text-muted-foreground">{getScopeDescription(scope)}</p>
+                          </div>
+                          <div className="flex items-center">
+                            {enabled ? (
+                              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex gap-1 items-center">
+                                <CheckCircle className="h-3.5 w-3.5" />
+                                Enabled
+                              </Badge>
+                            ) : (
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Badge variant="outline" className="bg-gray-50 text-gray-500 border-gray-200 flex gap-1 items-center">
+                                    <XCircle className="h-3.5 w-3.5" />
+                                    Disabled
+                                  </Badge>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>{getDisabledTooltipMessage()}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
           </TooltipProvider>
         )}
