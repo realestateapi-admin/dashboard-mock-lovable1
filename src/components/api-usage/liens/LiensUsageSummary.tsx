@@ -15,6 +15,9 @@ export const LiensUsageSummary = ({
   propertyLiensRequests,
   isLoading
 }: LiensUsageSummaryProps) => {
+  // Hard coded success rate as requested
+  const successRate = 80;
+
   return (
     <>
       {/* Today's Lien Records */}
@@ -58,9 +61,7 @@ export const LiensUsageSummary = ({
             <div className="text-xs text-muted-foreground flex justify-between">
               <span>Success rate:</span>
               <span className="font-medium text-emerald-600">
-                {propertyLiensRequests > 0 
-                  ? Math.round((lienRecords / propertyLiensRequests) * 100) 
-                  : 0}%
+                {successRate}%
               </span>
             </div>
           </div>
