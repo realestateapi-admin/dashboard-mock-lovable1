@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -155,7 +154,8 @@ export const BillingCard = ({
                 )
               }
             </Badge>
-            {billingCycle === 'annual' && (
+            {/* Only show billing cycle badge if not in free trial and not on free user plan */}
+            {billingCycle === 'annual' && !isTrialActive && !isFreeUser && (
               <Badge variant="outline" className="ml-2 bg-blue-50 text-blue-600">
                 Annual
               </Badge>
