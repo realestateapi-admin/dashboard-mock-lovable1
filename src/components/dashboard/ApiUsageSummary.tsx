@@ -21,6 +21,8 @@ export const ApiUsageSummary = ({
   displayPropertyRecordsFirst = false
 }: ApiUsageSummaryProps) => {
   const recordsPercentage = (totalRecords / recordsLimit) * 100;
+  const isOverLimit = recordsPercentage > 100;
+  const displayPercentage = Math.min(recordsPercentage, 100);
   
   // Property Records Card
   const propertyRecordsCard = (
@@ -36,11 +38,13 @@ export const ApiUsageSummary = ({
         </p>
         <div className="mt-4 h-1 w-full bg-secondary">
           <div
-            className="h-1 bg-primary-teal"
-            style={{ width: `${recordsPercentage}%` }}
+            className={`h-1 transition-all duration-300 ${isOverLimit ? 'bg-red-500' : 'bg-primary-teal'}`}
+            style={{ width: `${displayPercentage}%` }}
           />
         </div>
-        <p className="mt-2 text-xs text-muted-foreground">{recordsPercentage.toFixed(1)}% of monthly limit used MTD</p>
+        <p className={`mt-2 text-xs ${isOverLimit ? 'text-red-600' : 'text-muted-foreground'}`}>
+          {recordsPercentage.toFixed(1)}% of monthly limit used MTD
+        </p>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
