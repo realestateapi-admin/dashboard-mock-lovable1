@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,6 +22,11 @@ const UsageHistory = () => {
   
   const [endpoint, setEndpoint] = useState<string>("all");
   const [view, setView] = useState<"table" | "chart">("table");
+  
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   // Fetch usage history data with filters
   const { data, isLoading, isError, refetch } = useQuery({
