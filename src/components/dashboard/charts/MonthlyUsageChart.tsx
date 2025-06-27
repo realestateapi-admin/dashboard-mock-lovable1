@@ -21,7 +21,7 @@ export const MonthlyUsageChart = ({ monthlyUsageData }: MonthlyUsageChartProps) 
         margin={{ 
           top: 5, 
           right: 5, 
-          left: isMobile ? -10 : -20, 
+          left: 10, 
           bottom: 5 
         }}
       >
