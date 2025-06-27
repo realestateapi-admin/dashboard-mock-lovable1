@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatePickerWithRange } from "@/components/dashboard/DateRangePicker";
@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const UsageHistory = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: subDays(new Date(), 7),
     to: new Date(),
@@ -51,7 +52,12 @@ const UsageHistory = () => {
   };
 
   const handleBackToUsage = () => {
-    navigate('/dashboard/usage');
+    const currentCategory = searchParams.get('category');
+    if (currentCategory) {
+      navigate(`/dashboard/usage?category=${currentCategory}`);
+    } else {
+      navigate('/dashboard/usage');
+    }
   };
 
   // Preset date ranges
