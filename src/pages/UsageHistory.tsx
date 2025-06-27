@@ -1,7 +1,8 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatePickerWithRange } from "@/components/dashboard/DateRangePicker";
@@ -19,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const UsageHistory = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: subDays(new Date(), 7),
     to: new Date(),
@@ -53,9 +55,20 @@ const UsageHistory = () => {
   };
 
   const handleBackToUsage = () => {
-    // Get the category from current URL params
-    const currentCategory = searchParams.get('category');
-    console.log('Current category from URL:', currentCategory);
+    // First try to get category from URL params
+    let currentCategory = searchParams.get('category');
+    
+    // If not in URL params, try to get from location state (passed during navigation)
+    if (!currentCategory && location.state?.category) {
+      currentCategory = location.state.category;
+    }
+    
+    // If still no category, try to get from sessionStorage as fallback
+    if (!currentCategory) {
+      currentCategory = sessionStorage.getItem('lastUsageCategory');
+    }
+    
+    console.log('Navigating back with category:', currentCategory);
     
     if (currentCategory && ['property', 'demographic', 'avm', 'liens'].includes(currentCategory)) {
       navigate(`/dashboard/usage?category=${currentCategory}`);
@@ -203,3 +216,4 @@ const UsageHistory = () => {
 };
 
 export default UsageHistory;
+

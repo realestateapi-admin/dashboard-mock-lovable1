@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
@@ -40,6 +41,9 @@ const ApiUsage = () => {
       newParams.set('category', dataCategory);
       return newParams;
     });
+    
+    // Store current category in sessionStorage for fallback
+    sessionStorage.setItem('lastUsageCategory', dataCategory);
   }, [dataCategory, setSearchParams]);
 
   // Scroll to top when component mounts
@@ -272,3 +276,4 @@ const ApiUsage = () => {
 };
 
 export default ApiUsage;
+
