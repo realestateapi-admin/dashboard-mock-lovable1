@@ -12,6 +12,7 @@ import {
 import { 
   Pagination, 
   PaginationContent, 
+  PaginationEllipsis,
   PaginationItem, 
   PaginationLink, 
   PaginationNext, 
@@ -47,11 +48,44 @@ export const UsageHistoryTable = ({ data }: UsageHistoryTableProps) => {
     currentPage * itemsPerPage
   );
 
-  // Create page numbers array for pagination
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
+  // Create smart pagination with ellipsis
+  const getVisiblePages = () => {
+    const delta = 2; // Number of pages to show on each side of current page
+    const pages = [];
+    
+    if (totalPages <= 7) {
+      // Show all pages if 7 or fewer
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Always show first page
+      pages.push(1);
+      
+      if (currentPage > delta + 2) {
+        pages.push('ellipsis-start');
+      }
+      
+      // Show pages around current page
+      const start = Math.max(2, currentPage - delta);
+      const end = Math.min(totalPages - 1, currentPage + delta);
+      
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      
+      if (currentPage < totalPages - delta - 1) {
+        pages.push('ellipsis-end');
+      }
+      
+      // Always show last page if more than 1 page
+      if (totalPages > 1) {
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  };
 
   // Get badge variant based on status
   const getStatusBadge = (status: string) => {
@@ -157,14 +191,18 @@ export const UsageHistoryTable = ({ data }: UsageHistoryTableProps) => {
                 />
               </PaginationItem>
               
-              {pageNumbers.map(number => (
-                <PaginationItem key={number}>
-                  <PaginationLink
-                    isActive={currentPage === number}
-                    onClick={() => setCurrentPage(number)}
-                  >
-                    {number}
-                  </PaginationLink>
+              {getVisiblePages().map((page, index) => (
+                <PaginationItem key={index}>
+                  {page === 'ellipsis-start' || page === 'ellipsis-end' ? (
+                    <PaginationEllipsis />
+                  ) : (
+                    <PaginationLink
+                      isActive={currentPage === page}
+                      onClick={() => setCurrentPage(page as number)}
+                    >
+                      {page}
+                    </PaginationLink>
+                  )}
                 </PaginationItem>
               ))}
               
