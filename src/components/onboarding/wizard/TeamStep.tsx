@@ -63,12 +63,19 @@ const TeamStep = ({ team, updateField, userName }: TeamStepProps) => {
     return true;
   };
 
+  const saveTeamDataToStorage = (teamData: TeamData) => {
+    // Save to localStorage for persistence
+    localStorage.setItem('teamData', JSON.stringify(teamData));
+    // Update parent component state
+    updateField("team", teamData);
+  };
+
   const handleActionChange = (action: TeamAction) => {
     const updatedTeam: TeamData = {
       action,
       teamName: action === "create-team" ? teamName : undefined
     };
-    updateField("team", updatedTeam);
+    saveTeamDataToStorage(updatedTeam);
   };
 
   const handleTeamNameChange = (name: string) => {
@@ -76,10 +83,11 @@ const TeamStep = ({ team, updateField, userName }: TeamStepProps) => {
     validateTeamName(name);
     
     if (team?.action === "create-team") {
-      updateField("team", {
+      const updatedTeam = {
         ...team,
         teamName: name
-      });
+      };
+      saveTeamDataToStorage(updatedTeam);
     }
   };
 
