@@ -11,7 +11,7 @@ interface DashboardHeaderProps {
 
 export const DashboardHeader = ({ isRefreshing, onRefresh }: DashboardHeaderProps) => {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between mb-6">
       <h1 className="text-3xl font-semibold tracking-tight text-[#1c3238]">Dashboard</h1>
       <Button 
         variant="outline" 
