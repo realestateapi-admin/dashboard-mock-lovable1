@@ -1,11 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatePickerWithRange } from "@/components/dashboard/DateRangePicker";
 import { UsageHistoryTable } from "@/components/dashboard/UsageHistoryTable";
-import UsageHistoryCharts from "@/components/dashboard/UsageHistoryCharts";
 import { Button } from "@/components/ui/button";
 import { TieredEndpointSelector } from "@/components/dashboard/TieredEndpointSelector";
 import { Calendar, FileDown, Filter, RefreshCcw, ArrowLeft } from "lucide-react";
@@ -25,7 +24,6 @@ const UsageHistory = () => {
   });
   
   const [endpoint, setEndpoint] = useState<string>("all");
-  const [view, setView] = useState<"table" | "chart">("table");
   
   // Scroll to top when component mounts
   useEffect(() => {
@@ -175,7 +173,7 @@ const UsageHistory = () => {
       </Card>
 
       <Card>
-        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <CardHeader>
           <div>
             <CardTitle>Usage Data</CardTitle>
             <CardDescription>
@@ -184,21 +182,9 @@ const UsageHistory = () => {
                 : 'Select a date range'}
             </CardDescription>
           </div>
-          <div className="mt-4 sm:mt-0">
-            <Tabs value={view} onValueChange={(value) => setView(value as "table" | "chart")}>
-              <TabsList>
-                <TabsTrigger value="table">Table</TabsTrigger>
-                <TabsTrigger value="chart">Chart</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
         </CardHeader>
         <CardContent>
-          {view === "table" ? (
-            <UsageHistoryTable data={data || []} />
-          ) : (
-            <UsageHistoryCharts data={data || []} />
-          )}
+          <UsageHistoryTable data={data || []} />
         </CardContent>
       </Card>
     </div>
