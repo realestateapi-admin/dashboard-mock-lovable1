@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +29,8 @@ export const ApiKeyScopes = ({
       "Address Verification",
       "Property Portfolio",
       "Property Boundary",
-      "Auto Complete"
+      "Auto Complete",
+      "Mapping (Pins)"
     ],
     "Skip Trace Data": [
       "Skip Trace",
@@ -43,9 +43,6 @@ export const ApiKeyScopes = ({
     ],
     "Liens Data": [
       "Involuntary Liens"
-    ],
-    "Property Mapping": [
-      "Mapping (Pins)"
     ],
     "MLS Data": [
       "MLS Search",
