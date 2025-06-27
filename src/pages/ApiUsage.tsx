@@ -243,6 +243,7 @@ const ApiUsage = () => {
             endpointUsage={dataCategory === 'property' ? safeData.endpointUsage : safeAvmData.endpointUsage} 
             isLoading={dataCategory === 'property' ? isLoading : isAvmLoading}
             userScopes={userScopes}
+            dataCategory={dataCategory}
           />
         </div>
       )}

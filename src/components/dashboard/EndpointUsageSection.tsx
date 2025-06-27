@@ -12,6 +12,7 @@ interface EndpointUsageSectionProps {
   endpointUsage: EndpointUsageItem[];
   isLoading?: boolean;
   userScopes?: string[];
+  dataCategory?: 'property' | 'avm';
 }
 
 type TimePeriod = 'mtd' | 'ytd' | 'all';
@@ -19,12 +20,13 @@ type TimePeriod = 'mtd' | 'ytd' | 'all';
 export const EndpointUsageSection = ({ 
   endpointUsage = [], 
   isLoading = false,
-  userScopes = []
+  userScopes = [],
+  dataCategory = 'property'
 }: EndpointUsageSectionProps) => {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('mtd');
   
-  // Define all possible endpoints from API Key scopes to match the structure
-  const allPossibleEndpoints = [
+  // Define endpoints by category
+  const propertyEndpoints = [
     "Property Search",
     "Property Detail", 
     "Property Detail Bulk",
@@ -34,20 +36,19 @@ export const EndpointUsageSection = ({
     "Address Verification",
     "Property Portfolio",
     "Property Boundary",
-    "Auto Complete",
-    "Skip Trace",
-    "Bulk Skip Trace Await",
-    "Bulk Skip Trace",
-    "Lender Grade AVM",
-    "Bulk Lender grade AVM",
-    "Involuntary Liens",
-    "Mapping (Pins)",
-    "MLS Search",
-    "MLS Detail"
+    "Auto Complete"
   ];
 
-  // Create a complete list of endpoints, adding missing ones with zero usage
-  const completeEndpointUsage = allPossibleEndpoints.map(endpoint => {
+  const avmEndpoints = [
+    "Lender Grade AVM",
+    "Bulk Lender grade AVM"
+  ];
+
+  // Get the relevant endpoints for the current data category
+  const relevantEndpoints = dataCategory === 'property' ? propertyEndpoints : avmEndpoints;
+
+  // Create a complete list of endpoints for the current category, adding missing ones with zero usage
+  const completeEndpointUsage = relevantEndpoints.map(endpoint => {
     const existingEndpoint = endpointUsage.find(item => item.endpoint === endpoint);
     if (existingEndpoint) {
       return {
@@ -179,24 +180,10 @@ function getEndpointDescription(endpoint: string): string {
       return "Access property boundary information";
     case "Auto Complete":
       return "Use address auto-completion";
-    case "Skip Trace":
-      return "Perform individual skip trace lookups";
-    case "Bulk Skip Trace Await":
-      return "Perform bulk skip trace operations with await";
-    case "Bulk Skip Trace":
-      return "Perform batch skip trace operations";
     case "Lender Grade AVM":
       return "Access automated valuation model for lending";
     case "Bulk Lender grade AVM":
       return "Access bulk automated valuation model for lending";
-    case "Involuntary Liens":
-      return "Access involuntary lien information";
-    case "Mapping (Pins)":
-      return "Access mapping and pin location services";
-    case "MLS Search":
-      return "Search MLS listings";
-    case "MLS Detail":
-      return "Access detailed MLS listing information";
     default:
       return "Additional API functionality";
   }
