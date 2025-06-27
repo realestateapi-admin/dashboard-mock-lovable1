@@ -19,7 +19,7 @@ export const DailyUsageChart = ({ data, dataView }: DailyUsageChartProps) => {
         margin={{
           top: 20,
           right: 30,
-          left: 60,
+          left: 40,
           bottom: 5,
         }}
       >
@@ -36,8 +36,14 @@ export const DailyUsageChart = ({ data, dataView }: DailyUsageChartProps) => {
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Bar 
-          dataKey={dataView === 'calls' ? 'calls' : 'records'} 
-          name={dataView === 'calls' ? 'API Calls' : 'Records'} 
+          dataKey="calls" 
+          name="API Calls" 
+          fill="#a78bfa" 
+          radius={[4, 4, 0, 0]} 
+        />
+        <Bar 
+          dataKey="records" 
+          name="Records" 
           fill="#04c8c8" 
           radius={[4, 4, 0, 0]} 
         />
