@@ -37,7 +37,7 @@ export const UsageChartTabs = ({
             className="pt-4" 
             onFocus={() => handleTabChange('daily')}
           >
-            <DailyUsageChart dailyUsageData={dailyUsageData} />
+            <DailyUsageChart data={dailyUsageData} dataView="calls" />
           </TabsContent>
           <TabsContent 
             value="monthly" 
