@@ -4,41 +4,122 @@ import { subDays } from "date-fns";
 
 // Generate random sample data
 const generateSampleData = (): UsageHistoryEntry[] => {
+  // All endpoints from our tiered selector
   const endpoints = [
+    // Property Data
     "Property Search",
     "Property Detail",
-    "Property Comps", 
-    "Autocomplete",
-    "Mapping"
+    "Property Detail Bulk",
+    "Property Comps",
+    "CSV Generator",
+    "PropGPT",
+    "Address Verification",
+    "Property Portfolio",
+    "Property Boundary",
+    "Mapping (Pins)",
+    // Skip Trace Data
+    "Skip Trace",
+    "Bulk Skip Trace Await",
+    "Bulk Skip Trace",
+    // AVM Data
+    "Lender Grade AVM",
+    "Bulk Lender grade AVM",
+    // Liens Data
+    "Involuntary Liens"
   ];
   
   const statuses = ["Success", "Error", "Warning"];
   
-  // Updated requests with both GET and POST methods
-  const requests = [
-    "POST /properties/search",
-    "GET /properties/123456",
-    "POST /properties/123456/comps",
-    "GET /autocomplete?q=123+Main+St",
-    "POST /property-maps",
-    "POST /properties/search",
-    "GET /properties/789012",
-    "POST /properties/789012/comps",
-    "GET /autocomplete?q=456+Oak+Ave",
-    "POST /property-boundaries",
-    "GET /properties/345678"
-  ];
-  
-  // HTTP methods to use based on endpoint types
-  const getMethodEndpoints = ["Property Detail", "Autocomplete"];
-  const postMethodEndpoints = ["Property Search", "Property Comps", "Mapping"];
+  // Updated requests mapped to endpoints
+  const endpointRequests = {
+    "Property Search": [
+      "POST /properties/search",
+      "POST /api/v1/property/search",
+      "POST /search/properties"
+    ],
+    "Property Detail": [
+      "GET /properties/123456",
+      "GET /api/v1/property/detail/789012",
+      "GET /property/345678"
+    ],
+    "Property Detail Bulk": [
+      "POST /properties/bulk-detail",
+      "POST /api/v1/property/bulk",
+      "POST /bulk/property-details"
+    ],
+    "Property Comps": [
+      "POST /properties/123456/comps",
+      "POST /api/v1/property/comps",
+      "POST /comps/property"
+    ],
+    "CSV Generator": [
+      "POST /export/csv",
+      "GET /api/v1/csv-export/456789",
+      "POST /generate/csv"
+    ],
+    "PropGPT": [
+      "POST /api/v1/propgpt/analyze",
+      "POST /propgpt/insights",
+      "POST /ai/property-analysis"
+    ],
+    "Address Verification": [
+      "POST /api/v1/address/verify",
+      "POST /verify/address",
+      "POST /address/validation"
+    ],
+    "Property Portfolio": [
+      "GET /api/v1/portfolio/123",
+      "POST /portfolio/analyze",
+      "GET /portfolio/summary/456"
+    ],
+    "Property Boundary": [
+      "GET /api/v1/property/boundary/123456",
+      "POST /boundary/property",
+      "GET /property/parcel/789012"
+    ],
+    "Mapping (Pins)": [
+      "POST /api/v1/mapping/pins",
+      "GET /maps/property-pins/123",
+      "POST /pins/generate"
+    ],
+    "Skip Trace": [
+      "POST /api/v1/skiptrace/person",
+      "POST /skiptrace/lookup",
+      "POST /trace/individual"
+    ],
+    "Bulk Skip Trace Await": [
+      "POST /api/v1/skiptrace/bulk-await",
+      "POST /bulk-skiptrace/await",
+      "POST /trace/bulk/await"
+    ],
+    "Bulk Skip Trace": [
+      "POST /api/v1/skiptrace/bulk",
+      "POST /bulk-skiptrace/process",
+      "POST /trace/bulk"
+    ],
+    "Lender Grade AVM": [
+      "POST /api/v1/avm/lender-grade",
+      "POST /avm/valuation",
+      "POST /valuation/lender"
+    ],
+    "Bulk Lender grade AVM": [
+      "POST /api/v1/avm/bulk-lender",
+      "POST /avm/bulk-valuation",
+      "POST /valuation/bulk"
+    ],
+    "Involuntary Liens": [
+      "GET /api/v1/liens/property/123456",
+      "POST /liens/search",
+      "GET /property/liens/789012"
+    ]
+  };
   
   const result: UsageHistoryEntry[] = [];
   
   // Generate data for the last 90 days
   for (let i = 0; i < 90; i++) {
     // More entries for recent days, fewer for older days
-    const entriesForDay = Math.max(1, Math.floor(Math.random() * 10) * (1 - i / 100));
+    const entriesForDay = Math.max(1, Math.floor(Math.random() * 15) * (1 - i / 120));
     
     for (let j = 0; j < entriesForDay; j++) {
       const date = subDays(new Date(), i);
@@ -48,21 +129,9 @@ const generateSampleData = (): UsageHistoryEntry[] => {
       
       const endpoint = endpoints[Math.floor(Math.random() * endpoints.length)];
       
-      // Select requests that match the endpoint type (GET or POST based on endpoint)
-      const isGetMethod = getMethodEndpoints.includes(endpoint);
-      const isPostMethod = postMethodEndpoints.includes(endpoint);
-      
-      // Filter requests by HTTP method
-      const filteredRequests = requests.filter(req => {
-        if (isGetMethod && req.startsWith("GET")) return true;
-        if (isPostMethod && req.startsWith("POST")) return true;
-        // Fallback for any new endpoints
-        return !isGetMethod && !isPostMethod;
-      });
-      
-      const requestPath = filteredRequests.length > 0 
-        ? filteredRequests[Math.floor(Math.random() * filteredRequests.length)]
-        : requests[Math.floor(Math.random() * requests.length)];
+      // Get appropriate requests for this endpoint
+      const requests = endpointRequests[endpoint] || ["GET /api/unknown"];
+      const requestPath = requests[Math.floor(Math.random() * requests.length)];
       
       // Credits based on endpoint type
       let credits = 0;
@@ -71,17 +140,48 @@ const generateSampleData = (): UsageHistoryEntry[] => {
           credits = Math.ceil(Math.random() * 5);
           break;
         case "Property Detail":
+        case "Property Detail Bulk":
           credits = Math.ceil(Math.random() * 3);
           break;
         case "Property Comps":
           credits = Math.ceil(Math.random() * 10);
           break;
-        case "Autocomplete":
-          credits = 0; // Autocomplete doesn't use credits
+        case "CSV Generator":
+          credits = Math.ceil(Math.random() * 2);
           break;
-        case "Mapping":
+        case "PropGPT":
+          credits = Math.ceil(Math.random() * 8);
+          break;
+        case "Address Verification":
           credits = 1;
           break;
+        case "Property Portfolio":
+          credits = Math.ceil(Math.random() * 15);
+          break;
+        case "Property Boundary":
+          credits = 2;
+          break;
+        case "Mapping (Pins)":
+          credits = 1;
+          break;
+        case "Skip Trace":
+          credits = Math.ceil(Math.random() * 3);
+          break;
+        case "Bulk Skip Trace Await":
+        case "Bulk Skip Trace":
+          credits = Math.ceil(Math.random() * 25);
+          break;
+        case "Lender Grade AVM":
+          credits = Math.ceil(Math.random() * 4);
+          break;
+        case "Bulk Lender grade AVM":
+          credits = Math.ceil(Math.random() * 20);
+          break;
+        case "Involuntary Liens":
+          credits = Math.ceil(Math.random() * 6);
+          break;
+        default:
+          credits = 1;
       }
       
       // Most requests are successful, but some fail
@@ -136,7 +236,7 @@ export const usageHistoryData = (
   
   if (endpoint && endpoint !== 'all') {
     filteredData = filteredData.filter(entry => 
-      entry.endpoint.toLowerCase() === endpoint.replace(/-/g, ' ')
+      entry.endpoint === endpoint
     );
   }
   
