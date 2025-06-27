@@ -1,4 +1,3 @@
-
 export interface UsageHistoryEntry {
   timestamp: string;
   endpoint: string;
@@ -16,11 +15,12 @@ export interface UsageDistributionItem {
 
 export interface EndpointUsageItem {
   endpoint: string;
+  description: string;
   calls: number;
   records: number;
   percentage: number;
-  description: string;
   creditCost: string;
+  isEnabled?: boolean;
 }
 
 export interface UsageReport {

@@ -8,7 +8,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { EndpointUsageItem } from "@/types/usage";
 
 interface EndpointListItemProps {
-  endpoint: EndpointUsageItem;
+  endpoint: EndpointUsageItem & { isEnabled?: boolean };
 }
 
 export const EndpointListItem = ({ endpoint }: EndpointListItemProps) => {
@@ -16,7 +16,7 @@ export const EndpointListItem = ({ endpoint }: EndpointListItemProps) => {
 
   // Helper function to get icon path based on endpoint
   const getEndpointIcon = (endpoint: string) => {
-    if (endpoint.includes("Autocomplete")) {
+    if (endpoint.includes("Auto Complete")) {
       return "/icons/address-auto.svg";
     } else if (endpoint.includes("Comps")) {
       return "/icons/ps3.svg";
@@ -24,7 +24,7 @@ export const EndpointListItem = ({ endpoint }: EndpointListItemProps) => {
       return "/icons/ps.svg";
     } else if (endpoint.includes("Detail")) {
       return "/icons/ps2.svg";
-    } else if (endpoint.includes("Count") || endpoint.includes("Pin") || endpoint.includes("Boundaries")) {
+    } else if (endpoint.includes("Count") || endpoint.includes("Pin") || endpoint.includes("Boundaries") || endpoint.includes("Mapping")) {
       return "/icons/map-pin.svg";
     } else if (endpoint.includes("CSV") || endpoint.includes("Maps")) {
       return "/icons/ps.svg"; // Using property search icon as fallback
@@ -32,8 +32,8 @@ export const EndpointListItem = ({ endpoint }: EndpointListItemProps) => {
     return "";
   };
 
-  // Check if this endpoint should be grayed out (bottom four endpoints)
-  const isGrayedOut = ['CSV', 'Property Detail Bulk', 'Property Boundaries', 'Property Maps'].includes(endpoint.endpoint);
+  // Gray out if endpoint is not enabled (not in user's API key scope)
+  const isGrayedOut = endpoint.isEnabled === false;
   const grayedOutClasses = isGrayedOut ? 'opacity-50' : '';
 
   return (
@@ -60,6 +60,9 @@ export const EndpointListItem = ({ endpoint }: EndpointListItemProps) => {
                 <TooltipContent>
                   <p className="text-xs">{endpoint.description}</p>
                   <p className="text-xs font-medium mt-1">{endpoint.creditCost}</p>
+                  {isGrayedOut && (
+                    <p className="text-xs text-red-500 mt-1">Not available for your API key</p>
+                  )}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

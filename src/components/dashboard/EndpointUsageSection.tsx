@@ -11,18 +11,68 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 interface EndpointUsageSectionProps {
   endpointUsage: EndpointUsageItem[];
   isLoading?: boolean;
+  userScopes?: string[];
 }
 
 type TimePeriod = 'mtd' | 'ytd' | 'all';
 
-export const EndpointUsageSection = ({ endpointUsage = [], isLoading = false }: EndpointUsageSectionProps) => {
+export const EndpointUsageSection = ({ 
+  endpointUsage = [], 
+  isLoading = false,
+  userScopes = []
+}: EndpointUsageSectionProps) => {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('mtd');
   
+  // Define all possible endpoints from API Key scopes to match the structure
+  const allPossibleEndpoints = [
+    "Property Search",
+    "Property Detail", 
+    "Property Detail Bulk",
+    "Property Comps",
+    "CSV Generator",
+    "PropGPT",
+    "Address Verification",
+    "Property Portfolio",
+    "Property Boundary",
+    "Auto Complete",
+    "Skip Trace",
+    "Bulk Skip Trace Await",
+    "Bulk Skip Trace",
+    "Lender Grade AVM",
+    "Bulk Lender grade AVM",
+    "Involuntary Liens",
+    "Mapping (Pins)",
+    "MLS Search",
+    "MLS Detail"
+  ];
+
+  // Create a complete list of endpoints, adding missing ones with zero usage
+  const completeEndpointUsage = allPossibleEndpoints.map(endpoint => {
+    const existingEndpoint = endpointUsage.find(item => item.endpoint === endpoint);
+    if (existingEndpoint) {
+      return {
+        ...existingEndpoint,
+        isEnabled: userScopes.includes(endpoint)
+      };
+    }
+    
+    // Add missing endpoints with zero usage
+    return {
+      endpoint,
+      description: getEndpointDescription(endpoint),
+      calls: 0,
+      records: 0,
+      percentage: 0,
+      creditCost: getCreditCost(endpoint),
+      isEnabled: userScopes.includes(endpoint)
+    };
+  });
+
   // Calculate total records for correct percentage calculations
-  const totalRecords = endpointUsage.reduce((sum, endpoint) => sum + endpoint.records, 0);
+  const totalRecords = completeEndpointUsage.reduce((sum, endpoint) => sum + endpoint.records, 0);
 
   // Update percentages based on the total
-  const endpointUsageWithCorrectPercentages = endpointUsage.map(endpoint => ({
+  const endpointUsageWithCorrectPercentages = completeEndpointUsage.map(endpoint => ({
     ...endpoint,
     percentage: totalRecords > 0 ? Math.round((endpoint.records / totalRecords) * 100 * 10) / 10 : 0
   }));
@@ -105,3 +155,63 @@ export const EndpointUsageSection = ({ endpointUsage = [], isLoading = false }: 
     </Card>
   );
 };
+
+// Helper function to get endpoint description
+function getEndpointDescription(endpoint: string): string {
+  switch(endpoint) {
+    case "Property Search":
+      return "Search for properties with various criteria";
+    case "Property Detail":
+      return "Access detailed property information";
+    case "Property Detail Bulk":
+      return "Access detailed property information in bulk";
+    case "Property Comps":
+      return "Access comparable properties data";
+    case "CSV Generator":
+      return "Export data to CSV format";
+    case "PropGPT":
+      return "AI-powered property insights and analysis";
+    case "Address Verification":
+      return "Verify and standardize addresses";
+    case "Property Portfolio":
+      return "Manage and analyze property portfolios";
+    case "Property Boundary":
+      return "Access property boundary information";
+    case "Auto Complete":
+      return "Use address auto-completion";
+    case "Skip Trace":
+      return "Perform individual skip trace lookups";
+    case "Bulk Skip Trace Await":
+      return "Perform bulk skip trace operations with await";
+    case "Bulk Skip Trace":
+      return "Perform batch skip trace operations";
+    case "Lender Grade AVM":
+      return "Access automated valuation model for lending";
+    case "Bulk Lender grade AVM":
+      return "Access bulk automated valuation model for lending";
+    case "Involuntary Liens":
+      return "Access involuntary lien information";
+    case "Mapping (Pins)":
+      return "Access mapping and pin location services";
+    case "MLS Search":
+      return "Search MLS listings";
+    case "MLS Detail":
+      return "Access detailed MLS listing information";
+    default:
+      return "Additional API functionality";
+  }
+}
+
+// Helper function to get credit cost
+function getCreditCost(endpoint: string): string {
+  switch(endpoint) {
+    case "Auto Complete":
+      return "Free";
+    case "Property Boundary":
+      return "2 credits per record";
+    case "Property Maps":
+      return "3 credits per record";
+    default:
+      return "1 credit per record";
+  }
+}

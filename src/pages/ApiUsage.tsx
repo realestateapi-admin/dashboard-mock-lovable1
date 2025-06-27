@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ApiUsageSummary } from '@/components/dashboard/ApiUsageSummary';
@@ -72,6 +71,21 @@ const ApiUsage = () => {
     queryKey: ['liensData'],
     queryFn: fetchLiensData,
   });
+
+  // Mock user scopes - in a real app this would come from the user's API key data  
+  const userScopes = [
+    "Property Search",
+    "Property Detail",
+    "Property Comps",
+    "PropGPT",
+    "Address Verification",
+    "Property Portfolio",
+    "Property Boundary",
+    "Auto Complete",
+    "Skip Trace",
+    "Lender Grade AVM",
+    "Mapping (Pins)"
+  ];
 
   // Initialize default empty values for property data
   const safeData = {
@@ -228,6 +242,7 @@ const ApiUsage = () => {
           <EndpointUsageSection 
             endpointUsage={dataCategory === 'property' ? safeData.endpointUsage : safeAvmData.endpointUsage} 
             isLoading={dataCategory === 'property' ? isLoading : isAvmLoading}
+            userScopes={userScopes}
           />
         </div>
       )}
