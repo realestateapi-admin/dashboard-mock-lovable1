@@ -27,6 +27,9 @@ export const TrialBanner = ({
   // Don't show if trial is not active or user is not on free plan
   if (!isTrialActive || !isFreeUser) return null;
   
+  // Only show "Request Extension" button if 2 days or less remaining
+  const shouldShowRequestExtension = trialDaysLeft <= 2;
+  
   return (
     <Alert className="bg-[#04c8c8]/10 border-[#04c8c8]">
       <AlertCircle className="h-4 w-4 text-[#04c8c8]" />
@@ -40,9 +43,11 @@ export const TrialBanner = ({
           <Button size="sm" className="bg-[#5014d0] hover:bg-[#5014d0]/90" asChild>
             <Link to="/dashboard/plan-signup">Upgrade Now</Link>
           </Button>
-          <Button size="sm" variant="outline" className="text-[#5014d0] border-[#5014d0] hover:bg-[#5014d0]/10" onClick={requestTrialExtension}>
-            Request Extension
-          </Button>
+          {shouldShowRequestExtension && (
+            <Button size="sm" variant="outline" className="text-[#5014d0] border-[#5014d0] hover:bg-[#5014d0]/10" onClick={requestTrialExtension}>
+              Request Extension
+            </Button>
+          )}
         </div>
       </AlertDescription>
     </Alert>

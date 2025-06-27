@@ -19,15 +19,20 @@ export const TrialAlert = ({
   // Don't show alert if user is on a paid plan
   if (isOnPaidPlan || !isTrialActive) return null;
 
+  // Only show "Request Extension" button if 2 days or less remaining
+  const shouldShowRequestExtension = trialDaysLeft <= 2;
+
   return (
     <Alert className="bg-primary-teal/10 border-primary-teal">
       <AlertCircle className="h-4 w-4 text-primary-teal" />
       <AlertTitle className="text-primary-teal">Trial Mode Active</AlertTitle>
       <AlertDescription className="flex flex-col sm:flex-row sm:items-center gap-4">
         <span>You have {trialDaysLeft} days left in your trial. Select a plan to continue after your trial ends.</span>
-        <Button size="sm" variant="outline" onClick={requestTrialExtension}>
-          Request Extension
-        </Button>
+        {shouldShowRequestExtension && (
+          <Button size="sm" variant="outline" onClick={requestTrialExtension}>
+            Request Extension
+          </Button>
+        )}
       </AlertDescription>
     </Alert>
   );
