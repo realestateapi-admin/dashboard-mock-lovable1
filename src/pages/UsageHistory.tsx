@@ -7,7 +7,7 @@ import { DatePickerWithRange } from "@/components/dashboard/DateRangePicker";
 import { UsageHistoryTable } from "@/components/dashboard/UsageHistoryTable";
 import UsageHistoryCharts from "@/components/dashboard/UsageHistoryCharts";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TieredEndpointSelector } from "@/components/dashboard/TieredEndpointSelector";
 import { Calendar, FileDown, Filter, RefreshCcw, ArrowLeft } from "lucide-react";
 import { usageHistoryData } from "@/data/usageHistoryData";
 import { LoadingPage } from "@/components/dashboard/LoadingState";
@@ -165,18 +165,10 @@ const UsageHistory = () => {
             </div>
             
             <div className="w-full lg:w-auto">
-              <Select value={endpoint} onValueChange={setEndpoint}>
-                <SelectTrigger className="w-full lg:w-[200px]">
-                  <SelectValue placeholder="All Endpoints" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Endpoints</SelectItem>
-                  <SelectItem value="property-search">Property Search</SelectItem>
-                  <SelectItem value="property-detail">Property Detail</SelectItem>
-                  <SelectItem value="property-comps">Property Comps</SelectItem>
-                  <SelectItem value="autocomplete">Autocomplete</SelectItem>
-                </SelectContent>
-              </Select>
+              <TieredEndpointSelector 
+                value={endpoint} 
+                onChange={setEndpoint} 
+              />
             </div>
           </div>
         </CardContent>
