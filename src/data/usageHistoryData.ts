@@ -4,7 +4,7 @@ import { subDays } from "date-fns";
 
 // Generate random sample data
 const generateSampleData = (): UsageHistoryEntry[] => {
-  // All endpoints from our tiered selector
+  // All endpoints from our tiered selector - must match exactly
   const endpoints = [
     // Property Data
     "Property Search",
@@ -118,88 +118,89 @@ const generateSampleData = (): UsageHistoryEntry[] => {
   
   // Generate data for the last 90 days
   for (let i = 0; i < 90; i++) {
-    // More entries for recent days, fewer for older days
-    const entriesForDay = Math.max(1, Math.floor(Math.random() * 15) * (1 - i / 120));
-    
-    for (let j = 0; j < entriesForDay; j++) {
-      const date = subDays(new Date(), i);
-      date.setHours(Math.floor(Math.random() * 24));
-      date.setMinutes(Math.floor(Math.random() * 60));
-      date.setSeconds(Math.floor(Math.random() * 60));
+    // Generate multiple entries per day for each endpoint to ensure good distribution
+    endpoints.forEach(endpoint => {
+      // Generate 1-3 entries per endpoint per day for recent days
+      const entriesForEndpoint = i < 30 ? Math.floor(Math.random() * 3) + 1 : Math.random() > 0.7 ? 1 : 0;
       
-      const endpoint = endpoints[Math.floor(Math.random() * endpoints.length)];
-      
-      // Get appropriate requests for this endpoint
-      const requests = endpointRequests[endpoint] || ["GET /api/unknown"];
-      const requestPath = requests[Math.floor(Math.random() * requests.length)];
-      
-      // Credits based on endpoint type
-      let credits = 0;
-      switch (endpoint) {
-        case "Property Search":
-          credits = Math.ceil(Math.random() * 5);
-          break;
-        case "Property Detail":
-        case "Property Detail Bulk":
-          credits = Math.ceil(Math.random() * 3);
-          break;
-        case "Property Comps":
-          credits = Math.ceil(Math.random() * 10);
-          break;
-        case "CSV Generator":
-          credits = Math.ceil(Math.random() * 2);
-          break;
-        case "PropGPT":
-          credits = Math.ceil(Math.random() * 8);
-          break;
-        case "Address Verification":
-          credits = 1;
-          break;
-        case "Property Portfolio":
-          credits = Math.ceil(Math.random() * 15);
-          break;
-        case "Property Boundary":
-          credits = 2;
-          break;
-        case "Mapping (Pins)":
-          credits = 1;
-          break;
-        case "Skip Trace":
-          credits = Math.ceil(Math.random() * 3);
-          break;
-        case "Bulk Skip Trace Await":
-        case "Bulk Skip Trace":
-          credits = Math.ceil(Math.random() * 25);
-          break;
-        case "Lender Grade AVM":
-          credits = Math.ceil(Math.random() * 4);
-          break;
-        case "Bulk Lender grade AVM":
-          credits = Math.ceil(Math.random() * 20);
-          break;
-        case "Involuntary Liens":
-          credits = Math.ceil(Math.random() * 6);
-          break;
-        default:
-          credits = 1;
+      for (let j = 0; j < entriesForEndpoint; j++) {
+        const date = subDays(new Date(), i);
+        date.setHours(Math.floor(Math.random() * 24));
+        date.setMinutes(Math.floor(Math.random() * 60));
+        date.setSeconds(Math.floor(Math.random() * 60));
+        
+        // Get appropriate requests for this endpoint
+        const requests = endpointRequests[endpoint] || ["GET /api/unknown"];
+        const requestPath = requests[Math.floor(Math.random() * requests.length)];
+        
+        // Credits based on endpoint type
+        let credits = 0;
+        switch (endpoint) {
+          case "Property Search":
+            credits = Math.ceil(Math.random() * 5);
+            break;
+          case "Property Detail":
+          case "Property Detail Bulk":
+            credits = Math.ceil(Math.random() * 3);
+            break;
+          case "Property Comps":
+            credits = Math.ceil(Math.random() * 10);
+            break;
+          case "CSV Generator":
+            credits = Math.ceil(Math.random() * 2);
+            break;
+          case "PropGPT":
+            credits = Math.ceil(Math.random() * 8);
+            break;
+          case "Address Verification":
+            credits = 1;
+            break;
+          case "Property Portfolio":
+            credits = Math.ceil(Math.random() * 15);
+            break;
+          case "Property Boundary":
+            credits = 2;
+            break;
+          case "Mapping (Pins)":
+            credits = 1;
+            break;
+          case "Skip Trace":
+            credits = Math.ceil(Math.random() * 3);
+            break;
+          case "Bulk Skip Trace Await":
+          case "Bulk Skip Trace":
+            credits = Math.ceil(Math.random() * 25);
+            break;
+          case "Lender Grade AVM":
+            credits = Math.ceil(Math.random() * 4);
+            break;
+          case "Bulk Lender grade AVM":
+            credits = Math.ceil(Math.random() * 20);
+            break;
+          case "Involuntary Liens":
+            credits = Math.ceil(Math.random() * 6);
+            break;
+          default:
+            credits = 1;
+        }
+        
+        // Most requests are successful, but some fail
+        const status = Math.random() > 0.9 
+          ? statuses[Math.floor(Math.random() * statuses.length)] 
+          : "Success";
+        
+        const responseTime = Math.floor(Math.random() * 900) + 100; // 100-1000ms
+        
+        result.push({
+          timestamp: date.toISOString(),
+          endpoint,
+          request: requestPath,
+          credits,
+          status,
+          responseTime
+        });
       }
-      
-      // Most requests are successful, but some fail
-      const status = Math.random() > 0.9 
-        ? statuses[Math.floor(Math.random() * statuses.length)] 
-        : "Success";
-      
-      const responseTime = Math.floor(Math.random() * 900) + 100; // 100-1000ms
-      
-      result.push({
-        timestamp: date.toISOString(),
-        endpoint,
-        request: requestPath,
-        credits,
-        status,
-        responseTime
-      });
-    }
+    });
   }
   
   // Sort by timestamp (newest first)
@@ -219,6 +220,8 @@ export const usageHistoryData = (
 ): UsageHistoryEntry[] => {
   let filteredData = [...sampleData];
   
+  console.log('Filtering data with:', { fromDate, toDate, endpoint, totalRecords: filteredData.length });
+  
   if (fromDate) {
     const from = new Date(fromDate);
     filteredData = filteredData.filter(entry => 
@@ -235,10 +238,16 @@ export const usageHistoryData = (
   }
   
   if (endpoint && endpoint !== 'all') {
-    filteredData = filteredData.filter(entry => 
-      entry.endpoint === endpoint
-    );
+    console.log('Filtering by endpoint:', endpoint);
+    filteredData = filteredData.filter(entry => {
+      const matches = entry.endpoint === endpoint;
+      if (matches) {
+        console.log('Found matching entry:', entry.endpoint, entry.timestamp);
+      }
+      return matches;
+    });
   }
   
+  console.log('Filtered data result:', filteredData.length, 'records');
   return filteredData;
 };
