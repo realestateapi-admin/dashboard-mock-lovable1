@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Shield } from "lucide-react";
 import { ApiKeyCard } from "./ApiKeyCard";
@@ -23,23 +22,31 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
   useEffect(() => {
     setTimeout(() => {
       setPublicKeyScopes([
-        "PropertySearch",
-        "PropertyDetail",
-        "PropertyComps",
-        "AutoComplete",
-        "PropertyParcel"
+        "Property Search",
+        "Property Detail",
+        "Property Comps",
+        "PropGPT",
+        "Address Verification",
+        "Property Portfolio",
+        "Property Boundary",
+        "Auto Complete",
+        "Skip Trace",
+        "Lender Grade AVM",
+        "Mapping (Pins)"
       ]);
       
       setPrivateKeyScopes([
-        "PropertySearch",
-        "PropertyDetail",
-        "PropertyComps",
-        "PropertyParcel",
-        "AddressVerification",
-        "AutoComplete",
-        "CSVBuilder",
-        "SkipTrace",
-        "SkipTraceBatch"
+        "Property Search",
+        "Property Detail",
+        "Property Comps",
+        "PropGPT",
+        "Address Verification",
+        "Property Portfolio",
+        "Property Boundary",
+        "Auto Complete",
+        "Skip Trace",
+        "Lender Grade AVM",
+        "Mapping (Pins)"
       ]);
       
       setIsLoadingScopes(false);
