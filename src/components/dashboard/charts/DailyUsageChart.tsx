@@ -18,7 +18,7 @@ export const DailyUsageChart = ({ data, dataView }: DailyUsageChartProps) => {
         data={data}
         margin={{
           top: 20,
-          right: 30,
+          right: 10,
           left: 10,
           bottom: 5,
         }}

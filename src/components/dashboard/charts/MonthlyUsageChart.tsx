@@ -20,7 +20,7 @@ export const MonthlyUsageChart = ({ monthlyUsageData }: MonthlyUsageChartProps) 
         data={limitedData} 
         margin={{ 
           top: 5, 
-          right: 5, 
+          right: 10, 
           left: 10, 
           bottom: 5 
         }}
