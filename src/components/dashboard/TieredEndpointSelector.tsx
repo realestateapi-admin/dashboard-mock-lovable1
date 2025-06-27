@@ -37,10 +37,18 @@ export const TieredEndpointSelector = ({ value, onChange }: TieredEndpointSelect
     ]
   };
 
+  // Get display value for the selected item
+  const getDisplayValue = () => {
+    if (value === "all") return "All Endpoints";
+    return value || "All Endpoints";
+  };
+
   return (
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger className="w-full lg:w-[250px]">
-        <SelectValue placeholder="All Endpoints" />
+        <SelectValue placeholder="All Endpoints">
+          {getDisplayValue()}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent className="p-0">
         <SelectItem value="all" className="mx-2 my-1">All Endpoints</SelectItem>
