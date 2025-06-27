@@ -9,11 +9,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 interface ApiCallsCardProps {
   totalApiCalls: number;
   increasePercentage: number;
+  onClick?: () => void;
 }
 
 export const ApiCallsCard = ({
   totalApiCalls,
-  increasePercentage
+  increasePercentage,
+  onClick
 }: ApiCallsCardProps) => {
   return (
     <motion.div
@@ -21,7 +23,10 @@ export const ApiCallsCard = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1, duration: 0.3 }}
     >
-      <Card className="h-full">
+      <Card 
+        className={`h-full ${onClick ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+        onClick={onClick}
+      >
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium">Today's API Calls</CardTitle>
           <Activity className="h-4 w-4 text-muted-foreground" />

@@ -8,12 +8,14 @@ interface MonthlyUsageCardProps {
   monthlyApiCalls: number;
   monthlyRecords: number;
   monthlyRecordsPercentage: number;
+  onClick?: () => void;
 }
 
 export const MonthlyUsageCard = ({
   monthlyApiCalls,
   monthlyRecords,
-  monthlyRecordsPercentage
+  monthlyRecordsPercentage,
+  onClick
 }: MonthlyUsageCardProps) => {
   const isOverLimit = monthlyRecordsPercentage > 100;
   const displayPercentage = Math.min(monthlyRecordsPercentage, 100);
@@ -24,7 +26,10 @@ export const MonthlyUsageCard = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3, duration: 0.3 }}
     >
-      <Card className="h-full">
+      <Card 
+        className={`h-full ${onClick ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+        onClick={onClick}
+      >
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium">Monthly Usage</CardTitle>
           <FileBarChart className="h-4 w-4 text-muted-foreground" />

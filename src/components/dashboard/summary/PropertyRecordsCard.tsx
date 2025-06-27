@@ -9,11 +9,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 interface PropertyRecordsCardProps {
   totalRecords: number;
   recordsPercentage: number;
+  onClick?: () => void;
 }
 
 export const PropertyRecordsCard = ({
   totalRecords,
-  recordsPercentage
+  recordsPercentage,
+  onClick
 }: PropertyRecordsCardProps) => {
   const isOverLimit = recordsPercentage > 100;
   const displayPercentage = Math.min(recordsPercentage, 100);
@@ -24,7 +26,10 @@ export const PropertyRecordsCard = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.3 }}
     >
-      <Card className="h-full">
+      <Card 
+        className={`h-full ${onClick ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+        onClick={onClick}
+      >
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-sm font-medium">Today's Property Records Used</CardTitle>
           <Database className="h-4 w-4 text-muted-foreground" />

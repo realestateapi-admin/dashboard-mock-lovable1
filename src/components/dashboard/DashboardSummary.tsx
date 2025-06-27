@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ApiCallsCard } from "@/components/dashboard/summary/ApiCallsCard";
 import { PropertyRecordsCard } from "@/components/dashboard/summary/PropertyRecordsCard";
 import { MonthlyUsageCard } from "@/components/dashboard/summary/MonthlyUsageCard";
@@ -32,23 +33,32 @@ export const DashboardSummary = ({
   subscriptionStartDate,
   subscriptionRenewalDate
 }: DashboardSummaryProps) => {
+  const navigate = useNavigate();
+
+  const handleUsageClick = () => {
+    navigate('/dashboard/usage?category=property');
+  };
+
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {/* Cards reordered as requested: Property Records, Monthly Usage, API Calls, Billing */}
       <PropertyRecordsCard 
         totalRecords={totalRecords} 
-        recordsPercentage={recordsPercentage} 
+        recordsPercentage={recordsPercentage}
+        onClick={handleUsageClick}
       />
       
       <MonthlyUsageCard 
         monthlyApiCalls={monthlyApiCalls}
         monthlyRecords={monthlyRecords}
         monthlyRecordsPercentage={monthlyRecordsPercentage}
+        onClick={handleUsageClick}
       />
       
       <ApiCallsCard 
         totalApiCalls={totalApiCalls} 
-        increasePercentage={18.2} 
+        increasePercentage={18.2}
+        onClick={handleUsageClick}
       />
       
       <BillingCard 
