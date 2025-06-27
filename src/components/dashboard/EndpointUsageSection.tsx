@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -182,7 +181,7 @@ function getEndpointDescription(endpoint: string): string {
     case "PropGPT":
       return "AI-powered property insights and analysis";
     case "Address Verification":
-      return "ID resolution";
+      return "Property identification resolution";
     case "Property Portfolio":
       return "Manage and analyze property portfolios";
     case "Property Boundary":
