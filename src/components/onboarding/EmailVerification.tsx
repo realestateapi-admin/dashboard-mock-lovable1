@@ -29,10 +29,8 @@ const EmailVerification = ({ userEmail, onVerify }: EmailVerificationProps) => {
     onVerify();
     toast({
       title: "Email verified successfully!",
-      description: "You can now proceed with your free trial.",
+      description: "Redirecting to setup wizard...",
     });
-    
-    // No longer navigate directly - we'll let the parent component handle navigation
   };
 
   return (

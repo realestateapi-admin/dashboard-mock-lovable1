@@ -1,8 +1,6 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import EmailVerification from "./EmailVerification";
 import TrialInfoCard from "./TrialInfoCard";
 
@@ -21,6 +19,18 @@ const WelcomeSection = ({
   onVerify, 
   onStartTrial 
 }: WelcomeSectionProps) => {
+  // Auto-advance when email is verified
+  useEffect(() => {
+    if (emailVerified && !isLoading) {
+      // Small delay to show the verification success state
+      const timer = setTimeout(() => {
+        onStartTrial();
+      }, 1500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [emailVerified, isLoading, onStartTrial]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -39,22 +49,14 @@ const WelcomeSection = ({
       
       <TrialInfoCard />
       
-      <Button
-        onClick={onStartTrial}
-        className="w-full bg-[#04c8c8] hover:bg-[#04c8c8]/90 mt-2"
-        disabled={isLoading || !emailVerified}
-        size="lg"
-      >
-        {isLoading ? (
-          "Setting up your account..."
-        ) : !emailVerified ? (
-          "Verify your email to continue"
-        ) : (
-          <>
-            Start Free Trial <ArrowRight className="ml-2 h-4 w-4" />
-          </>
-        )}
-      </Button>
+      {emailVerified && (
+        <div className="text-center py-4">
+          <div className="inline-flex items-center px-4 py-2 bg-green-50 border border-green-200 rounded-md">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600 mr-2"></div>
+            <span className="text-green-700 font-medium">Setting up your account...</span>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 };
