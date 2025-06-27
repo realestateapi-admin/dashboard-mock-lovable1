@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -205,7 +206,7 @@ function getCreditCost(endpoint: string): string {
     case "Address Verification":
       return "1 credit per verified address";
     case "Property Boundary":
-      return "2 credits per record";
+      return "1 credit per result";
     case "Property Maps":
       return "3 credits per record";
     default:
