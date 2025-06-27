@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
@@ -14,7 +12,7 @@ import { Calendar, FileDown, Filter, RefreshCcw, ArrowLeft } from "lucide-react"
 import { usageHistoryData } from "@/data/usageHistoryData";
 import { LoadingPage } from "@/components/dashboard/LoadingState";
 import { DateRange } from "react-day-picker";
-import { addDays, format, subDays } from "date-fns";
+import { addDays, format, subDays, startOfMonth } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const UsageHistory = () => {
@@ -93,9 +91,9 @@ const UsageHistory = () => {
     });
   };
 
-  const selectLastQuarter = () => {
+  const selectMTD = () => {
     setDateRange({
-      from: subDays(new Date(), 90),
+      from: startOfMonth(new Date()),
       to: new Date()
     });
   };
@@ -161,8 +159,8 @@ const UsageHistory = () => {
               <Button variant="outline" size="sm" onClick={selectLastMonth}>
                 Last 30 Days
               </Button>
-              <Button variant="outline" size="sm" onClick={selectLastQuarter}>
-                Last 90 Days
+              <Button variant="outline" size="sm" onClick={selectMTD}>
+                MTD
               </Button>
             </div>
             
@@ -216,4 +214,3 @@ const UsageHistory = () => {
 };
 
 export default UsageHistory;
-
