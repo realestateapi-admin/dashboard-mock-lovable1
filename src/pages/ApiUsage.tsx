@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
 import { ApiUsageSummary } from '@/components/dashboard/ApiUsageSummary';
 import { CardSkeleton } from '@/components/dashboard/LoadingState';
 import { EndpointUsageSection } from '@/components/dashboard/EndpointUsageSection';
@@ -22,8 +23,24 @@ import { fetchLiensData } from '@/components/api-usage/liens/LiensService';
 import { LiensEndpointCharts } from '@/components/api-usage/liens/LiensEndpointCharts';
 
 const ApiUsage = () => {
-  // State to track which data category the user is viewing
-  const [dataCategory, setDataCategory] = useState<DataCategory>('property');
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Get the data category from URL params, defaulting to 'property'
+  const [dataCategory, setDataCategory] = useState<DataCategory>(() => {
+    const categoryFromUrl = searchParams.get('category') as DataCategory;
+    return ['property', 'demographic', 'avm', 'liens'].includes(categoryFromUrl) 
+      ? categoryFromUrl 
+      : 'property';
+  });
+
+  // Update URL when category changes
+  useEffect(() => {
+    setSearchParams(prev => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set('category', dataCategory);
+      return newParams;
+    });
+  }, [dataCategory, setSearchParams]);
 
   // Property data query
   const { 
