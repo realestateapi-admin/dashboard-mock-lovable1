@@ -1,6 +1,6 @@
 
 import * as React from "react"
-import { format } from "date-fns"
+import { format, subMonths } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { DateRange } from "react-day-picker"
 
@@ -22,6 +22,9 @@ export function DatePickerWithRange({
   date,
   onDateChange,
 }: DatePickerWithRangeProps) {
+  // Calculate the date 6 months ago
+  const sixMonthsAgo = subMonths(new Date(), 6);
+  
   return (
     <div className="grid gap-2">
       <Popover>
@@ -56,6 +59,7 @@ export function DatePickerWithRange({
             selected={date}
             onSelect={onDateChange}
             numberOfMonths={2}
+            disabled={(date) => date < sixMonthsAgo || date > new Date()}
             className={cn("p-3 pointer-events-auto")}
           />
         </PopoverContent>
