@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { ReferralOption } from "../types/OnboardingTypes";
@@ -22,6 +23,14 @@ const referralOptions: RadioOptionProps[] = [
 
 const ReferralStep = ({ referralSource, updateField }: ReferralStepProps) => {
   const [otherReferral, setOtherReferral] = useState("");
+
+  // Load saved "Other" text from localStorage on component mount
+  useEffect(() => {
+    const savedOtherReferral = localStorage.getItem("otherReferralSource");
+    if (savedOtherReferral) {
+      setOtherReferral(savedOtherReferral);
+    }
+  }, []);
 
   useEffect(() => {
     if (referralSource === "other" && otherReferral.trim()) {
