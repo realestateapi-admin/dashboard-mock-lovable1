@@ -22,6 +22,15 @@ const UsageHistoryCharts = ({ data }: UsageHistoryChartsProps) => {
   const dailyData = prepareDailyData(data);
   const endpointData = prepareEndpointData(data, dataView);
 
+  // Show a message if no data is available
+  if (!data || data.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-muted-foreground">No usage data available for the selected filters.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0">
@@ -43,17 +52,15 @@ const UsageHistoryCharts = ({ data }: UsageHistoryChartsProps) => {
         </Select>
       </div>
       
-      <TabsContent value="daily" className="mt-0">
+      {chartType === "daily" ? (
         <DailyUsageCharts dailyData={dailyData} dataView={dataView} />
-      </TabsContent>
-      
-      <TabsContent value="endpoint" className="mt-0">
+      ) : (
         <EndpointUsageCharts 
           endpointData={endpointData} 
           dataView={dataView} 
           colors={COLORS} 
         />
-      </TabsContent>
+      )}
     </div>
   );
 };

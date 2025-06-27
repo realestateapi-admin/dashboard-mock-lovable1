@@ -49,7 +49,7 @@ export const prepareEndpointData = (data: UsageHistoryEntry[], dataView: string)
     const endpoint = endpointMap.get(entry.endpoint);
     endpoint.calls += 1;
     endpoint.credits += entry.credits;
-    endpoint.value += dataView === 'calls' ? 1 : entry.credits;
+    endpoint.value = dataView === 'calls' ? endpoint.calls : endpoint.credits;
   });
   
   return Array.from(endpointMap.values());
