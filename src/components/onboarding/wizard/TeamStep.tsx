@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, Plus, Mail, AlertCircle, CheckCircle } from "lucide-react";
+import { Users, Mail, AlertCircle, CheckCircle } from "lucide-react";
 import { TeamData, TeamAction } from "../types/OnboardingTypes";
 
 interface TeamStepProps {
@@ -106,7 +106,7 @@ const TeamStep = ({ team, updateField, userName }: TeamStepProps) => {
                 <RadioGroupItem value="create-team" id="create-team" className="mt-1" />
                 <div className="flex-1 space-y-3">
                   <div className="flex items-center space-x-2">
-                    <Plus className="h-5 w-5 text-primary" />
+                    <Users className="h-5 w-5 text-primary" />
                     <Label htmlFor="create-team" className="text-base font-medium cursor-pointer">
                       Create a new team
                     </Label>
