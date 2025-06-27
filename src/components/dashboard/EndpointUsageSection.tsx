@@ -203,6 +203,8 @@ function getCreditCost(endpoint: string): string {
   switch(endpoint) {
     case "Auto Complete":
       return "Free";
+    case "Address Verification":
+      return "1 credit per verified address";
     case "Property Boundary":
       return "2 credits per record";
     case "Property Maps":
