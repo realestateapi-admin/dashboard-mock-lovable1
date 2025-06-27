@@ -8,6 +8,15 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 // Mock data for skip trace endpoint usage over time
 const mockSkipTraceTimeData = {
+  last7Days: [
+    { date: '04/01', 'Skip Trace': 45, 'Skip Trace Bulk Await': 20 },
+    { date: '04/02', 'Skip Trace': 55, 'Skip Trace Bulk Await': 30 },
+    { date: '04/03', 'Skip Trace': 40, 'Skip Trace Bulk Await': 15 },
+    { date: '04/04', 'Skip Trace': 60, 'Skip Trace Bulk Await': 25 },
+    { date: '04/05', 'Skip Trace': 50, 'Skip Trace Bulk Await': 35 },
+    { date: '04/06', 'Skip Trace': 65, 'Skip Trace Bulk Await': 40 },
+    { date: '04/07', 'Skip Trace': 55, 'Skip Trace Bulk Await': 28 },
+  ],
   monthToDate: [
     { date: '04/01', 'Skip Trace': 45, 'Skip Trace Bulk Await': 20 },
     { date: '04/02', 'Skip Trace': 55, 'Skip Trace Bulk Await': 30 },
@@ -15,19 +24,13 @@ const mockSkipTraceTimeData = {
     { date: '04/04', 'Skip Trace': 60, 'Skip Trace Bulk Await': 25 },
     { date: '04/05', 'Skip Trace': 50, 'Skip Trace Bulk Await': 35 },
   ],
-  yearToDate: [
-    { date: 'Jan', 'Skip Trace': 450, 'Skip Trace Bulk Await': 220 },
-    { date: 'Feb', 'Skip Trace': 520, 'Skip Trace Bulk Await': 350 },
-    { date: 'Mar', 'Skip Trace': 480, 'Skip Trace Bulk Await': 300 },
-    { date: 'Apr', 'Skip Trace': 250, 'Skip Trace Bulk Await': 145 },
-  ],
-  allTime: [
-    { date: '2023 Q1', 'Skip Trace': 1250, 'Skip Trace Bulk Await': 750 },
-    { date: '2023 Q2', 'Skip Trace': 1450, 'Skip Trace Bulk Await': 850 },
-    { date: '2023 Q3', 'Skip Trace': 1650, 'Skip Trace Bulk Await': 950 },
-    { date: '2023 Q4', 'Skip Trace': 1850, 'Skip Trace Bulk Await': 1050 },
-    { date: '2024 Q1', 'Skip Trace': 1450, 'Skip Trace Bulk Await': 870 },
-    { date: '2024 Q2', 'Skip Trace': 250, 'Skip Trace Bulk Await': 145 },
+  last6Months: [
+    { date: 'Oct', 'Skip Trace': 1250, 'Skip Trace Bulk Await': 750 },
+    { date: 'Nov', 'Skip Trace': 1450, 'Skip Trace Bulk Await': 850 },
+    { date: 'Dec', 'Skip Trace': 1650, 'Skip Trace Bulk Await': 950 },
+    { date: 'Jan', 'Skip Trace': 1850, 'Skip Trace Bulk Await': 1050 },
+    { date: 'Feb', 'Skip Trace': 1450, 'Skip Trace Bulk Await': 870 },
+    { date: 'Mar', 'Skip Trace': 1250, 'Skip Trace Bulk Await': 645 },
   ]
 };
 
@@ -42,7 +45,7 @@ interface DemographicEndpointChartsProps {
 }
 
 export const DemographicEndpointCharts = ({ isLoading }: DemographicEndpointChartsProps) => {
-  const [timeRange, setTimeRange] = useState<string>('monthToDate');
+  const [timeRange, setTimeRange] = useState<string>('last7Days');
   const isMobile = useIsMobile();
   
   // Get the correct data based on selected time range
@@ -61,9 +64,9 @@ export const DemographicEndpointCharts = ({ isLoading }: DemographicEndpointChar
             className="mb-4"
           >
             <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="last7Days">Last 7 Days</TabsTrigger>
               <TabsTrigger value="monthToDate">Month to Date</TabsTrigger>
-              <TabsTrigger value="yearToDate">Year to Date</TabsTrigger>
-              <TabsTrigger value="allTime">All Time</TabsTrigger>
+              <TabsTrigger value="last6Months">Last 6 Months</TabsTrigger>
             </TabsList>
           </Tabs>
           

@@ -8,6 +8,15 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 // Mock data for property liens endpoint usage over time
 const mockLiensTimeData = {
+  last7Days: [
+    { date: '04/01', 'Property Liens': 25 },
+    { date: '04/02', 'Property Liens': 35 },
+    { date: '04/03', 'Property Liens': 20 },
+    { date: '04/04', 'Property Liens': 40 },
+    { date: '04/05', 'Property Liens': 30 },
+    { date: '04/06', 'Property Liens': 45 },
+    { date: '04/07', 'Property Liens': 35 },
+  ],
   monthToDate: [
     { date: '04/01', 'Property Liens': 25 },
     { date: '04/02', 'Property Liens': 35 },
@@ -15,19 +24,13 @@ const mockLiensTimeData = {
     { date: '04/04', 'Property Liens': 40 },
     { date: '04/05', 'Property Liens': 30 },
   ],
-  yearToDate: [
-    { date: 'Jan', 'Property Liens': 280 },
-    { date: 'Feb', 'Property Liens': 320 },
-    { date: 'Mar', 'Property Liens': 290 },
-    { date: 'Apr', 'Property Liens': 150 },
-  ],
-  allTime: [
-    { date: '2023 Q1', 'Property Liens': 850 },
-    { date: '2023 Q2', 'Property Liens': 950 },
-    { date: '2023 Q3', 'Property Liens': 1150 },
-    { date: '2023 Q4', 'Property Liens': 1250 },
-    { date: '2024 Q1', 'Property Liens': 890 },
-    { date: '2024 Q2', 'Property Liens': 150 },
+  last6Months: [
+    { date: 'Oct', 'Property Liens': 680 },
+    { date: 'Nov', 'Property Liens': 750 },
+    { date: 'Dec', 'Property Liens': 820 },
+    { date: 'Jan', 'Property Liens': 890 },
+    { date: 'Feb', 'Property Liens': 720 },
+    { date: 'Mar', 'Property Liens': 650 },
   ]
 };
 
@@ -39,7 +42,7 @@ interface LiensEndpointChartsProps {
 }
 
 export const LiensEndpointCharts = ({ isLoading }: LiensEndpointChartsProps) => {
-  const [timeRange, setTimeRange] = useState<string>('monthToDate');
+  const [timeRange, setTimeRange] = useState<string>('last7Days');
   const isMobile = useIsMobile();
   
   // Get the correct data based on selected time range
@@ -58,9 +61,9 @@ export const LiensEndpointCharts = ({ isLoading }: LiensEndpointChartsProps) => 
             className="mb-4"
           >
             <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="last7Days">Last 7 Days</TabsTrigger>
               <TabsTrigger value="monthToDate">Month to Date</TabsTrigger>
-              <TabsTrigger value="yearToDate">Year to Date</TabsTrigger>
-              <TabsTrigger value="allTime">All Time</TabsTrigger>
+              <TabsTrigger value="last6Months">Last 6 Months</TabsTrigger>
             </TabsList>
           </Tabs>
           
