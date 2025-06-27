@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ApiKeyScopesProps {
   scopes: string[];
@@ -90,6 +91,13 @@ export const ApiKeyScopes = ({
     return scopes.includes(scope);
   };
 
+  // Get tooltip message for disabled endpoints
+  const getDisabledTooltipMessage = () => {
+    return isTestKey 
+      ? "Not available for trial. Update to pay plan to gain access"
+      : "Not available for your plan. Please upgrade to gain access";
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -111,32 +119,41 @@ export const ApiKeyScopes = ({
             ))}
           </div>
         ) : (
-          <div className="space-y-4">
-            {allAvailableScopes.map((scope) => {
-              const enabled = isScopeEnabled(scope);
-              return (
-                <div key={scope} className="flex items-center justify-between border-b pb-2">
-                  <div>
-                    <p className="font-medium">{scope}</p>
-                    <p className="text-sm text-muted-foreground">{getScopeDescription(scope)}</p>
+          <TooltipProvider>
+            <div className="space-y-4">
+              {allAvailableScopes.map((scope) => {
+                const enabled = isScopeEnabled(scope);
+                return (
+                  <div key={scope} className="flex items-center justify-between border-b pb-2">
+                    <div>
+                      <p className="font-medium">{scope}</p>
+                      <p className="text-sm text-muted-foreground">{getScopeDescription(scope)}</p>
+                    </div>
+                    <div className="flex items-center">
+                      {enabled ? (
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex gap-1 items-center">
+                          <CheckCircle className="h-3.5 w-3.5" />
+                          Enabled
+                        </Badge>
+                      ) : (
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Badge variant="outline" className="bg-gray-50 text-gray-500 border-gray-200 flex gap-1 items-center">
+                              <XCircle className="h-3.5 w-3.5" />
+                              Disabled
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{getDisabledTooltipMessage()}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    {enabled ? (
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex gap-1 items-center">
-                        <CheckCircle className="h-3.5 w-3.5" />
-                        Enabled
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="bg-gray-50 text-gray-500 border-gray-200 flex gap-1 items-center">
-                        <XCircle className="h-3.5 w-3.5" />
-                        Disabled
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          </TooltipProvider>
         )}
       </CardContent>
     </Card>
