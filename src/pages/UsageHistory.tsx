@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatePickerWithRange } from "@/components/dashboard/DateRangePicker";
@@ -7,7 +8,7 @@ import { UsageHistoryTable } from "@/components/dashboard/UsageHistoryTable";
 import UsageHistoryCharts from "@/components/dashboard/UsageHistoryCharts";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, FileDown, Filter, RefreshCcw } from "lucide-react";
+import { Calendar, FileDown, Filter, RefreshCcw, ArrowLeft } from "lucide-react";
 import { usageHistoryData } from "@/data/usageHistoryData";
 import { LoadingPage } from "@/components/dashboard/LoadingState";
 import { DateRange } from "react-day-picker";
@@ -15,6 +16,7 @@ import { addDays, format, subDays } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const UsageHistory = () => {
+  const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: subDays(new Date(), 7),
     to: new Date(),
@@ -46,6 +48,10 @@ const UsageHistory = () => {
     
     // Instead of console.log, we would use something like:
     // exportToCsv(data, `usage-history-${fromDate}-to-${toDate}.csv`);
+  };
+
+  const handleBackToUsage = () => {
+    navigate('/dashboard/usage');
   };
 
   // Preset date ranges
@@ -98,10 +104,16 @@ const UsageHistory = () => {
             View detailed history of your API usage over time
           </p>
         </div>
-        <Button onClick={handleExport} variant="outline" className="w-full sm:w-auto">
-          <FileDown className="mr-2 h-4 w-4" />
-          Export Data
-        </Button>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button onClick={handleBackToUsage} variant="outline" className="w-full sm:w-auto">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Usage
+          </Button>
+          <Button onClick={handleExport} variant="outline" className="w-full sm:w-auto">
+            <FileDown className="mr-2 h-4 w-4" />
+            Export Data
+          </Button>
+        </div>
       </div>
 
       <Card>
