@@ -69,7 +69,7 @@ export const ApiKeyScopes = ({
         <CardTitle>API Key Scopes</CardTitle>
         <CardDescription>
           {isTestKey 
-            ? "Available endpoints for your test API key" 
+            ? "Available endpoints for your API key" 
             : "Available endpoints for your production API key"}
         </CardDescription>
       </CardHeader>
