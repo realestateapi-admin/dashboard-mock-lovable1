@@ -122,7 +122,7 @@ export const ApiKeyCard = ({
         </div>
         
         <p className="text-sm text-muted-foreground">
-          {description}
+          This is your public key.
         </p>
         
         {lastRequest && (
