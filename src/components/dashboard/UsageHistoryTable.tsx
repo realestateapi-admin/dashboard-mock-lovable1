@@ -101,24 +101,6 @@ export const UsageHistoryTable = ({ data }: UsageHistoryTableProps) => {
     }
   };
 
-  // Get icon for endpoint type
-  const getEndpointIcon = (endpoint: string) => {
-    switch (endpoint.toLowerCase()) {
-      case 'property search':
-        return <img src="/icons/ps.svg" alt="Property Search" className="h-5 w-5 mr-2" />;
-      case 'property detail':
-        return <img src="/icons/ps2.svg" alt="Property Detail" className="h-5 w-5 mr-2" />;
-      case 'property comps':
-        return <img src="/icons/ps3.svg" alt="Property Comps" className="h-5 w-5 mr-2" />;
-      case 'autocomplete':
-        return <img src="/icons/address-auto.svg" alt="Autocomplete" className="h-5 w-5 mr-2" />;
-      case 'mapping':
-        return <img src="/icons/map-pin.svg" alt="Mapping" className="h-5 w-5 mr-2" />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="space-y-4">
       <div className="relative">
@@ -154,10 +136,7 @@ export const UsageHistoryTable = ({ data }: UsageHistoryTableProps) => {
                     {format(new Date(entry.timestamp), 'MMM d, yyyy HH:mm:ss')}
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center">
-                      {getEndpointIcon(entry.endpoint)}
-                      <span>{entry.endpoint}</span>
-                    </div>
+                    <span>{entry.endpoint}</span>
                   </TableCell>
                   <TableCell className="max-w-[200px] truncate" title={entry.request}>
                     {entry.request}
