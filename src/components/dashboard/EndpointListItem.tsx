@@ -14,24 +14,6 @@ interface EndpointListItemProps {
 export const EndpointListItem = ({ endpoint }: EndpointListItemProps) => {
   const isMobile = useIsMobile();
 
-  // Helper function to get icon path based on endpoint
-  const getEndpointIcon = (endpoint: string) => {
-    if (endpoint.includes("Auto Complete")) {
-      return "/icons/address-auto.svg";
-    } else if (endpoint.includes("Comps")) {
-      return "/icons/ps3.svg";
-    } else if (endpoint.includes("Search")) {
-      return "/icons/ps.svg";
-    } else if (endpoint.includes("Detail")) {
-      return "/icons/ps2.svg";
-    } else if (endpoint.includes("Count") || endpoint.includes("Pin") || endpoint.includes("Boundaries") || endpoint.includes("Mapping")) {
-      return "/icons/map-pin.svg";
-    } else if (endpoint.includes("CSV") || endpoint.includes("Maps")) {
-      return "/icons/ps.svg"; // Using property search icon as fallback
-    }
-    return "";
-  };
-
   // Gray out if endpoint is not enabled (not in user's API key scope)
   const isGrayedOut = endpoint.isEnabled === false;
   const grayedOutClasses = isGrayedOut ? 'opacity-50' : '';
@@ -41,14 +23,6 @@ export const EndpointListItem = ({ endpoint }: EndpointListItemProps) => {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1">
         <div>
           <div className="flex items-center gap-2">
-            {getEndpointIcon(endpoint.endpoint) && (
-              <img 
-                src={getEndpointIcon(endpoint.endpoint)}
-                alt={endpoint.endpoint}
-                className="h-5 w-5"
-                loading="lazy"
-              />
-            )}
             <p className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium`}>{endpoint.endpoint}</p>
             <TooltipProvider>
               <Tooltip>
