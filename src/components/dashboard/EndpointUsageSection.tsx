@@ -1,11 +1,12 @@
+
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { EndpointList } from "./EndpointList";
 import { EndpointUsageItem } from "@/types/usage";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface EndpointUsageSectionProps {
   endpointUsage: EndpointUsageItem[];
@@ -14,7 +15,7 @@ interface EndpointUsageSectionProps {
   dataCategory?: 'property' | 'avm';
 }
 
-type TimePeriod = 'mtd' | 'ytd' | 'all';
+type TimePeriod = 'last7days' | 'mtd' | 'last6months';
 
 export const EndpointUsageSection = ({ 
   endpointUsage = [], 
@@ -79,9 +80,9 @@ export const EndpointUsageSection = ({
   // Get time period display text
   const getTimePeriodText = () => {
     switch (timePeriod) {
+      case 'last7days': return 'Last 7 Days';
       case 'mtd': return 'Month to Date';
-      case 'ytd': return 'Year to Date';
-      case 'all': return 'All Time';
+      case 'last6months': return 'Last 6 Months';
       default: return 'Month to Date';
     }
   };
@@ -130,26 +131,36 @@ export const EndpointUsageSection = ({
             </Tooltip>
           </TooltipProvider>
         </div>
-        
-        <div className="flex justify-start mt-2">
-          <ToggleGroup type="single" value={timePeriod} onValueChange={(value) => value && setTimePeriod(value as TimePeriod)}>
-            <ToggleGroupItem value="mtd" aria-label="Month to Date">
-              Month to Date
-            </ToggleGroupItem>
-            <ToggleGroupItem value="ytd" aria-label="Year to Date">
-              Year to Date
-            </ToggleGroupItem>
-            <ToggleGroupItem value="all" aria-label="All Time">
-              All Time
-            </ToggleGroupItem>
-          </ToggleGroup>
-        </div>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <EndpointList 
-          endpoints={endpointUsageWithCorrectPercentages} 
-          isLoading={isLoading} 
-        />
+      <CardContent>
+        <Tabs value={timePeriod} onValueChange={(value) => setTimePeriod(value as TimePeriod)} className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="last7days">Last 7 Days</TabsTrigger>
+            <TabsTrigger value="mtd">Month to Date</TabsTrigger>
+            <TabsTrigger value="last6months">Last 6 Months</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="last7days" className="mt-6">
+            <EndpointList 
+              endpoints={endpointUsageWithCorrectPercentages} 
+              isLoading={isLoading} 
+            />
+          </TabsContent>
+          
+          <TabsContent value="mtd" className="mt-6">
+            <EndpointList 
+              endpoints={endpointUsageWithCorrectPercentages} 
+              isLoading={isLoading} 
+            />
+          </TabsContent>
+          
+          <TabsContent value="last6months" className="mt-6">
+            <EndpointList 
+              endpoints={endpointUsageWithCorrectPercentages} 
+              isLoading={isLoading} 
+            />
+          </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );
