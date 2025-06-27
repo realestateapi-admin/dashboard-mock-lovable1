@@ -45,19 +45,21 @@ export const DashboardContent = ({ trialBanner }: DashboardContentProps) => {
       {/* Only render the passed trialBanner if it exists */}
       {trialBanner}
       
-      <DashboardSummary 
-        totalApiCalls={totalApiCalls}
-        totalRecords={totalRecords}
-        recordsPercentage={recordsPercentage}
-        monthlyApiCalls={monthlyApiCalls}
-        monthlyRecords={monthlyRecords}
-        monthlyRecordsPercentage={monthlyRecordsPercentage}
-        isTrialActive={isTrialActive}
-        trialDaysLeft={trialDaysLeft}
-        isOnPaidPlan={isOnPaidPlan}
-        subscriptionStartDate={subscription?.subscription_start_date}
-        subscriptionRenewalDate={renewalDate || undefined}
-      />
+      <div className="mb-8">
+        <DashboardSummary 
+          totalApiCalls={totalApiCalls}
+          totalRecords={totalRecords}
+          recordsPercentage={recordsPercentage}
+          monthlyApiCalls={monthlyApiCalls}
+          monthlyRecords={monthlyRecords}
+          monthlyRecordsPercentage={monthlyRecordsPercentage}
+          isTrialActive={isTrialActive}
+          trialDaysLeft={trialDaysLeft}
+          isOnPaidPlan={isOnPaidPlan}
+          subscriptionStartDate={subscription?.subscription_start_date}
+          subscriptionRenewalDate={renewalDate || undefined}
+        />
+      </div>
       
       {/* Updates section now takes full width and is the only content */}
       <motion.div 
