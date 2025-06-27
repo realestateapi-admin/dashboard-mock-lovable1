@@ -25,7 +25,7 @@ export const UsageHistoryCharts = ({ data, dataView }: UsageHistoryChartsProps) 
             margin={{
               top: 5,
               right: 30,
-              left: 60,
+              left: 80,
               bottom: 70,
             }}
           >
