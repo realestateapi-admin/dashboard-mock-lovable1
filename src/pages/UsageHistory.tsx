@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -52,11 +53,15 @@ const UsageHistory = () => {
   };
 
   const handleBackToUsage = () => {
+    // Get the category from current URL params
     const currentCategory = searchParams.get('category');
-    if (currentCategory) {
+    console.log('Current category from URL:', currentCategory);
+    
+    if (currentCategory && ['property', 'demographic', 'avm', 'liens'].includes(currentCategory)) {
       navigate(`/dashboard/usage?category=${currentCategory}`);
     } else {
-      navigate('/dashboard/usage');
+      // Default to property if no valid category found
+      navigate('/dashboard/usage?category=property');
     }
   };
 
