@@ -11,10 +11,13 @@ export const MonthlyUsageChart = ({ monthlyUsageData }: MonthlyUsageChartProps) 
   const isMobile = useIsMobile();
   const chartHeight = isMobile ? 200 : 240;
 
+  // Limit to the most recent 6 months of data
+  const limitedData = monthlyUsageData.slice(-6);
+
   return (
     <ResponsiveContainer width="100%" height={chartHeight}>
       <AreaChart 
-        data={monthlyUsageData} 
+        data={limitedData} 
         margin={{ 
           top: 5, 
           right: 5, 
