@@ -16,43 +16,70 @@ export const ApiKeyScopes = ({
   isLoading = false,
   isTestKey = true
 }: ApiKeyScopesProps) => {
-  // All available scopes from the database
+  // All available scopes from the updated list
   const allAvailableScopes = [
-    "PropertyDetail",
-    "PropertySearch",
-    "PropertySearch:Summary",
-    "PropertyComps",
-    "PropertyParcel",
-    "AddressVerification",
-    "AutoComplete",
-    "CSVBuilder",
-    "SkipTrace",
-    "SkipTraceBatch"
+    "Property Search",
+    "Property Detail",
+    "Property Detail Bulk",
+    "Property Comps",
+    "CSV Generator",
+    "PropGPT",
+    "Address Verification",
+    "Property Portfolio",
+    "Property Boundary",
+    "Auto Complete",
+    "Skip Trace",
+    "Bulk Skip Trace Await",
+    "Bulk Skip Trace",
+    "Lender Grade AVM",
+    "Bulk Lender grade AVM",
+    "Involuntary Liens",
+    "Mapping (Pins)",
+    "MLS Search",
+    "MLS Detail"
   ];
 
   // Get human-readable descriptions for each scope
   const getScopeDescription = (scope: string) => {
     switch(scope) {
-      case "PropertyDetail":
-        return "Access detailed property information";
-      case "PropertySearch":
+      case "Property Search":
         return "Search for properties with various criteria";
-      case "PropertySearch:Summary":
-        return "Get property search results in summary format";
-      case "PropertyComps":
+      case "Property Detail":
+        return "Access detailed property information";
+      case "Property Detail Bulk":
+        return "Access detailed property information in bulk";
+      case "Property Comps":
         return "Access comparable properties data";
-      case "PropertyParcel":
-        return "Access property parcel information";
-      case "AddressVerification":
-        return "Verify and standardize addresses";
-      case "AutoComplete":
-        return "Use address auto-completion";
-      case "CSVBuilder":
+      case "CSV Generator":
         return "Export data to CSV format";
-      case "SkipTrace":
+      case "PropGPT":
+        return "AI-powered property insights and analysis";
+      case "Address Verification":
+        return "Verify and standardize addresses";
+      case "Property Portfolio":
+        return "Manage and analyze property portfolios";
+      case "Property Boundary":
+        return "Access property boundary information";
+      case "Auto Complete":
+        return "Use address auto-completion";
+      case "Skip Trace":
         return "Perform individual skip trace lookups";
-      case "SkipTraceBatch":
+      case "Bulk Skip Trace Await":
+        return "Perform bulk skip trace operations with await";
+      case "Bulk Skip Trace":
         return "Perform batch skip trace operations";
+      case "Lender Grade AVM":
+        return "Access automated valuation model for lending";
+      case "Bulk Lender grade AVM":
+        return "Access bulk automated valuation model for lending";
+      case "Involuntary Liens":
+        return "Access involuntary lien information";
+      case "Mapping (Pins)":
+        return "Access mapping and pin location services";
+      case "MLS Search":
+        return "Search MLS listings";
+      case "MLS Detail":
+        return "Access detailed MLS listing information";
       default:
         return "Additional API functionality";
     }
