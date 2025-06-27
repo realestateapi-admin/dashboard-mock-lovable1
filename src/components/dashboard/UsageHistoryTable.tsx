@@ -147,34 +147,36 @@ export const UsageHistoryTable = ({ data }: UsageHistoryTableProps) => {
       </div>
       
       {totalPages > 1 && (
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious 
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                className={cn(currentPage === 1 && "pointer-events-none opacity-50")}
-              />
-            </PaginationItem>
-            
-            {pageNumbers.map(number => (
-              <PaginationItem key={number}>
-                <PaginationLink
-                  isActive={currentPage === number}
-                  onClick={() => setCurrentPage(number)}
-                >
-                  {number}
-                </PaginationLink>
+        <div className="flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious 
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  className={cn(currentPage === 1 && "pointer-events-none opacity-50")}
+                />
               </PaginationItem>
-            ))}
-            
-            <PaginationItem>
-              <PaginationNext 
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                className={cn(currentPage === totalPages && "pointer-events-none opacity-50")}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              
+              {pageNumbers.map(number => (
+                <PaginationItem key={number}>
+                  <PaginationLink
+                    isActive={currentPage === number}
+                    onClick={() => setCurrentPage(number)}
+                  >
+                    {number}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              
+              <PaginationItem>
+                <PaginationNext 
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  className={cn(currentPage === totalPages && "pointer-events-none opacity-50")}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
       )}
     </div>
   );
