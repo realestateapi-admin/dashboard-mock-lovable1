@@ -15,6 +15,9 @@ export const MonthlyUsageCard = ({
   monthlyRecords,
   monthlyRecordsPercentage
 }: MonthlyUsageCardProps) => {
+  const isOverLimit = monthlyRecordsPercentage > 100;
+  const displayPercentage = Math.min(monthlyRecordsPercentage, 100);
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -33,11 +36,13 @@ export const MonthlyUsageCard = ({
           </p>
           <div className="mt-4 h-1 w-full bg-secondary">
             <div
-              className="h-1 bg-primary-teal"
-              style={{ width: `${monthlyRecordsPercentage}%` }}
+              className={`h-1 transition-all duration-300 ${isOverLimit ? 'bg-red-500' : 'bg-primary-teal'}`}
+              style={{ width: `${displayPercentage}%` }}
             />
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">{monthlyRecordsPercentage.toFixed(1)}% of monthly limit</p>
+          <p className={`mt-2 text-xs ${isOverLimit ? 'text-red-600' : 'text-muted-foreground'}`}>
+            {monthlyRecordsPercentage.toFixed(1)}% of monthly limit
+          </p>
           <div className="mt-2 flex justify-between items-center text-xs">
             <span className="text-muted-foreground">Total API Calls:</span>
             <span className="font-medium">{monthlyApiCalls.toLocaleString()}</span>
