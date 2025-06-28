@@ -364,7 +364,7 @@ export const UserRolesManagement = () => {
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Role</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-left">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -377,7 +377,7 @@ export const UserRolesManagement = () => {
                       {Object.values(ROLES).find(r => r.value === user.role)?.label}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-left">
                     <Select 
                       value={user.role} 
                       onValueChange={(value) => handleRoleChange(user.id, value)}
