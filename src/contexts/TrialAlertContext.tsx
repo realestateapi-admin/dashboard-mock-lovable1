@@ -31,7 +31,8 @@ interface TrialAlertProviderProps {
 }
 
 export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
-  const [trialDaysLeft, setTrialDaysLeft] = useState<number>(14);
+  // DEMO: Set to 2 days left to show orange styling
+  const [trialDaysLeft, setTrialDaysLeft] = useState<number>(2);
   const [trialStartDate, setTrialStartDate] = useState<Date | null>(null);
   const [isFreeUser, setIsFreeUser] = useState<boolean>(true);
   const [isOnPaidPlan, setIsOnPaidPlan] = useState<boolean>(false);
@@ -47,8 +48,8 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
     if (savedTrialStartDate) {
       const startDate = new Date(savedTrialStartDate);
       setTrialStartDate(startDate);
-      const daysElapsed = Math.floor((Date.now() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-      setTrialDaysLeft(Math.max(0, 14 - daysElapsed));
+      // DEMO: Force 2 days left for demonstration
+      setTrialDaysLeft(2);
     }
     
     if (savedIsFreeUser) {
@@ -63,11 +64,11 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
     if (!savedTrialStartDate && !savedIsFreeUser && !savedIsOnPaidPlan) {
       // Mock data - this would come from your backend
       const mockStartDate = new Date();
-      mockStartDate.setDate(mockStartDate.getDate() - 2); // 2 days into trial
+      mockStartDate.setDate(mockStartDate.getDate() - 12); // 12 days into trial = 2 days left
       
       setTrialStartDate(mockStartDate);
-      const daysElapsed = Math.floor((Date.now() - mockStartDate.getTime()) / (1000 * 60 * 60 * 24));
-      setTrialDaysLeft(14 - daysElapsed);
+      // DEMO: Force 2 days left for demonstration
+      setTrialDaysLeft(2);
       
       // For demo purposes, set the user to be on a free plan to show the trial banner
       setIsFreeUser(true);
