@@ -1,4 +1,5 @@
 
+import { useEffect } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { OverageHandlingSkeleton } from "./wizard/SkeletonLoading";
@@ -19,6 +20,13 @@ export const OverageHandling = ({
   selectedPlan = "growth"
 }: OverageHandlingProps) => {
   const isStarterPlan = selectedPlan === "starter";
+  
+  // Automatically reset to default if user switches to Starter plan with "unlimited" selected
+  useEffect(() => {
+    if (isStarterPlan && overageHandling === "unlimited") {
+      onOverageHandlingChange("cut-off"); // Default to cut-off for Starter plan
+    }
+  }, [isStarterPlan, overageHandling, onOverageHandlingChange]);
   
   if (isLoading) {
     return <OverageHandlingSkeleton />;
