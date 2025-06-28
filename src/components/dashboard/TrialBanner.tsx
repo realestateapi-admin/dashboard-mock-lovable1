@@ -2,7 +2,6 @@
 import React from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -57,12 +56,6 @@ export const TrialBanner = ({
     : isUrgent 
     ? "text-orange-600"
     : "text-[#04c8c8]";
-    
-  const progressColor = isExpired 
-    ? "bg-red-500"
-    : isUrgent 
-    ? "bg-orange-500"
-    : "bg-[#04c8c8]";
   
   return (
     <Alert className={alertClasses}>
@@ -75,10 +68,7 @@ export const TrialBanner = ({
           {isExpired ? (
             <p>Your free trial has ended. Upgrade now to continue accessing all features.</p>
           ) : (
-            <>
-              <p>You have <span className={`font-medium ${textColor}`}>{trialDaysLeft} days</span> left in your free period.</p>
-              <Progress value={(14 - trialDaysLeft) / 14 * 100} className="h-2 mt-2 bg-[#e2e8f0]" indicatorClassName={progressColor} />
-            </>
+            <p>You have <span className={`font-medium ${textColor}`}>{trialDaysLeft} days</span> left in your free period.</p>
           )}
         </div>
         <div className="flex gap-2 mt-2 sm:mt-0">

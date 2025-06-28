@@ -1,7 +1,6 @@
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
@@ -38,12 +37,6 @@ export const TrialDashboardBanner = () => {
     : isUrgent 
     ? "text-orange-600"
     : "text-primary-teal";
-    
-  const progressColor = isExpired 
-    ? "bg-red-500"
-    : isUrgent 
-    ? "bg-orange-500"
-    : "bg-primary-teal";
   
   return (
     <Alert className={alertClasses}>
@@ -61,13 +54,6 @@ export const TrialDashboardBanner = () => {
               </>
             )}
           </AlertDescription>
-          {!isExpired && (
-            <Progress 
-              value={(14 - trialDaysLeft) / 14 * 100} 
-              className="h-2 mt-3 bg-slate-100" 
-              indicatorClassName={progressColor} 
-            />
-          )}
         </div>
         <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:ml-4 sm:self-center">
           <Button asChild className="bg-[#5014d0] hover:bg-[#5014d0]/90">
