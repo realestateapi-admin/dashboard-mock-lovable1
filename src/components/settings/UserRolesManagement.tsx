@@ -386,16 +386,37 @@ export const UserRolesManagement = () => {
                   <TableCell className="text-center">
                     <Select 
                       value={user.role} 
-                      onValueChange={(value) => handleRoleChange(user.id, value)}
+                      onValueChange={(value) => {
+                        // Only allow Admin role to be selected
+                        if (value === ROLES.ADMIN.value) {
+                          handleRoleChange(user.id, value);
+                        }
+                      }}
                     >
                       <SelectTrigger className="w-32 mx-auto">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {Object.values(ROLES).map((role) => (
-                          <SelectItem key={role.value} value={role.value}>
-                            {role.label}
-                          </SelectItem>
+                        <SelectItem value={ROLES.ADMIN.value}>
+                          {ROLES.ADMIN.label}
+                        </SelectItem>
+                        {Object.values(ROLES).filter(role => role.value !== ROLES.ADMIN.value).map((role) => (
+                          <Tooltip key={role.value}>
+                            <TooltipTrigger asChild>
+                              <div>
+                                <SelectItem 
+                                  value={role.value} 
+                                  disabled
+                                  className="opacity-50 cursor-not-allowed"
+                                >
+                                  {role.label}
+                                </SelectItem>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Coming soon</p>
+                            </TooltipContent>
+                          </Tooltip>
                         ))}
                       </SelectContent>
                     </Select>
