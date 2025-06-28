@@ -51,7 +51,7 @@ export const allPlans: PlanData[] = [
     id: "pro",
     name: "Pro",
     price: "$3,000",
-    description: "For established companies with higher volume needs",
+    description: "For companies with higher volume needs",
     records: "400,000",
     features: [
       "Auto-Complete (unlimited)",
