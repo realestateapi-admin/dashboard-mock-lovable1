@@ -7,8 +7,9 @@ import { SubscriptionSummary } from "@/components/billing/SubscriptionSummary";
 import { TermsOfServiceStep } from "@/components/billing/wizard/TermsOfServiceStep";
 import { SubscriptionConfirmationStep } from "@/components/billing/wizard/SubscriptionConfirmationStep";
 import { PlanData, AddOnData } from "@/types/billing";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { ChevronDown } from "lucide-react";
 
 interface WizardContentProps {
   currentStep: number;
@@ -36,6 +37,65 @@ interface WizardContentProps {
   onTermsAccepted: (accepted: boolean) => void;
   onSubmit: () => void;
 }
+
+const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
+  if (!isVisible) return null;
+  
+  return (
+    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 pointer-events-none">
+      <div className="bg-primary/90 text-primary-foreground rounded-full p-2 shadow-lg animate-bounce">
+        <ChevronDown className="h-4 w-4" />
+      </div>
+    </div>
+  );
+};
+
+const ScrollableSection = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  
+  const checkScrollPosition = () => {
+    if (scrollRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+      const hasMoreContent = scrollHeight > clientHeight;
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
+      
+      setShowScrollIndicator(hasMoreContent && !isAtBottom);
+    }
+  };
+  
+  useEffect(() => {
+    const scrollElement = scrollRef.current;
+    if (scrollElement) {
+      // Check initial scroll position
+      setTimeout(checkScrollPosition, 100);
+      
+      scrollElement.addEventListener('scroll', checkScrollPosition);
+      return () => scrollElement.removeEventListener('scroll', checkScrollPosition);
+    }
+  }, [children]);
+  
+  // Also check when window resizes
+  useEffect(() => {
+    const handleResize = () => {
+      setTimeout(checkScrollPosition, 100);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  return (
+    <div className={`relative ${className}`}>
+      <ScrollArea className="h-full" ref={scrollRef}>
+        <div className="p-4 h-full">
+          {children}
+        </div>
+      </ScrollArea>
+      <ScrollIndicator isVisible={showScrollIndicator} />
+    </div>
+  );
+};
 
 export function WizardContent({
   currentStep,
@@ -84,87 +144,81 @@ export function WizardContent({
       {/* For Terms of Service step, show just the Terms of Service content without the sidebar */}
       {currentStep === 4 ? (
         <div className="w-full mx-auto max-w-3xl h-full">
-          <ScrollArea className="h-full">
-            <div className="p-4">
-              <TermsOfServiceStep 
-                isLoading={isLoading}
-                termsAccepted={termsAccepted}
-                onTermsAccepted={onTermsAccepted}
-              />
-            </div>
-          </ScrollArea>
+          <ScrollableSection className="h-full">
+            <TermsOfServiceStep 
+              isLoading={isLoading}
+              termsAccepted={termsAccepted}
+              onTermsAccepted={onTermsAccepted}
+            />
+          </ScrollableSection>
         </div>
       ) : currentStep === 5 ? (
         <div className="w-full mx-auto max-w-4xl h-full">
-          <ScrollArea className="h-full">
-            <div className="p-4">
-              <SubscriptionConfirmationStep
-                selectedPlan={selectedPlan}
-                plans={plans}
-                activeAddOns={activeAddOns}
-                addOns={addOns}
-                overageHandling={overageHandling}
-                costs={costs}
-                billingCycle={billingCycle}
-                isLoading={isLoading}
-                paymentMethodType={paymentMethodType}
-              />
-            </div>
-          </ScrollArea>
+          <ScrollableSection className="h-full">
+            <SubscriptionConfirmationStep
+              selectedPlan={selectedPlan}
+              plans={plans}
+              activeAddOns={activeAddOns}
+              addOns={addOns}
+              overageHandling={overageHandling}
+              costs={costs}
+              billingCycle={billingCycle}
+              isLoading={isLoading}
+              paymentMethodType={paymentMethodType}
+            />
+          </ScrollableSection>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-full">
           <div className="md:col-span-8 h-full overflow-hidden">
-            <ScrollArea className="h-full">
-              <div className="p-4 h-full">
-                {/* Step 1: Choose Billing Option */}
-                {currentStep === 0 && (
-                  <BillingOptionStep 
+            <ScrollableSection className="h-full">
+              {/* Step 1: Choose Billing Option */}
+              {currentStep === 0 && (
+                <BillingOptionStep 
+                  selectedPlan={selectedPlan}
+                  billingCycle={billingCycle}
+                  adjustedPlans={regularPlans}
+                  enterprisePlan={enterprisePlan}
+                  onPlanChange={onPlanChange}
+                  onBillingCycleChange={onBillingCycleChange}
+                  onSelectEnterprise={onSelectEnterprise}
+                  isLoading={isLoading}
+                />
+              )}
+              
+              {/* Step 2: Select Add-Ons */}
+              {currentStep === 1 && (
+                <div className="h-full overflow-hidden">
+                  <AddOnsList 
+                    addOns={addOns}
                     selectedPlan={selectedPlan}
-                    billingCycle={billingCycle}
-                    adjustedPlans={regularPlans}
-                    enterprisePlan={enterprisePlan}
-                    onPlanChange={onPlanChange}
-                    onBillingCycleChange={onBillingCycleChange}
-                    onSelectEnterprise={onSelectEnterprise}
+                    activeAddOns={activeAddOns}
+                    onToggleAddOn={toggleAddOn}
                     isLoading={isLoading}
                   />
-                )}
-                
-                {/* Step 2: Select Add-Ons */}
-                {currentStep === 1 && (
-                  <div className="h-full overflow-hidden">
-                    <AddOnsList 
-                      addOns={addOns}
-                      selectedPlan={selectedPlan}
-                      activeAddOns={activeAddOns}
-                      onToggleAddOn={toggleAddOn}
-                      isLoading={isLoading}
-                    />
-                  </div>
-                )}
-                
-                {/* Step 3: Overage Handling */}
-                {currentStep === 2 && (
-                  <OverageHandling 
-                    selectedPlanName={selectedPlanName}
-                    overageHandling={overageHandling || ''}
-                    onOverageHandlingChange={setOverageHandling}
-                    isLoading={isLoading}
-                    selectedPlan={selectedPlan}
-                  />
-                )}
-                
-                {/* Step 4: Payment Information */}
-                {currentStep === 3 && (
-                  <PaymentMethodForm 
-                    isLoading={isLoading} 
-                    creditCardInfo={creditCardInfo}
-                    onPaymentMethodTypeChange={handlePaymentMethodChange}
-                  />
-                )}
-              </div>
-            </ScrollArea>
+                </div>
+              )}
+              
+              {/* Step 3: Overage Handling */}
+              {currentStep === 2 && (
+                <OverageHandling 
+                  selectedPlanName={selectedPlanName}
+                  overageHandling={overageHandling || ''}
+                  onOverageHandlingChange={setOverageHandling}
+                  isLoading={isLoading}
+                  selectedPlan={selectedPlan}
+                />
+              )}
+              
+              {/* Step 4: Payment Information */}
+              {currentStep === 3 && (
+                <PaymentMethodForm 
+                  isLoading={isLoading} 
+                  creditCardInfo={creditCardInfo}
+                  onPaymentMethodTypeChange={handlePaymentMethodChange}
+                />
+              )}
+            </ScrollableSection>
           </div>
           
           <div className="md:col-span-4 h-full">
