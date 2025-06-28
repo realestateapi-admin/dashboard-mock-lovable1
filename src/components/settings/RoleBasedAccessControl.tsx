@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 import { Shield, User, CreditCard, Code } from "lucide-react";
 import { useAuth, UserRole } from '@/contexts/AuthContext';
 
@@ -71,31 +71,31 @@ export const RoleBasedAccessControl = () => {
   };
   
   return (
-    <TooltipProvider>
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Role-Based Access Control</h2>
-          <p className="text-muted-foreground">
-            This page explains the access levels and permissions for different user roles.
-          </p>
-        </div>
-        
-        <Alert>
-          <Shield className="h-4 w-4" />
-          <AlertTitle>Your current role: {currentRole.charAt(0).toUpperCase() + currentRole.slice(1)}</AlertTitle>
-          <AlertDescription>
-            You currently have {roleAccessConfig[currentRole as UserRole].description.toLowerCase()}.
-          </AlertDescription>
-        </Alert>
-        
-        <div className="grid gap-6 md:grid-cols-2">
-          {Object.entries(roleAccessConfig).map(([role, config]) => {
-            const RoleIcon = config.icon;
-            const isAdmin = role === 'admin';
-            const isDisabled = !isAdmin;
-            
-            const cardContent = (
-              <Card key={role} className={isDisabled ? 'opacity-50 cursor-not-allowed' : ''}>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight">Role-Based Access Control</h2>
+        <p className="text-muted-foreground">
+          This page explains the access levels and permissions for different user roles.
+        </p>
+      </div>
+      
+      <Alert>
+        <Shield className="h-4 w-4" />
+        <AlertTitle>Your current role: {currentRole.charAt(0).toUpperCase() + currentRole.slice(1)}</AlertTitle>
+        <AlertDescription>
+          You currently have {roleAccessConfig[currentRole as UserRole].description.toLowerCase()}.
+        </AlertDescription>
+      </Alert>
+      
+      <div className="grid gap-6 md:grid-cols-2">
+        {Object.entries(roleAccessConfig).map(([role, config]) => {
+          const RoleIcon = config.icon;
+          const isAdmin = role === 'admin';
+          const isDisabled = !isAdmin;
+          
+          return (
+            <div key={role} className="relative">
+              <Card className={isDisabled ? 'opacity-50 cursor-not-allowed' : ''}>
                 <CardHeader className="flex flex-row items-center gap-2">
                   <RoleIcon className={`h-5 w-5 ${config.color}`} />
                   <div>
@@ -113,28 +113,19 @@ export const RoleBasedAccessControl = () => {
                   </ul>
                 </CardContent>
               </Card>
-            );
-
-            if (isDisabled) {
-              return (
-                <Tooltip key={role}>
-                  <TooltipTrigger asChild>
-                    <div>
-                      {cardContent}
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" sideOffset={5}>
-                    <p>Coming soon</p>
-                  </TooltipContent>
-                </Tooltip>
-              );
-            }
-
-            return cardContent;
-          })}
-        </div>
+              {isDisabled && (
+                <Badge 
+                  variant="secondary" 
+                  className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gray-100 text-gray-600 border border-gray-300"
+                >
+                  Coming soon
+                </Badge>
+              )}
+            </div>
+          );
+        })}
       </div>
-    </TooltipProvider>
+    </div>
   );
 };
 
