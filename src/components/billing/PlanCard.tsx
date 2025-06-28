@@ -1,3 +1,4 @@
+
 import { CheckCircle, Phone } from "lucide-react";
 import { PlanData } from "@/types/billing";
 import { Button } from "@/components/ui/button";
@@ -188,7 +189,7 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
                   {additionalFeatures.length > 0 ? (
                     <HoverCard>
                       <HoverCardTrigger className="cursor-pointer hover:text-primary">
-                        + more
+                        +{additionalFeatures.length} more features
                       </HoverCardTrigger>
                       <HoverCardContent className="w-64">
                         <div className="space-y-2">
