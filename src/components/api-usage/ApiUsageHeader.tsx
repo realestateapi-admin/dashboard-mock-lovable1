@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { History, FileDown } from "lucide-react";
+import { History } from "lucide-react";
 
 export const ApiUsageHeader = () => {
   return (
@@ -19,10 +19,6 @@ export const ApiUsageHeader = () => {
             <History className="mr-2 h-4 w-4" />
             Usage History
           </Link>
-        </Button>
-        <Button variant="outline" className="w-full sm:w-auto">
-          <FileDown className="mr-2 h-4 w-4" />
-          Export Data
         </Button>
       </div>
     </div>

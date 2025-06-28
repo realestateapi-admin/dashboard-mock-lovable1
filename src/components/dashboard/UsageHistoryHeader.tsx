@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, FileDown } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 
@@ -30,10 +30,6 @@ export const UsageHistoryHeader = ({
         <Button onClick={onBackToUsage} variant="outline" className="w-full sm:w-auto">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Usage
-        </Button>
-        <Button onClick={onExport} variant="outline" className="w-full sm:w-auto">
-          <FileDown className="mr-2 h-4 w-4" />
-          Export Data
         </Button>
       </div>
     </div>
