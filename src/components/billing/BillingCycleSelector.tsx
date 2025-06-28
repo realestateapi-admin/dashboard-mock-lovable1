@@ -4,6 +4,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckCircle, CheckIcon, Lock } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useTrialAlert } from "@/contexts/TrialAlertContext";
 
 interface BillingCycleSelectorProps {
   billingCycle: 'monthly' | 'annual';
@@ -14,6 +15,8 @@ export const BillingCycleSelector = ({
   billingCycle,
   onBillingCycleChange
 }: BillingCycleSelectorProps) => {
+  const { isOnPaidPlan } = useTrialAlert();
+  
   // Initialize from localStorage if needed
   useEffect(() => {
     const storedCycle = localStorage.getItem('billingCycle');
@@ -26,14 +29,18 @@ export const BillingCycleSelector = ({
 
   // Update localStorage when billing cycle changes
   const handleBillingCycleChange = (cycle: 'monthly' | 'annual') => {
-    // If user is on annual plan, don't allow switching to monthly
-    if (billingCycle === 'annual' && cycle === 'monthly') {
+    // Only apply switching restrictions if user is on a paid plan
+    // If user is on annual plan and on a paid subscription, don't allow switching to monthly
+    if (isOnPaidPlan && billingCycle === 'annual' && cycle === 'monthly') {
       return;
     }
     
     onBillingCycleChange(cycle);
     localStorage.setItem('billingCycle', cycle);
   };
+
+  // Only show restrictions if user is on a paid plan
+  const isMonthlyDisabled = isOnPaidPlan && billingCycle === 'annual';
   
   return (
     <div>
@@ -48,14 +55,14 @@ export const BillingCycleSelector = ({
                   billingCycle === 'monthly' 
                     ? 'border-primary ring-2 ring-primary ring-offset-2' 
                     : 'border-border hover:border-primary/50'
-                } ${billingCycle === 'annual' ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
-                onClick={() => billingCycle !== 'annual' && handleBillingCycleChange('monthly')}
+                } ${isMonthlyDisabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
+                onClick={() => !isMonthlyDisabled && handleBillingCycleChange('monthly')}
               >
                 <div className="flex justify-between items-start">
                   <h4 className="text-xl font-semibold">Monthly Flexibility</h4>
                   {billingCycle === 'monthly' ? (
                     <CheckIcon className="h-5 w-5 text-primary" />
-                  ) : billingCycle === 'annual' ? (
+                  ) : isMonthlyDisabled ? (
                     <Lock className="h-5 w-5 text-muted-foreground" />
                   ) : null}
                 </div>
@@ -75,7 +82,7 @@ export const BillingCycleSelector = ({
                 </div>
               </div>
             </TooltipTrigger>
-            {billingCycle === 'annual' && (
+            {isMonthlyDisabled && (
               <TooltipContent>
                 <p className="w-64 text-sm">
                   You can't switch back to monthly billing when on an annual plan. Annual plans require a 12-month commitment.
