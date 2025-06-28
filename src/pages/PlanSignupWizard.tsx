@@ -43,7 +43,7 @@ const PlanSignupWizard = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-7xl h-[90vh]"
+        className="w-full max-w-7xl h-[85vh]"
       >
         <Card className="border shadow-lg h-full flex flex-col">
           <CardHeader className="flex-shrink-0 pb-4">
