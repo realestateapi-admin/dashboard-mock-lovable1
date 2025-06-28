@@ -34,6 +34,7 @@ export const usePriceCalculator = (
       };
     }
     
+    // Calculate base plan price with discount for annual billing
     let basePrice = 0;
     if (billingCycle === 'annual') {
       const annualPriceStr = annualPlanPrices[selectedPlan as keyof typeof annualPlanPrices];
@@ -46,6 +47,7 @@ export const usePriceCalculator = (
       basePrice = parseInt((basePlan.price || "$0").replace(/\$|,/g, ""));
     }
     
+    // Calculate add-ons total (NO DISCOUNT APPLIED TO ADD-ONS)
     let addOnTotal = 0;
     activeAddOns.forEach(addOnId => {
       const addon = addOns.find(a => a.id === addOnId);
@@ -57,7 +59,8 @@ export const usePriceCalculator = (
       if (addon.billingType === 'subscription') {
         const numericPrice = parseInt(priceStr.replace(/\$|,|\/month/g, ""));
         if (!isNaN(numericPrice)) {
-          addOnTotal += billingCycle === 'annual' ? numericPrice * 0.8 : numericPrice;
+          // Add-ons are NOT discounted for annual billing
+          addOnTotal += numericPrice;
         }
       }
     });
