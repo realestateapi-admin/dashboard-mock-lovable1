@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Table, 
@@ -38,6 +39,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Plus, Users, AlertCircle, CheckCircle, Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 // Define available user roles
 const ROLES = {
@@ -47,16 +49,26 @@ const ROLES = {
   VIEWER: { label: "Viewer", value: "viewer", color: "bg-gray-100 text-gray-800" },
 };
 
+// Define user statuses
+const USER_STATUS = {
+  INVITED: { label: "Invited", value: "invited", color: "text-blue-600 hover:text-blue-800" },
+  INVITATION_EXPIRED: { label: "Invitation Expired", value: "invitation_expired", color: "text-red-600 hover:text-red-800" },
+  ACTIVE: { label: "Active", value: "active", color: "text-green-600" },
+};
+
 // Current account (always first in the list)
 const CURRENT_ACCOUNT = {
   id: 0,
   name: "John Doe (You)",
   email: "john.doe@example.com",
   role: ROLES.ADMIN.value,
+  status: USER_STATUS.ACTIVE.value,
   isCurrentAccount: true
 };
 
 export const UserRolesManagement = () => {
+  const { toast } = useToast();
+  
   // Initialize users from localStorage or start with empty array
   const [users, setUsers] = useState(() => {
     try {
@@ -173,6 +185,22 @@ export const UserRolesManagement = () => {
     setUserToDelete(null);
   };
 
+  const handleResendInvitation = (userId: number) => {
+    const user = users.find(u => u.id === userId);
+    if (!user) return;
+
+    // Simulate sending invitation and show success message
+    toast({
+      title: "Invitation sent",
+      description: `Invitation has been resent to ${user.email}`,
+    });
+
+    // Update user status to invited
+    setUsers(users.map(u => 
+      u.id === userId ? { ...u, status: USER_STATUS.INVITED.value } : u
+    ));
+  };
+
   const handleAddUser = () => {
     // Validate all fields before submitting
     const firstNameValidation = validateName(newUser.firstName);
@@ -191,7 +219,13 @@ export const UserRolesManagement = () => {
 
     const id = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
     const fullName = `${newUser.firstName} ${newUser.lastName}`;
-    setUsers([...users, { id, name: fullName, email: newUser.email, role: newUser.role }]);
+    setUsers([...users, { 
+      id, 
+      name: fullName, 
+      email: newUser.email, 
+      role: newUser.role,
+      status: USER_STATUS.INVITED.value
+    }]);
     setNewUser({ firstName: "", lastName: "", email: "", role: ROLES.ADMIN.value });
     setFirstNameError("");
     setLastNameError("");
@@ -200,6 +234,30 @@ export const UserRolesManagement = () => {
     setIsLastNameValid(false);
     setIsEmailValid(false);
     setIsDialogOpen(false);
+  };
+
+  const renderStatusCell = (user: any) => {
+    const status = Object.values(USER_STATUS).find(s => s.value === user.status);
+    if (!status) return null;
+
+    const isClickable = user.status === USER_STATUS.INVITED.value || user.status === USER_STATUS.INVITATION_EXPIRED.value;
+
+    if (isClickable && !user.isCurrentAccount) {
+      return (
+        <button
+          onClick={() => handleResendInvitation(user.id)}
+          className={`${status.color} underline cursor-pointer transition-colors`}
+        >
+          {status.label}
+        </button>
+      );
+    }
+
+    return (
+      <span className={status.color}>
+        {status.label}
+      </span>
+    );
   };
 
   const isFormValid = isFirstNameValid && isLastNameValid && isEmailValid;
@@ -392,6 +450,7 @@ export const UserRolesManagement = () => {
                 <TableHead className="text-center">Name</TableHead>
                 <TableHead className="text-center">Email</TableHead>
                 <TableHead className="text-center">Role</TableHead>
+                <TableHead className="text-center">Status</TableHead>
                 <TableHead className="text-center">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -438,6 +497,9 @@ export const UserRolesManagement = () => {
                         ))}
                       </SelectContent>
                     </Select>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {renderStatusCell(user)}
                   </TableCell>
                   <TableCell className="text-center">
                     {user.isCurrentAccount ? (
