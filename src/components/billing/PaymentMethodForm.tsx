@@ -40,7 +40,6 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     cardDetails,
     backupCardDetails,
     handleCompanyInfoChange,
-    handleCompanyAddressChange,
     handleBillingAddressChange,
     handleUseSameAddressChange,
     handleCardDetailsChange,
@@ -111,7 +110,6 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
           companyInfo={companyInfo}
           isLoading={isLoading}
           handleCompanyInfoChange={handleCompanyInfoChange}
-          handleCompanyAddressChange={handleCompanyAddressChange}
         />
 
         {/* Payment Details Section (Second) */}
