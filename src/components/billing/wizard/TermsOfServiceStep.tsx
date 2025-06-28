@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, ChevronDown } from "lucide-react";
 
 interface TermsOfServiceStepProps {
   isLoading?: boolean;
@@ -12,12 +12,25 @@ interface TermsOfServiceStepProps {
   onTermsAccepted: (accepted: boolean) => void;
 }
 
+const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
+  if (!isVisible) return null;
+  
+  return (
+    <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none">
+      <div className="bg-primary/60 text-primary-foreground rounded-full p-2 shadow-md border border-background/20">
+        <ChevronDown className="h-4 w-4" />
+      </div>
+    </div>
+  );
+};
+
 export const TermsOfServiceStep = ({
   isLoading = false,
   termsAccepted,
   onTermsAccepted
 }: TermsOfServiceStepProps) => {
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   
   const checkScrollPosition = () => {
@@ -25,10 +38,13 @@ export const TermsOfServiceStep = ({
       const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
       // Consider slightly more lenient threshold (scrollHeight - 50 instead of 30)
       const isAtBottom = scrollTop + clientHeight >= scrollHeight - 50;
+      const hasMoreContent = scrollHeight > clientHeight + 10;
       
       if (isAtBottom) {
         setHasScrolledToBottom(true);
       }
+      
+      setShowScrollIndicator(hasMoreContent && !isAtBottom);
     }
   };
   
@@ -44,9 +60,12 @@ export const TermsOfServiceStep = ({
       scrollElement.addEventListener('scroll', handleScroll);
       
       // Check initial scroll position (in case content is short)
-      setTimeout(checkScrollPosition, 500);
+      const timeouts = [100, 500, 1000].map(delay => 
+        setTimeout(checkScrollPosition, delay)
+      );
       
       return () => {
+        timeouts.forEach(clearTimeout);
         scrollElement.removeEventListener('scroll', handleScroll);
       };
     }
@@ -63,7 +82,7 @@ export const TermsOfServiceStep = ({
         </AlertDescription>
       </Alert>
       
-      <div className="border rounded-md shadow-sm">
+      <div className="border rounded-md shadow-sm relative">
         <ScrollArea className="h-[400px] rounded-md" ref={scrollAreaRef}>
           <div className="p-4 text-sm text-gray-700 space-y-4">
             <h4 className="text-base font-semibold">1. Acceptance of Terms</h4>
@@ -107,6 +126,7 @@ export const TermsOfServiceStep = ({
             <p>By subscribing to our service, you agree to pay all fees associated with the subscription plan you select. All fees are exclusive of taxes, which we will charge as applicable. You agree to provide current, complete, and accurate payment information and authorize us to charge your credit card or bank account for all fees associated with your subscription.</p>
           </div>
         </ScrollArea>
+        <ScrollIndicator isVisible={showScrollIndicator} />
       </div>
       
       <div className="flex items-center space-x-2 pt-2">

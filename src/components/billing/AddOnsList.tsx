@@ -1,4 +1,3 @@
-
 import { AddOnItem } from "@/components/onboarding/AddOnItem";
 import { AddOnData } from "@/types/billing";
 import { AddOnsSkeleton } from "../billing/wizard/SkeletonLoading";
@@ -18,8 +17,8 @@ const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
   
   return (
     <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none">
-      <div className="bg-primary text-primary-foreground rounded-full p-3 shadow-lg animate-bounce border-2 border-background">
-        <ChevronDown className="h-5 w-5" />
+      <div className="bg-primary/60 text-primary-foreground rounded-full p-2 shadow-md border border-background/20">
+        <ChevronDown className="h-4 w-4" />
       </div>
     </div>
   );
@@ -47,7 +46,6 @@ export const AddOnsList = ({
       const isNearBottom = scrollTop + clientHeight >= scrollHeight - 50;
       
       setShowScrollIndicator(hasMoreContent && !isNearBottom);
-      console.log('AddOns scroll check:', { hasMoreContent, isNearBottom, scrollTop, scrollHeight, clientHeight, contentHeight });
     }
   };
   

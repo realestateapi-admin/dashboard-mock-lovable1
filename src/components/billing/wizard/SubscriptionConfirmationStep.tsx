@@ -1,17 +1,10 @@
-
-import React, { useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Check, CreditCard, Building, ChevronDown } from "lucide-react";
 import { PlanData, AddOnData } from "@/types/billing";
-import { Skeleton } from "@/components/ui/skeleton";
-import { format, addMonths, differenceInMonths, addYears } from "date-fns";
-
-// Import our new components
-import { ConfirmationHeader } from "./confirmation/ConfirmationHeader";
-import { EarlyTerminationWarning } from "./confirmation/EarlyTerminationWarning";
-import { SubscriptionDetails } from "./confirmation/SubscriptionDetails";
-import { CostSummary } from "./confirmation/CostSummary";
-import { ServiceLevelAgreement } from "./confirmation/ServiceLevelAgreement";
-import { NextStepsSection } from "./confirmation/NextStepsSection";
 
 interface SubscriptionConfirmationStepProps {
   selectedPlan: string;
@@ -26,10 +19,22 @@ interface SubscriptionConfirmationStepProps {
   };
   billingCycle: 'monthly' | 'annual';
   isLoading: boolean;
-  paymentMethodType?: 'card' | 'ach';
+  paymentMethodType: 'card' | 'ach';
 }
 
-export const SubscriptionConfirmationStep = ({
+const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
+  if (!isVisible) return null;
+  
+  return (
+    <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none">
+      <div className="bg-primary/60 text-primary-foreground rounded-full p-2 shadow-md border border-background/20">
+        <ChevronDown className="h-4 w-4" />
+      </div>
+    </div>
+  );
+};
+
+export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStepProps> = ({
   selectedPlan,
   plans,
   activeAddOns,
@@ -38,128 +43,145 @@ export const SubscriptionConfirmationStep = ({
   costs,
   billingCycle,
   isLoading,
-  paymentMethodType = 'card' // Default to card
-}: SubscriptionConfirmationStepProps) => {
-  // Find the selected plan data from the plans array
-  const selectedPlanData = useMemo(() => 
-    plans.find(p => p.id === selectedPlan),
-    [plans, selectedPlan]
-  );
+  paymentMethodType
+}) => {
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
   
-  // Calculate financial values with useMemo to prevent recalculations
-  const financialInfo = useMemo(() => {
-    const totalAmount = parseFloat(costs.total.replace(/[$,]/g, ''));
-    const transactionFeeRate = 0.03; // 3%
-    const transactionFee = paymentMethodType === 'card' ? totalAmount * transactionFeeRate : 0;
-    const totalWithFee = totalAmount + transactionFee;
-    
-    const today = new Date();
-    const nextMonth = addMonths(today, 1);
-    const firstPaymentDate = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
-    
-    const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-    const remainingDays = daysInMonth - today.getDate();
-    const proratedAmount = (totalWithFee / daysInMonth) * remainingDays;
-    
-    return {
-      totalAmount,
-      transactionFee,
-      totalWithFee,
-      firstPaymentDate,
-      remainingDays,
-      proratedAmount
-    };
-  }, [costs.total, paymentMethodType]);
-  
-  // Format currency helper
-  const formatCurrency = (amount: number) => {
-    return `$${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+  const checkScrollPosition = () => {
+    const scrollContainer = document.querySelector('[data-radix-scroll-area-viewport]');
+    if (scrollContainer && contentRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
+      const contentHeight = contentRef.current.scrollHeight;
+      
+      const hasMoreContent = contentHeight > clientHeight - 100;
+      const isNearBottom = scrollTop + clientHeight >= scrollHeight - 50;
+      
+      setShowScrollIndicator(hasMoreContent && !isNearBottom);
+    }
   };
   
-  // Calculate early termination fee for annual contracts
-  const earlyTerminationInfo = useMemo(() => {
-    if (billingCycle !== 'annual') return null;
-    
-    // For new signups, the contract starts today
-    const contractStartDate = new Date();
-    const contractEndDate = addYears(contractStartDate, 1);
-    
-    // For new signups, no months have been completed yet, and 12 months remain
-    const remainingMonths = 12;
-    const monthsCompleted = 0;
-    
-    const monthlyAmount = parseFloat(costs.total.replace(/[$,]/g, ''));
-    const remainingContractValue = monthlyAmount * remainingMonths;
-    // Early termination fee is now the full remaining contract value
-    const earlyTerminationFee = remainingContractValue;
-    
-    return {
-      contractStartDate,
-      contractEndDate,
-      remainingMonths,
-      monthsCompleted,
-      earlyTerminationFee: formatCurrency(earlyTerminationFee),
-      remainingContractValue: formatCurrency(remainingContractValue)
+  useEffect(() => {
+    const scrollContainer = document.querySelector('[data-radix-scroll-area-viewport]');
+    if (scrollContainer) {
+      const timeouts = [100, 500, 1000, 2000].map(delay => 
+        setTimeout(checkScrollPosition, delay)
+      );
+      
+      scrollContainer.addEventListener('scroll', checkScrollPosition);
+      return () => {
+        timeouts.forEach(clearTimeout);
+        scrollContainer.removeEventListener('scroll', checkScrollPosition);
+      };
+    }
+  }, []);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setTimeout(checkScrollPosition, 100);
     };
-  }, [billingCycle, costs.total]);
+    
+    window.addEventListener('resize', handleResize);
+    checkScrollPosition();
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, [selectedPlan, activeAddOns]);
+
+  // Find the selected plan
+  const selectedPlanData = plans.find(plan => plan.id === selectedPlan);
   
-  // Loading state
-  if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Subscription Confirmation</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-32 w-full" />
-        </CardContent>
-      </Card>
-    );
-  }
-  
+  // Filter active add-ons to get their full data
+  const activeAddOnsData = addOns.filter(addOn => activeAddOns.includes(addOn.id));
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Subscription Confirmation</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Confirmation Header */}
-        <ConfirmationHeader billingCycle={billingCycle} />
-        
-        {/* Early Termination Warning (Only for Annual Billing) */}
-        {billingCycle === 'annual' && earlyTerminationInfo && (
-          <EarlyTerminationWarning earlyTerminationInfo={earlyTerminationInfo} />
-        )}
-        
-        <div className="space-y-4">
-          {/* Subscription Details Section */}
-          <SubscriptionDetails
-            selectedPlanData={selectedPlanData}
-            billingCycle={billingCycle}
-            financialInfo={financialInfo}
-            overageHandling={overageHandling}
-            paymentMethodType={paymentMethodType}
-            activeAddOns={activeAddOns}
-            addOns={addOns}
-          />
-          
-          {/* Cost Summary Section */}
-          <CostSummary
-            costs={costs}
-            financialInfo={financialInfo}
-            formatCurrency={formatCurrency}
-            paymentMethodType={paymentMethodType}
-            billingCycle={billingCycle}
-          />
-          
-          {/* Service Level Agreement */}
-          <ServiceLevelAgreement selectedPlanData={selectedPlanData} />
-          
-          {/* Next Steps */}
-          <NextStepsSection />
-        </div>
-      </CardContent>
-    </Card>
+    <>
+      <div ref={contentRef} className="space-y-8">
+        <Card>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold">Confirm Your Subscription</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <h3 className="text-lg font-medium">Plan Details</h3>
+              <div className="flex items-center space-x-2">
+                <span>Plan:</span>
+                <Badge variant="secondary">{selectedPlanData?.name}</Badge>
+                <span>{billingCycle === 'monthly' ? 'Monthly' : 'Annual'}</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {selectedPlanData?.description}
+              </p>
+            </div>
+            
+            <Separator />
+            
+            <div className="space-y-2">
+              <h3 className="text-lg font-medium">Add-Ons</h3>
+              {activeAddOnsData.length > 0 ? (
+                <ul className="list-disc pl-5 space-y-1">
+                  {activeAddOnsData.map(addOn => (
+                    <li key={addOn.id}>{addOn.name}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-muted-foreground">No add-ons selected.</p>
+              )}
+            </div>
+            
+            <Separator />
+            
+            <div className="space-y-2">
+              <h3 className="text-lg font-medium">Overage Handling</h3>
+              <p className="text-sm">
+                {overageHandling === 'cut-off' && 'API calls will be stopped when the plan limit is reached.'}
+                {overageHandling === 'allow-25' && 'Overage up to 25% of the plan limit will be allowed, billed at the plan\'s unit rate.'}
+                {overageHandling === 'allow-100' && 'Overage up to 100% of the plan limit will be allowed, billed at the plan\'s unit rate.'}
+                {overageHandling === 'unlimited' && 'API key will never be cut off, with overages billed at the plan\'s unit rate.'}
+              </p>
+            </div>
+            
+            <Separator />
+            
+            <div className="space-y-2">
+              <h3 className="text-lg font-medium">Payment Method</h3>
+              <div className="flex items-center space-x-2">
+                {paymentMethodType === 'card' ? (
+                  <>
+                    <CreditCard className="h-4 w-4" />
+                    <span>Credit Card</span>
+                  </>
+                ) : (
+                  <>
+                    <Building className="h-4 w-4" />
+                    <span>Bank Account (ACH)</span>
+                  </>
+                )}
+              </div>
+            </div>
+            
+            <Separator />
+            
+            <div className="space-y-2">
+              <h3 className="text-lg font-medium">Cost Summary</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium">Base Plan:</p>
+                  <p className="text-sm text-muted-foreground">${costs.basePrice} / {billingCycle === 'monthly' ? 'month' : 'year'}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Add-Ons:</p>
+                  <p className="text-sm text-muted-foreground">${costs.totalAddOns} / {billingCycle === 'monthly' ? 'month' : 'year'}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Total:</p>
+                  <p className="text-sm font-semibold">${costs.total} / {billingCycle === 'monthly' ? 'month' : 'year'}</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      <ScrollIndicator isVisible={showScrollIndicator} />
+    </>
   );
 };
