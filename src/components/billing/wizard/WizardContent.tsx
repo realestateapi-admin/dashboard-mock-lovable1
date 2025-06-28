@@ -58,7 +58,7 @@ export function WizardContent({
   onPlanChange,
   onTermsAccepted,
   onSubmit
-}: WizardContentProps) => {
+}: WizardContentProps) {
   // Find the name of the selected plan for the OverageHandling component
   const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || 'Selected';
   
@@ -114,7 +114,7 @@ export function WizardContent({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-[calc(100vh-280px)]">
-          <div className="md:col-span-8">
+          <div className="md:col-span-8 h-full">
             <ScrollArea className="h-full">
               <div className="p-4">
                 {/* Step 1: Choose Billing Option */}
@@ -165,21 +165,19 @@ export function WizardContent({
             </ScrollArea>
           </div>
           
-          <div className="md:col-span-4">
-            <div className="h-full">
-              <SubscriptionSummary 
-                selectedPlan={selectedPlan}
-                plans={plans}
-                activeAddOns={activeAddOns}
-                addOns={addOns}
-                costs={costs}
-                subscription={null}
-                isLoading={isLoading}
-                onSubmit={onSubmit}
-                billingCycle={billingCycle}
-                showSubmitButton={false}
-              />
-            </div>
+          <div className="md:col-span-4 h-full">
+            <SubscriptionSummary 
+              selectedPlan={selectedPlan}
+              plans={plans}
+              activeAddOns={activeAddOns}
+              addOns={addOns}
+              costs={costs}
+              subscription={null}
+              isLoading={isLoading}
+              onSubmit={onSubmit}
+              billingCycle={billingCycle}
+              showSubmitButton={false}
+            />
           </div>
         </div>
       )}
