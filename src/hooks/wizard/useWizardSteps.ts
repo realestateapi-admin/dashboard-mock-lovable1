@@ -14,7 +14,7 @@ export const useWizardSteps = () => {
 
   const steps: WizardStep[] = [
     {
-      title: "Choose Your Billing Option",
+      title: "Choose Your Plan",
       description: ""
     },
     {
