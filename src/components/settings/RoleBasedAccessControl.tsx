@@ -123,7 +123,7 @@ export const RoleBasedAccessControl = () => {
                       {cardContent}
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent side="top" sideOffset={5}>
                     <p>Coming soon</p>
                   </TooltipContent>
                 </Tooltip>
