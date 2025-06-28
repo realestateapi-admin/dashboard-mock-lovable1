@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Table, 
   TableBody, 
@@ -47,7 +47,26 @@ const INITIAL_USERS = [
 ];
 
 export const UserRolesManagement = () => {
-  const [users, setUsers] = useState(INITIAL_USERS);
+  // Initialize users from localStorage or fall back to initial data
+  const [users, setUsers] = useState(() => {
+    try {
+      const savedUsers = localStorage.getItem('userRolesManagement_users');
+      return savedUsers ? JSON.parse(savedUsers) : INITIAL_USERS;
+    } catch (error) {
+      console.error('Error loading users from localStorage:', error);
+      return INITIAL_USERS;
+    }
+  });
+
+  // Save users to localStorage whenever users state changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('userRolesManagement_users', JSON.stringify(users));
+    } catch (error) {
+      console.error('Error saving users to localStorage:', error);
+    }
+  }, [users]);
+
   const [newUser, setNewUser] = useState({ 
     firstName: "", 
     lastName: "", 
