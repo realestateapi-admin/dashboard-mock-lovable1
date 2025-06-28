@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Briefcase } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -46,44 +47,54 @@ export const ProfileForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="name">Full Name</Label>
-          <Input 
-            id="name" 
-            value={name} 
-            onChange={(e) => setName(e.target.value)} 
-            placeholder="Your name"
-          />
+    <TooltipProvider>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="name">Full Name</Label>
+            <Input 
+              id="name" 
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
+              placeholder="Your name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email Address</Label>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Input 
+                  id="email" 
+                  type="email" 
+                  value={email} 
+                  readOnly
+                  className="bg-muted cursor-not-allowed"
+                  placeholder="Your email"
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Your email address is linked to your account and cannot be changed.</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="company" className="flex items-center gap-1">
+              <Briefcase className="h-4 w-4" />
+              Company Name
+            </Label>
+            <Input 
+              id="company" 
+              value={companyName} 
+              onChange={(e) => setCompanyName(e.target.value)} 
+              placeholder="Your company name"
+            />
+          </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">Email Address</Label>
-          <Input 
-            id="email" 
-            type="email" 
-            value={email} 
-            onChange={handleEmailChange} 
-            placeholder="Your email"
-          />
-        </div>
-        <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="company" className="flex items-center gap-1">
-            <Briefcase className="h-4 w-4" />
-            Company Name
-          </Label>
-          <Input 
-            id="company" 
-            value={companyName} 
-            onChange={(e) => setCompanyName(e.target.value)} 
-            placeholder="Your company name"
-          />
-        </div>
-      </div>
 
-      <Button type="submit">
-        Save Changes
-      </Button>
-    </form>
+        <Button type="submit">
+          Save Changes
+        </Button>
+      </form>
+    </TooltipProvider>
   );
 };
