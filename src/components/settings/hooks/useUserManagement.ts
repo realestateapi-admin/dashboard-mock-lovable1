@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { ROLES, USER_STATUS, User, NewUser } from '../types/userRoles';
@@ -6,11 +5,26 @@ import { ROLES, USER_STATUS, User, NewUser } from '../types/userRoles';
 export const useUserManagement = () => {
   const { toast } = useToast();
   
-  // Initialize users from localStorage or start with empty array
+  // Initialize users from localStorage or start with test data
   const [users, setUsers] = useState<User[]>(() => {
     try {
       const savedUsers = localStorage.getItem('userRolesManagement_users');
-      return savedUsers ? JSON.parse(savedUsers) : [];
+      if (savedUsers) {
+        return JSON.parse(savedUsers);
+      } else {
+        // Create a test user with expired invitation (invited 3 days ago)
+        const threeDaysAgo = new Date();
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+        
+        return [{
+          id: 1,
+          name: "Jane Smith",
+          email: "jane.smith@example.com",
+          role: ROLES.ADMIN.value,
+          status: USER_STATUS.INVITATION_EXPIRED.value,
+          invitedAt: threeDaysAgo.toISOString()
+        }];
+      }
     } catch (error) {
       console.error('Error loading users from localStorage:', error);
       return [];
