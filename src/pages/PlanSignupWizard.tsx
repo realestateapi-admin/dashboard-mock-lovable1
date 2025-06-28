@@ -38,12 +38,12 @@ const PlanSignupWizard = () => {
   } = useWizardState();
   
   return (
-    <div className="min-h-screen bg-background p-4 flex items-center justify-center">
+    <div className="min-h-screen bg-background p-4 flex justify-center">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-7xl h-[90vh] max-h-[900px]"
+        className="w-full max-w-7xl h-[90vh] max-h-[900px] mt-4"
       >
         <Card className="border shadow-lg h-full flex flex-col">
           <CardHeader className="flex-shrink-0 pb-4">
