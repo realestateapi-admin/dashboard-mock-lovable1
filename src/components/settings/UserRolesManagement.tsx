@@ -7,6 +7,7 @@ import { useFormValidation } from './hooks/useFormValidation';
 import { AddUserDialog } from './dialogs/AddUserDialog';
 import { UserTable } from './components/UserTable';
 import { RemoveUserDialog } from './dialogs/RemoveUserDialog';
+import { ResendInvitationDialog } from './dialogs/ResendInvitationDialog';
 
 export const UserRolesManagement = () => {
   const {
@@ -38,6 +39,7 @@ export const UserRolesManagement = () => {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<number | null>(null);
+  const [userToResendInvitation, setUserToResendInvitation] = useState<{ id: number; email: string } | null>(null);
 
   const onAddUser = () => {
     if (!validateAllFields()) {
@@ -57,6 +59,20 @@ export const UserRolesManagement = () => {
     if (userToDelete !== null) {
       handleRemoveUser(userToDelete);
       setUserToDelete(null);
+    }
+  };
+
+  const onResendInvitation = (userId: number) => {
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      setUserToResendInvitation({ id: userId, email: user.email });
+    }
+  };
+
+  const confirmResendInvitation = () => {
+    if (userToResendInvitation) {
+      handleResendInvitation(userToResendInvitation.id);
+      setUserToResendInvitation(null);
     }
   };
 
@@ -92,13 +108,20 @@ export const UserRolesManagement = () => {
           users={allUsers}
           onRoleChange={handleRoleChange}
           onRemoveUser={onRemoveUser}
-          onResendInvitation={handleResendInvitation}
+          onResendInvitation={onResendInvitation}
         />
 
         <RemoveUserDialog
           isOpen={userToDelete !== null}
           onOpenChange={() => setUserToDelete(null)}
           onConfirm={confirmRemoveUser}
+        />
+
+        <ResendInvitationDialog
+          isOpen={userToResendInvitation !== null}
+          onOpenChange={() => setUserToResendInvitation(null)}
+          onConfirm={confirmResendInvitation}
+          userEmail={userToResendInvitation?.email}
         />
       </div>
     </TooltipProvider>
