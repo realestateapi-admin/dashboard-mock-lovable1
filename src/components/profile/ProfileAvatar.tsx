@@ -22,6 +22,21 @@ export const ProfileAvatar = ({ initialImage = null }: ProfileAvatarProps) => {
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Check file size (2MB = 2 * 1024 * 1024 bytes)
+      const maxSizeInBytes = 2 * 1024 * 1024;
+      if (file.size > maxSizeInBytes) {
+        toast({
+          variant: "destructive",
+          title: "File too large",
+          description: "Please select an image smaller than 2MB."
+        });
+        // Clear the input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        return;
+      }
+
       setIsUploading(true);
       
       // Convert to base64 for preview
@@ -98,7 +113,7 @@ export const ProfileAvatar = ({ initialImage = null }: ProfileAvatarProps) => {
       <div className="space-y-2 text-center sm:text-left">
         <h3 className="text-lg font-medium">Profile Picture</h3>
         <p className="text-sm text-muted-foreground">
-          Upload a profile picture or avatar. Recommended size: 256x256px.
+          Upload a profile picture or avatar. Recommended size: 256x256px. Maximum file size: 2MB.
         </p>
         <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
           <Button 
