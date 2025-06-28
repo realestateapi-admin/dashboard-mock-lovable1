@@ -1,7 +1,7 @@
 
 import { Check, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { AddOnData } from "@/types/billing";
 
 interface AddOnItemProps {
@@ -19,18 +19,10 @@ export const AddOnItem = ({ addon, selectedPlan, isSelected, onToggle }: AddOnIt
   const isIncludedOffer = isTechSupportForStarter;
   
   return (
-    <Card className={`transition-all cursor-pointer ${isSelected ? "ring-2 ring-primary" : ""} ${isIncludedOffer ? "border-amber-200 bg-amber-50/30" : ""}`}>
+    <Card className={`transition-all ${isSelected ? "ring-2 ring-primary" : ""} ${isIncludedOffer ? "border-amber-200 bg-amber-50/30" : ""}`}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-start space-x-3 flex-1">
-            {!isIncludedOffer && (
-              <Checkbox
-                id={addon.id}
-                checked={isSelected}
-                onCheckedChange={() => onToggle(addon.id)}
-                className="mt-1"
-              />
-            )}
             {isIncludedOffer && (
               <div className="mt-1 flex items-center justify-center w-4 h-4 bg-amber-500 rounded-sm">
                 <Check className="h-3 w-3 text-white" />
@@ -38,10 +30,7 @@ export const AddOnItem = ({ addon, selectedPlan, isSelected, onToggle }: AddOnIt
             )}
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <label
-                  htmlFor={addon.id}
-                  className="text-sm font-medium cursor-pointer"
-                >
+                <label className="text-sm font-medium">
                   {addon.name}
                 </label>
                 {isIncludedOffer && (
@@ -61,15 +50,23 @@ export const AddOnItem = ({ addon, selectedPlan, isSelected, onToggle }: AddOnIt
               )}
             </div>
           </div>
-          <div className="text-right flex-shrink-0">
-            {isIncludedOffer ? (
-              <div className="text-sm font-medium text-amber-700">
-                Included
-              </div>
-            ) : (
-              <div className="text-sm font-medium">
-                {price}
-              </div>
+          <div className="flex items-center gap-4 flex-shrink-0">
+            <div className="text-right">
+              {isIncludedOffer ? (
+                <div className="text-sm font-medium text-amber-700">
+                  Included
+                </div>
+              ) : (
+                <div className="text-sm font-medium">
+                  {price}
+                </div>
+              )}
+            </div>
+            {!isIncludedOffer && (
+              <Switch
+                checked={isSelected}
+                onCheckedChange={() => onToggle(addon.id)}
+              />
             )}
           </div>
         </div>
