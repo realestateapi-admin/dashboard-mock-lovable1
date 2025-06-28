@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Briefcase, AlertCircle, CheckCircle } from 'lucide-react';
+import { Briefcase, AlertCircle, CheckCircle, Mail } from 'lucide-react';
 
 interface CompanyInformationProps {
   companyInfo: {
@@ -21,6 +21,8 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
 }) => {
   const [companyNameError, setCompanyNameError] = useState("");
   const [isCompanyNameValid, setIsCompanyNameValid] = useState(false);
+  const [billingEmailError, setBillingEmailError] = useState("");
+  const [isBillingEmailValid, setIsBillingEmailValid] = useState(false);
 
   // Get company name from localStorage (from profile section)
   const getInitialCompanyName = () => {
@@ -38,11 +40,31 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
     return 'Acme Inc.'; // fallback default
   };
 
-  // Initialize company name from profile if not already set
+  // Get admin email from localStorage
+  const getAdminEmail = () => {
+    try {
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        const parsedUserData = JSON.parse(userData);
+        if (parsedUserData.email) {
+          return parsedUserData.email;
+        }
+      }
+    } catch (error) {
+      console.log('Error parsing user data:', error);
+    }
+    return 'admin@company.com'; // fallback default
+  };
+
+  // Initialize company name and billing email from profile/user data if not already set
   useEffect(() => {
     if (!companyInfo.companyName) {
       const initialCompanyName = getInitialCompanyName();
       handleCompanyInfoChange("companyName", initialCompanyName);
+    }
+    if (!companyInfo.billingEmail) {
+      const initialBillingEmail = getAdminEmail();
+      handleCompanyInfoChange("billingEmail", initialBillingEmail);
     }
   }, []);
 
@@ -74,6 +96,27 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
     return true;
   };
 
+  const validateBillingEmail = (email: string) => {
+    // Check if email is empty
+    if (email.length < 1) {
+      setBillingEmailError("Billing email is required");
+      setIsBillingEmailValid(false);
+      return false;
+    }
+    
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setBillingEmailError("Please enter a valid email address");
+      setIsBillingEmailValid(false);
+      return false;
+    }
+    
+    setBillingEmailError("");
+    setIsBillingEmailValid(true);
+    return true;
+  };
+
   // Validate company name whenever it changes
   useEffect(() => {
     if (companyInfo.companyName) {
@@ -81,10 +124,23 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
     }
   }, [companyInfo.companyName]);
 
+  // Validate billing email whenever it changes
+  useEffect(() => {
+    if (companyInfo.billingEmail) {
+      validateBillingEmail(companyInfo.billingEmail);
+    }
+  }, [companyInfo.billingEmail]);
+
   const handleCompanyNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newCompanyName = e.target.value;
     handleCompanyInfoChange("companyName", newCompanyName);
     validateCompanyName(newCompanyName);
+  };
+
+  const handleBillingEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newBillingEmail = e.target.value;
+    handleCompanyInfoChange("billingEmail", newBillingEmail);
+    validateBillingEmail(newBillingEmail);
   };
 
   return (
@@ -133,15 +189,42 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="billingEmail">Billing Email</Label>
-            <Input 
-              id="billingEmail" 
-              type="email"
-              value={companyInfo.billingEmail}
-              onChange={(e) => handleCompanyInfoChange("billingEmail", e.target.value)}
-              placeholder="billing@company.com"
-              disabled={isLoading}
-            />
+            <Label htmlFor="billingEmail" className="flex items-center gap-1">
+              <Mail className="h-4 w-4" />
+              Billing Email
+            </Label>
+            <div className="relative">
+              <Input 
+                id="billingEmail" 
+                type="email"
+                value={companyInfo.billingEmail}
+                onChange={handleBillingEmailChange}
+                placeholder="billing@company.com"
+                disabled={isLoading}
+                className={`pr-10 ${
+                  billingEmailError ? 'border-red-500 focus-visible:ring-red-500' : 
+                  isBillingEmailValid ? 'border-green-500 focus-visible:ring-green-500' : ''
+                }`}
+              />
+              {companyInfo.billingEmail && (
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  {isBillingEmailValid ? (
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                  ) : billingEmailError ? (
+                    <AlertCircle className="h-4 w-4 text-red-500" />
+                  ) : null}
+                </div>
+              )}
+            </div>
+            {billingEmailError && (
+              <p className="text-sm text-red-600 flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                {billingEmailError}
+              </p>
+            )}
+            <p className="text-xs text-muted-foreground">
+              Defaults to your account email. You may want to change this if billing should go to a separate billing function within your company.
+            </p>
           </div>
         </div>
       </div>
