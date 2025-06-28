@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -43,6 +44,7 @@ export const BillingCycleSelector = ({
   
   return (
     <div>
+      <h3 className="text-lg font-medium mb-3">Subscription length</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Monthly Option */}
         <TooltipProvider>
