@@ -40,9 +40,10 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
     return 'Acme Inc.'; // fallback default
   };
 
-  // Get admin email from localStorage
+  // Get admin email from localStorage (from profile/onboarding)
   const getAdminEmail = () => {
     try {
+      // First try to get from profile data
       const userData = localStorage.getItem('userData');
       if (userData) {
         const parsedUserData = JSON.parse(userData);
@@ -50,10 +51,29 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
           return parsedUserData.email;
         }
       }
+      
+      // Fallback to userEmail if userData is not available
+      const userEmail = localStorage.getItem('userEmail');
+      if (userEmail) {
+        return userEmail;
+      }
     } catch (error) {
       console.log('Error parsing user data:', error);
     }
     return 'admin@company.com'; // fallback default
+  };
+
+  // Get saved billing email from localStorage
+  const getSavedBillingEmail = () => {
+    try {
+      const saved = localStorage.getItem('billingEmail');
+      if (saved) {
+        return saved;
+      }
+    } catch (error) {
+      console.log('Error getting saved billing email:', error);
+    }
+    return getAdminEmail(); // fallback to admin email
   };
 
   // Initialize company name and billing email from profile/user data if not already set
@@ -63,10 +83,17 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
       handleCompanyInfoChange("companyName", initialCompanyName);
     }
     if (!companyInfo.billingEmail) {
-      const initialBillingEmail = getAdminEmail();
+      const initialBillingEmail = getSavedBillingEmail();
       handleCompanyInfoChange("billingEmail", initialBillingEmail);
     }
   }, []);
+
+  // Save billing email to localStorage whenever it changes
+  useEffect(() => {
+    if (companyInfo.billingEmail) {
+      localStorage.setItem('billingEmail', companyInfo.billingEmail);
+    }
+  }, [companyInfo.billingEmail]);
 
   const validateCompanyName = (name: string) => {
     // Check minimum length
