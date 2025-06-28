@@ -114,9 +114,9 @@ export function WizardContent({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-[calc(100vh-280px)]">
-          <div className="md:col-span-8 h-full">
+          <div className="md:col-span-8 h-full overflow-hidden">
             <ScrollArea className="h-full">
-              <div className="p-4">
+              <div className="p-4 h-full">
                 {/* Step 1: Choose Billing Option */}
                 {currentStep === 0 && (
                   <BillingOptionStep 
@@ -133,13 +133,15 @@ export function WizardContent({
                 
                 {/* Step 2: Select Add-Ons */}
                 {currentStep === 1 && (
-                  <AddOnsList 
-                    addOns={addOns}
-                    selectedPlan={selectedPlan}
-                    activeAddOns={activeAddOns}
-                    onToggleAddOn={toggleAddOn}
-                    isLoading={isLoading}
-                  />
+                  <div className="h-full overflow-hidden">
+                    <AddOnsList 
+                      addOns={addOns}
+                      selectedPlan={selectedPlan}
+                      activeAddOns={activeAddOns}
+                      onToggleAddOn={toggleAddOn}
+                      isLoading={isLoading}
+                    />
+                  </div>
                 )}
                 
                 {/* Step 3: Overage Handling */}
