@@ -19,13 +19,17 @@ export function UserNav() {
   const { currentRole, logout } = useAuth();
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState('john@example.com');
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   
-  // Check for email in localStorage whenever the dropdown is opened
+  // Check for email and profile image in localStorage whenever the dropdown is opened
   useEffect(() => {
     const storedEmail = localStorage.getItem('userEmail');
     if (storedEmail) {
       setUserEmail(storedEmail);
     }
+    
+    const storedProfileImage = localStorage.getItem('userProfileImage');
+    setProfileImage(storedProfileImage);
   }, []);
   
   const userRoleBadgeColors: Record<UserRole, string> = {
@@ -55,7 +59,7 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src="https://github.com/shadcn.png" alt="Avatar" />
+            <AvatarImage src={profileImage || "https://github.com/shadcn.png"} alt="Avatar" />
             <AvatarFallback>SC</AvatarFallback>
           </Avatar>
         </Button>

@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Camera, Upload, X } from 'lucide-react';
@@ -11,7 +11,11 @@ interface ProfileAvatarProps {
 
 export const ProfileAvatar = ({ initialImage = null }: ProfileAvatarProps) => {
   const { toast } = useToast();
-  const [selectedImage, setSelectedImage] = useState<string | null>(initialImage);
+  const [selectedImage, setSelectedImage] = useState<string | null>(() => {
+    // Check localStorage first, then fall back to initialImage
+    const storedImage = localStorage.getItem('userProfileImage');
+    return storedImage || initialImage;
+  });
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -23,7 +27,10 @@ export const ProfileAvatar = ({ initialImage = null }: ProfileAvatarProps) => {
       // Convert to base64 for preview
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
+        const imageUrl = reader.result as string;
+        setSelectedImage(imageUrl);
+        // Store in localStorage to persist across page navigation
+        localStorage.setItem('userProfileImage', imageUrl);
         setIsUploading(false);
       };
       reader.readAsDataURL(file);
@@ -42,6 +49,8 @@ export const ProfileAvatar = ({ initialImage = null }: ProfileAvatarProps) => {
 
   const removeImage = () => {
     setSelectedImage(null);
+    // Remove from localStorage
+    localStorage.removeItem('userProfileImage');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
