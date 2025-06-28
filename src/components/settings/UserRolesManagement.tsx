@@ -14,7 +14,6 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
   Dialog, 
@@ -25,10 +24,20 @@ import {
   DialogTitle,
   DialogTrigger 
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Plus, Users, AlertCircle, CheckCircle } from "lucide-react";
+import { Plus, Users, AlertCircle, CheckCircle, Trash2 } from "lucide-react";
 
 // Define available user roles
 const ROLES = {
@@ -72,6 +81,7 @@ export const UserRolesManagement = () => {
   const [isFirstNameValid, setIsFirstNameValid] = useState(false);
   const [isLastNameValid, setIsLastNameValid] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<number | null>(null);
 
   const validateName = (name: string) => {
     // Check minimum length
@@ -140,6 +150,11 @@ export const UserRolesManagement = () => {
     ));
   };
 
+  const handleRemoveUser = (userId: number) => {
+    setUsers(users.filter(user => user.id !== userId));
+    setUserToDelete(null);
+  };
+
   const handleAddUser = () => {
     // Validate all fields before submitting
     const firstNameValidation = validateName(newUser.firstName);
@@ -167,11 +182,6 @@ export const UserRolesManagement = () => {
     setIsLastNameValid(false);
     setIsEmailValid(false);
     setIsDialogOpen(false);
-  };
-
-  const getRoleBadge = (role: string) => {
-    const roleObj = Object.values(ROLES).find(r => r.value === role);
-    return roleObj ? roleObj.color : "";
   };
 
   const isFormValid = isFirstNameValid && isLastNameValid && isEmailValid;
@@ -364,7 +374,7 @@ export const UserRolesManagement = () => {
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Role</TableHead>
-                <TableHead className="text-left">Actions</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -373,11 +383,6 @@ export const UserRolesManagement = () => {
                   <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
-                    <Badge className={getRoleBadge(user.role)}>
-                      {Object.values(ROLES).find(r => r.value === user.role)?.label}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-left">
                     <Select 
                       value={user.role} 
                       onValueChange={(value) => handleRoleChange(user.id, value)}
@@ -394,11 +399,42 @@ export const UserRolesManagement = () => {
                       </SelectContent>
                     </Select>
                   </TableCell>
+                  <TableCell>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setUserToDelete(user.id)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Remove
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
+
+        <AlertDialog open={userToDelete !== null} onOpenChange={() => setUserToDelete(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Please confirm removal</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to remove this user? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={() => userToDelete && handleRemoveUser(userToDelete)}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                Remove User
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </TooltipProvider>
   );
