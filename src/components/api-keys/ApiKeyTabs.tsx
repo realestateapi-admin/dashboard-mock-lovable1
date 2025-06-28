@@ -12,8 +12,8 @@ interface ApiKeyTabsProps {
 }
 
 export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) => {
-  const [publicApiKey, setPublicApiKey] = useState("REALESTATEAPI-8f2e-41c7-9a5d-3c8b47e1f9a2");
-  const [privateApiKey, setPrivateApiKey] = useState("REALESTATEAPI-6c3d-52a8-b749-7f9e28d4c5b1");
+  const [publicApiKey, setPublicApiKey] = useState("NICKPASTINICA-4d94-73b3-b651-489de24329b4");
+  const [privateApiKey, setPrivateApiKey] = useState("JOHNSMITH-8f2e-41c7-9a5d-3c8b47e1f9a2");
   const [isLoadingScopes, setIsLoadingScopes] = useState(true);
   const [publicKeyScopes, setPublicKeyScopes] = useState<string[]>([]);
   const [privateKeyScopes, setPrivateKeyScopes] = useState<string[]>([]);
@@ -67,13 +67,13 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
 
   const handleRotatePublicKey = async () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
-    const newKey = generateNewKey("REALESTATEAPI");
+    const newKey = generateNewKey("NICKPASTINICA");
     setPublicApiKey(newKey);
   };
 
   const handleRotatePrivateKey = async () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
-    const newKey = generateNewKey("REALESTATEAPI");
+    const newKey = generateNewKey("JOHNSMITH");
     setPrivateApiKey(newKey);
   };
 
@@ -94,7 +94,7 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
         />
         
         <ApiKeyCard
-          title="anon"
+          title="frontend"
           subtitle="public"
           description="This key is safe to use in a browser if you have enabled Row Level Security for your tables and configured policies. Prefer using Secret API keys instead."
           keyValue={publicApiKey}

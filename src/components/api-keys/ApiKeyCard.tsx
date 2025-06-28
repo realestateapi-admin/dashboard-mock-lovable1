@@ -123,7 +123,7 @@ export const ApiKeyCard = ({
         </div>
         
         <p className="text-sm text-muted-foreground">
-          {isPublicKey ? "This is your public key." : "This key is scoped for all available features on your subscription. Keep this key secure and never share it publicly."}
+          {isPublicKey ? "This key is safe to use in a browser for AutoComplete implementations. This key is not scoped for any other features." : "This key is scoped for all available features on your subscription. Keep this key secure and never share it publicly."}
         </p>
         
         {lastRequest && (
