@@ -1,4 +1,3 @@
-
 import { BillingOptionStep } from "./BillingOptionStep";
 import { AddOnsList } from "@/components/billing/AddOnsList";
 import { OverageHandling } from "@/components/billing/OverageHandling";
@@ -42,9 +41,9 @@ const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
   if (!isVisible) return null;
   
   return (
-    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 pointer-events-none">
-      <div className="bg-primary/90 text-primary-foreground rounded-full p-2 shadow-lg animate-bounce">
-        <ChevronDown className="h-4 w-4" />
+    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none">
+      <div className="bg-primary text-primary-foreground rounded-full p-3 shadow-lg animate-bounce border-2 border-background">
+        <ChevronDown className="h-5 w-5" />
       </div>
     </div>
   );
@@ -57,21 +56,27 @@ const ScrollableSection = ({ children, className = "" }: { children: React.React
   const checkScrollPosition = () => {
     if (scrollRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
-      const hasMoreContent = scrollHeight > clientHeight;
-      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
+      const hasMoreContent = scrollHeight > clientHeight + 10; // Add small buffer
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 20; // More generous bottom detection
       
       setShowScrollIndicator(hasMoreContent && !isAtBottom);
+      console.log('Scroll check:', { hasMoreContent, isAtBottom, scrollTop, scrollHeight, clientHeight });
     }
   };
   
   useEffect(() => {
     const scrollElement = scrollRef.current;
     if (scrollElement) {
-      // Check initial scroll position
-      setTimeout(checkScrollPosition, 100);
+      // Check initial scroll position with delay to allow content to render
+      const timeouts = [100, 500, 1000].map(delay => 
+        setTimeout(checkScrollPosition, delay)
+      );
       
       scrollElement.addEventListener('scroll', checkScrollPosition);
-      return () => scrollElement.removeEventListener('scroll', checkScrollPosition);
+      return () => {
+        timeouts.forEach(clearTimeout);
+        scrollElement.removeEventListener('scroll', checkScrollPosition);
+      };
     }
   }, [children]);
   
@@ -88,7 +93,7 @@ const ScrollableSection = ({ children, className = "" }: { children: React.React
   return (
     <div className={`relative ${className}`}>
       <ScrollArea className="h-full" ref={scrollRef}>
-        <div className="p-4 h-full">
+        <div className="p-4 h-full pb-16">
           {children}
         </div>
       </ScrollArea>
@@ -188,15 +193,13 @@ export function WizardContent({
               
               {/* Step 2: Select Add-Ons */}
               {currentStep === 1 && (
-                <div className="h-full overflow-hidden">
-                  <AddOnsList 
-                    addOns={addOns}
-                    selectedPlan={selectedPlan}
-                    activeAddOns={activeAddOns}
-                    onToggleAddOn={toggleAddOn}
-                    isLoading={isLoading}
-                  />
-                </div>
+                <AddOnsList 
+                  addOns={addOns}
+                  selectedPlan={selectedPlan}
+                  activeAddOns={activeAddOns}
+                  onToggleAddOn={toggleAddOn}
+                  isLoading={isLoading}
+                />
               )}
               
               {/* Step 3: Overage Handling */}
