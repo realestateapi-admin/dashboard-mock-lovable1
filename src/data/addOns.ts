@@ -47,7 +47,7 @@ export const addOns: AddOnData[] = [
     name: "Tech Support",
     description: "Premium technical support package",
     prices: {
-      starter: "$250/month",
+      starter: "Included",
       growth: "Included",
       pro: "Included",
       enterprise: "Included",
