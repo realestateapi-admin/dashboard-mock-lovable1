@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +9,7 @@ const SettingsPage = () => {
     <Tabs defaultValue="user-roles" className="w-full">
       <TabsList className="mb-6 grid grid-cols-4 max-w-3xl gap-1 h-auto p-1 bg-muted/50 border">
         <TabsTrigger value="user-roles" className="px-3 py-2 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm">
-          User Roles
+          Team Members
         </TabsTrigger>
         <TabsTrigger value="access-control" className="px-3 py-2 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm">
           Access Control
