@@ -38,12 +38,12 @@ const PlanSignupWizard = () => {
   } = useWizardState();
   
   return (
-    <div className="h-screen bg-background p-4 flex items-center justify-center">
+    <div className="min-h-screen bg-background p-4 flex items-center justify-center">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-7xl h-[85vh]"
+        className="w-full max-w-7xl h-[90vh] max-h-[900px]"
       >
         <Card className="border shadow-lg h-full flex flex-col">
           <CardHeader className="flex-shrink-0 pb-4">
@@ -54,7 +54,7 @@ const PlanSignupWizard = () => {
             />
           </CardHeader>
           
-          <CardContent className="flex-1 min-h-0 py-0">
+          <CardContent className="flex-1 overflow-hidden py-0">
             <WizardContent
               currentStep={currentStep}
               billingCycle={billingCycle}
