@@ -2,6 +2,9 @@
 import { AddOnItem } from "@/components/onboarding/AddOnItem";
 import { AddOnData } from "@/types/billing";
 import { AddOnsSkeleton } from "../billing/wizard/SkeletonLoading";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ChevronDown } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 
 interface AddOnsListProps {
   addOns: AddOnData[];
@@ -11,6 +14,18 @@ interface AddOnsListProps {
   isLoading?: boolean;
 }
 
+const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
+  if (!isVisible) return null;
+  
+  return (
+    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 pointer-events-none">
+      <div className="bg-primary/90 text-primary-foreground rounded-full p-2 shadow-lg animate-bounce">
+        <ChevronDown className="h-4 w-4" />
+      </div>
+    </div>
+  );
+};
+
 export const AddOnsList = ({
   addOns,
   selectedPlan,
@@ -18,6 +33,39 @@ export const AddOnsList = ({
   onToggleAddOn,
   isLoading = false
 }: AddOnsListProps) => {
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  
+  const checkScrollPosition = () => {
+    if (scrollRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+      const hasMoreContent = scrollHeight > clientHeight;
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
+      
+      setShowScrollIndicator(hasMoreContent && !isAtBottom);
+    }
+  };
+  
+  useEffect(() => {
+    const scrollElement = scrollRef.current;
+    if (scrollElement) {
+      // Check initial scroll position
+      setTimeout(checkScrollPosition, 100);
+      
+      scrollElement.addEventListener('scroll', checkScrollPosition);
+      return () => scrollElement.removeEventListener('scroll', checkScrollPosition);
+    }
+  }, [addOns]);
+  
+  // Also check when window resizes
+  useEffect(() => {
+    const handleResize = () => {
+      setTimeout(checkScrollPosition, 100);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   if (isLoading) {
     return <AddOnsSkeleton />;
@@ -51,26 +99,31 @@ export const AddOnsList = ({
   });
   
   return (
-    <div className="space-y-6">
-      <h3 className="text-lg font-medium mb-4">Available Add-Ons</h3>
-      
-      {/* Render add-ons by category in the specified order */}
-      {sortedCategories.map((category) => (
-        <div key={category} className="space-y-4 mb-8">
-          <h4 className="text-md font-medium text-muted-foreground">{category}</h4>
-          <div className="space-y-4">
-            {groupedAddOns[category].map((addon) => (
-              <AddOnItem
-                key={addon.id}
-                addon={addon}
-                selectedPlan={selectedPlan}
-                isSelected={activeAddOns.includes(addon.id)}
-                onToggle={onToggleAddOn}
-              />
-            ))}
-          </div>
+    <div className="relative h-full">
+      <ScrollArea className="h-full" ref={scrollRef}>
+        <div className="p-4 space-y-6">
+          <h3 className="text-lg font-medium mb-4">Available Add-Ons</h3>
+          
+          {/* Render add-ons by category in the specified order */}
+          {sortedCategories.map((category) => (
+            <div key={category} className="space-y-4 mb-8">
+              <h4 className="text-md font-medium text-muted-foreground">{category}</h4>
+              <div className="space-y-4">
+                {groupedAddOns[category].map((addon) => (
+                  <AddOnItem
+                    key={addon.id}
+                    addon={addon}
+                    selectedPlan={selectedPlan}
+                    isSelected={activeAddOns.includes(addon.id)}
+                    onToggle={onToggleAddOn}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      </ScrollArea>
+      <ScrollIndicator isVisible={showScrollIndicator} />
     </div>
   );
 };
