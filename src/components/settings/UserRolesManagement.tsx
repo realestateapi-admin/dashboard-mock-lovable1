@@ -57,8 +57,10 @@ export const UserRolesManagement = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [isFirstNameValid, setIsFirstNameValid] = useState(false);
   const [isLastNameValid, setIsLastNameValid] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(false);
 
   const validateName = (name: string) => {
     // Check minimum length
@@ -75,6 +77,20 @@ export const UserRolesManagement = () => {
     const hasAlphanumeric = /[a-zA-Z0-9]/.test(name);
     if (!hasAlphanumeric) {
       return { isValid: false, error: "Must contain at least one letter or number" };
+    }
+    
+    return { isValid: true, error: "" };
+  };
+
+  const validateEmail = (emailValue: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!emailValue.trim()) {
+      return { isValid: false, error: "" };
+    }
+    
+    if (!emailRegex.test(emailValue)) {
+      return { isValid: false, error: "Please enter a valid email address" };
     }
     
     return { isValid: true, error: "" };
@@ -98,6 +114,15 @@ export const UserRolesManagement = () => {
     setIsLastNameValid(validation.isValid);
   };
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNewUser({ ...newUser, email: value });
+    
+    const validation = validateEmail(value);
+    setEmailError(validation.error);
+    setIsEmailValid(validation.isValid);
+  };
+
   const handleRoleChange = (userId: number, newRole: string) => {
     setUsers(users.map(user => 
       user.id === userId ? { ...user, role: newRole } : user
@@ -105,15 +130,18 @@ export const UserRolesManagement = () => {
   };
 
   const handleAddUser = () => {
-    // Validate both names before submitting
+    // Validate all fields before submitting
     const firstNameValidation = validateName(newUser.firstName);
     const lastNameValidation = validateName(newUser.lastName);
+    const emailValidation = validateEmail(newUser.email);
     
-    if (!firstNameValidation.isValid || !lastNameValidation.isValid) {
+    if (!firstNameValidation.isValid || !lastNameValidation.isValid || !emailValidation.isValid) {
       setFirstNameError(firstNameValidation.error);
       setLastNameError(lastNameValidation.error);
+      setEmailError(emailValidation.error);
       setIsFirstNameValid(firstNameValidation.isValid);
       setIsLastNameValid(lastNameValidation.isValid);
+      setIsEmailValid(emailValidation.isValid);
       return;
     }
 
@@ -123,8 +151,10 @@ export const UserRolesManagement = () => {
     setNewUser({ firstName: "", lastName: "", email: "", role: ROLES.ADMIN.value });
     setFirstNameError("");
     setLastNameError("");
+    setEmailError("");
     setIsFirstNameValid(false);
     setIsLastNameValid(false);
+    setIsEmailValid(false);
     setIsDialogOpen(false);
   };
 
@@ -133,7 +163,7 @@ export const UserRolesManagement = () => {
     return roleObj ? roleObj.color : "";
   };
 
-  const isFormValid = isFirstNameValid && isLastNameValid && newUser.email.trim() !== "";
+  const isFormValid = isFirstNameValid && isLastNameValid && isEmailValid;
 
   return (
     <TooltipProvider>
@@ -232,13 +262,35 @@ export const UserRolesManagement = () => {
                   <Label htmlFor="email" className="text-right">
                     Email
                   </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={newUser.email}
-                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                    className="col-span-3"
-                  />
+                  <div className="col-span-3 space-y-2">
+                    <div className="relative">
+                      <Input
+                        id="email"
+                        type="email"
+                        value={newUser.email}
+                        onChange={handleEmailChange}
+                        className={`pr-10 ${
+                          emailError ? 'border-red-500 focus-visible:ring-red-500' : 
+                          isEmailValid ? 'border-green-500 focus-visible:ring-green-500' : ''
+                        }`}
+                      />
+                      {newUser.email && (
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                          {isEmailValid ? (
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                          ) : emailError ? (
+                            <AlertCircle className="h-4 w-4 text-red-500" />
+                          ) : null}
+                        </div>
+                      )}
+                    </div>
+                    {emailError && (
+                      <p className="text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" />
+                        {emailError}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="role" className="text-right">
