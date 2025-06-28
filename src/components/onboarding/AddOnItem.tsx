@@ -16,29 +16,17 @@ export const AddOnItem = ({ addon, selectedPlan, isSelected, onToggle }: AddOnIt
   
   // Special handling for Tech Support on Starter plan
   const isTechSupportForStarter = addon.id === "tech-support" && selectedPlan === "starter";
-  const isIncludedOffer = isTechSupportForStarter;
   
   return (
-    <Card className={`transition-all ${isSelected ? "ring-2 ring-primary" : ""} ${isIncludedOffer ? "border-amber-200 bg-amber-50/30" : ""}`}>
+    <Card className={`transition-all ${isSelected ? "ring-2 ring-primary" : ""}`}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-start space-x-3 flex-1">
-            {isIncludedOffer && (
-              <div className="mt-1 flex items-center justify-center w-4 h-4 bg-amber-500 rounded-sm">
-                <Check className="h-3 w-3 text-white" />
-              </div>
-            )}
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <label className="text-sm font-medium">
                   {addon.name}
                 </label>
-                {isIncludedOffer && (
-                  <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full text-xs font-medium">
-                    <Clock className="h-3 w-3" />
-                    Limited Time
-                  </span>
-                )}
               </div>
               <p className="text-xs text-muted-foreground mb-2">
                 {addon.description}
@@ -52,17 +40,11 @@ export const AddOnItem = ({ addon, selectedPlan, isSelected, onToggle }: AddOnIt
           </div>
           <div className="flex items-center gap-4 flex-shrink-0">
             <div className="text-right">
-              {isIncludedOffer ? (
-                <div className="text-sm font-medium text-amber-700">
-                  Included
-                </div>
-              ) : (
-                <div className="text-sm font-medium">
-                  {price}
-                </div>
-              )}
+              <div className="text-sm font-medium">
+                {price}
+              </div>
             </div>
-            {!isIncludedOffer && (
+            {!isTechSupportForStarter && (
               <Switch
                 checked={isSelected}
                 onCheckedChange={() => onToggle(addon.id)}
