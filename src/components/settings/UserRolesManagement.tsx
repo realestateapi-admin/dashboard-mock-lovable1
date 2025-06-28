@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Table, 
@@ -29,7 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Plus, Users } from "lucide-react";
+import { Plus, Users, AlertCircle, CheckCircle } from "lucide-react";
 
 // Define available user roles
 const ROLES = {
@@ -49,8 +48,55 @@ const INITIAL_USERS = [
 
 export const UserRolesManagement = () => {
   const [users, setUsers] = useState(INITIAL_USERS);
-  const [newUser, setNewUser] = useState({ name: "", email: "", role: ROLES.ADMIN.value });
+  const [newUser, setNewUser] = useState({ 
+    firstName: "", 
+    lastName: "", 
+    email: "", 
+    role: ROLES.ADMIN.value 
+  });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
+  const [isFirstNameValid, setIsFirstNameValid] = useState(false);
+  const [isLastNameValid, setIsLastNameValid] = useState(false);
+
+  const validateName = (name: string) => {
+    // Check minimum length
+    if (name.length < 1) {
+      return { isValid: false, error: "This field is required" };
+    }
+    
+    // Check maximum length
+    if (name.length > 50) {
+      return { isValid: false, error: "Must be 50 characters or less" };
+    }
+    
+    // Check for at least one alphanumeric character
+    const hasAlphanumeric = /[a-zA-Z0-9]/.test(name);
+    if (!hasAlphanumeric) {
+      return { isValid: false, error: "Must contain at least one letter or number" };
+    }
+    
+    return { isValid: true, error: "" };
+  };
+
+  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNewUser({ ...newUser, firstName: value });
+    
+    const validation = validateName(value);
+    setFirstNameError(validation.error);
+    setIsFirstNameValid(validation.isValid);
+  };
+
+  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNewUser({ ...newUser, lastName: value });
+    
+    const validation = validateName(value);
+    setLastNameError(validation.error);
+    setIsLastNameValid(validation.isValid);
+  };
 
   const handleRoleChange = (userId: number, newRole: string) => {
     setUsers(users.map(user => 
@@ -59,9 +105,26 @@ export const UserRolesManagement = () => {
   };
 
   const handleAddUser = () => {
+    // Validate both names before submitting
+    const firstNameValidation = validateName(newUser.firstName);
+    const lastNameValidation = validateName(newUser.lastName);
+    
+    if (!firstNameValidation.isValid || !lastNameValidation.isValid) {
+      setFirstNameError(firstNameValidation.error);
+      setLastNameError(lastNameValidation.error);
+      setIsFirstNameValid(firstNameValidation.isValid);
+      setIsLastNameValid(lastNameValidation.isValid);
+      return;
+    }
+
     const id = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-    setUsers([...users, { id, ...newUser }]);
-    setNewUser({ name: "", email: "", role: ROLES.ADMIN.value });
+    const fullName = `${newUser.firstName} ${newUser.lastName}`;
+    setUsers([...users, { id, name: fullName, email: newUser.email, role: newUser.role }]);
+    setNewUser({ firstName: "", lastName: "", email: "", role: ROLES.ADMIN.value });
+    setFirstNameError("");
+    setLastNameError("");
+    setIsFirstNameValid(false);
+    setIsLastNameValid(false);
     setIsDialogOpen(false);
   };
 
@@ -69,6 +132,8 @@ export const UserRolesManagement = () => {
     const roleObj = Object.values(ROLES).find(r => r.value === role);
     return roleObj ? roleObj.color : "";
   };
+
+  const isFormValid = isFirstNameValid && isLastNameValid && newUser.email.trim() !== "";
 
   return (
     <TooltipProvider>
@@ -96,15 +161,72 @@ export const UserRolesManagement = () => {
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
+                  <Label htmlFor="firstName" className="text-right">
+                    First Name
                   </Label>
-                  <Input
-                    id="name"
-                    value={newUser.name}
-                    onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                    className="col-span-3"
-                  />
+                  <div className="col-span-3 space-y-2">
+                    <div className="relative">
+                      <Input
+                        id="firstName"
+                        value={newUser.firstName}
+                        onChange={handleFirstNameChange}
+                        className={`pr-10 ${
+                          firstNameError ? 'border-red-500 focus-visible:ring-red-500' : 
+                          isFirstNameValid ? 'border-green-500 focus-visible:ring-green-500' : ''
+                        }`}
+                        maxLength={50}
+                      />
+                      {newUser.firstName && (
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                          {isFirstNameValid ? (
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                          ) : firstNameError ? (
+                            <AlertCircle className="h-4 w-4 text-red-500" />
+                          ) : null}
+                        </div>
+                      )}
+                    </div>
+                    {firstNameError && (
+                      <p className="text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" />
+                        {firstNameError}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="lastName" className="text-right">
+                    Last Name
+                  </Label>
+                  <div className="col-span-3 space-y-2">
+                    <div className="relative">
+                      <Input
+                        id="lastName"
+                        value={newUser.lastName}
+                        onChange={handleLastNameChange}
+                        className={`pr-10 ${
+                          lastNameError ? 'border-red-500 focus-visible:ring-red-500' : 
+                          isLastNameValid ? 'border-green-500 focus-visible:ring-green-500' : ''
+                        }`}
+                        maxLength={50}
+                      />
+                      {newUser.lastName && (
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                          {isLastNameValid ? (
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                          ) : lastNameError ? (
+                            <AlertCircle className="h-4 w-4 text-red-500" />
+                          ) : null}
+                        </div>
+                      )}
+                    </div>
+                    {lastNameError && (
+                      <p className="text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" />
+                        {lastNameError}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="email" className="text-right">
@@ -164,7 +286,7 @@ export const UserRolesManagement = () => {
                 <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                   Cancel
                 </Button>
-                <Button onClick={handleAddUser}>
+                <Button onClick={handleAddUser} disabled={!isFormValid}>
                   Add User
                 </Button>
               </DialogFooter>
