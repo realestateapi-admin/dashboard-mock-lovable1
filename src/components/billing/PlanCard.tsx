@@ -38,23 +38,30 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
 
   const { discounted, original } = getDisplayPrice();
 
-  // Define additional features for each plan
-  const getAdditionalFeatures = (planId: string) => {
+  // Get additional features that aren't already shown in the main list
+  const getAdditionalFeatures = (planId: string, existingFeatures: string[]) => {
+    const displayedFeatures = existingFeatures.slice(0, 3);
+    const remainingFeatures = existingFeatures.slice(3);
+    
     switch (planId) {
       case 'starter':
-        return [
+        const starterAdditionalFeatures = [
           "Auto-Complete (unlimited)",
           "Property Search", 
           "Property Detail",
           "Address Verification",
           "PropGPT"
         ];
+        // Filter out features that are already displayed
+        return starterAdditionalFeatures.filter(feature => 
+          !displayedFeatures.includes(feature)
+        );
       default:
-        return [];
+        return remainingFeatures;
     }
   };
 
-  const additionalFeatures = getAdditionalFeatures(plan.id);
+  const additionalFeatures = getAdditionalFeatures(plan.id, plan.features);
   const hasMoreFeatures = plan.features.length > 3;
 
   return (
@@ -163,7 +170,7 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
                   {additionalFeatures.length > 0 ? (
                     <HoverCard>
                       <HoverCardTrigger className="cursor-pointer hover:text-primary">
-                        +{plan.features.length - 3} more features
+                        + more
                       </HoverCardTrigger>
                       <HoverCardContent className="w-64">
                         <div className="space-y-2">
