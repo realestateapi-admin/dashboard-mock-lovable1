@@ -1,26 +1,54 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export const usePaymentMethodFormV2 = (isLoading: boolean) => {
-  // State for payment method type
-  const [paymentMethodType, setPaymentMethodType] = useState<"card" | "ach">("card");
-  
-  // State for company and billing information
-  const [companyInfo, setCompanyInfo] = useState({
-    companyName: "",
-    billingEmail: "",
-    address: {
-      line1: "",
-      line2: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      country: "United States"
-    },
+export interface CompanyInfo {
+  companyName: string;
+  billingEmail: string;
+}
+
+export interface BillingAddress {
+  line1: string;
+  line2: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+}
+
+export interface CardDetails {
+  accountName: string;
+  routingNumber: string;
+  accountNumber: string;
+  accountType: string;
+  makeDefault: boolean;
+  cardNumber: string;
+  cardholderName: string;
+  expiry: string;
+  cvc: string;
+}
+
+export interface BackupCardDetails {
+  backupCardNumber: string;
+  backupCardholderName: string;
+  backupExpiry: string;
+  backupCvc: string;
+}
+
+export const usePaymentMethodFormV2 = (isLoading: boolean = false) => {
+  // Get stored payment method type or default to 'card'
+  const [paymentMethodType, setPaymentMethodType] = useState<'card' | 'ach'>(() => {
+    const stored = localStorage.getItem('paymentMethodType');
+    return (stored === 'card' || stored === 'ach') ? stored as 'card' | 'ach' : 'card';
   });
 
-  // State for billing address
-  const [billingAddress, setBillingAddress] = useState({
+  // Company information state (without address)
+  const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({
+    companyName: "",
+    billingEmail: "",
+  });
+
+  // Billing address state (separate from company info)
+  const [billingAddress, setBillingAddress] = useState<BillingAddress>({
     line1: "",
     line2: "",
     city: "",
@@ -29,43 +57,35 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
     country: "United States"
   });
 
-  // State for using same address
+  // Use same address checkbox state
   const [useSameAddress, setUseSameAddress] = useState(false);
 
-  // Credit card state
-  const [cardDetails, setCardDetails] = useState({
-    cardName: "",
+  // Card details state
+  const [cardDetails, setCardDetails] = useState<CardDetails>({
+    accountName: "",
+    routingNumber: "",
+    accountNumber: "",
+    accountType: "checking",
+    makeDefault: false,
     cardNumber: "",
+    cardholderName: "",
     expiry: "",
     cvc: "",
-    zipCode: ""
   });
 
-  // Backup credit card state for ACH
-  const [backupCardDetails, setBackupCardDetails] = useState({
-    cardName: "",
-    cardNumber: "",
-    expiry: "",
-    cvc: "",
-    zipCode: ""
+  // Backup card details state
+  const [backupCardDetails, setBackupCardDetails] = useState<BackupCardDetails>({
+    backupCardNumber: "",
+    backupCardholderName: "",
+    backupExpiry: "",
+    backupCvc: "",
   });
 
-  // Handle input changes for company info
+  // Handle company info changes
   const handleCompanyInfoChange = (field: string, value: string) => {
     setCompanyInfo(prev => ({
       ...prev,
       [field]: value
-    }));
-  };
-
-  // Handle company address changes
-  const handleCompanyAddressChange = (field: string, value: string) => {
-    setCompanyInfo(prev => ({
-      ...prev,
-      address: {
-        ...prev.address,
-        [field]: value
-      }
     }));
   };
 
@@ -82,13 +102,15 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
     setUseSameAddress(checked);
   };
 
-  const handleCardDetailsChange = (field: string, value: string) => {
+  // Handle card details changes
+  const handleCardDetailsChange = (field: string, value: string | boolean) => {
     setCardDetails(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
+  // Handle backup card details changes
   const handleBackupCardDetailsChange = (field: string, value: string) => {
     setBackupCardDetails(prev => ({
       ...prev,
@@ -96,8 +118,10 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
     }));
   };
 
-  const handlePaymentTypeChange = (value: string) => {
-    setPaymentMethodType(value as "card" | "ach");
+  // Handle payment type changes
+  const handlePaymentTypeChange = (type: 'card' | 'ach') => {
+    setPaymentMethodType(type);
+    localStorage.setItem('paymentMethodType', type);
   };
 
   return {
@@ -107,9 +131,7 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
     useSameAddress,
     cardDetails,
     backupCardDetails,
-    isLoading,
     handleCompanyInfoChange,
-    handleCompanyAddressChange,
     handleBillingAddressChange,
     handleUseSameAddressChange,
     handleCardDetailsChange,
