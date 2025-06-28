@@ -1,7 +1,7 @@
-
 import { CheckCircle, Phone } from "lucide-react";
 import { PlanData } from "@/types/billing";
 import { Button } from "@/components/ui/button";
+import { annualPlanPrices } from "@/data/plans";
 
 interface PlanCardProps {
   plan: PlanData & { originalPrice?: string };
@@ -11,6 +11,32 @@ interface PlanCardProps {
 }
 
 export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' }: PlanCardProps) => {
+  // Calculate discounted price for annual billing
+  const getDisplayPrice = () => {
+    if (plan.id === "enterprise") {
+      return { discounted: "Custom", original: null };
+    }
+    
+    if (billingCycle === 'annual') {
+      // Check if there's a specific annual price defined
+      const specificAnnualPrice = annualPlanPrices[plan.id as keyof typeof annualPlanPrices];
+      if (specificAnnualPrice) {
+        return { discounted: specificAnnualPrice, original: plan.price };
+      }
+      
+      // Otherwise calculate 20% discount
+      const numericPrice = parseFloat(plan.price.replace(/[$,]/g, ''));
+      if (!isNaN(numericPrice)) {
+        const discountedPrice = Math.round(numericPrice * 0.8);
+        return { discounted: `$${discountedPrice}`, original: plan.price };
+      }
+    }
+    
+    return { discounted: plan.price, original: null };
+  };
+
+  const { discounted, original } = getDisplayPrice();
+
   return (
     <div className="relative">
       {plan.popular && (
@@ -89,15 +115,15 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
           </div>
           <div className="flex flex-col mb-4">
             {/* Price display with strikethrough for original price when on annual billing */}
-            {billingCycle === 'annual' && plan.originalPrice ? (
+            {billingCycle === 'annual' && original ? (
               <div className="flex items-baseline gap-2">
-                <span className="text-xl font-semibold">{plan.price}</span>
-                <span className="text-xl line-through text-muted-foreground">{plan.originalPrice}</span>
+                <span className="text-xl font-semibold">{discounted}</span>
+                <span className="text-xl line-through text-muted-foreground">{original}</span>
                 <span className="text-xs text-muted-foreground">/month</span>
               </div>
             ) : (
               <div className="flex gap-1 items-baseline">
-                <span className="text-xl font-semibold">{plan.price}</span>
+                <span className="text-xl font-semibold">{discounted}</span>
                 <span className="text-xs text-muted-foreground">/month</span>
               </div>
             )}
