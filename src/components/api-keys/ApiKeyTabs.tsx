@@ -81,7 +81,7 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
     <div className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2">
         <ApiKeyCard
-          title="service_role"
+          title="backend"
           subtitle="secret"
           description="This key has the ability to bypass Row Level Security. Never share it publicly. If leaked, generate a new JWT secret immediately. Prefer using Publishable API keys instead."
           keyValue={privateApiKey}
@@ -113,3 +113,4 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
     </div>
   );
 };
+

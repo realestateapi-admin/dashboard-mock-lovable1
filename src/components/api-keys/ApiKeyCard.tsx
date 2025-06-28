@@ -1,4 +1,5 @@
 
+
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -122,7 +123,7 @@ export const ApiKeyCard = ({
         </div>
         
         <p className="text-sm text-muted-foreground">
-          {isPublicKey ? "This is your public key." : "This is your private key."}
+          {isPublicKey ? "This is your public key." : "This key is scoped for all available features on your subscription. Keep this key secure and never share it publicly."}
         </p>
         
         {lastRequest && (
@@ -162,3 +163,4 @@ export const ApiKeyCard = ({
     </Card>
   );
 };
+
