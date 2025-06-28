@@ -38,23 +38,15 @@ const ROLES = {
   VIEWER: { label: "Viewer", value: "viewer", color: "bg-gray-100 text-gray-800" },
 };
 
-// Mock data for demonstration
-const INITIAL_USERS = [
-  { id: 1, name: "John Doe", email: "john@example.com", role: ROLES.ADMIN.value },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", role: ROLES.BILLING.value },
-  { id: 3, name: "Bob Johnson", email: "bob@example.com", role: ROLES.DEVELOPER.value },
-  { id: 4, name: "Sarah Williams", email: "sarah@example.com", role: ROLES.VIEWER.value },
-];
-
 export const UserRolesManagement = () => {
-  // Initialize users from localStorage or fall back to initial data
+  // Initialize users from localStorage or start with empty array
   const [users, setUsers] = useState(() => {
     try {
       const savedUsers = localStorage.getItem('userRolesManagement_users');
-      return savedUsers ? JSON.parse(savedUsers) : INITIAL_USERS;
+      return savedUsers ? JSON.parse(savedUsers) : [];
     } catch (error) {
       console.error('Error loading users from localStorage:', error);
-      return INITIAL_USERS;
+      return [];
     }
   });
 
