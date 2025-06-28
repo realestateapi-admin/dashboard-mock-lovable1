@@ -542,7 +542,7 @@ export const UserRolesManagement = () => {
             <AlertDialogHeader>
               <AlertDialogTitle>Please confirm removal</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to remove this user? This action cannot be undone.
+                Are you sure you want to remove this user? They will lose access to their account and all associated data. This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
