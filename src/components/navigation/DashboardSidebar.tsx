@@ -1,4 +1,4 @@
-import { Home, BarChart, FileText, LifeBuoy, Settings, User, BookOpen } from "lucide-react";
+import { Home, BarChart, FileText, LifeBuoy, Settings, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -69,16 +69,6 @@ export const DashboardSidebar = () => {
     },
   ];
   
-  // Demo notes navigation items
-  const demoNavItems = [
-    {
-      title: "Implementation Guide",
-      href: "/dashboard/implementation-notes",
-      icon: BookOpen,
-      allowedRoles: ['admin', 'billing', 'developer', 'viewer'],
-    },
-  ];
-
   // Filter items based on the user's role and hide condition
   const filteredMainNavItems = mainNavItems.filter(item => 
     item.allowedRoles.includes(currentRole as UserRole) && 
@@ -89,10 +79,6 @@ export const DashboardSidebar = () => {
     item.allowedRoles.includes(currentRole as UserRole)
   );
   
-  const filteredDemoNavItems = demoNavItems.filter(item => 
-    item.allowedRoles.includes(currentRole as UserRole)
-  );
-
   return (
     <Sidebar className="border-r bg-[#1e1e2e]">
       <SidebarContent className="pt-6">
@@ -140,33 +126,6 @@ export const DashboardSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               {filteredSecondaryNavItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.href}
-                      className={({ isActive }) => 
-                        isActive ? "text-[#5014d0] font-medium" : "text-foreground/70 hover:text-foreground"
-                      }
-                    >
-                      {({ isActive }) => (
-                        <>
-                          <item.icon className={isActive ? "h-5 w-5 text-[#5014d0]" : "h-5 w-5"} />
-                          <span>{item.title}</span>
-                        </>
-                      )}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        
-        <SidebarGroup className="mt-6">
-          <SidebarGroupLabel>Demo Notes</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {filteredDemoNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink 
