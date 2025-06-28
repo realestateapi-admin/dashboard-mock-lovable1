@@ -80,10 +80,10 @@ export function WizardContent({
   };
   
   return (
-    <>
+    <div className="h-full">
       {/* For Terms of Service step, show just the Terms of Service content without the sidebar */}
       {currentStep === 4 ? (
-        <div className="w-full mx-auto max-w-3xl h-[calc(100vh-280px)]">
+        <div className="w-full mx-auto max-w-3xl h-full">
           <ScrollArea className="h-full">
             <div className="p-4">
               <TermsOfServiceStep 
@@ -95,7 +95,7 @@ export function WizardContent({
           </ScrollArea>
         </div>
       ) : currentStep === 5 ? (
-        <div className="w-full mx-auto max-w-4xl h-[calc(100vh-280px)]">
+        <div className="w-full mx-auto max-w-4xl h-full">
           <ScrollArea className="h-full">
             <div className="p-4">
               <SubscriptionConfirmationStep
@@ -113,7 +113,7 @@ export function WizardContent({
           </ScrollArea>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-[calc(100vh-280px)]">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-full">
           <div className="md:col-span-8 h-full overflow-hidden">
             <ScrollArea className="h-full">
               <div className="p-4 h-full">
@@ -151,7 +151,7 @@ export function WizardContent({
                     overageHandling={overageHandling || ''}
                     onOverageHandlingChange={setOverageHandling}
                     isLoading={isLoading}
-                    selectedPlan={selectedPlan} // Pass the selectedPlan to handle Starter plan restrictions
+                    selectedPlan={selectedPlan}
                   />
                 )}
                 
@@ -183,6 +183,6 @@ export function WizardContent({
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

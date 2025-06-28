@@ -38,23 +38,23 @@ const PlanSignupWizard = () => {
   } = useWizardState();
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-2">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-7xl"
+        className="w-full max-w-7xl h-[calc(100vh-1rem)]"
       >
-        <Card className="border shadow-lg">
-          <CardHeader>
+        <Card className="border shadow-lg h-full flex flex-col">
+          <CardHeader className="flex-shrink-0">
             <WizardHeader 
               currentStep={currentStep} 
               steps={steps} 
-              hideProgressBar={true} // Added to hide the progress bar
+              hideProgressBar={true}
             />
           </CardHeader>
           
-          <CardContent className="py-6">
+          <CardContent className="py-6 flex-1 overflow-hidden">
             <WizardContent
               currentStep={currentStep}
               billingCycle={billingCycle}
@@ -79,7 +79,7 @@ const PlanSignupWizard = () => {
             />
           </CardContent>
           
-          <CardFooter>
+          <CardFooter className="flex-shrink-0">
             <WizardFooter
               currentStep={currentStep}
               totalSteps={steps.length}
