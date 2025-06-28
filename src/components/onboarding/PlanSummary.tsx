@@ -50,7 +50,7 @@ export const PlanSummary = ({
     let fixedAddOnsTotal = 0;
     let hasMeteredAddOns = false;
     
-    // Calculate costs for selected add-ons
+    // Calculate costs for selected add-ons (NO DISCOUNT APPLIED TO ADD-ONS)
     selectedAddOns.forEach(addonId => {
       const addon = addOns.find(a => a.id === addonId);
       if (!addon) return;
@@ -69,14 +69,10 @@ export const PlanSummary = ({
       // Parse the price - handle different formats like "$250", "$250/month"
       const numericPrice = parseInt(priceString.replace(/\$|,|\/month/g, ""));
       if (!isNaN(numericPrice)) {
+        // Add-ons are NOT discounted for annual billing
         fixedAddOnsTotal += numericPrice;
       }
     });
-    
-    // Apply discount for annual billing for add-ons if needed
-    if (billingCycle === 'annual') {
-      fixedAddOnsTotal = fixedAddOnsTotal * 0.8; // 20% discount
-    }
     
     const total = basePlanPrice + fixedAddOnsTotal;
     
@@ -191,7 +187,7 @@ export const PlanSummary = ({
       
       {billingCycle === 'annual' && (
         <div className="text-xs text-blue-600">
-          Annual billing (discount applied)
+          Annual billing (discount applied to base plan only)
         </div>
       )}
       
