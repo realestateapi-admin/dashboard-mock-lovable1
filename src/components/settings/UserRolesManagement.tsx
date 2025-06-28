@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Table, 
@@ -371,23 +372,23 @@ export const UserRolesManagement = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead className="text-center">Name</TableHead>
+                <TableHead className="text-center">Email</TableHead>
+                <TableHead className="text-center">Role</TableHead>
+                <TableHead className="text-center">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {users.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell className="font-medium">{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>
+                  <TableCell className="font-medium text-center">{user.name}</TableCell>
+                  <TableCell className="text-center">{user.email}</TableCell>
+                  <TableCell className="text-center">
                     <Select 
                       value={user.role} 
                       onValueChange={(value) => handleRoleChange(user.id, value)}
                     >
-                      <SelectTrigger className="w-32">
+                      <SelectTrigger className="w-32 mx-auto">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -399,7 +400,7 @@ export const UserRolesManagement = () => {
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">
                     <Button 
                       variant="outline" 
                       size="sm"
