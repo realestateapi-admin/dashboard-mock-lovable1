@@ -23,7 +23,24 @@ export const ProfileForm = ({
   const { toast } = useToast();
   const [name, setName] = React.useState(initialName);
   const [email, setEmail] = React.useState(initialEmail);
-  const [companyName, setCompanyName] = React.useState(initialCompanyName);
+  
+  // Get team name from localStorage if available, otherwise use initialCompanyName
+  const getInitialCompanyName = () => {
+    try {
+      const teamData = localStorage.getItem('teamData');
+      if (teamData) {
+        const parsedTeamData = JSON.parse(teamData);
+        if (parsedTeamData.teamName) {
+          return parsedTeamData.teamName;
+        }
+      }
+    } catch (error) {
+      console.log('Error parsing team data:', error);
+    }
+    return initialCompanyName;
+  };
+  
+  const [companyName, setCompanyName] = React.useState(getInitialCompanyName());
   const [companyNameError, setCompanyNameError] = React.useState("");
   const [isCompanyNameValid, setIsCompanyNameValid] = React.useState(false);
 
