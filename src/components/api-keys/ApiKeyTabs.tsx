@@ -1,4 +1,5 @@
 
+
 import { useState, useEffect } from "react";
 import { Shield } from "lucide-react";
 import { ApiKeyCard } from "./ApiKeyCard";
@@ -11,8 +12,8 @@ interface ApiKeyTabsProps {
 }
 
 export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) => {
-  const [publicApiKey, setPublicApiKey] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6");
-  const [privateApiKey, setPrivateApiKey] = useState("****-****-****-****");
+  const [publicApiKey, setPublicApiKey] = useState("REALESTATEAPI-8f2e-41c7-9a5d-3c8b47e1f9a2");
+  const [privateApiKey, setPrivateApiKey] = useState("REALESTATEAPI-6c3d-52a8-b749-7f9e28d4c5b1");
   const [isLoadingScopes, setIsLoadingScopes] = useState(true);
   const [publicKeyScopes, setPublicKeyScopes] = useState<string[]>([]);
   const [privateKeyScopes, setPrivateKeyScopes] = useState<string[]>([]);
@@ -54,15 +55,25 @@ export const ApiKeyTabs = ({ isTrialActive, trialDaysLeft }: ApiKeyTabsProps) =>
     }, 1500);
   }, []);
 
+  const generateNewKey = (prefix: string) => {
+    const segments = [
+      Math.random().toString(16).substring(2, 6),
+      Math.random().toString(16).substring(2, 6),
+      Math.random().toString(16).substring(2, 6),
+      Math.random().toString(16).substring(2, 14)
+    ];
+    return `${prefix}-${segments.join('-')}`;
+  };
+
   const handleRotatePublicKey = async () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
-    const newKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." + Math.random().toString(36).substring(2, 15);
+    const newKey = generateNewKey("REALESTATEAPI");
     setPublicApiKey(newKey);
   };
 
   const handleRotatePrivateKey = async () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
-    const newKey = "****-****-****-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+    const newKey = generateNewKey("REALESTATEAPI");
     setPrivateApiKey(newKey);
   };
 
