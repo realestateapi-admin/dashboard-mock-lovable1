@@ -20,7 +20,7 @@ export const WizardFooter = ({
   isLoading = false
 }: WizardFooterProps) => {
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between gap-4">
       <Button
         variant="outline"
         onClick={handleBack}
