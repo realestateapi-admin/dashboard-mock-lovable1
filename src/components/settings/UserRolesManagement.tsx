@@ -47,6 +47,15 @@ const ROLES = {
   VIEWER: { label: "Viewer", value: "viewer", color: "bg-gray-100 text-gray-800" },
 };
 
+// Current account (always first in the list)
+const CURRENT_ACCOUNT = {
+  id: 0,
+  name: "John Doe (You)",
+  email: "john.doe@example.com",
+  role: ROLES.ADMIN.value,
+  isCurrentAccount: true
+};
+
 export const UserRolesManagement = () => {
   // Initialize users from localStorage or start with empty array
   const [users, setUsers] = useState(() => {
@@ -67,6 +76,9 @@ export const UserRolesManagement = () => {
       console.error('Error saving users to localStorage:', error);
     }
   }, [users]);
+
+  // Combine current account with other users for display
+  const allUsers = [CURRENT_ACCOUNT, ...users];
 
   const [newUser, setNewUser] = useState({ 
     firstName: "", 
@@ -145,12 +157,18 @@ export const UserRolesManagement = () => {
   };
 
   const handleRoleChange = (userId: number, newRole: string) => {
+    // Don't allow role changes for current account
+    if (userId === 0) return;
+    
     setUsers(users.map(user => 
       user.id === userId ? { ...user, role: newRole } : user
     ));
   };
 
   const handleRemoveUser = (userId: number) => {
+    // Don't allow removal of current account
+    if (userId === 0) return;
+    
     setUsers(users.filter(user => user.id !== userId));
     setUserToDelete(null);
   };
@@ -378,7 +396,7 @@ export const UserRolesManagement = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
+              {allUsers.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium text-center">{user.name}</TableCell>
                   <TableCell className="text-center">{user.email}</TableCell>
@@ -386,11 +404,12 @@ export const UserRolesManagement = () => {
                     <Select 
                       value={user.role} 
                       onValueChange={(value) => {
-                        // Only allow Admin role to be selected
-                        if (value === ROLES.ADMIN.value) {
+                        // Only allow Admin role to be selected and don't allow changes for current account
+                        if (value === ROLES.ADMIN.value && user.id !== 0) {
                           handleRoleChange(user.id, value);
                         }
                       }}
+                      disabled={user.isCurrentAccount}
                     >
                       <SelectTrigger className="w-32 mx-auto">
                         <SelectValue />
@@ -421,15 +440,34 @@ export const UserRolesManagement = () => {
                     </Select>
                   </TableCell>
                   <TableCell className="text-center">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setUserToDelete(user.id)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Remove
-                    </Button>
+                    {user.isCurrentAccount ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            disabled
+                            className="text-gray-400 cursor-not-allowed opacity-50"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Remove
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Cannot remove current account</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setUserToDelete(user.id)}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Remove
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
