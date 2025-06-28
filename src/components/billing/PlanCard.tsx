@@ -56,6 +56,24 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
         return starterAdditionalFeatures.filter(feature => 
           !displayedFeatures.includes(feature)
         );
+      case 'growth':
+        const growthAdditionalFeatures = [
+          ...remainingFeatures,
+          "PropGPT"
+        ];
+        // Filter out duplicates and features already displayed
+        return growthAdditionalFeatures.filter(feature => 
+          !displayedFeatures.includes(feature)
+        );
+      case 'pro':
+        const proAdditionalFeatures = [
+          ...remainingFeatures,
+          "PropGPT"
+        ];
+        // Filter out duplicates and features already displayed
+        return proAdditionalFeatures.filter(feature => 
+          !displayedFeatures.includes(feature)
+        );
       default:
         return remainingFeatures;
     }
