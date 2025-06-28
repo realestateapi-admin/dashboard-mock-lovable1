@@ -1,3 +1,4 @@
+
 import { AddOnItem } from "@/components/onboarding/AddOnItem";
 import { AddOnData } from "@/types/billing";
 import { AddOnsSkeleton } from "../billing/wizard/SkeletonLoading";
@@ -110,9 +111,7 @@ export const AddOnsList = ({
   
   return (
     <>
-      <div ref={contentRef} className="space-y-6">
-        <h3 className="text-lg font-medium mb-4">Available Add-Ons</h3>
-        
+      <div ref={contentRef} className="space-y-6">        
         {/* Render add-ons by category in the specified order */}
         {sortedCategories.map((category) => (
           <div key={category} className="space-y-4 mb-8">
