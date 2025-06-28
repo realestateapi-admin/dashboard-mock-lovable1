@@ -114,29 +114,16 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
             </div>
           </div>
           <div className="flex flex-col mb-4">
-            {/* Price display with vertical stacking for annual billing to prevent overflow */}
-            {billingCycle === 'annual' && original ? (
-              <div className="flex flex-col">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-semibold">{discounted}</span>
-                  <span className="text-xs text-muted-foreground">/month</span>
-                </div>
-                <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-sm line-through text-muted-foreground">was {original}</span>
-                </div>
-              </div>
-            ) : (
-              <div className="flex gap-1 items-baseline">
-                <span className="text-xl font-semibold">{discounted}</span>
-                <span className="text-xs text-muted-foreground">/month</span>
-              </div>
-            )}
+            {/* Price display - simplified without strikethrough */}
+            <div className="flex gap-1 items-baseline">
+              <span className="text-xl font-semibold">{discounted}</span>
+              <span className="text-xs text-muted-foreground">/month</span>
+            </div>
             
-            {billingCycle === 'annual' && (
-              <div className="mt-1 text-xs text-muted-foreground">
-                12-month agreement, billed monthly
-              </div>
-            )}
+            {/* Always reserve space for billing cycle text to maintain consistent height */}
+            <div className="mt-1 text-xs text-muted-foreground min-h-[16px]">
+              {billingCycle === 'annual' && "12-month agreement, billed monthly"}
+            </div>
           </div>
           <div className="mb-2 flex items-center gap-2">
             <span className="text-xs font-medium">Records:</span>
