@@ -10,6 +10,28 @@ const ApiKeys = () => {
 
   // Only show trial banner if trial is active AND user is not on a paid plan
   const shouldShowTrialBanner = isTrialActive && !isOnPaidPlan;
+  
+  // Determine colors based on trial days left
+  const isExpired = trialDaysLeft <= 0;
+  const isUrgent = trialDaysLeft <= 2 && trialDaysLeft > 0;
+  
+  const alertClasses = isExpired 
+    ? "bg-red-50 border-red-500"
+    : isUrgent 
+    ? "bg-orange-50 border-orange-500"
+    : "bg-primary-teal/10 border-primary-teal";
+    
+  const iconColor = isExpired 
+    ? "text-red-500"
+    : isUrgent 
+    ? "text-orange-500"
+    : "text-primary-teal";
+    
+  const titleColor = isExpired 
+    ? "text-red-700"
+    : isUrgent 
+    ? "text-orange-700"
+    : "text-primary-teal";
 
   return (
     <motion.div 
@@ -23,11 +45,17 @@ const ApiKeys = () => {
       </div>
       
       {shouldShowTrialBanner && (
-        <Alert className="bg-primary-teal/10 border-primary-teal">
-          <AlertCircle className="h-4 w-4 text-primary-teal" />
-          <AlertTitle className="text-primary-teal">Trial Mode Active</AlertTitle>
+        <Alert className={alertClasses}>
+          <AlertCircle className={`h-4 w-4 ${iconColor}`} />
+          <AlertTitle className={titleColor}>
+            {isExpired ? "Trial Expired" : "Trial Mode Active"}
+          </AlertTitle>
           <AlertDescription>
-            You have {trialDaysLeft} days left in your trial. During this period, you can use the test API key for development.
+            {isExpired ? (
+              "Your free trial has ended. Choose a plan to continue using the API."
+            ) : (
+              `You have ${trialDaysLeft} days left in your trial. During this period, you can use the test API key for development.`
+            )}
           </AlertDescription>
         </Alert>
       )}
