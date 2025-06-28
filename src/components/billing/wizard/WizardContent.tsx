@@ -8,6 +8,7 @@ import { TermsOfServiceStep } from "@/components/billing/wizard/TermsOfServiceSt
 import { SubscriptionConfirmationStep } from "@/components/billing/wizard/SubscriptionConfirmationStep";
 import { PlanData, AddOnData } from "@/types/billing";
 import { useState, useEffect } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface WizardContentProps {
   currentStep: number;
@@ -57,7 +58,7 @@ export function WizardContent({
   onPlanChange,
   onTermsAccepted,
   onSubmit
-}: WizardContentProps) {
+}: WizardContentProps) => {
   // Find the name of the selected plan for the OverageHandling component
   const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || 'Selected';
   
@@ -82,89 +83,103 @@ export function WizardContent({
     <>
       {/* For Terms of Service step, show just the Terms of Service content without the sidebar */}
       {currentStep === 4 ? (
-        <div className="w-full mx-auto max-w-3xl">
-          <TermsOfServiceStep 
-            isLoading={isLoading}
-            termsAccepted={termsAccepted}
-            onTermsAccepted={onTermsAccepted}
-          />
+        <div className="w-full mx-auto max-w-3xl h-[calc(100vh-280px)]">
+          <ScrollArea className="h-full">
+            <div className="p-4">
+              <TermsOfServiceStep 
+                isLoading={isLoading}
+                termsAccepted={termsAccepted}
+                onTermsAccepted={onTermsAccepted}
+              />
+            </div>
+          </ScrollArea>
         </div>
       ) : currentStep === 5 ? (
-        <div className="w-full mx-auto max-w-4xl">
-          <SubscriptionConfirmationStep
-            selectedPlan={selectedPlan}
-            plans={plans}
-            activeAddOns={activeAddOns}
-            addOns={addOns}
-            overageHandling={overageHandling}
-            costs={costs}
-            billingCycle={billingCycle}
-            isLoading={isLoading}
-            paymentMethodType={paymentMethodType}
-          />
+        <div className="w-full mx-auto max-w-4xl h-[calc(100vh-280px)]">
+          <ScrollArea className="h-full">
+            <div className="p-4">
+              <SubscriptionConfirmationStep
+                selectedPlan={selectedPlan}
+                plans={plans}
+                activeAddOns={activeAddOns}
+                addOns={addOns}
+                overageHandling={overageHandling}
+                costs={costs}
+                billingCycle={billingCycle}
+                isLoading={isLoading}
+                paymentMethodType={paymentMethodType}
+              />
+            </div>
+          </ScrollArea>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-[calc(100vh-280px)]">
           <div className="md:col-span-8">
-            {/* Step 1: Choose Billing Option */}
-            {currentStep === 0 && (
-              <BillingOptionStep 
-                selectedPlan={selectedPlan}
-                billingCycle={billingCycle}
-                adjustedPlans={regularPlans}
-                enterprisePlan={enterprisePlan}
-                onPlanChange={onPlanChange}
-                onBillingCycleChange={onBillingCycleChange}
-                onSelectEnterprise={onSelectEnterprise}
-                isLoading={isLoading}
-              />
-            )}
-            
-            {/* Step 2: Select Add-Ons */}
-            {currentStep === 1 && (
-              <AddOnsList 
-                addOns={addOns}
-                selectedPlan={selectedPlan}
-                activeAddOns={activeAddOns}
-                onToggleAddOn={toggleAddOn}
-                isLoading={isLoading}
-              />
-            )}
-            
-            {/* Step 3: Overage Handling */}
-            {currentStep === 2 && (
-              <OverageHandling 
-                selectedPlanName={selectedPlanName}
-                overageHandling={overageHandling || ''}
-                onOverageHandlingChange={setOverageHandling}
-                isLoading={isLoading}
-                selectedPlan={selectedPlan} // Pass the selectedPlan to handle Starter plan restrictions
-              />
-            )}
-            
-            {/* Step 4: Payment Information */}
-            {currentStep === 3 && (
-              <PaymentMethodForm 
-                isLoading={isLoading} 
-                creditCardInfo={creditCardInfo}
-                onPaymentMethodTypeChange={handlePaymentMethodChange}
-              />
-            )}
+            <ScrollArea className="h-full">
+              <div className="p-4">
+                {/* Step 1: Choose Billing Option */}
+                {currentStep === 0 && (
+                  <BillingOptionStep 
+                    selectedPlan={selectedPlan}
+                    billingCycle={billingCycle}
+                    adjustedPlans={regularPlans}
+                    enterprisePlan={enterprisePlan}
+                    onPlanChange={onPlanChange}
+                    onBillingCycleChange={onBillingCycleChange}
+                    onSelectEnterprise={onSelectEnterprise}
+                    isLoading={isLoading}
+                  />
+                )}
+                
+                {/* Step 2: Select Add-Ons */}
+                {currentStep === 1 && (
+                  <AddOnsList 
+                    addOns={addOns}
+                    selectedPlan={selectedPlan}
+                    activeAddOns={activeAddOns}
+                    onToggleAddOn={toggleAddOn}
+                    isLoading={isLoading}
+                  />
+                )}
+                
+                {/* Step 3: Overage Handling */}
+                {currentStep === 2 && (
+                  <OverageHandling 
+                    selectedPlanName={selectedPlanName}
+                    overageHandling={overageHandling || ''}
+                    onOverageHandlingChange={setOverageHandling}
+                    isLoading={isLoading}
+                    selectedPlan={selectedPlan} // Pass the selectedPlan to handle Starter plan restrictions
+                  />
+                )}
+                
+                {/* Step 4: Payment Information */}
+                {currentStep === 3 && (
+                  <PaymentMethodForm 
+                    isLoading={isLoading} 
+                    creditCardInfo={creditCardInfo}
+                    onPaymentMethodTypeChange={handlePaymentMethodChange}
+                  />
+                )}
+              </div>
+            </ScrollArea>
           </div>
           
           <div className="md:col-span-4">
-            <SubscriptionSummary 
-              selectedPlan={selectedPlan}
-              plans={plans}
-              activeAddOns={activeAddOns}
-              addOns={addOns}
-              costs={costs}
-              subscription={null}
-              isLoading={isLoading}
-              onSubmit={onSubmit}
-              billingCycle={billingCycle}
-              showSubmitButton={false}
-            />
+            <div className="h-full">
+              <SubscriptionSummary 
+                selectedPlan={selectedPlan}
+                plans={plans}
+                activeAddOns={activeAddOns}
+                addOns={addOns}
+                costs={costs}
+                subscription={null}
+                isLoading={isLoading}
+                onSubmit={onSubmit}
+                billingCycle={billingCycle}
+                showSubmitButton={false}
+              />
+            </div>
           </div>
         </div>
       )}
