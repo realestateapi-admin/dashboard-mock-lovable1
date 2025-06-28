@@ -1,4 +1,3 @@
-
 import { CheckCircle, Phone } from "lucide-react";
 import { PlanData } from "@/types/billing";
 import { Button } from "@/components/ui/button";
@@ -70,7 +69,7 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
               <Phone className="h-4 w-4 mr-1" /> Contact Sales
             </Button>
             <p className="text-xs text-muted-foreground mt-2">
-              Custom pricing for your enterprise needs
+              For companies with higher data needs
             </p>
           </div>
           <div className="mb-2 flex items-center gap-2">
