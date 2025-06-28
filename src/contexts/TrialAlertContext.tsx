@@ -145,8 +145,8 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
 
   const value = {
     trialDaysLeft,
-    isTrialActive: trialDaysLeft > 0,
-    isPastTrial: trialDaysLeft <= 0,
+    isTrialActive: trialDaysLeft >= 0, // Changed from > 0 to >= 0 to show expired banners
+    isPastTrial: trialDaysLeft < 0, // This would be for truly past trials
     requestTrialExtension,
     trialStartDate,
     isFreeUser,
