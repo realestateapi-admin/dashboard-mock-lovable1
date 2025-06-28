@@ -1,3 +1,4 @@
+
 import { CheckCircle, Phone } from "lucide-react";
 import { PlanData } from "@/types/billing";
 import { Button } from "@/components/ui/button";
@@ -120,8 +121,8 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
               <span className="text-xs text-muted-foreground">/month</span>
             </div>
             
-            {/* Always reserve space for billing cycle text to maintain consistent height */}
-            <div className="mt-1 text-xs text-muted-foreground min-h-[16px]">
+            {/* Fixed height container for billing cycle text to maintain consistent height */}
+            <div className="mt-1 text-xs text-muted-foreground h-4 flex items-start">
               {billingCycle === 'annual' && "12-month agreement, billed monthly"}
             </div>
           </div>
