@@ -18,9 +18,9 @@ const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
   if (!isVisible) return null;
   
   return (
-    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 pointer-events-none">
-      <div className="bg-primary/90 text-primary-foreground rounded-full p-2 shadow-lg animate-bounce">
-        <ChevronDown className="h-4 w-4" />
+    <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 pointer-events-none">
+      <div className="bg-primary text-primary-foreground rounded-full p-3 shadow-lg animate-bounce border-2 border-background">
+        <ChevronDown className="h-5 w-5" />
       </div>
     </div>
   );
@@ -40,7 +40,7 @@ export const AddOnsList = ({
     if (scrollRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
       const hasMoreContent = scrollHeight > clientHeight;
-      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 20;
       
       setShowScrollIndicator(hasMoreContent && !isAtBottom);
     }
@@ -50,7 +50,7 @@ export const AddOnsList = ({
     const scrollElement = scrollRef.current;
     if (scrollElement) {
       // Check initial scroll position
-      setTimeout(checkScrollPosition, 100);
+      setTimeout(checkScrollPosition, 200);
       
       scrollElement.addEventListener('scroll', checkScrollPosition);
       return () => scrollElement.removeEventListener('scroll', checkScrollPosition);
@@ -60,7 +60,7 @@ export const AddOnsList = ({
   // Also check when window resizes
   useEffect(() => {
     const handleResize = () => {
-      setTimeout(checkScrollPosition, 100);
+      setTimeout(checkScrollPosition, 200);
     };
     
     window.addEventListener('resize', handleResize);
@@ -101,7 +101,7 @@ export const AddOnsList = ({
   return (
     <div className="relative h-full">
       <ScrollArea className="h-full" ref={scrollRef}>
-        <div className="p-4 space-y-6">
+        <div className="p-4 space-y-6 pb-16">
           <h3 className="text-lg font-medium mb-4">Available Add-Ons</h3>
           
           {/* Render add-ons by category in the specified order */}
