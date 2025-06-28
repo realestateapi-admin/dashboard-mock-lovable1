@@ -223,7 +223,7 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
               </p>
             )}
             <p className="text-xs text-muted-foreground">
-              Defaults to your account email. You may want to change this if billing should go to a separate billing function within your company.
+              Update if billing communications should go to a different address.
             </p>
           </div>
         </div>
