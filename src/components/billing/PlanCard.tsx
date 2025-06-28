@@ -1,7 +1,7 @@
-
 import { CheckCircle, Phone } from "lucide-react";
 import { PlanData } from "@/types/billing";
 import { Button } from "@/components/ui/button";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { annualPlanPrices } from "@/data/plans";
 
 interface PlanCardProps {
@@ -37,6 +37,25 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
   };
 
   const { discounted, original } = getDisplayPrice();
+
+  // Define additional features for each plan
+  const getAdditionalFeatures = (planId: string) => {
+    switch (planId) {
+      case 'starter':
+        return [
+          "Auto-Complete (unlimited)",
+          "Property Search", 
+          "Property Detail",
+          "Address Verification",
+          "PropGPT"
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const additionalFeatures = getAdditionalFeatures(plan.id);
+  const hasMoreFeatures = plan.features.length > 3;
 
   return (
     <div className="relative">
@@ -139,9 +158,30 @@ export const PlanCard = ({ plan, isSelected, onSelect, billingCycle = 'monthly' 
                   <span>{feature}</span>
                 </li>
               ))}
-              {plan.features.length > 3 && (
+              {hasMoreFeatures && (
                 <li className="text-xs text-muted-foreground">
-                  +{plan.features.length - 3} more features
+                  {additionalFeatures.length > 0 ? (
+                    <HoverCard>
+                      <HoverCardTrigger className="cursor-pointer hover:text-primary">
+                        +{plan.features.length - 3} more features
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-64">
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold">Additional Features:</h4>
+                          <ul className="text-xs space-y-1">
+                            {additionalFeatures.map((feature, i) => (
+                              <li key={i} className="flex items-center gap-1">
+                                <CheckCircle className="h-3 w-3 text-primary/70" />
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
+                  ) : (
+                    <span>+{plan.features.length - 3} more features</span>
+                  )}
                 </li>
               )}
             </ul>
