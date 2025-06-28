@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Plus, Users } from "lucide-react";
 
 // Define available user roles
@@ -48,7 +49,7 @@ const INITIAL_USERS = [
 
 export const UserRolesManagement = () => {
   const [users, setUsers] = useState(INITIAL_USERS);
-  const [newUser, setNewUser] = useState({ name: "", email: "", role: ROLES.VIEWER.value });
+  const [newUser, setNewUser] = useState({ name: "", email: "", role: ROLES.ADMIN.value });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleRoleChange = (userId: number, newRole: string) => {
@@ -60,7 +61,7 @@ export const UserRolesManagement = () => {
   const handleAddUser = () => {
     const id = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
     setUsers([...users, { id, ...newUser }]);
-    setNewUser({ name: "", email: "", role: ROLES.VIEWER.value });
+    setNewUser({ name: "", email: "", role: ROLES.ADMIN.value });
     setIsDialogOpen(false);
   };
 
@@ -70,128 +71,151 @@ export const UserRolesManagement = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">User Roles</h2>
-          <p className="text-muted-foreground">
-            Manage user roles and permissions for your team.
-          </p>
-        </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add User
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New User</DialogTitle>
-              <DialogDescription>
-                Enter the details of the new user to add to your team.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input
-                  id="name"
-                  value={newUser.name}
-                  onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={newUser.email}
-                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="role" className="text-right">
-                  Role
-                </Label>
-                <Select 
-                  value={newUser.role} 
-                  onValueChange={(value) => setNewUser({ ...newUser, role: value })}
-                >
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Select role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.values(ROLES).map((role) => (
-                      <SelectItem key={role.value} value={role.value}>
-                        {role.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleAddUser}>
+    <TooltipProvider>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">User Roles</h2>
+            <p className="text-muted-foreground">
+              Manage user roles and permissions for your team.
+            </p>
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
                 Add User
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
-      
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  <Badge className={getRoleBadge(user.role)}>
-                    {Object.values(ROLES).find(r => r.value === user.role)?.label}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right">
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New User</DialogTitle>
+                <DialogDescription>
+                  Enter the details of the new user to add to your team.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    Name
+                  </Label>
+                  <Input
+                    id="name"
+                    value={newUser.name}
+                    onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                    className="col-span-3"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="email" className="text-right">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={newUser.email}
+                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                    className="col-span-3"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="role" className="text-right">
+                    Role
+                  </Label>
                   <Select 
-                    value={user.role} 
-                    onValueChange={(value) => handleRoleChange(user.id, value)}
+                    value={newUser.role} 
+                    onValueChange={(value) => {
+                      // Only allow Admin role to be selected
+                      if (value === ROLES.ADMIN.value) {
+                        setNewUser({ ...newUser, role: value });
+                      }
+                    }}
                   >
-                    <SelectTrigger className="w-32">
-                      <SelectValue />
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select role" />
                     </SelectTrigger>
                     <SelectContent>
-                      {Object.values(ROLES).map((role) => (
-                        <SelectItem key={role.value} value={role.value}>
-                          {role.label}
-                        </SelectItem>
+                      <SelectItem value={ROLES.ADMIN.value}>
+                        {ROLES.ADMIN.label}
+                      </SelectItem>
+                      {Object.values(ROLES).filter(role => role.value !== ROLES.ADMIN.value).map((role) => (
+                        <Tooltip key={role.value}>
+                          <TooltipTrigger asChild>
+                            <div>
+                              <SelectItem 
+                                value={role.value} 
+                                disabled
+                                className="opacity-50 cursor-not-allowed"
+                              >
+                                {role.label}
+                              </SelectItem>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Coming soon</p>
+                          </TooltipContent>
+                        </Tooltip>
                       ))}
                     </SelectContent>
                   </Select>
-                </TableCell>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleAddUser}>
+                  Add User
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+        
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell className="font-medium">{user.name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>
+                    <Badge className={getRoleBadge(user.role)}>
+                      {Object.values(ROLES).find(r => r.value === user.role)?.label}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Select 
+                      value={user.role} 
+                      onValueChange={(value) => handleRoleChange(user.id, value)}
+                    >
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.values(ROLES).map((role) => (
+                          <SelectItem key={role.value} value={role.value}>
+                            {role.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 
