@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Table, 
@@ -88,6 +87,36 @@ export const UserRolesManagement = () => {
       console.error('Error saving users to localStorage:', error);
     }
   }, [users]);
+
+  // Check for expired invitations on component mount and every minute
+  useEffect(() => {
+    const checkExpiredInvitations = () => {
+      const now = new Date();
+      const twoDaysInMs = 2 * 24 * 60 * 60 * 1000; // 2 days in milliseconds
+      
+      setUsers(prevUsers => 
+        prevUsers.map(user => {
+          if (user.status === USER_STATUS.INVITED.value && user.invitedAt) {
+            const invitedDate = new Date(user.invitedAt);
+            const timeDiff = now.getTime() - invitedDate.getTime();
+            
+            if (timeDiff > twoDaysInMs) {
+              return { ...user, status: USER_STATUS.INVITATION_EXPIRED.value };
+            }
+          }
+          return user;
+        })
+      );
+    };
+
+    // Check immediately on mount
+    checkExpiredInvitations();
+
+    // Check every minute for expired invitations
+    const interval = setInterval(checkExpiredInvitations, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Combine current account with other users for display
   const allUsers = [CURRENT_ACCOUNT, ...users];
@@ -195,9 +224,13 @@ export const UserRolesManagement = () => {
       description: `Invitation has been resent to ${user.email}`,
     });
 
-    // Update user status to invited
+    // Update user status to invited with new timestamp
     setUsers(users.map(u => 
-      u.id === userId ? { ...u, status: USER_STATUS.INVITED.value } : u
+      u.id === userId ? { 
+        ...u, 
+        status: USER_STATUS.INVITED.value,
+        invitedAt: new Date().toISOString()
+      } : u
     ));
   };
 
@@ -224,7 +257,8 @@ export const UserRolesManagement = () => {
       name: fullName, 
       email: newUser.email, 
       role: newUser.role,
-      status: USER_STATUS.INVITED.value
+      status: USER_STATUS.INVITED.value,
+      invitedAt: new Date().toISOString()
     }]);
     setNewUser({ firstName: "", lastName: "", email: "", role: ROLES.ADMIN.value });
     setFirstNameError("");
