@@ -1,13 +1,6 @@
-
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { 
-  SidebarProvider, 
-  Sidebar, 
-  SidebarContent, 
-  SidebarFooter,
-  SidebarTrigger 
-} from "@/components/ui/sidebar";
+import { SidebarProvider, Sidebar, SidebarContent, SidebarFooter, SidebarTrigger } from "@/components/ui/sidebar";
 import { MainNav } from "@/components/navigation/MainNav";
 import { DashboardSidebar } from "@/components/navigation/DashboardSidebar";
 import { UserNav } from "@/components/navigation/UserNav";
@@ -15,20 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Bell } from "lucide-react";
 import { AccountExecutiveWidget } from "@/components/support/AccountExecutiveWidget";
 import { NeedHelpButton } from "@/components/support/NeedHelpButton";
-
 export const DashboardLayout = () => {
   const [mounted, setMounted] = useState(false);
-
   React.useEffect(() => {
     setMounted(true);
   }, []);
-
   if (!mounted) {
     return null;
   }
-
-  return (
-    <SidebarProvider>
+  return <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <DashboardSidebar />
         
@@ -44,7 +32,7 @@ export const DashboardLayout = () => {
               </div>
             </div>
           </header>
-          <main className="flex-1 container px-4 py-6">
+          <main className="flex-1 container px-4 py-[2px]">
             <Outlet />
           </main>
         </div>
@@ -53,6 +41,5 @@ export const DashboardLayout = () => {
         <NeedHelpButton />
         <AccountExecutiveWidget />
       </div>
-    </SidebarProvider>
-  );
+    </SidebarProvider>;
 };
