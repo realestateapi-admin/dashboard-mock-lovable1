@@ -97,14 +97,14 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
   };
 
   const validateBillingEmail = (email: string) => {
-    // Check if email is empty
-    if (email.length < 1) {
-      setBillingEmailError("Billing email is required");
-      setIsBillingEmailValid(false);
-      return false;
+    // If email is empty, it's valid (optional field)
+    if (email.length === 0) {
+      setBillingEmailError("");
+      setIsBillingEmailValid(true);
+      return true;
     }
     
-    // Basic email format validation
+    // If email is provided, validate format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setBillingEmailError("Please enter a valid email address");
@@ -126,9 +126,7 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
 
   // Validate billing email whenever it changes
   useEffect(() => {
-    if (companyInfo.billingEmail) {
-      validateBillingEmail(companyInfo.billingEmail);
-    }
+    validateBillingEmail(companyInfo.billingEmail);
   }, [companyInfo.billingEmail]);
 
   const handleCompanyNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
