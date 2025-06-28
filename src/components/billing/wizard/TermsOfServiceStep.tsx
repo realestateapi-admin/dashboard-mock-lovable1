@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,7 +16,7 @@ const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
   
   return (
     <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none">
-      <div className="bg-primary/60 text-primary-foreground rounded-full p-2 shadow-md border border-background/20">
+      <div className="bg-white/80 text-gray-600 rounded-full p-2 shadow-md border border-gray-200">
         <ChevronDown className="h-4 w-4" />
       </div>
     </div>
