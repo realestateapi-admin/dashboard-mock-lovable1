@@ -46,11 +46,6 @@ export const CreditCardFormSection = ({
   const [displayCvc, setDisplayCvc] = useState<string>(cvc);
   const [cvcMasked, setCvcMasked] = useState<boolean>(false);
 
-  // Handle cardholder name input - ensure it's fully editable
-  const handleCardNameChange = (value: string) => {
-    setCardName(value);
-  };
-
   // Handle card number input with validation
   const handleCardNumberChange = (value: string) => {
     const formattedValue = formatCardNumber(value);
@@ -125,7 +120,7 @@ export const CreditCardFormSection = ({
             id="cardName" 
             placeholder="John Smith" 
             value={cardName}
-            onChange={(e) => handleCardNameChange(e.target.value)}
+            onChange={(e) => setCardName(e.target.value)}
             required
             disabled={isLoading}
           />
