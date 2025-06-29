@@ -144,11 +144,21 @@ export function WizardContent({
   // Track ACH make default state
   const [achMakeDefault, setAchMakeDefault] = useState(false);
   
+  // Track if user has visited payment step
+  const [hasVisitedPaymentStep, setHasVisitedPaymentStep] = useState(false);
+  
   // Monitor changes to payment method type from PaymentMethodForm component
   useEffect(() => {
     const savedType = localStorage.getItem('paymentMethodType');
     if (savedType === 'card' || savedType === 'ach') {
       setPaymentMethodType(savedType as 'card' | 'ach');
+    }
+  }, [currentStep]);
+  
+  // Track when user reaches payment step (step 3)
+  useEffect(() => {
+    if (currentStep >= 3) {
+      setHasVisitedPaymentStep(true);
     }
   }, [currentStep]);
   
@@ -301,7 +311,7 @@ export function WizardContent({
                 billingCycle={billingCycle}
                 showSubmitButton={false}
                 paymentMethodType={defaultPaymentMethod}
-                cardMakeDefault={cardMakeDefault}
+                cardMakeDefault={hasVisitedPaymentStep ? cardMakeDefault : false}
               />
             </div>
           </div>
