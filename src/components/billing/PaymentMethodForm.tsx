@@ -144,13 +144,25 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     }
   }, [isFormValid, onValidationChange]);
 
-  // Map card details to the expected format (fixed property names)
+  // Helper function to mask card number - show only last 4 digits
+  const maskCardNumber = (cardNumber: string): string => {
+    if (!cardNumber) return '';
+    const digits = cardNumber.replace(/\s/g, '');
+    if (digits.length >= 4) {
+      const lastFour = digits.slice(-4);
+      const maskedPortion = "•".repeat(Math.max(0, digits.length - 4));
+      return (maskedPortion + lastFour).replace(/(.{4})/g, "$1 ").trim();
+    }
+    return cardNumber;
+  };
+
+  // Map card details to the expected format with masked card number for display
   const mappedCardDetails = {
     cardName: cardDetails.cardholderName || '',
-    cardNumber: cardDetails.cardNumber || '',
+    cardNumber: creditCardInfo ? maskCardNumber(cardDetails.cardNumber || '') : cardDetails.cardNumber || '',
     expiry: cardDetails.expiry || '',
     cvc: cardDetails.cvc || '',
-    zipCode: cardDetails.zipCode || '' // Use zipCode from cardDetails if available
+    zipCode: cardDetails.zipCode || ''
   };
 
   // Map backup card details to the expected format (fixed property names)
