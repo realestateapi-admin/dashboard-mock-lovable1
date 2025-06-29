@@ -2,7 +2,6 @@
 import React from "react";
 import { CreditCard, Building, AlertTriangle, ChevronDown } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { CreditCardFormSection } from "../forms/CreditCardFormSection";
 import { BankAccountFormSection } from "../forms/BankAccountFormSection";
@@ -186,22 +185,7 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                {achDetails?.accountName && (
-                  <Button 
-                    variant={achMakeDefault ? "default" : "outline"}
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAchMakeDefaultChange(!achMakeDefault);
-                    }}
-                    disabled={achMakeDefault}
-                  >
-                    {achMakeDefault ? "Default" : "Make Default"}
-                  </Button>
-                )}
-                <ChevronDown className={`h-4 w-4 transition-transform ${isACHOpen ? 'rotate-180' : ''}`} />
-              </div>
+              <ChevronDown className={`h-4 w-4 transition-transform ${isACHOpen ? 'rotate-180' : ''}`} />
             </CollapsibleTrigger>
             
             <CollapsibleContent>
