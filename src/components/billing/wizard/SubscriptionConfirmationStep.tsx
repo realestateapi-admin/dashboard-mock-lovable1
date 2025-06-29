@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Check, CreditCard, Building, ChevronDown } from "lucide-react";
+import { Check, CreditCard, Building, ChevronDown, AlertCircle } from "lucide-react";
 import { PlanData, AddOnData } from "@/types/billing";
 
 interface SubscriptionConfirmationStepProps {
@@ -94,6 +94,14 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
   // Filter active add-ons to get their full data
   const activeAddOnsData = addOns.filter(addOn => activeAddOns.includes(addOn.id));
 
+  // Calculate financial details
+  const subtotal = parseFloat(costs.total.replace(/[$,]/g, ''));
+  const creditCardFee = paymentMethodType === 'card' ? subtotal * 0.03 : 0;
+  const totalWithFee = subtotal + creditCardFee;
+
+  const formatCurrency = (amount: number) => `$${amount.toFixed(0)}`;
+  const cleanCurrency = (price: string) => price.replace(/^\$+/, '$');
+
   return (
     <>
       <div ref={contentRef} className="space-y-8">
@@ -161,20 +169,43 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
             
             <div className="space-y-2">
               <h3 className="text-lg font-medium">Cost Summary</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium">Base Plan:</p>
-                  <p className="text-sm text-muted-foreground">${costs.basePrice} / {billingCycle === 'monthly' ? 'month' : 'year'}</p>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-sm">Base Plan:</span>
+                  <span className="text-sm">{cleanCurrency(costs.basePrice)} / {billingCycle === 'monthly' ? 'month' : 'year'}</span>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">Add-Ons:</p>
-                  <p className="text-sm text-muted-foreground">${costs.totalAddOns} / {billingCycle === 'monthly' ? 'month' : 'year'}</p>
+                
+                {parseFloat(costs.totalAddOns.replace(/[$,]/g, '')) > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-sm">Add-Ons:</span>
+                    <span className="text-sm">{cleanCurrency(costs.totalAddOns)} / {billingCycle === 'monthly' ? 'month' : 'year'}</span>
+                  </div>
+                )}
+                
+                <div className="flex justify-between">
+                  <span className="text-sm">Subtotal:</span>
+                  <span className="text-sm">{cleanCurrency(costs.total)} / {billingCycle === 'monthly' ? 'month' : 'year'}</span>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">Total:</p>
-                  <p className="text-sm font-semibold">${costs.total} / {billingCycle === 'monthly' ? 'month' : 'year'}</p>
+                
+                {paymentMethodType === 'card' && creditCardFee > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-sm">Transaction Fee (3%):</span>
+                    <span className="text-sm">{formatCurrency(creditCardFee)} / {billingCycle === 'monthly' ? 'month' : 'year'}</span>
+                  </div>
+                )}
+                
+                <div className="flex justify-between pt-2 border-t font-medium">
+                  <span>Total:</span>
+                  <span>{formatCurrency(totalWithFee)} / {billingCycle === 'monthly' ? 'month' : 'year'}</span>
                 </div>
               </div>
+              
+              {paymentMethodType === 'card' && creditCardFee > 0 && (
+                <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md border border-amber-100 flex items-start gap-2 mt-4">
+                  <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                  <span>A 3% transaction fee applies to all credit card payments. Switch to ACH (bank account) payments to avoid this fee.</span>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
