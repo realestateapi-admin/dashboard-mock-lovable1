@@ -1,6 +1,8 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PaymentDetailsSection } from "./sections/PaymentDetailsSection";
+import { CompanyInformationSection } from "./sections/CompanyInformationSection";
+import { BillingAddressSection } from "./sections/BillingAddressSection";
 import { usePaymentMethodFormV2 } from "./hooks/usePaymentMethodForm.v2";
 import { useState } from "react";
 
@@ -8,11 +10,17 @@ export const PaymentMethods = () => {
   const [paymentMethodType, setPaymentMethodType] = useState<'card' | 'ach'>('card');
   
   const {
+    companyInfo,
+    billingAddress,
+    useSameAddress,
     cardDetails,
     backupCardDetails,
     achDetails,
     cardMakeDefault,
     achMakeDefault,
+    handleCompanyInfoChange,
+    handleBillingAddressChange,
+    handleUseSameAddressChange,
     handleCardDetailsChange,
     handleBackupCardDetailsChange,
     handleACHDetailsChange,
@@ -59,7 +67,8 @@ export const PaymentMethods = () => {
           Manage your payment methods and billing information
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-6">
+        {/* Payment Details Section */}
         <PaymentDetailsSection 
           paymentMethodType={paymentMethodType}
           handlePaymentTypeChange={handlePaymentTypeChange}
@@ -74,6 +83,26 @@ export const PaymentMethods = () => {
           achMakeDefault={achMakeDefault}
           onCardMakeDefaultChange={handleCardMakeDefaultChange}
           onAchMakeDefaultChange={handleAchMakeDefaultChange}
+        />
+
+        {/* Billing Details Section */}
+        <CompanyInformationSection 
+          companyInfo={companyInfo}
+          isLoading={false}
+          handleCompanyInfoChange={handleCompanyInfoChange}
+          title="Billing Details"
+          showEmailFirst={true}
+        />
+
+        {/* Billing Address Section */}
+        <BillingAddressSection 
+          useSameAddress={useSameAddress}
+          handleUseSameAddressChange={handleUseSameAddressChange}
+          billingAddress={billingAddress}
+          handleBillingAddressChange={handleBillingAddressChange}
+          isLoading={false}
+          hideTitle={true}
+          hideCheckbox={true}
         />
       </CardContent>
     </Card>
