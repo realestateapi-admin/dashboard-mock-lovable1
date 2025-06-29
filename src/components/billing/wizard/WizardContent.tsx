@@ -1,3 +1,4 @@
+
 import { BillingOptionStep } from "./BillingOptionStep";
 import { AddOnsList } from "@/components/billing/AddOnsList";
 import { OverageHandling } from "@/components/billing/OverageHandling";
@@ -132,11 +133,26 @@ export function WizardContent({
   // Track the payment method type selected in step 4
   const [paymentMethodType, setPaymentMethodType] = useState<'card' | 'ach'>('card');
   
+  // Track which payment method is set as default
+  const [defaultPaymentMethod, setDefaultPaymentMethod] = useState<'card' | 'ach'>('card');
+  
   // Monitor changes to payment method type from PaymentMethodForm component
   useEffect(() => {
     const savedType = localStorage.getItem('paymentMethodType');
     if (savedType === 'card' || savedType === 'ach') {
       setPaymentMethodType(savedType as 'card' | 'ach');
+    }
+  }, [currentStep]);
+  
+  // Monitor changes to default payment method status
+  useEffect(() => {
+    const cardDefault = localStorage.getItem('cardMakeDefault') === 'true';
+    const achDefault = localStorage.getItem('achMakeDefault') === 'true';
+    
+    if (achDefault) {
+      setDefaultPaymentMethod('ach');
+    } else {
+      setDefaultPaymentMethod('card'); // Default to card if neither is explicitly set as default
     }
   }, [currentStep]);
   
@@ -171,7 +187,7 @@ export function WizardContent({
               costs={costs}
               billingCycle={billingCycle}
               isLoading={isLoading}
-              paymentMethodType={paymentMethodType}
+              paymentMethodType={defaultPaymentMethod}
             />
           </ScrollableSection>
         </div>
@@ -239,7 +255,7 @@ export function WizardContent({
               onSubmit={onSubmit}
               billingCycle={billingCycle}
               showSubmitButton={false}
-              paymentMethodType={paymentMethodType}
+              paymentMethodType={defaultPaymentMethod}
             />
           </div>
         </div>

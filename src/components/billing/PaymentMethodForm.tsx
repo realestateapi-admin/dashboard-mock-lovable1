@@ -120,6 +120,27 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     localStorage.setItem('paymentMethodType', type);
   };
 
+  // Enhanced handlers for default payment method changes that save to localStorage
+  const handleCardMakeDefaultChangeWithStorage = (checked: boolean) => {
+    handleCardMakeDefaultChange(checked);
+    localStorage.setItem('cardMakeDefault', checked.toString());
+    
+    // If card is set as default, ACH should not be default
+    if (checked) {
+      localStorage.setItem('achMakeDefault', 'false');
+    }
+  };
+
+  const handleAchMakeDefaultChangeWithStorage = (checked: boolean) => {
+    handleAchMakeDefaultChange(checked);
+    localStorage.setItem('achMakeDefault', checked.toString());
+    
+    // If ACH is set as default, card should not be default
+    if (checked) {
+      localStorage.setItem('cardMakeDefault', 'false');
+    }
+  };
+
   // Validation logic for credit card
   const isCreditCardValid = () => {
     return !!(
@@ -206,8 +227,8 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
           isLoading={isLoading}
           cardMakeDefault={cardMakeDefault}
           achMakeDefault={achMakeDefault}
-          onCardMakeDefaultChange={handleCardMakeDefaultChange}
-          onAchMakeDefaultChange={handleAchMakeDefaultChange}
+          onCardMakeDefaultChange={handleCardMakeDefaultChangeWithStorage}
+          onAchMakeDefaultChange={handleAchMakeDefaultChangeWithStorage}
         />
 
         {/* Billing Details Section (Second - renamed from Company Information) */}
