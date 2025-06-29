@@ -1,10 +1,12 @@
 
 import React from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreditCardIcon, Building, AlertTriangle } from "lucide-react";
+import { CreditCard, Building, AlertTriangle, ChevronDown } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { CreditCardFormSection } from "../forms/CreditCardFormSection";
 import { BankAccountFormSection } from "../forms/BankAccountFormSection";
+import { useState } from "react";
 
 interface PaymentDetailsProps {
   paymentMethodType: "card" | "ach";
@@ -54,6 +56,9 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
   onCardMakeDefaultChange,
   onAchMakeDefaultChange,
 }) => {
+  const [isCreditCardOpen, setIsCreditCardOpen] = useState(false);
+  const [isACHFormOpen, setIsACHFormOpen] = useState(false);
+
   const handleCardMakeDefaultChange = (checked: boolean) => {
     if (onCardMakeDefaultChange) {
       onCardMakeDefaultChange(checked);
@@ -70,6 +75,14 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
     if (checked && onCardMakeDefaultChange) {
       onCardMakeDefaultChange(false);
     }
+  };
+
+  // Mask card number for display
+  const getMaskedCardNumber = (cardNumber: string) => {
+    if (!cardNumber) return "•••• •••• •••• ••••";
+    const cleaned = cardNumber.replace(/\s/g, '');
+    if (cleaned.length < 4) return "•••• •••• •••• ••••";
+    return `•••• •••• •••• ${cleaned.slice(-4)}`;
   };
 
   return (
@@ -90,71 +103,130 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
           </AlertDescription>
         </Alert>
       )}
-      
-      <Tabs 
-        value={paymentMethodType} 
-        onValueChange={handlePaymentTypeChange}
-        className="w-full"
-      >
-        <TabsList className="grid grid-cols-2 w-full">
-          <TabsTrigger 
-            value="card" 
-            className="flex items-center gap-2"
-          >
-            <CreditCardIcon className="h-4 w-4" />
-            Credit Card
-          </TabsTrigger>
-          <TabsTrigger 
-            value="ach" 
-            className="flex items-center gap-2"
-          >
-            <Building className="h-4 w-4" />
-            Bank Account (ACH)
-          </TabsTrigger>
-        </TabsList>
-        
-        <div className="mt-4">
-          <TabsContent value="card" className="mt-0 p-0 space-y-4">
-            {/* Credit card transaction fee notice - only show when card is default */}
-            {cardMakeDefault && (
-              <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md border border-amber-100">
-                Please note: A 3% transaction fee will be added to all credit card payments.
+
+      <div className="space-y-4">
+        {/* Credit Card Section */}
+        <div className="border rounded-lg">
+          <Collapsible open={isCreditCardOpen} onOpenChange={setIsCreditCardOpen}>
+            <CollapsibleTrigger className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+              <div className="flex items-center space-x-4">
+                <div className="bg-indigo-100 p-2 rounded-full">
+                  <CreditCard className="h-5 w-5 text-indigo-600" />
+                </div>
+                <div className="text-left">
+                  <div className="font-medium flex items-center gap-2">
+                    Credit Card
+                    {cardMakeDefault && (
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                        Default
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {getMaskedCardNumber(cardDetails.cardNumber)}
+                    {cardDetails.expiry && ` • Expires ${cardDetails.expiry}`}
+                  </div>
+                </div>
               </div>
-            )}
-            <CreditCardFormSection
-              cardName={cardDetails.cardName}
-              setCardName={(value) => handleCardDetailsChange("cardName", value)}
-              cardNumber={cardDetails.cardNumber}
-              setCardNumber={(value) => handleCardDetailsChange("cardNumber", value)}
-              expiry={cardDetails.expiry}
-              setExpiry={(value) => handleCardDetailsChange("expiry", value)}
-              cvc={cardDetails.cvc}
-              setCvc={(value) => handleCardDetailsChange("cvc", value)}
-              zipCode={cardDetails.zipCode}
-              setZipCode={(value) => handleCardDetailsChange("zipCode", value)}
-              isLoading={isLoading}
-              showMakeDefaultOption={true}
-              makeDefault={cardMakeDefault}
-              onMakeDefaultChange={handleCardMakeDefaultChange}
-            />
-          </TabsContent>
-          
-          <TabsContent value="ach" className="mt-0 p-0 space-y-4">
-            <BankAccountFormSection
-              makeDefault={achMakeDefault}
-              onMakeDefaultChange={handleAchMakeDefaultChange}
-              accountName={achDetails?.accountName}
-              onAccountNameChange={(value) => handleACHDetailsChange?.("accountName", value)}
-              accountType={achDetails?.accountType}
-              onAccountTypeChange={(value) => handleACHDetailsChange?.("accountType", value)}
-              routingNumber={achDetails?.routingNumber}
-              onRoutingNumberChange={(value) => handleACHDetailsChange?.("routingNumber", value)}
-              accountNumber={achDetails?.accountNumber}
-              onAccountNumberChange={(value) => handleACHDetailsChange?.("accountNumber", value)}
-            />
-          </TabsContent>
+              <ChevronDown className={`h-4 w-4 transition-transform ${isCreditCardOpen ? 'rotate-180' : ''}`} />
+            </CollapsibleTrigger>
+            
+            <CollapsibleContent>
+              <div className="p-4 pt-0 space-y-4">
+                {/* Credit card transaction fee notice - only show when card is default */}
+                {cardMakeDefault && (
+                  <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md border border-amber-100">
+                    Please note: A 3% transaction fee will be added to all credit card payments.
+                  </div>
+                )}
+                
+                <CreditCardFormSection
+                  cardName={cardDetails.cardName}
+                  setCardName={(value) => handleCardDetailsChange("cardName", value)}
+                  cardNumber={cardDetails.cardNumber}
+                  setCardNumber={(value) => handleCardDetailsChange("cardNumber", value)}
+                  expiry={cardDetails.expiry}
+                  setExpiry={(value) => handleCardDetailsChange("expiry", value)}
+                  cvc={cardDetails.cvc}
+                  setCvc={(value) => handleCardDetailsChange("cvc", value)}
+                  zipCode={cardDetails.zipCode}
+                  setZipCode={(value) => handleCardDetailsChange("zipCode", value)}
+                  isLoading={isLoading}
+                  showMakeDefaultOption={true}
+                  makeDefault={cardMakeDefault}
+                  onMakeDefaultChange={handleCardMakeDefaultChange}
+                />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
-      </Tabs>
+
+        {/* Bank Account (ACH) Section */}
+        <div className="border rounded-lg">
+          <div className="p-4 flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="bg-blue-100 p-2 rounded-full">
+                <Building className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <div className="font-medium flex items-center gap-2">
+                  Bank Account (ACH)
+                  {achMakeDefault && (
+                    <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                      Default
+                    </span>
+                  )}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {achDetails?.accountName && achDetails?.accountNumber 
+                    ? `${achDetails.accountName} • •••• ${achDetails.accountNumber.slice(-4)}`
+                    : "No bank account added"
+                  }
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex space-x-2">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setIsACHFormOpen(!isACHFormOpen)}
+              >
+                {achDetails?.accountName ? "Modify" : "Add"}
+              </Button>
+              
+              {achDetails?.accountName && (
+                <Button 
+                  variant={achMakeDefault ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleAchMakeDefaultChange(!achMakeDefault)}
+                  disabled={achMakeDefault}
+                >
+                  {achMakeDefault ? "Default" : "Make Default"}
+                </Button>
+              )}
+            </div>
+          </div>
+          
+          {/* ACH Form - show when Add/Modify is clicked */}
+          {isACHFormOpen && (
+            <div className="border-t p-4">
+              <BankAccountFormSection
+                makeDefault={achMakeDefault}
+                onMakeDefaultChange={handleAchMakeDefaultChange}
+                accountName={achDetails?.accountName}
+                onAccountNameChange={(value) => handleACHDetailsChange?.("accountName", value)}
+                accountType={achDetails?.accountType}
+                onAccountTypeChange={(value) => handleACHDetailsChange?.("accountType", value)}
+                routingNumber={achDetails?.routingNumber}
+                onRoutingNumberChange={(value) => handleACHDetailsChange?.("routingNumber", value)}
+                accountNumber={achDetails?.accountNumber}
+                onAccountNumberChange={(value) => handleACHDetailsChange?.("accountNumber", value)}
+              />
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
