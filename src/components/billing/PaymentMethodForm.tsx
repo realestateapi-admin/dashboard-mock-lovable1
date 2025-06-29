@@ -171,18 +171,6 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     }
   }, [isFormValid, onValidationChange]);
 
-  // Helper function to mask card number - show only last 4 digits
-  const maskCardNumber = (cardNumber: string): string => {
-    if (!cardNumber) return '';
-    const digits = cardNumber.replace(/\s/g, '');
-    if (digits.length >= 4) {
-      const lastFour = digits.slice(-4);
-      const maskedPortion = "•".repeat(Math.max(0, digits.length - 4));
-      return (maskedPortion + lastFour).replace(/(.{4})/g, "$1 ").trim();
-    }
-    return cardNumber;
-  };
-
   // Create proper handlers for card details that map to the correct field names
   const handleCardNameChange = (field: string, value: string) => {
     if (field === 'cardName') {
@@ -192,10 +180,10 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     }
   };
 
-  // Map card details to the expected format with proper field mapping
+  // Map card details to the expected format - don't mask for input, show actual values
   const mappedCardDetails = {
     cardName: cardDetails.cardholderName || '',
-    cardNumber: creditCardInfo ? maskCardNumber(cardDetails.cardNumber || '') : cardDetails.cardNumber || '',
+    cardNumber: cardDetails.cardNumber || '',
     expiry: cardDetails.expiry || '',
     cvc: cardDetails.cvc || '',
     zipCode: cardDetails.zipCode || ''

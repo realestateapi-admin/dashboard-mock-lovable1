@@ -23,7 +23,7 @@ export const CardNumberField = ({
   const handleCardNumberChange = (value: string) => {
     // Remove all non-digits first
     const digitsOnly = value.replace(/[^\d]/g, '');
-    // Format the digits
+    // Format the digits with spaces every 4 digits
     const formattedValue = formatCardNumber(digitsOnly);
     setCardNumber(formattedValue);
     
@@ -59,6 +59,7 @@ export const CardNumberField = ({
           required
           disabled={isLoading}
           className={cardNumberError ? "border-red-500 focus-visible:ring-red-500" : ""}
+          maxLength={23} // Allow for 19 digits + 4 spaces
         />
         <Lock className="absolute top-1/2 transform -translate-y-1/2 right-3 h-4 w-4 text-gray-400" />
       </div>
