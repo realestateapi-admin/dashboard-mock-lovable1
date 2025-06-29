@@ -20,6 +20,7 @@ interface SubscriptionSummaryProps {
   billingCycle?: 'monthly' | 'annual';
   showSubmitButton?: boolean;
   paymentMethodType?: 'card' | 'ach';
+  cardMakeDefault?: boolean;
 }
 
 export function SubscriptionSummary({
@@ -33,7 +34,8 @@ export function SubscriptionSummary({
   onSubmit,
   billingCycle = 'monthly',
   showSubmitButton = false,
-  paymentMethodType = 'card'
+  paymentMethodType = 'card',
+  cardMakeDefault = false
 }: SubscriptionSummaryProps) {
   const plan = plans.find(p => p.id === selectedPlan);
 
@@ -76,9 +78,9 @@ export function SubscriptionSummary({
     addon.billingType === 'metered'
   );
 
-  // Calculate credit card fee (3% of subtotal)
+  // Calculate credit card fee (3% of subtotal) only if card is set as default
   const subtotal = parseInt(costs.total.replace(/\$|,/g, ''));
-  const creditCardFee = paymentMethodType === 'card' ? Math.round(subtotal * 0.03) : 0;
+  const creditCardFee = cardMakeDefault ? Math.round(subtotal * 0.03) : 0;
   const totalWithFee = subtotal + creditCardFee;
 
   if (isLoading) {
@@ -131,7 +133,7 @@ export function SubscriptionSummary({
             </div>
           )}
 
-          {paymentMethodType === 'card' && creditCardFee > 0 && (
+          {cardMakeDefault && creditCardFee > 0 && (
             <div className="flex justify-between mb-2">
               <span className="text-sm">Credit Card Fee (3%)</span>
               <span className="font-medium">${creditCardFee.toLocaleString()}</span>

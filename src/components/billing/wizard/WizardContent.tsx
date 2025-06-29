@@ -1,4 +1,3 @@
-
 import { BillingOptionStep } from "./BillingOptionStep";
 import { AddOnsList } from "@/components/billing/AddOnsList";
 import { OverageHandling } from "@/components/billing/OverageHandling";
@@ -136,6 +135,9 @@ export function WizardContent({
   // Track which payment method is set as default
   const [defaultPaymentMethod, setDefaultPaymentMethod] = useState<'card' | 'ach'>('card');
   
+  // Track card make default state specifically
+  const [cardMakeDefault, setCardMakeDefault] = useState(true);
+  
   // Monitor changes to payment method type from PaymentMethodForm component
   useEffect(() => {
     const savedType = localStorage.getItem('paymentMethodType');
@@ -148,6 +150,8 @@ export function WizardContent({
   useEffect(() => {
     const cardDefault = localStorage.getItem('cardMakeDefault') === 'true';
     const achDefault = localStorage.getItem('achMakeDefault') === 'true';
+    
+    setCardMakeDefault(cardDefault);
     
     if (achDefault) {
       setDefaultPaymentMethod('ach');
@@ -192,73 +196,77 @@ export function WizardContent({
           </ScrollableSection>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-full">
-          <div className="md:col-span-8 h-full overflow-hidden">
-            <ScrollableSection className="h-full">
-              {/* Step 1: Choose Billing Option */}
-              {currentStep === 0 && (
-                <BillingOptionStep 
-                  selectedPlan={selectedPlan}
-                  billingCycle={billingCycle}
-                  adjustedPlans={regularPlans}
-                  enterprisePlan={enterprisePlan}
-                  onPlanChange={onPlanChange}
-                  onBillingCycleChange={onBillingCycleChange}
-                  onSelectEnterprise={onSelectEnterprise}
-                  isLoading={isLoading}
-                />
-              )}
-              
-              {/* Step 2: Select Add-Ons */}
-              {currentStep === 1 && (
-                <AddOnsList 
-                  addOns={addOns}
-                  selectedPlan={selectedPlan}
-                  activeAddOns={activeAddOns}
-                  onToggleAddOn={toggleAddOn}
-                  isLoading={isLoading}
-                />
-              )}
-              
-              {/* Step 3: Overage Handling */}
-              {currentStep === 2 && (
-                <OverageHandling 
-                  selectedPlanName={selectedPlanName}
-                  overageHandling={overageHandling || ''}
-                  onOverageHandlingChange={setOverageHandling}
-                  isLoading={isLoading}
-                  selectedPlan={selectedPlan}
-                />
-              )}
-              
-              {/* Step 4: Payment Information */}
-              {currentStep === 3 && (
-                <PaymentMethodForm 
-                  isLoading={isLoading} 
-                  creditCardInfo={creditCardInfo}
-                  onPaymentMethodTypeChange={handlePaymentMethodChange}
-                  onValidationChange={onPaymentValidationChange}
-                />
-              )}
-            </ScrollableSection>
+        // For other steps, show the main layout with sidebar
+        !(currentStep === 4 || currentStep === 5) && (
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-full">
+            <div className="md:col-span-8 h-full overflow-hidden">
+              <ScrollableSection className="h-full">
+                {/* Step 1: Choose Billing Option */}
+                {currentStep === 0 && (
+                  <BillingOptionStep 
+                    selectedPlan={selectedPlan}
+                    billingCycle={billingCycle}
+                    adjustedPlans={regularPlans}
+                    enterprisePlan={enterprisePlan}
+                    onPlanChange={onPlanChange}
+                    onBillingCycleChange={onBillingCycleChange}
+                    onSelectEnterprise={onSelectEnterprise}
+                    isLoading={isLoading}
+                  />
+                )}
+                
+                {/* Step 2: Select Add-Ons */}
+                {currentStep === 1 && (
+                  <AddOnsList 
+                    addOns={addOns}
+                    selectedPlan={selectedPlan}
+                    activeAddOns={activeAddOns}
+                    onToggleAddOn={toggleAddOn}
+                    isLoading={isLoading}
+                  />
+                )}
+                
+                {/* Step 3: Overage Handling */}
+                {currentStep === 2 && (
+                  <OverageHandling 
+                    selectedPlanName={selectedPlanName}
+                    overageHandling={overageHandling || ''}
+                    onOverageHandlingChange={setOverageHandling}
+                    isLoading={isLoading}
+                    selectedPlan={selectedPlan}
+                  />
+                )}
+                
+                {/* Step 4: Payment Information */}
+                {currentStep === 3 && (
+                  <PaymentMethodForm 
+                    isLoading={isLoading} 
+                    creditCardInfo={creditCardInfo}
+                    onPaymentMethodTypeChange={handlePaymentMethodChange}
+                    onValidationChange={onPaymentValidationChange}
+                  />
+                )}
+              </ScrollableSection>
+            </div>
+            
+            <div className="md:col-span-4 h-full">
+              <SubscriptionSummary 
+                selectedPlan={selectedPlan}
+                plans={plans}
+                activeAddOns={activeAddOns}
+                addOns={addOns}
+                costs={costs}
+                subscription={null}
+                isLoading={isLoading}
+                onSubmit={onSubmit}
+                billingCycle={billingCycle}
+                showSubmitButton={false}
+                paymentMethodType={defaultPaymentMethod}
+                cardMakeDefault={cardMakeDefault}
+              />
+            </div>
           </div>
-          
-          <div className="md:col-span-4 h-full">
-            <SubscriptionSummary 
-              selectedPlan={selectedPlan}
-              plans={plans}
-              activeAddOns={activeAddOns}
-              addOns={addOns}
-              costs={costs}
-              subscription={null}
-              isLoading={isLoading}
-              onSubmit={onSubmit}
-              billingCycle={billingCycle}
-              showSubmitButton={false}
-              paymentMethodType={defaultPaymentMethod}
-            />
-          </div>
-        </div>
+        )
       )}
     </div>
   );
