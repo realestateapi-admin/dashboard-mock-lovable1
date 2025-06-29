@@ -9,6 +9,7 @@ interface WizardFooterProps {
   handleNext: () => void;
   handleSubmit: () => void;
   isLoading?: boolean;
+  canContinue?: boolean;
 }
 
 export const WizardFooter = ({ 
@@ -17,7 +18,8 @@ export const WizardFooter = ({
   handleBack, 
   handleNext,
   handleSubmit,
-  isLoading = false
+  isLoading = false,
+  canContinue = true
 }: WizardFooterProps) => {
   return (
     <div className="flex justify-between gap-4">
@@ -30,7 +32,10 @@ export const WizardFooter = ({
       </Button>
       
       {currentStep < totalSteps - 1 ? (
-        <Button onClick={handleNext} disabled={isLoading}>
+        <Button 
+          onClick={handleNext} 
+          disabled={isLoading || !canContinue}
+        >
           {isLoading ? (
             <>
               <Loader className="h-4 w-4 mr-2 animate-spin" />

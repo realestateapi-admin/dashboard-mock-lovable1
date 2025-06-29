@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 
@@ -95,7 +96,8 @@ const PlanSignupWizard = () => {
               handleBack={handleBack} 
               handleNext={handleNext} 
               handleSubmit={handleSubmit} 
-              isLoading={currentStep === steps.length - 1 ? isSubmitting : (isLoading || !canContinue())} 
+              isLoading={currentStep === steps.length - 1 ? isSubmitting : isLoading}
+              canContinue={canContinue()}
             />
           </CardFooter>
         </Card>
