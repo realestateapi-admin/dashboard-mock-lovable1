@@ -1,7 +1,8 @@
 
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreditCardIcon, Building } from "lucide-react";
+import { CreditCardIcon, Building, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CreditCardFormSection } from "../forms/CreditCardFormSection";
 import { BankAccountFormSection } from "../forms/BankAccountFormSection";
 
@@ -61,6 +62,16 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
           Pay for your subscription either by credit card or ACH
         </p>
       </div>
+      
+      {/* Warning message when ACH is set as default */}
+      {achMakeDefault && (
+        <Alert className="bg-amber-50 border-amber-200">
+          <AlertTriangle className="h-4 w-4 text-amber-600" />
+          <AlertDescription className="text-amber-800">
+            A credit card is required as a backup payment method when using bank account. Please fill out the Credit Card section as well.
+          </AlertDescription>
+        </Alert>
+      )}
       
       <Tabs 
         value={paymentMethodType} 
