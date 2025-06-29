@@ -11,6 +11,7 @@ interface PaymentMethodFormProps {
   isLoading: boolean;
   creditCardInfo?: any;
   onPaymentMethodTypeChange?: (type: 'card' | 'ach') => void;
+  onValidationChange?: (isValid: boolean) => void;
 }
 
 const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
@@ -28,7 +29,8 @@ const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
 export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
   isLoading,
   creditCardInfo,
-  onPaymentMethodTypeChange
+  onPaymentMethodTypeChange,
+  onValidationChange
 }) => {
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -103,18 +105,50 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     localStorage.setItem('paymentMethodType', type);
   };
 
-  // Map card details to the expected format
+  // Validation logic for credit card
+  const isCreditCardValid = () => {
+    return !!(
+      cardDetails.cardholderName?.trim() &&
+      cardDetails.cardNumber?.trim() &&
+      cardDetails.expiry?.trim() &&
+      cardDetails.cvc?.trim()
+    );
+  };
+
+  // Validation logic for ACH
+  const isACHValid = () => {
+    return !!(
+      cardDetails.accountName?.trim() &&
+      cardDetails.routingNumber?.trim() &&
+      cardDetails.accountNumber?.trim() &&
+      backupCardDetails.backupCardholderName?.trim() &&
+      backupCardDetails.backupCardNumber?.trim() &&
+      backupCardDetails.backupExpiry?.trim() &&
+      backupCardDetails.backupCvc?.trim()
+    );
+  };
+
+  // Check overall validation and notify parent
+  const isFormValid = paymentMethodType === 'card' ? isCreditCardValid() : isACHValid();
+
+  React.useEffect(() => {
+    if (onValidationChange) {
+      onValidationChange(isFormValid);
+    }
+  }, [isFormValid, onValidationChange]);
+
+  // Map card details to the expected format (fixed property names)
   const mappedCardDetails = {
     cardName: cardDetails.cardholderName || '',
     cardNumber: cardDetails.cardNumber || '',
     expiry: cardDetails.expiry || '',
     cvc: cardDetails.cvc || '',
-    zipCode: cardDetails.zipCode || ''
+    zipCode: '' // cardDetails doesn't have zipCode, so using empty string
   };
 
-  // Map backup card details to the expected format
+  // Map backup card details to the expected format (fixed property names)
   const mappedBackupCardDetails = {
-    cardName: backupCardDetails.accountName || '',
+    cardName: backupCardDetails.backupCardholderName || '',
     cardNumber: backupCardDetails.backupCardNumber || '',
     expiry: backupCardDetails.backupExpiry || '',
     cvc: backupCardDetails.backupCvc || '',

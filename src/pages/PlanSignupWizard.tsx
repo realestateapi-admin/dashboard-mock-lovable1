@@ -9,8 +9,11 @@ import { WizardContent } from "@/components/billing/wizard/WizardContent";
 // Import the refactored useWizardState hook
 import { useWizardState } from "@/hooks/useWizardState";
 import { plans, addOns } from "@/data/billingData";
+import { useState } from "react";
 
 const PlanSignupWizard = () => {
+  const [isPaymentFormValid, setIsPaymentFormValid] = useState(false);
+  
   const {
     currentStep,
     billingCycle,
@@ -35,6 +38,16 @@ const PlanSignupWizard = () => {
     handlePlanChange,
     handleSubmit
   } = useWizardState();
+
+  // Determine if the current step allows navigation
+  const canContinue = () => {
+    // Payment step (step 3) requires valid payment information
+    if (currentStep === 3) {
+      return isPaymentFormValid;
+    }
+    // Other steps can continue as normal
+    return true;
+  };
 
   return (
     <div className="h-screen bg-background p-4 flex justify-center py-0 overflow-hidden">
@@ -70,7 +83,8 @@ const PlanSignupWizard = () => {
               onSelectEnterprise={handleSelectEnterprise} 
               onBillingCycleChange={handleBillingCycleChange} 
               onPlanChange={handlePlanChange} 
-              onSubmit={handleSubmit} 
+              onSubmit={handleSubmit}
+              onPaymentValidationChange={setIsPaymentFormValid}
             />
           </CardContent>
           
@@ -81,7 +95,7 @@ const PlanSignupWizard = () => {
               handleBack={handleBack} 
               handleNext={handleNext} 
               handleSubmit={handleSubmit} 
-              isLoading={currentStep === steps.length - 1 ? isSubmitting : isLoading} 
+              isLoading={currentStep === steps.length - 1 ? isSubmitting : (isLoading || !canContinue())} 
             />
           </CardFooter>
         </Card>

@@ -35,6 +35,7 @@ interface WizardContentProps {
   onPlanChange: (planId: string) => void;
   onTermsAccepted: (accepted: boolean) => void;
   onSubmit: () => void;
+  onPaymentValidationChange?: (isValid: boolean) => void;
 }
 
 const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
@@ -122,7 +123,8 @@ export function WizardContent({
   onBillingCycleChange,
   onPlanChange,
   onTermsAccepted,
-  onSubmit
+  onSubmit,
+  onPaymentValidationChange
 }: WizardContentProps) {
   // Find the name of the selected plan for the OverageHandling component
   const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || 'Selected';
@@ -219,6 +221,7 @@ export function WizardContent({
                   isLoading={isLoading} 
                   creditCardInfo={creditCardInfo}
                   onPaymentMethodTypeChange={handlePaymentMethodChange}
+                  onValidationChange={onPaymentValidationChange}
                 />
               )}
             </ScrollableSection>
