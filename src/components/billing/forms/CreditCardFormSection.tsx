@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -49,6 +47,12 @@ export const CreditCardFormSection = ({
   const [displayCardNumber, setDisplayCardNumber] = useState<string>(cardNumber);
   const [cardNumberMasked, setCardNumberMasked] = useState<boolean>(false);
   const [isCardNumberFocused, setIsCardNumberFocused] = useState<boolean>(false);
+
+  // Sync display values with prop changes
+  useEffect(() => {
+    setDisplayCardNumber(cardNumber);
+    setDisplayCvc(cvc);
+  }, [cardNumber, cvc]);
 
   // Helper function to mask card number - show only last 4 digits
   const maskCardNumber = (cardNumber: string): string => {
@@ -269,4 +273,3 @@ export const CreditCardFormSection = ({
     </div>
   );
 };
-

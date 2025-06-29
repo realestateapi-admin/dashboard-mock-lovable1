@@ -32,6 +32,8 @@ export interface BackupCardDetails {
   backupZipCode: string;
 }
 
+const BILLING_FORM_STORAGE_KEY = "billingFormData";
+
 export const usePaymentMethodFormV2 = (isLoading: boolean) => {
   const [paymentMethodType, setPaymentMethodType] = useState<'card' | 'ach'>(() => {
     const saved = localStorage.getItem('paymentMethodType');
@@ -72,6 +74,58 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
     backupZipCode: "",
   });
 
+  // Load form data from localStorage on component mount
+  useEffect(() => {
+    try {
+      const storedData = localStorage.getItem(BILLING_FORM_STORAGE_KEY);
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        console.log("Loading billing form data from localStorage:", parsedData);
+        
+        if (parsedData.cardDetails) {
+          setCardDetails(prev => ({ ...prev, ...parsedData.cardDetails }));
+        }
+        if (parsedData.companyInfo) {
+          setCompanyInfo(prev => ({ ...prev, ...parsedData.companyInfo }));
+        }
+        if (parsedData.billingAddress) {
+          setBillingAddress(prev => ({ ...prev, ...parsedData.billingAddress }));
+        }
+        if (parsedData.backupCardDetails) {
+          setBackupCardDetails(prev => ({ ...prev, ...parsedData.backupCardDetails }));
+        }
+        if (typeof parsedData.useSameAddress === 'boolean') {
+          setUseSameAddress(parsedData.useSameAddress);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading billing form data from localStorage:", error);
+    }
+  }, []);
+
+  // Save form data to localStorage whenever it changes
+  const saveToLocalStorage = useCallback(() => {
+    try {
+      const dataToSave = {
+        cardDetails,
+        companyInfo,
+        billingAddress,
+        backupCardDetails,
+        useSameAddress,
+        paymentMethodType
+      };
+      localStorage.setItem(BILLING_FORM_STORAGE_KEY, JSON.stringify(dataToSave));
+      console.log("Saved billing form data to localStorage:", dataToSave);
+    } catch (error) {
+      console.error("Error saving billing form data to localStorage:", error);
+    }
+  }, [cardDetails, companyInfo, billingAddress, backupCardDetails, useSameAddress, paymentMethodType]);
+
+  // Auto-save whenever data changes
+  useEffect(() => {
+    saveToLocalStorage();
+  }, [saveToLocalStorage]);
+
   const handleCompanyInfoChange = (field: keyof CompanyInfo, value: string) => {
     setCompanyInfo(prev => ({ ...prev, [field]: value }));
   };
@@ -98,9 +152,12 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
     localStorage.setItem('paymentMethodType', type);
   };
 
-  // Function to initialize form with credit card info from onboarding
+  // Function to initialize form with credit card info from onboarding (only if no billing data exists)
   const initializeFromCreditCardInfo = useCallback((creditCardInfo: any) => {
-    if (creditCardInfo) {
+    // Only initialize from onboarding data if we don't have saved billing form data
+    const existingData = localStorage.getItem(BILLING_FORM_STORAGE_KEY);
+    if (!existingData && creditCardInfo) {
+      console.log("Initializing billing form with onboarding credit card info:", creditCardInfo);
       setCardDetails(prev => ({
         ...prev,
         cardholderName: creditCardInfo.cardName || creditCardInfo.cardholderName || "",
