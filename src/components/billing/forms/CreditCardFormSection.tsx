@@ -1,4 +1,5 @@
 
+
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -71,13 +72,21 @@ export const CreditCardFormSection = ({
     setDisplayCardNumber(formattedValue);
     setCardNumberMasked(false);
     
-    // Real-time Luhn validation
-    if (digitsOnly.length >= 13) {
-      if (!validateLuhn(digitsOnly)) {
+    // Luhn validation - only validate if we have enough digits for a complete card number
+    const digitCount = digitsOnly.length;
+    
+    if (digitCount >= 13) {
+      // Card numbers must be between 13-19 digits for Luhn validation
+      if (digitCount > 19) {
+        setCardNumberError("Card number is too long");
+      } else if (!validateLuhn(digitsOnly)) {
         setCardNumberError("Invalid card number");
       } else {
         setCardNumberError("");
       }
+    } else if (digitCount > 0) {
+      // Clear error if user is still typing but hasn't reached minimum length
+      setCardNumberError("");
     } else {
       setCardNumberError("");
     }
@@ -97,7 +106,8 @@ export const CreditCardFormSection = ({
   const handleCardNumberBlur = () => {
     setIsCardNumberFocused(false);
     // If there's a value and it's complete, mask it after a short delay
-    if (cardNumber && cardNumber.replace(/\s/g, '').length >= 13) {
+    const digitCount = cardNumber.replace(/\s/g, '').length;
+    if (cardNumber && digitCount >= 13 && digitCount <= 19 && !cardNumberError) {
       setTimeout(() => {
         if (!isCardNumberFocused) {
           setDisplayCardNumber(maskCardNumber(cardNumber));
@@ -148,7 +158,8 @@ export const CreditCardFormSection = ({
 
   // Initialize display values when component mounts or when props change
   useEffect(() => {
-    if (cardNumber && cardNumber.replace(/\s/g, '').length >= 13) {
+    const digitCount = cardNumber.replace(/\s/g, '').length;
+    if (cardNumber && digitCount >= 13 && digitCount <= 19) {
       setDisplayCardNumber(maskCardNumber(cardNumber));
       setCardNumberMasked(true);
     } else {
@@ -258,3 +269,4 @@ export const CreditCardFormSection = ({
     </div>
   );
 };
+
