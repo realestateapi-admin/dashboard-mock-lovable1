@@ -36,6 +36,7 @@ interface WizardContentProps {
   onTermsAccepted: (accepted: boolean) => void;
   onSubmit: () => void;
   onPaymentValidationChange?: (isValid: boolean) => void;
+  onDefaultPaymentMethodValidationChange?: (hasDefault: boolean) => void;
 }
 
 const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
@@ -124,7 +125,8 @@ export function WizardContent({
   onPlanChange,
   onTermsAccepted,
   onSubmit,
-  onPaymentValidationChange
+  onPaymentValidationChange,
+  onDefaultPaymentMethodValidationChange
 }: WizardContentProps) {
   // Find the name of the selected plan for the OverageHandling component
   const selectedPlanName = plans.find(p => p.id === selectedPlan)?.name || 'Selected';
@@ -137,6 +139,9 @@ export function WizardContent({
   
   // Track card make default state specifically
   const [cardMakeDefault, setCardMakeDefault] = useState(true);
+  
+  // Track ACH make default state
+  const [achMakeDefault, setAchMakeDefault] = useState(false);
   
   // Monitor changes to payment method type from PaymentMethodForm component
   useEffect(() => {
@@ -152,13 +157,20 @@ export function WizardContent({
     const achDefault = localStorage.getItem('achMakeDefault') === 'true';
     
     setCardMakeDefault(cardDefault);
+    setAchMakeDefault(achDefault);
     
     if (achDefault) {
       setDefaultPaymentMethod('ach');
-    } else {
-      setDefaultPaymentMethod('card'); // Default to card if neither is explicitly set as default
+    } else if (cardDefault) {
+      setDefaultPaymentMethod('card');
     }
-  }, [currentStep]);
+    
+    // Notify parent about default payment method validation
+    const hasDefaultPaymentMethod = cardDefault || achDefault;
+    if (onDefaultPaymentMethodValidationChange) {
+      onDefaultPaymentMethodValidationChange(hasDefaultPaymentMethod);
+    }
+  }, [currentStep, onDefaultPaymentMethodValidationChange]);
   
   // Handle payment method changes from the PaymentMethodForm
   const handlePaymentMethodChange = (type: 'card' | 'ach') => {

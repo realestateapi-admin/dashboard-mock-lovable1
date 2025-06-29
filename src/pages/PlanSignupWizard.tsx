@@ -14,6 +14,7 @@ import { useState } from "react";
 
 const PlanSignupWizard = () => {
   const [isPaymentFormValid, setIsPaymentFormValid] = useState(false);
+  const [hasDefaultPaymentMethod, setHasDefaultPaymentMethod] = useState(true);
   
   const {
     currentStep,
@@ -42,9 +43,9 @@ const PlanSignupWizard = () => {
 
   // Determine if the current step allows navigation
   const canContinue = () => {
-    // Payment step (step 3) requires valid payment information
+    // Payment step (step 3) requires valid payment information AND a default payment method
     if (currentStep === 3) {
-      return isPaymentFormValid;
+      return isPaymentFormValid && hasDefaultPaymentMethod;
     }
     // Other steps can continue as normal
     return true;
@@ -86,6 +87,7 @@ const PlanSignupWizard = () => {
               onPlanChange={handlePlanChange} 
               onSubmit={handleSubmit}
               onPaymentValidationChange={setIsPaymentFormValid}
+              onDefaultPaymentMethodValidationChange={setHasDefaultPaymentMethod}
             />
           </CardContent>
           
