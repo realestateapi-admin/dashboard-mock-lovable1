@@ -40,44 +40,34 @@ export const DashboardSummary = ({
   };
 
   return (
-    <div className="overflow-x-auto pb-4">
-      <div className="flex gap-6 min-w-max">
-        {/* Cards reordered as requested: Property Records, Monthly Usage, API Calls, Billing */}
-        <div className="w-72 flex-shrink-0">
-          <PropertyRecordsCard 
-            totalRecords={totalRecords} 
-            recordsPercentage={recordsPercentage}
-            onClick={handleUsageClick}
-          />
-        </div>
-        
-        <div className="w-72 flex-shrink-0">
-          <MonthlyUsageCard 
-            monthlyApiCalls={monthlyApiCalls}
-            monthlyRecords={monthlyRecords}
-            monthlyRecordsPercentage={monthlyRecordsPercentage}
-            onClick={handleUsageClick}
-          />
-        </div>
-        
-        <div className="w-72 flex-shrink-0">
-          <ApiCallsCard 
-            totalApiCalls={totalApiCalls} 
-            increasePercentage={18.2}
-            onClick={handleUsageClick}
-          />
-        </div>
-        
-        <div className="w-72 flex-shrink-0">
-          <BillingCard 
-            isTrialActive={isTrialActive}
-            trialDaysLeft={trialDaysLeft}
-            isOnPaidPlan={isOnPaidPlan}
-            subscriptionStartDate={subscriptionStartDate}
-            subscriptionRenewalDate={subscriptionRenewalDate}
-          />
-        </div>
-      </div>
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Cards reordered as requested: Property Records, Monthly Usage, API Calls, Billing */}
+      <PropertyRecordsCard 
+        totalRecords={totalRecords} 
+        recordsPercentage={recordsPercentage}
+        onClick={handleUsageClick}
+      />
+      
+      <MonthlyUsageCard 
+        monthlyApiCalls={monthlyApiCalls}
+        monthlyRecords={monthlyRecords}
+        monthlyRecordsPercentage={monthlyRecordsPercentage}
+        onClick={handleUsageClick}
+      />
+      
+      <ApiCallsCard 
+        totalApiCalls={totalApiCalls} 
+        increasePercentage={18.2}
+        onClick={handleUsageClick}
+      />
+      
+      <BillingCard 
+        isTrialActive={isTrialActive}
+        trialDaysLeft={trialDaysLeft}
+        isOnPaidPlan={isOnPaidPlan}
+        subscriptionStartDate={subscriptionStartDate}
+        subscriptionRenewalDate={subscriptionRenewalDate}
+      />
     </div>
   );
 };
