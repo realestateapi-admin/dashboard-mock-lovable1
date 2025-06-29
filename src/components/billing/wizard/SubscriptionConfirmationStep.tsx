@@ -99,7 +99,7 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
   const creditCardFee = paymentMethodType === 'card' ? subtotal * 0.03 : 0;
   const totalWithFee = subtotal + creditCardFee;
 
-  const formatCurrency = (amount: number) => `$${amount.toFixed(0)}`;
+  const formatCurrency = (amount: number) => `$${amount.toLocaleString()}`;
   const cleanCurrency = (price: string) => price.replace(/^\$+/, '$');
 
   return (
