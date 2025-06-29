@@ -42,7 +42,7 @@ export const WizardFooter = ({
               Loading...
             </>
           ) : (
-            currentStep === 4 ? "Complete Subscription" : "Continue"
+            "Continue"
           )}
         </Button>
       ) : (
