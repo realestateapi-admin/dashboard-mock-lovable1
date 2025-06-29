@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 
 export interface CompanyInfo {
@@ -38,6 +39,16 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
   const [paymentMethodType, setPaymentMethodType] = useState<'card' | 'ach'>(() => {
     const saved = localStorage.getItem('paymentMethodType');
     return (saved === 'card' || saved === 'ach') ? saved : 'card';
+  });
+
+  const [cardMakeDefault, setCardMakeDefault] = useState(() => {
+    const saved = localStorage.getItem('cardMakeDefault');
+    return saved ? JSON.parse(saved) : true;
+  });
+
+  const [achMakeDefault, setAchMakeDefault] = useState(() => {
+    const saved = localStorage.getItem('achMakeDefault');
+    return saved ? JSON.parse(saved) : false;
   });
 
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({
@@ -112,19 +123,30 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
         billingAddress,
         backupCardDetails,
         useSameAddress,
-        paymentMethodType
+        paymentMethodType,
+        cardMakeDefault,
+        achMakeDefault
       };
       localStorage.setItem(BILLING_FORM_STORAGE_KEY, JSON.stringify(dataToSave));
       console.log("Saved billing form data to localStorage:", dataToSave);
     } catch (error) {
       console.error("Error saving billing form data to localStorage:", error);
     }
-  }, [cardDetails, companyInfo, billingAddress, backupCardDetails, useSameAddress, paymentMethodType]);
+  }, [cardDetails, companyInfo, billingAddress, backupCardDetails, useSameAddress, paymentMethodType, cardMakeDefault, achMakeDefault]);
 
   // Auto-save whenever data changes
   useEffect(() => {
     saveToLocalStorage();
   }, [saveToLocalStorage]);
+
+  // Save default payment method states to localStorage
+  useEffect(() => {
+    localStorage.setItem('cardMakeDefault', JSON.stringify(cardMakeDefault));
+  }, [cardMakeDefault]);
+
+  useEffect(() => {
+    localStorage.setItem('achMakeDefault', JSON.stringify(achMakeDefault));
+  }, [achMakeDefault]);
 
   const handleCompanyInfoChange = (field: keyof CompanyInfo, value: string) => {
     setCompanyInfo(prev => ({ ...prev, [field]: value }));
@@ -150,6 +172,20 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
   const handlePaymentTypeChange = (type: 'card' | 'ach') => {
     setPaymentMethodType(type);
     localStorage.setItem('paymentMethodType', type);
+  };
+
+  const handleCardMakeDefaultChange = (checked: boolean) => {
+    setCardMakeDefault(checked);
+    if (checked) {
+      setAchMakeDefault(false);
+    }
+  };
+
+  const handleAchMakeDefaultChange = (checked: boolean) => {
+    setAchMakeDefault(checked);
+    if (checked) {
+      setCardMakeDefault(false);
+    }
   };
 
   // Function to initialize form with credit card info from onboarding (only if no billing data exists)
@@ -189,12 +225,16 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
     useSameAddress,
     cardDetails,
     backupCardDetails,
+    cardMakeDefault,
+    achMakeDefault,
     handleCompanyInfoChange,
     handleBillingAddressChange,
     handleUseSameAddressChange,
     handleCardDetailsChange,
     handleBackupCardDetailsChange,
     handlePaymentTypeChange,
+    handleCardMakeDefaultChange,
+    handleAchMakeDefaultChange,
     initializeFromCreditCardInfo,
   };
 };

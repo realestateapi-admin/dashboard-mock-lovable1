@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCardIcon, Building, AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -26,6 +26,10 @@ interface PaymentDetailsProps {
   handleCardDetailsChange: (field: string, value: string) => void;
   handleBackupCardDetailsChange: (field: string, value: string) => void;
   isLoading: boolean;
+  cardMakeDefault?: boolean;
+  achMakeDefault?: boolean;
+  onCardMakeDefaultChange?: (checked: boolean) => void;
+  onAchMakeDefaultChange?: (checked: boolean) => void;
 }
 
 export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
@@ -36,21 +40,26 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
   handleCardDetailsChange,
   handleBackupCardDetailsChange,
   isLoading,
+  cardMakeDefault = true,
+  achMakeDefault = false,
+  onCardMakeDefaultChange,
+  onAchMakeDefaultChange,
 }) => {
-  const [cardMakeDefault, setCardMakeDefault] = useState(true);
-  const [achMakeDefault, setAchMakeDefault] = useState(false);
-
   const handleCardMakeDefaultChange = (checked: boolean) => {
-    setCardMakeDefault(checked);
-    if (checked) {
-      setAchMakeDefault(false);
+    if (onCardMakeDefaultChange) {
+      onCardMakeDefaultChange(checked);
+    }
+    if (checked && onAchMakeDefaultChange) {
+      onAchMakeDefaultChange(false);
     }
   };
 
   const handleAchMakeDefaultChange = (checked: boolean) => {
-    setAchMakeDefault(checked);
-    if (checked) {
-      setCardMakeDefault(false);
+    if (onAchMakeDefaultChange) {
+      onAchMakeDefaultChange(checked);
+    }
+    if (checked && onCardMakeDefaultChange) {
+      onCardMakeDefaultChange(false);
     }
   };
 

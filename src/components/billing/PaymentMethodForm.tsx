@@ -42,12 +42,16 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     useSameAddress,
     cardDetails,
     backupCardDetails,
+    cardMakeDefault,
+    achMakeDefault,
     handleCompanyInfoChange,
     handleBillingAddressChange,
     handleUseSameAddressChange,
     handleCardDetailsChange,
     handleBackupCardDetailsChange,
     handlePaymentTypeChange,
+    handleCardMakeDefaultChange,
+    handleAchMakeDefaultChange,
     initializeFromCreditCardInfo
   } = usePaymentMethodFormV2(isLoading);
 
@@ -196,6 +200,10 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
           handleCardDetailsChange={handleCardNameChange}
           handleBackupCardDetailsChange={handleBackupCardDetailsChange}
           isLoading={isLoading}
+          cardMakeDefault={cardMakeDefault}
+          achMakeDefault={achMakeDefault}
+          onCardMakeDefaultChange={handleCardMakeDefaultChange}
+          onAchMakeDefaultChange={handleAchMakeDefaultChange}
         />
 
         {/* Billing Details Section (Second - renamed from Company Information) */}
