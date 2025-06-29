@@ -157,7 +157,16 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     return cardNumber;
   };
 
-  // Map card details to the expected format with masked card number for display
+  // Create proper handlers for card details that map to the correct field names
+  const handleCardNameChange = (field: string, value: string) => {
+    if (field === 'cardName') {
+      handleCardDetailsChange('cardholderName', value);
+    } else {
+      handleCardDetailsChange(field, value);
+    }
+  };
+
+  // Map card details to the expected format with proper field mapping
   const mappedCardDetails = {
     cardName: cardDetails.cardholderName || '',
     cardNumber: creditCardInfo ? maskCardNumber(cardDetails.cardNumber || '') : cardDetails.cardNumber || '',
@@ -184,7 +193,7 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
           handlePaymentTypeChange={handlePaymentMethodChange}
           cardDetails={mappedCardDetails}
           backupCardDetails={mappedBackupCardDetails}
-          handleCardDetailsChange={handleCardDetailsChange}
+          handleCardDetailsChange={handleCardNameChange}
           handleBackupCardDetailsChange={handleBackupCardDetailsChange}
           isLoading={isLoading}
         />
