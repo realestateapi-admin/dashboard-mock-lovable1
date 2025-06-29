@@ -59,7 +59,7 @@ export const BillingTabs = ({
           <Wallet className="h-4 w-4" /> Subscription
         </TabsTrigger>
         <TabsTrigger value="payment" className="flex items-center gap-2 px-3 py-2 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm">
-          <CreditCardIcon className="h-4 w-4" /> Payment Methods
+          <CreditCardIcon className="h-4 w-4" /> Billing
         </TabsTrigger>
         <TabsTrigger value="invoices" className="flex items-center gap-2 px-3 py-2 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm">
           <CreditCard className="h-4 w-4" /> Invoices
