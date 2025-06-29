@@ -1,16 +1,13 @@
-
 import { useState, useEffect, useCallback } from "react";
 
 export interface CompanyInfo {
   companyName: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
+  billingEmail: string;
 }
 
 export interface BillingAddress {
-  address: string;
+  line1: string;
+  line2: string;
   city: string;
   state: string;
   zipCode: string;
@@ -43,14 +40,12 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
 
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({
     companyName: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
+    billingEmail: "",
   });
 
   const [billingAddress, setBillingAddress] = useState<BillingAddress>({
-    address: "",
+    line1: "",
+    line2: "",
     city: "",
     state: "",
     zipCode: "",
@@ -124,8 +119,7 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
         
         setCompanyInfo(prev => ({
           ...prev,
-          firstName: firstName,
-          lastName: lastName,
+          // Keep existing billingEmail, don't overwrite it
         }));
       }
     }
