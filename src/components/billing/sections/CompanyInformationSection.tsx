@@ -12,12 +12,16 @@ interface CompanyInformationProps {
   };
   isLoading: boolean;
   handleCompanyInfoChange: (field: string, value: string) => void;
+  title?: string;
+  showEmailFirst?: boolean;
 }
 
 export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
   companyInfo,
   isLoading,
   handleCompanyInfoChange,
+  title = "Company Information",
+  showEmailFirst = false,
 }) => {
   const [companyNameError, setCompanyNameError] = useState("");
   const [isCompanyNameValid, setIsCompanyNameValid] = useState(false);
@@ -168,89 +172,106 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
     validateBillingEmail(newBillingEmail);
   };
 
+  // Field components for reordering
+  const BillingEmailField = (
+    <div className="space-y-2">
+      <Label htmlFor="billingEmail" className="flex items-center gap-1">
+        <Mail className="h-4 w-4" />
+        Billing Email
+      </Label>
+      <div className="relative">
+        <Input 
+          id="billingEmail" 
+          type="email"
+          value={companyInfo.billingEmail}
+          onChange={handleBillingEmailChange}
+          placeholder="billing@company.com"
+          disabled={isLoading}
+          className={`pr-10 ${
+            billingEmailError ? 'border-red-500 focus-visible:ring-red-500' : 
+            isBillingEmailValid ? 'border-green-500 focus-visible:ring-green-500' : ''
+          }`}
+        />
+        {companyInfo.billingEmail && (
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+            {isBillingEmailValid ? (
+              <CheckCircle className="h-4 w-4 text-green-500" />
+            ) : billingEmailError ? (
+              <AlertCircle className="h-4 w-4 text-red-500" />
+            ) : null}
+          </div>
+        )}
+      </div>
+      {billingEmailError && (
+        <p className="text-sm text-red-600 flex items-center gap-1">
+          <AlertCircle className="h-3 w-3" />
+          {billingEmailError}
+        </p>
+      )}
+      <p className="text-xs text-muted-foreground">
+        Update if billing communications should go to a different address.
+      </p>
+    </div>
+  );
+
+  const CompanyNameField = (
+    <div className="space-y-2">
+      <Label htmlFor="companyName" className="flex items-center gap-1">
+        <Briefcase className="h-4 w-4" />
+        Company Name
+      </Label>
+      <div className="relative">
+        <Input 
+          id="companyName" 
+          value={companyInfo.companyName}
+          onChange={handleCompanyNameChange}
+          placeholder="Your company name"
+          disabled={isLoading}
+          className={`pr-10 ${
+            companyNameError ? 'border-red-500 focus-visible:ring-red-500' : 
+            isCompanyNameValid ? 'border-green-500 focus-visible:ring-green-500' : ''
+          }`}
+          maxLength={50}
+        />
+        {companyInfo.companyName && (
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+            {isCompanyNameValid ? (
+              <CheckCircle className="h-4 w-4 text-green-500" />
+            ) : companyNameError ? (
+              <AlertCircle className="h-4 w-4 text-red-500" />
+            ) : null}
+          </div>
+        )}
+      </div>
+      {companyNameError && (
+        <p className="text-sm text-red-600 flex items-center gap-1">
+          <AlertCircle className="h-3 w-3" />
+          {companyNameError}
+        </p>
+      )}
+      <p className="text-xs text-muted-foreground">
+        1-50 characters, must include at least one letter or number
+      </p>
+    </div>
+  );
+
   return (
     <TooltipProvider>
       <div className="space-y-4 pb-6 border-b">
-        <h3 className="text-lg font-semibold">Company Information</h3>
+        <h3 className="text-lg font-semibold">{title}</h3>
         
         <div className="grid gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="companyName" className="flex items-center gap-1">
-              <Briefcase className="h-4 w-4" />
-              Company Name
-            </Label>
-            <div className="relative">
-              <Input 
-                id="companyName" 
-                value={companyInfo.companyName}
-                onChange={handleCompanyNameChange}
-                placeholder="Your company name"
-                disabled={isLoading}
-                className={`pr-10 ${
-                  companyNameError ? 'border-red-500 focus-visible:ring-red-500' : 
-                  isCompanyNameValid ? 'border-green-500 focus-visible:ring-green-500' : ''
-                }`}
-                maxLength={50}
-              />
-              {companyInfo.companyName && (
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  {isCompanyNameValid ? (
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                  ) : companyNameError ? (
-                    <AlertCircle className="h-4 w-4 text-red-500" />
-                  ) : null}
-                </div>
-              )}
-            </div>
-            {companyNameError && (
-              <p className="text-sm text-red-600 flex items-center gap-1">
-                <AlertCircle className="h-3 w-3" />
-                {companyNameError}
-              </p>
-            )}
-            <p className="text-xs text-muted-foreground">
-              1-50 characters, must include at least one letter or number
-            </p>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="billingEmail" className="flex items-center gap-1">
-              <Mail className="h-4 w-4" />
-              Billing Email
-            </Label>
-            <div className="relative">
-              <Input 
-                id="billingEmail" 
-                type="email"
-                value={companyInfo.billingEmail}
-                onChange={handleBillingEmailChange}
-                placeholder="billing@company.com"
-                disabled={isLoading}
-                className={`pr-10 ${
-                  billingEmailError ? 'border-red-500 focus-visible:ring-red-500' : 
-                  isBillingEmailValid ? 'border-green-500 focus-visible:ring-green-500' : ''
-                }`}
-              />
-              {companyInfo.billingEmail && (
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  {isBillingEmailValid ? (
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                  ) : billingEmailError ? (
-                    <AlertCircle className="h-4 w-4 text-red-500" />
-                  ) : null}
-                </div>
-              )}
-            </div>
-            {billingEmailError && (
-              <p className="text-sm text-red-600 flex items-center gap-1">
-                <AlertCircle className="h-3 w-3" />
-                {billingEmailError}
-              </p>
-            )}
-            <p className="text-xs text-muted-foreground">
-              Update if billing communications should go to a different address.
-            </p>
-          </div>
+          {showEmailFirst ? (
+            <>
+              {BillingEmailField}
+              {CompanyNameField}
+            </>
+          ) : (
+            <>
+              {CompanyNameField}
+              {BillingEmailField}
+            </>
+          )}
         </div>
       </div>
     </TooltipProvider>

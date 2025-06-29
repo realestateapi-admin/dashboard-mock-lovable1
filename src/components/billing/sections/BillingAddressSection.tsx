@@ -17,6 +17,8 @@ interface BillingAddressProps {
   };
   handleBillingAddressChange: (field: string, value: string) => void;
   isLoading: boolean;
+  hideTitle?: boolean;
+  hideCheckbox?: boolean;
 }
 
 export const BillingAddressSection: React.FC<BillingAddressProps> = ({
@@ -25,24 +27,28 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
   billingAddress,
   handleBillingAddressChange,
   isLoading,
+  hideTitle = false,
+  hideCheckbox = false,
 }) => {
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Billing Address</h3>
+      {!hideTitle && <h3 className="text-lg font-semibold">Billing Address</h3>}
       
-      <div className="flex items-center space-x-2 mb-4">
-        <Checkbox 
-          id="useSameAddress" 
-          checked={useSameAddress}
-          onCheckedChange={(checked) => handleUseSameAddressChange(checked as boolean)}
-          disabled={isLoading}
-        />
-        <Label htmlFor="useSameAddress" className="text-sm font-medium">
-          Use same address as company address
-        </Label>
-      </div>
+      {!hideCheckbox && (
+        <div className="flex items-center space-x-2 mb-4">
+          <Checkbox 
+            id="useSameAddress" 
+            checked={useSameAddress}
+            onCheckedChange={(checked) => handleUseSameAddressChange(checked as boolean)}
+            disabled={isLoading}
+          />
+          <Label htmlFor="useSameAddress" className="text-sm font-medium">
+            Use same address as company address
+          </Label>
+        </div>
+      )}
       
-      {!useSameAddress && (
+      {(!useSameAddress || hideCheckbox) && (
         <div className="grid gap-4">
           <div className="space-y-2">
             <Label htmlFor="billingLine1">Address Line 1</Label>

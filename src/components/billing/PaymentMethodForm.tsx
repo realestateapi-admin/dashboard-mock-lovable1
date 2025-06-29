@@ -1,3 +1,4 @@
+
 import React from "react";
 import { CompanyInformationSection } from "./sections/CompanyInformationSection";
 import { PaymentDetailsSection } from "./sections/PaymentDetailsSection";
@@ -177,14 +178,7 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
   return (
     <>
       <div ref={contentRef} className="space-y-8">
-        {/* Company Information Section (First) */}
-        <CompanyInformationSection 
-          companyInfo={companyInfo}
-          isLoading={isLoading}
-          handleCompanyInfoChange={handleCompanyInfoChange}
-        />
-
-        {/* Payment Details Section (Second) */}
+        {/* Payment Details Section (First) */}
         <PaymentDetailsSection 
           paymentMethodType={paymentMethodType}
           handlePaymentTypeChange={handlePaymentMethodChange}
@@ -195,13 +189,24 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
           isLoading={isLoading}
         />
 
-        {/* Billing Address Section (Third) */}
+        {/* Billing Details Section (Second - renamed from Company Information) */}
+        <CompanyInformationSection 
+          companyInfo={companyInfo}
+          isLoading={isLoading}
+          handleCompanyInfoChange={handleCompanyInfoChange}
+          title="Billing Details"
+          showEmailFirst={true}
+        />
+
+        {/* Billing Address Section (Third - without title and checkbox) */}
         <BillingAddressSection 
           useSameAddress={useSameAddress}
           handleUseSameAddressChange={handleUseSameAddressChange}
           billingAddress={billingAddress}
           handleBillingAddressChange={handleBillingAddressChange}
           isLoading={isLoading}
+          hideTitle={true}
+          hideCheckbox={true}
         />
       </div>
       <ScrollIndicator isVisible={showScrollIndicator} />
