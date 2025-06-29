@@ -1,3 +1,4 @@
+
 import { BillingOptionStep } from "./BillingOptionStep";
 import { AddOnsList } from "@/components/billing/AddOnsList";
 import { OverageHandling } from "@/components/billing/OverageHandling";
@@ -176,6 +177,32 @@ export function WizardContent({
   const handlePaymentMethodChange = (type: 'card' | 'ach') => {
     setPaymentMethodType(type);
     localStorage.setItem('paymentMethodType', type);
+  };
+
+  // Handle card make default changes
+  const handleCardMakeDefaultChange = (checked: boolean) => {
+    setCardMakeDefault(checked);
+    localStorage.setItem('cardMakeDefault', checked.toString());
+    
+    // If card is set as default, ACH should not be default
+    if (checked) {
+      setAchMakeDefault(false);
+      localStorage.setItem('achMakeDefault', 'false');
+      setDefaultPaymentMethod('card');
+    }
+  };
+
+  // Handle ACH make default changes
+  const handleAchMakeDefaultChange = (checked: boolean) => {
+    setAchMakeDefault(checked);
+    localStorage.setItem('achMakeDefault', checked.toString());
+    
+    // If ACH is set as default, card should not be default
+    if (checked) {
+      setCardMakeDefault(false);
+      localStorage.setItem('cardMakeDefault', 'false');
+      setDefaultPaymentMethod('ach');
+    }
   };
   
   return (
