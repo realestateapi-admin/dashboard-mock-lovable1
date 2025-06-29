@@ -47,13 +47,15 @@ export const CreditCardFormSection = ({
 
   // Handle card number input with validation
   const handleCardNumberChange = (value: string) => {
-    const formattedValue = formatCardNumber(value);
+    // Remove all non-digits first
+    const digitsOnly = value.replace(/[^\d]/g, '');
+    // Format the digits
+    const formattedValue = formatCardNumber(digitsOnly);
     setCardNumber(formattedValue);
     
     // Real-time Luhn validation
-    const digits = formattedValue.replace(/\s/g, '');
-    if (digits.length >= 13) {
-      if (!validateLuhn(digits)) {
+    if (digitsOnly.length >= 13) {
+      if (!validateLuhn(digitsOnly)) {
         setCardNumberError("Invalid card number");
       } else {
         setCardNumberError("");
@@ -131,11 +133,7 @@ export const CreditCardFormSection = ({
               id="cardNumber" 
               placeholder="1234 5678 9012 3456" 
               value={cardNumber}
-              onChange={(e) => {
-                // Only allow digits and let formatting handle spacing
-                const value = e.target.value.replace(/[^\d]/g, '');
-                handleCardNumberChange(value);
-              }}
+              onChange={(e) => handleCardNumberChange(e.target.value)}
               required
               disabled={isLoading}
               className={cardNumberError ? "border-red-500 focus-visible:ring-red-500" : ""}
