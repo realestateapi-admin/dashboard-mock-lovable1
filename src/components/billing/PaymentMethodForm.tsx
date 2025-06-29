@@ -103,6 +103,24 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     localStorage.setItem('paymentMethodType', type);
   };
 
+  // Map card details to the expected format
+  const mappedCardDetails = {
+    cardName: cardDetails.cardholderName || '',
+    cardNumber: cardDetails.cardNumber || '',
+    expiry: cardDetails.expiry || '',
+    cvc: cardDetails.cvc || '',
+    zipCode: cardDetails.zipCode || ''
+  };
+
+  // Map backup card details to the expected format
+  const mappedBackupCardDetails = {
+    cardName: backupCardDetails.accountName || '',
+    cardNumber: backupCardDetails.backupCardNumber || '',
+    expiry: backupCardDetails.backupExpiry || '',
+    cvc: backupCardDetails.backupCvc || '',
+    zipCode: ''
+  };
+
   return (
     <>
       <div ref={contentRef} className="space-y-8">
@@ -117,8 +135,8 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
         <PaymentDetailsSection 
           paymentMethodType={paymentMethodType}
           handlePaymentTypeChange={handlePaymentMethodChange}
-          cardDetails={cardDetails}
-          backupCardDetails={backupCardDetails}
+          cardDetails={mappedCardDetails}
+          backupCardDetails={mappedBackupCardDetails}
           handleCardDetailsChange={handleCardDetailsChange}
           handleBackupCardDetailsChange={handleBackupCardDetailsChange}
           isLoading={isLoading}

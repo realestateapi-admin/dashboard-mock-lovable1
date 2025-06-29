@@ -38,7 +38,12 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
 }) => {
   return (
     <div className="space-y-4 pb-6 border-b">
-      <h3 className="text-lg font-semibold">Payment Details</h3>
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">Payment Details</h3>
+        <p className="text-sm text-muted-foreground">
+          Pay for your subscription either by credit card or ACH
+        </p>
+      </div>
       
       <Tabs 
         value={paymentMethodType} 
