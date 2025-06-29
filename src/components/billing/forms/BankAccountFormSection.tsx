@@ -3,6 +3,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
+import { validateRoutingNumber, validateAccountNumber, formatRoutingNumber, formatAccountNumber } from "@/utils/achValidation";
 
 interface BankAccountFormSectionProps {
   makeDefault?: boolean;
@@ -29,6 +31,35 @@ export const BankAccountFormSection = ({
   accountNumber = "",
   onAccountNumberChange
 }: BankAccountFormSectionProps) => {
+  const [routingNumberError, setRoutingNumberError] = useState<string>("");
+  const [accountNumberError, setAccountNumberError] = useState<string>("");
+
+  const handleRoutingNumberChange = (value: string) => {
+    const formatted = formatRoutingNumber(value);
+    onRoutingNumberChange?.(formatted);
+    
+    // Validate if field has content
+    if (formatted) {
+      const validation = validateRoutingNumber(formatted);
+      setRoutingNumberError(validation.error || "");
+    } else {
+      setRoutingNumberError("");
+    }
+  };
+
+  const handleAccountNumberChange = (value: string) => {
+    const formatted = formatAccountNumber(value);
+    onAccountNumberChange?.(formatted);
+    
+    // Validate if field has content
+    if (formatted) {
+      const validation = validateAccountNumber(formatted);
+      setAccountNumberError(validation.error || "");
+    } else {
+      setAccountNumberError("");
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Bank account input fields */}
@@ -63,9 +94,14 @@ export const BankAccountFormSection = ({
           id="routingNumber" 
           placeholder="123456789" 
           value={routingNumber} 
-          onChange={(e) => onRoutingNumberChange?.(e.target.value)} 
+          onChange={(e) => handleRoutingNumberChange(e.target.value)} 
           required 
+          className={routingNumberError ? "border-red-500" : ""}
         />
+        {routingNumberError && (
+          <p className="text-sm text-red-600">{routingNumberError}</p>
+        )}
+        <p className="text-xs text-muted-foreground">9-digit number found on your checks</p>
       </div>
       
       <div className="space-y-2">
@@ -74,9 +110,14 @@ export const BankAccountFormSection = ({
           id="accountNumber" 
           placeholder="1234567890123456" 
           value={accountNumber} 
-          onChange={(e) => onAccountNumberChange?.(e.target.value)} 
+          onChange={(e) => handleAccountNumberChange(e.target.value)} 
           required 
+          className={accountNumberError ? "border-red-500" : ""}
         />
+        {accountNumberError && (
+          <p className="text-sm text-red-600">{accountNumberError}</p>
+        )}
+        <p className="text-xs text-muted-foreground">4-17 digit account number</p>
       </div>
       
       <div className="flex items-center space-x-2 pt-2">

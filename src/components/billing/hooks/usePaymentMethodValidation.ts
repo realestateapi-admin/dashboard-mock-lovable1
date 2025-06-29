@@ -1,5 +1,6 @@
 
 import { useToast } from "@/hooks/use-toast";
+import { validateRoutingNumber, validateAccountNumber } from "@/utils/achValidation";
 
 export const usePaymentMethodValidation = () => {
   const { toast } = useToast();
@@ -20,14 +21,19 @@ export const usePaymentMethodValidation = () => {
       showValidationError("Account holder name is required");
       return false;
     }
-    if (!newACHMethod.routingNumber.trim()) {
-      showValidationError("Routing number is required");
+    
+    const routingValidation = validateRoutingNumber(newACHMethod.routingNumber);
+    if (!routingValidation.isValid) {
+      showValidationError(routingValidation.error || "Invalid routing number");
       return false;
     }
-    if (!newACHMethod.accountNumber.trim()) {
-      showValidationError("Account number is required");
+    
+    const accountValidation = validateAccountNumber(newACHMethod.accountNumber);
+    if (!accountValidation.isValid) {
+      showValidationError(accountValidation.error || "Invalid account number");
       return false;
     }
+    
     if (!newACHMethod.backupCardNumber.trim()) {
       showValidationError("Backup card number is required");
       return false;
