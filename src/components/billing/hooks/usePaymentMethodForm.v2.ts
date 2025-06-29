@@ -1,14 +1,16 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export interface CompanyInfo {
   companyName: string;
-  billingEmail: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
 }
 
 export interface BillingAddress {
-  line1: string;
-  line2: string;
+  address: string;
   city: string;
   state: string;
   zipCode: string;
@@ -16,113 +18,118 @@ export interface BillingAddress {
 }
 
 export interface CardDetails {
-  accountName: string;
-  routingNumber: string;
-  accountNumber: string;
-  accountType: string;
-  makeDefault: boolean;
-  cardNumber: string;
   cardholderName: string;
+  cardNumber: string;
   expiry: string;
   cvc: string;
+  zipCode: string;
+  routingNumber: string;
+  accountNumber: string;
 }
 
 export interface BackupCardDetails {
-  backupCardNumber: string;
   backupCardholderName: string;
+  backupCardNumber: string;
   backupExpiry: string;
   backupCvc: string;
+  backupZipCode: string;
 }
 
-export const usePaymentMethodFormV2 = (isLoading: boolean = false) => {
-  // Get stored payment method type or default to 'card'
+export const usePaymentMethodFormV2 = (isLoading: boolean) => {
   const [paymentMethodType, setPaymentMethodType] = useState<'card' | 'ach'>(() => {
-    const stored = localStorage.getItem('paymentMethodType');
-    return (stored === 'card' || stored === 'ach') ? stored as 'card' | 'ach' : 'card';
+    const saved = localStorage.getItem('paymentMethodType');
+    return (saved === 'card' || saved === 'ach') ? saved : 'card';
   });
 
-  // Company information state (without address)
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({
     companyName: "",
-    billingEmail: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
   });
 
-  // Billing address state (separate from company info)
   const [billingAddress, setBillingAddress] = useState<BillingAddress>({
-    line1: "",
-    line2: "",
+    address: "",
     city: "",
     state: "",
     zipCode: "",
-    country: "United States"
+    country: "US",
   });
 
-  // Use same address checkbox state
-  const [useSameAddress, setUseSameAddress] = useState(false);
+  const [useSameAddress, setUseSameAddress] = useState(true);
 
-  // Card details state
   const [cardDetails, setCardDetails] = useState<CardDetails>({
-    accountName: "",
-    routingNumber: "",
-    accountNumber: "",
-    accountType: "checking",
-    makeDefault: false,
-    cardNumber: "",
     cardholderName: "",
+    cardNumber: "",
     expiry: "",
     cvc: "",
+    zipCode: "",
+    routingNumber: "",
+    accountNumber: "",
   });
 
-  // Backup card details state
   const [backupCardDetails, setBackupCardDetails] = useState<BackupCardDetails>({
-    backupCardNumber: "",
     backupCardholderName: "",
+    backupCardNumber: "",
     backupExpiry: "",
     backupCvc: "",
+    backupZipCode: "",
   });
 
-  // Handle company info changes
-  const handleCompanyInfoChange = (field: string, value: string) => {
-    setCompanyInfo(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  const handleCompanyInfoChange = (field: keyof CompanyInfo, value: string) => {
+    setCompanyInfo(prev => ({ ...prev, [field]: value }));
   };
 
-  // Handle billing address changes
-  const handleBillingAddressChange = (field: string, value: string) => {
-    setBillingAddress(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  const handleBillingAddressChange = (field: keyof BillingAddress, value: string) => {
+    setBillingAddress(prev => ({ ...prev, [field]: value }));
   };
 
-  // Handle checkbox for using same address
   const handleUseSameAddressChange = (checked: boolean) => {
     setUseSameAddress(checked);
   };
 
-  // Handle card details changes
-  const handleCardDetailsChange = (field: string, value: string | boolean) => {
-    setCardDetails(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  const handleCardDetailsChange = (field: string, value: string) => {
+    setCardDetails(prev => ({ ...prev, [field]: value }));
   };
 
-  // Handle backup card details changes
   const handleBackupCardDetailsChange = (field: string, value: string) => {
-    setBackupCardDetails(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    const mappedField = field.startsWith('backup') ? field : `backup${field.charAt(0).toUpperCase() + field.slice(1)}`;
+    setBackupCardDetails(prev => ({ ...prev, [mappedField]: value }));
   };
 
-  // Handle payment type changes
   const handlePaymentTypeChange = (type: 'card' | 'ach') => {
     setPaymentMethodType(type);
     localStorage.setItem('paymentMethodType', type);
   };
+
+  // Function to initialize form with credit card info from onboarding
+  const initializeFromCreditCardInfo = useCallback((creditCardInfo: any) => {
+    if (creditCardInfo) {
+      setCardDetails(prev => ({
+        ...prev,
+        cardholderName: creditCardInfo.cardName || creditCardInfo.cardholderName || "",
+        cardNumber: creditCardInfo.cardNumber || "",
+        expiry: creditCardInfo.expiry || "", 
+        cvc: creditCardInfo.cvc || "",
+        zipCode: creditCardInfo.zipCode || "",
+      }));
+      
+      // Also update company info if available
+      if (creditCardInfo.cardName || creditCardInfo.cardholderName) {
+        const fullName = creditCardInfo.cardName || creditCardInfo.cardholderName;
+        const nameParts = fullName.split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+        
+        setCompanyInfo(prev => ({
+          ...prev,
+          firstName: firstName,
+          lastName: lastName,
+        }));
+      }
+    }
+  }, []);
 
   return {
     paymentMethodType,
@@ -136,6 +143,7 @@ export const usePaymentMethodFormV2 = (isLoading: boolean = false) => {
     handleUseSameAddressChange,
     handleCardDetailsChange,
     handleBackupCardDetailsChange,
-    handlePaymentTypeChange
+    handlePaymentTypeChange,
+    initializeFromCreditCardInfo,
   };
 };

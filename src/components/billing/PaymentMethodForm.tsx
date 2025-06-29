@@ -1,4 +1,3 @@
-
 import React from "react";
 import { CompanyInformationSection } from "./sections/CompanyInformationSection";
 import { PaymentDetailsSection } from "./sections/PaymentDetailsSection";
@@ -47,8 +46,17 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     handleUseSameAddressChange,
     handleCardDetailsChange,
     handleBackupCardDetailsChange,
-    handlePaymentTypeChange
+    handlePaymentTypeChange,
+    initializeFromCreditCardInfo
   } = usePaymentMethodFormV2(isLoading);
+
+  // Initialize form with credit card info from onboarding
+  useEffect(() => {
+    if (creditCardInfo) {
+      console.log('Initializing payment form with credit card info:', creditCardInfo);
+      initializeFromCreditCardInfo(creditCardInfo);
+    }
+  }, [creditCardInfo, initializeFromCreditCardInfo]);
 
   const checkScrollPosition = () => {
     const scrollContainer = document.querySelector('[data-radix-scroll-area-viewport]');
@@ -118,7 +126,6 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
   // Validation logic for ACH
   const isACHValid = () => {
     return !!(
-      cardDetails.accountName?.trim() &&
       cardDetails.routingNumber?.trim() &&
       cardDetails.accountNumber?.trim() &&
       backupCardDetails.backupCardholderName?.trim() &&
@@ -143,7 +150,7 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     cardNumber: cardDetails.cardNumber || '',
     expiry: cardDetails.expiry || '',
     cvc: cardDetails.cvc || '',
-    zipCode: '' // Using empty string since zipCode doesn't exist in CardDetails
+    zipCode: cardDetails.zipCode || '' // Use zipCode from cardDetails if available
   };
 
   // Map backup card details to the expected format (fixed property names)
@@ -152,7 +159,7 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     cardNumber: backupCardDetails.backupCardNumber || '',
     expiry: backupCardDetails.backupExpiry || '',
     cvc: backupCardDetails.backupCvc || '',
-    zipCode: ''
+    zipCode: backupCardDetails.backupZipCode || ''
   };
 
   return (
