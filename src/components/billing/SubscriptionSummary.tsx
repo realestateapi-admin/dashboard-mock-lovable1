@@ -187,15 +187,7 @@ export function SubscriptionSummary({
             </p>
           )}
         </div>
-        
-        {paymentMethodType === 'card' && (
-          <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded-md border border-amber-100">
-            3% transaction fee applies to credit card payments. Switch to ACH to avoid this fee.
-          </div>
-        )}
       </CardContent>
-      
-      {/* We've removed the CardFooter with the "Confirm Selection" button */}
     </Card>
   );
 }
