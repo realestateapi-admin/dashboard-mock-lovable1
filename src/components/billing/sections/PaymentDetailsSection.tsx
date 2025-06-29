@@ -57,7 +57,7 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
   onAchMakeDefaultChange,
 }) => {
   const [isCreditCardOpen, setIsCreditCardOpen] = useState(false);
-  const [isACHFormOpen, setIsACHFormOpen] = useState(false);
+  const [isACHOpen, setIsACHOpen] = useState(false);
 
   const handleCardMakeDefaultChange = (checked: boolean) => {
     if (onCardMakeDefaultChange) {
@@ -163,68 +163,64 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
 
         {/* Bank Account (ACH) Section */}
         <div className="border rounded-lg">
-          <div className="p-4 flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="bg-blue-100 p-2 rounded-full">
-                <Building className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <div className="font-medium flex items-center gap-2">
-                  Bank Account (ACH)
-                  {achMakeDefault && (
-                    <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
-                      Default
-                    </span>
-                  )}
+          <Collapsible open={isACHOpen} onOpenChange={setIsACHOpen}>
+            <CollapsibleTrigger className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+              <div className="flex items-center space-x-4">
+                <div className="bg-blue-100 p-2 rounded-full">
+                  <Building className="h-5 w-5 text-blue-600" />
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  {achDetails?.accountName && achDetails?.accountNumber 
-                    ? `${achDetails.accountName} • •••• ${achDetails.accountNumber.slice(-4)}`
-                    : "No bank account added"
-                  }
+                <div className="text-left">
+                  <div className="font-medium flex items-center gap-2">
+                    Bank Account (ACH)
+                    {achMakeDefault && (
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                        Default
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {achDetails?.accountName && achDetails?.accountNumber 
+                      ? `${achDetails.accountName} • •••• ${achDetails.accountNumber.slice(-4)}`
+                      : "No bank account added"
+                    }
+                  </div>
                 </div>
               </div>
-            </div>
+              <div className="flex items-center gap-3">
+                {achDetails?.accountName && (
+                  <Button 
+                    variant={achMakeDefault ? "default" : "outline"}
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAchMakeDefaultChange(!achMakeDefault);
+                    }}
+                    disabled={achMakeDefault}
+                  >
+                    {achMakeDefault ? "Default" : "Make Default"}
+                  </Button>
+                )}
+                <ChevronDown className={`h-4 w-4 transition-transform ${isACHOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CollapsibleTrigger>
             
-            <div className="flex space-x-2">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setIsACHFormOpen(!isACHFormOpen)}
-              >
-                {achDetails?.accountName ? "Modify" : "Add"}
-              </Button>
-              
-              {achDetails?.accountName && (
-                <Button 
-                  variant={achMakeDefault ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => handleAchMakeDefaultChange(!achMakeDefault)}
-                  disabled={achMakeDefault}
-                >
-                  {achMakeDefault ? "Default" : "Make Default"}
-                </Button>
-              )}
-            </div>
-          </div>
-          
-          {/* ACH Form - show when Add/Modify is clicked */}
-          {isACHFormOpen && (
-            <div className="border-t p-4">
-              <BankAccountFormSection
-                makeDefault={achMakeDefault}
-                onMakeDefaultChange={handleAchMakeDefaultChange}
-                accountName={achDetails?.accountName}
-                onAccountNameChange={(value) => handleACHDetailsChange?.("accountName", value)}
-                accountType={achDetails?.accountType}
-                onAccountTypeChange={(value) => handleACHDetailsChange?.("accountType", value)}
-                routingNumber={achDetails?.routingNumber}
-                onRoutingNumberChange={(value) => handleACHDetailsChange?.("routingNumber", value)}
-                accountNumber={achDetails?.accountNumber}
-                onAccountNumberChange={(value) => handleACHDetailsChange?.("accountNumber", value)}
-              />
-            </div>
-          )}
+            <CollapsibleContent>
+              <div className="p-4 pt-0">
+                <BankAccountFormSection
+                  makeDefault={achMakeDefault}
+                  onMakeDefaultChange={handleAchMakeDefaultChange}
+                  accountName={achDetails?.accountName}
+                  onAccountNameChange={(value) => handleACHDetailsChange?.("accountName", value)}
+                  accountType={achDetails?.accountType}
+                  onAccountTypeChange={(value) => handleACHDetailsChange?.("accountType", value)}
+                  routingNumber={achDetails?.routingNumber}
+                  onRoutingNumberChange={(value) => handleACHDetailsChange?.("routingNumber", value)}
+                  accountNumber={achDetails?.accountNumber}
+                  onAccountNumberChange={(value) => handleACHDetailsChange?.("accountNumber", value)}
+                />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
       </div>
     </div>
