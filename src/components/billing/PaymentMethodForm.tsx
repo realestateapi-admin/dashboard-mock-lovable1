@@ -42,6 +42,7 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     useSameAddress,
     cardDetails,
     backupCardDetails,
+    achDetails,
     cardMakeDefault,
     achMakeDefault,
     handleCompanyInfoChange,
@@ -49,6 +50,7 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     handleUseSameAddressChange,
     handleCardDetailsChange,
     handleBackupCardDetailsChange,
+    handleACHDetailsChange,
     handlePaymentTypeChange,
     handleCardMakeDefaultChange,
     handleAchMakeDefaultChange,
@@ -197,8 +199,10 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
           handlePaymentTypeChange={handlePaymentMethodChange}
           cardDetails={mappedCardDetails}
           backupCardDetails={mappedBackupCardDetails}
+          achDetails={achDetails}
           handleCardDetailsChange={handleCardNameChange}
           handleBackupCardDetailsChange={handleBackupCardDetailsChange}
+          handleACHDetailsChange={handleACHDetailsChange}
           isLoading={isLoading}
           cardMakeDefault={cardMakeDefault}
           achMakeDefault={achMakeDefault}

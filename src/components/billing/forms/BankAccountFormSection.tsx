@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -8,17 +7,28 @@ import { Checkbox } from "@/components/ui/checkbox";
 interface BankAccountFormSectionProps {
   makeDefault?: boolean;
   onMakeDefaultChange?: (checked: boolean) => void;
+  accountName?: string;
+  onAccountNameChange?: (value: string) => void;
+  accountType?: string;
+  onAccountTypeChange?: (value: string) => void;
+  routingNumber?: string;
+  onRoutingNumberChange?: (value: string) => void;
+  accountNumber?: string;
+  onAccountNumberChange?: (value: string) => void;
 }
 
 export const BankAccountFormSection = ({
   makeDefault = false,
-  onMakeDefaultChange
+  onMakeDefaultChange,
+  accountName = "",
+  onAccountNameChange,
+  accountType = "checking",
+  onAccountTypeChange,
+  routingNumber = "",
+  onRoutingNumberChange,
+  accountNumber = "",
+  onAccountNumberChange
 }: BankAccountFormSectionProps) => {
-  const [accountName, setAccountName] = useState("");
-  const [accountType, setAccountType] = useState("checking");
-  const [routingNumber, setRoutingNumber] = useState("");
-  const [accountNumber, setAccountNumber] = useState("");
-
   return (
     <div className="space-y-4">
       {/* Bank account input fields */}
@@ -29,13 +39,13 @@ export const BankAccountFormSection = ({
             id="accountName" 
             placeholder="John Smith" 
             value={accountName} 
-            onChange={(e) => setAccountName(e.target.value)} 
+            onChange={(e) => onAccountNameChange?.(e.target.value)} 
             required 
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="accountType">Account Type</Label>
-          <Select value={accountType} onValueChange={setAccountType}>
+          <Select value={accountType} onValueChange={onAccountTypeChange}>
             <SelectTrigger id="accountType">
               <SelectValue placeholder="Select account type" />
             </SelectTrigger>
@@ -53,7 +63,7 @@ export const BankAccountFormSection = ({
           id="routingNumber" 
           placeholder="123456789" 
           value={routingNumber} 
-          onChange={(e) => setRoutingNumber(e.target.value)} 
+          onChange={(e) => onRoutingNumberChange?.(e.target.value)} 
           required 
         />
       </div>
@@ -64,7 +74,7 @@ export const BankAccountFormSection = ({
           id="accountNumber" 
           placeholder="1234567890123456" 
           value={accountNumber} 
-          onChange={(e) => setAccountNumber(e.target.value)} 
+          onChange={(e) => onAccountNumberChange?.(e.target.value)} 
           required 
         />
       </div>

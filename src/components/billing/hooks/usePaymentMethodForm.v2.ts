@@ -33,6 +33,13 @@ export interface BackupCardDetails {
   backupZipCode: string;
 }
 
+export interface ACHDetails {
+  accountName: string;
+  accountType: string;
+  routingNumber: string;
+  accountNumber: string;
+}
+
 const BILLING_FORM_STORAGE_KEY = "billingFormData";
 
 export const usePaymentMethodFormV2 = (isLoading: boolean) => {
@@ -85,6 +92,13 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
     backupZipCode: "",
   });
 
+  const [achDetails, setAchDetails] = useState<ACHDetails>({
+    accountName: "",
+    accountType: "checking",
+    routingNumber: "",
+    accountNumber: "",
+  });
+
   // Load form data from localStorage on component mount
   useEffect(() => {
     try {
@@ -105,6 +119,9 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
         if (parsedData.backupCardDetails) {
           setBackupCardDetails(prev => ({ ...prev, ...parsedData.backupCardDetails }));
         }
+        if (parsedData.achDetails) {
+          setAchDetails(prev => ({ ...prev, ...parsedData.achDetails }));
+        }
         if (typeof parsedData.useSameAddress === 'boolean') {
           setUseSameAddress(parsedData.useSameAddress);
         }
@@ -122,6 +139,7 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
         companyInfo,
         billingAddress,
         backupCardDetails,
+        achDetails,
         useSameAddress,
         paymentMethodType,
         cardMakeDefault,
@@ -132,7 +150,7 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
     } catch (error) {
       console.error("Error saving billing form data to localStorage:", error);
     }
-  }, [cardDetails, companyInfo, billingAddress, backupCardDetails, useSameAddress, paymentMethodType, cardMakeDefault, achMakeDefault]);
+  }, [cardDetails, companyInfo, billingAddress, backupCardDetails, achDetails, useSameAddress, paymentMethodType, cardMakeDefault, achMakeDefault]);
 
   // Auto-save whenever data changes
   useEffect(() => {
@@ -167,6 +185,10 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
   const handleBackupCardDetailsChange = (field: string, value: string) => {
     const mappedField = field.startsWith('backup') ? field : `backup${field.charAt(0).toUpperCase() + field.slice(1)}`;
     setBackupCardDetails(prev => ({ ...prev, [mappedField]: value }));
+  };
+
+  const handleACHDetailsChange = (field: keyof ACHDetails, value: string) => {
+    setAchDetails(prev => ({ ...prev, [field]: value }));
   };
 
   const handlePaymentTypeChange = (type: 'card' | 'ach') => {
@@ -225,6 +247,7 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
     useSameAddress,
     cardDetails,
     backupCardDetails,
+    achDetails,
     cardMakeDefault,
     achMakeDefault,
     handleCompanyInfoChange,
@@ -232,6 +255,7 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
     handleUseSameAddressChange,
     handleCardDetailsChange,
     handleBackupCardDetailsChange,
+    handleACHDetailsChange,
     handlePaymentTypeChange,
     handleCardMakeDefaultChange,
     handleAchMakeDefaultChange,

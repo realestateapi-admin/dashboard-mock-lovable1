@@ -23,8 +23,15 @@ interface PaymentDetailsProps {
     cvc: string;
     zipCode: string;
   };
+  achDetails?: {
+    accountName: string;
+    accountType: string;
+    routingNumber: string;
+    accountNumber: string;
+  };
   handleCardDetailsChange: (field: string, value: string) => void;
   handleBackupCardDetailsChange: (field: string, value: string) => void;
+  handleACHDetailsChange?: (field: string, value: string) => void;
   isLoading: boolean;
   cardMakeDefault?: boolean;
   achMakeDefault?: boolean;
@@ -37,8 +44,10 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
   handlePaymentTypeChange,
   cardDetails,
   backupCardDetails,
+  achDetails,
   handleCardDetailsChange,
   handleBackupCardDetailsChange,
+  handleACHDetailsChange,
   isLoading,
   cardMakeDefault = true,
   achMakeDefault = false,
@@ -132,6 +141,14 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
             <BankAccountFormSection
               makeDefault={achMakeDefault}
               onMakeDefaultChange={handleAchMakeDefaultChange}
+              accountName={achDetails?.accountName}
+              onAccountNameChange={(value) => handleACHDetailsChange?.("accountName", value)}
+              accountType={achDetails?.accountType}
+              onAccountTypeChange={(value) => handleACHDetailsChange?.("accountType", value)}
+              routingNumber={achDetails?.routingNumber}
+              onRoutingNumberChange={(value) => handleACHDetailsChange?.("routingNumber", value)}
+              accountNumber={achDetails?.accountNumber}
+              onAccountNumberChange={(value) => handleACHDetailsChange?.("accountNumber", value)}
             />
           </TabsContent>
         </div>
