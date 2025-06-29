@@ -1,4 +1,3 @@
-
 import React from "react";
 import { CompanyInformationSection } from "./sections/CompanyInformationSection";
 import { PaymentDetailsSection } from "./sections/PaymentDetailsSection";
@@ -120,27 +119,6 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     localStorage.setItem('paymentMethodType', type);
   };
 
-  // Enhanced handlers for default payment method changes that save to localStorage
-  const handleCardMakeDefaultChangeWithStorage = (checked: boolean) => {
-    handleCardMakeDefaultChange(checked);
-    localStorage.setItem('cardMakeDefault', checked.toString());
-    
-    // If card is set as default, ACH should not be default
-    if (checked) {
-      localStorage.setItem('achMakeDefault', 'false');
-    }
-  };
-
-  const handleAchMakeDefaultChangeWithStorage = (checked: boolean) => {
-    handleAchMakeDefaultChange(checked);
-    localStorage.setItem('achMakeDefault', checked.toString());
-    
-    // If ACH is set as default, card should not be default
-    if (checked) {
-      localStorage.setItem('cardMakeDefault', 'false');
-    }
-  };
-
   // Validation logic for credit card
   const isCreditCardValid = () => {
     return !!(
@@ -151,14 +129,18 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     );
   };
 
-  // Simplified validation logic for ACH - only require bank account details for now
-  // Backup card validation will be enforced at submission time
+  // Validation logic for ACH - requires both ACH details AND credit card details as backup
   const isACHValid = () => {
-    return !!(
+    const achDetailsValid = !!(
       achDetails.accountName?.trim() &&
       achDetails.routingNumber?.trim() &&
       achDetails.accountNumber?.trim()
     );
+    
+    // Also require credit card details as backup for ACH
+    const backupCardValid = isCreditCardValid();
+    
+    return achDetailsValid && backupCardValid;
   };
 
   // Check overall validation and notify parent
@@ -169,6 +151,44 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
       onValidationChange(isFormValid);
     }
   }, [isFormValid, onValidationChange]);
+
+  // Enhanced handlers for default payment method changes that save to localStorage
+  // and trigger validation update
+  const handleCardMakeDefaultChangeWithStorage = (checked: boolean) => {
+    handleCardMakeDefaultChange(checked);
+    localStorage.setItem('cardMakeDefault', checked.toString());
+    
+    // If card is set as default, ACH should not be default
+    if (checked) {
+      localStorage.setItem('achMakeDefault', 'false');
+    }
+    
+    // Trigger validation update after state change
+    setTimeout(() => {
+      const currentlyValid = paymentMethodType === 'card' ? isCreditCardValid() : isACHValid();
+      if (onValidationChange) {
+        onValidationChange(currentlyValid);
+      }
+    }, 0);
+  };
+
+  const handleAchMakeDefaultChangeWithStorage = (checked: boolean) => {
+    handleAchMakeDefaultChange(checked);
+    localStorage.setItem('achMakeDefault', checked.toString());
+    
+    // If ACH is set as default, card should not be default
+    if (checked) {
+      localStorage.setItem('cardMakeDefault', 'false');
+    }
+    
+    // Trigger validation update after state change
+    setTimeout(() => {
+      const currentlyValid = paymentMethodType === 'card' ? isCreditCardValid() : isACHValid();
+      if (onValidationChange) {
+        onValidationChange(currentlyValid);
+      }
+    }, 0);
+  };
 
   // Create proper handlers for card details that map to the correct field names
   const handleCardNameChange = (field: string, value: string) => {
