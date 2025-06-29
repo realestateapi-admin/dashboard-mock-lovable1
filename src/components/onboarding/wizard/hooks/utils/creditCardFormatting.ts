@@ -1,25 +1,56 @@
 
+/**
+ * Format card number with spaces every 4 digits
+ * @param value - Raw card number string
+ * @returns Formatted card number string
+ */
 export const formatCardNumber = (value: string): string => {
-  // Remove all non-digit characters first (including spaces, dashes, etc.)
-  value = value.replace(/\D/g, "");
+  // Remove all non-digits
+  const digitsOnly = value.replace(/[^\d]/g, '');
+  
+  // Limit to 19 digits (max for any card type)
+  const limitedDigits = digitsOnly.slice(0, 19);
+  
   // Add spaces every 4 digits
-  value = value.replace(/(.{4})/g, "$1 ").trim();
-  // Limit to 16 digits plus spaces (19 characters total)
-  return value.substring(0, 19);
+  return limitedDigits.replace(/(.{4})/g, '$1 ').trim();
 };
 
+/**
+ * Format expiry date as MM/YY
+ * @param value - Raw expiry string
+ * @returns Formatted expiry string
+ */
 export const formatExpiryDate = (value: string): string => {
-  value = value.replace(/\s/g, "").replace(/[^0-9]/g, "");
-  if (value.length > 2) {
-    value = `${value.substring(0, 2)}/${value.substring(2, 4)}`;
+  // Remove all non-digits
+  const digitsOnly = value.replace(/[^\d]/g, '');
+  
+  // Limit to 4 digits
+  const limitedDigits = digitsOnly.slice(0, 4);
+  
+  // Add slash after 2 digits
+  if (limitedDigits.length >= 2) {
+    return limitedDigits.slice(0, 2) + '/' + limitedDigits.slice(2);
   }
-  return value.substring(0, 5); // MM/YY format (5 chars total)
+  
+  return limitedDigits;
 };
 
+/**
+ * Format CVC to limit digits
+ * @param value - Raw CVC string
+ * @returns Formatted CVC string
+ */
 export const formatCvc = (value: string): string => {
-  return value.replace(/[^0-9]/g, "").substring(0, 4);
+  // Remove all non-digits and limit to 4 digits
+  return value.replace(/[^\d]/g, '').slice(0, 4);
 };
 
+/**
+ * Format ZIP code
+ * @param value - Raw ZIP string
+ * @returns Formatted ZIP string
+ */
 export const formatZipCode = (value: string): string => {
-  return value.replace(/[^0-9-]/g, "").substring(0, 10);
+  // Allow digits, letters, spaces, and hyphens for international postal codes
+  return value.replace(/[^a-zA-Z0-9\s-]/g, '').slice(0, 10);
 };
