@@ -257,7 +257,7 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
 
   return (
     <TooltipProvider>
-      <div className="space-y-4 pb-6 border-b">
+      <div className="space-y-4 pb-6">
         <h3 className="text-lg font-semibold">{title}</h3>
         
         <div className="grid gap-4">
