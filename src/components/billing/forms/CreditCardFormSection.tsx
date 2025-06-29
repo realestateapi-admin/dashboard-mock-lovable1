@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,6 +16,8 @@ interface CreditCardFormSectionProps {
   setZipCode: (value: string) => void;
   isLoading?: boolean;
   showMakeDefaultOption?: boolean;
+  makeDefault?: boolean;
+  onMakeDefaultChange?: (checked: boolean) => void;
 }
 
 export const CreditCardFormSection = ({
@@ -32,9 +33,9 @@ export const CreditCardFormSection = ({
   setZipCode,
   isLoading = false,
   showMakeDefaultOption = false,
+  makeDefault = false,
+  onMakeDefaultChange,
 }: CreditCardFormSectionProps) => {
-  const [makeDefault, setMakeDefault] = useState(true);
-
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -105,7 +106,7 @@ export const CreditCardFormSection = ({
           <Checkbox 
             id="makeDefaultCard"
             checked={makeDefault}
-            onCheckedChange={(checked) => setMakeDefault(checked as boolean)}
+            onCheckedChange={(checked) => onMakeDefaultChange?.(checked as boolean)}
             disabled={isLoading}
           />
           <Label htmlFor="makeDefaultCard" className="text-sm font-medium">

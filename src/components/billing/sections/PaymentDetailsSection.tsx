@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCardIcon, Building } from "lucide-react";
 import { CreditCardFormSection } from "../forms/CreditCardFormSection";
@@ -36,6 +36,23 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
   handleBackupCardDetailsChange,
   isLoading,
 }) => {
+  const [cardMakeDefault, setCardMakeDefault] = useState(true);
+  const [achMakeDefault, setAchMakeDefault] = useState(false);
+
+  const handleCardMakeDefaultChange = (checked: boolean) => {
+    setCardMakeDefault(checked);
+    if (checked) {
+      setAchMakeDefault(false);
+    }
+  };
+
+  const handleAchMakeDefaultChange = (checked: boolean) => {
+    setAchMakeDefault(checked);
+    if (checked) {
+      setCardMakeDefault(false);
+    }
+  };
+
   return (
     <div className="space-y-4 pb-6 border-b">
       <div className="space-y-2">
@@ -86,21 +103,15 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
               setZipCode={(value) => handleCardDetailsChange("zipCode", value)}
               isLoading={isLoading}
               showMakeDefaultOption={true}
+              makeDefault={cardMakeDefault}
+              onMakeDefaultChange={handleCardMakeDefaultChange}
             />
           </TabsContent>
           
           <TabsContent value="ach" className="mt-0 p-0 space-y-4">
             <BankAccountFormSection
-              cardName={backupCardDetails.cardName}
-              setCardName={(value) => handleBackupCardDetailsChange("cardName", value)}
-              cardNumber={backupCardDetails.cardNumber}
-              setCardNumber={(value) => handleBackupCardDetailsChange("cardNumber", value)}
-              expiry={backupCardDetails.expiry}
-              setExpiry={(value) => handleBackupCardDetailsChange("expiry", value)}
-              cvc={backupCardDetails.cvc}
-              setCvc={(value) => handleBackupCardDetailsChange("cvc", value)}
-              zipCode={backupCardDetails.zipCode}
-              setZipCode={(value) => handleBackupCardDetailsChange("zipCode", value)}
+              makeDefault={achMakeDefault}
+              onMakeDefaultChange={handleAchMakeDefaultChange}
             />
           </TabsContent>
         </div>
