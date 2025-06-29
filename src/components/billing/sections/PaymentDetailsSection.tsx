@@ -1,4 +1,3 @@
-
 import React from "react";
 import { CreditCard, Building, AlertTriangle, ChevronDown } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -62,8 +61,8 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
     if (onCardMakeDefaultChange) {
       onCardMakeDefaultChange(checked);
     }
-    if (checked && onAchMakeDefaultChange) {
-      onAchMakeDefaultChange(false);
+    if (!checked && onAchMakeDefaultChange) {
+      onAchMakeDefaultChange(true);
     }
   };
 
@@ -71,8 +70,8 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
     if (onAchMakeDefaultChange) {
       onAchMakeDefaultChange(checked);
     }
-    if (checked && onCardMakeDefaultChange) {
-      onCardMakeDefaultChange(false);
+    if (!checked && onCardMakeDefaultChange) {
+      onCardMakeDefaultChange(true);
     }
   };
 
