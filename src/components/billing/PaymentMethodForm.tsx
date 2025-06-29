@@ -1,3 +1,4 @@
+
 import React from "react";
 import { CompanyInformationSection } from "./sections/CompanyInformationSection";
 import { PaymentDetailsSection } from "./sections/PaymentDetailsSection";
@@ -150,15 +151,13 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     );
   };
 
-  // Validation logic for ACH
+  // Simplified validation logic for ACH - only require bank account details for now
+  // Backup card validation will be enforced at submission time
   const isACHValid = () => {
     return !!(
-      cardDetails.routingNumber?.trim() &&
-      cardDetails.accountNumber?.trim() &&
-      backupCardDetails.backupCardholderName?.trim() &&
-      backupCardDetails.backupCardNumber?.trim() &&
-      backupCardDetails.backupExpiry?.trim() &&
-      backupCardDetails.backupCvc?.trim()
+      achDetails.accountName?.trim() &&
+      achDetails.routingNumber?.trim() &&
+      achDetails.accountNumber?.trim()
     );
   };
 
