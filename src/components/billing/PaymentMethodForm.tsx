@@ -143,7 +143,7 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     cardNumber: cardDetails.cardNumber || '',
     expiry: cardDetails.expiry || '',
     cvc: cardDetails.cvc || '',
-    zipCode: '' // cardDetails doesn't have zipCode, so using empty string
+    zipCode: '' // Using empty string since zipCode doesn't exist in CardDetails
   };
 
   // Map backup card details to the expected format (fixed property names)
