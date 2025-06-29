@@ -1,5 +1,4 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PaymentDetailsSection } from "./sections/PaymentDetailsSection";
 import { CompanyInformationSection } from "./sections/CompanyInformationSection";
 import { BillingAddressSection } from "./sections/BillingAddressSection";
@@ -60,51 +59,43 @@ export const PaymentMethods = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Payment Methods</CardTitle>
-        <CardDescription>
-          Manage your payment methods and billing information
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Payment Details Section */}
-        <PaymentDetailsSection 
-          paymentMethodType={paymentMethodType}
-          handlePaymentTypeChange={handlePaymentTypeChange}
-          cardDetails={mappedCardDetails}
-          backupCardDetails={mappedBackupCardDetails}
-          achDetails={achDetails}
-          handleCardDetailsChange={handleCardNameChange}
-          handleBackupCardDetailsChange={handleBackupCardDetailsChange}
-          handleACHDetailsChange={handleACHDetailsChange}
-          isLoading={false}
-          cardMakeDefault={cardMakeDefault}
-          achMakeDefault={achMakeDefault}
-          onCardMakeDefaultChange={handleCardMakeDefaultChange}
-          onAchMakeDefaultChange={handleAchMakeDefaultChange}
-        />
+    <div className="space-y-6">
+      {/* Payment Details Section */}
+      <PaymentDetailsSection 
+        paymentMethodType={paymentMethodType}
+        handlePaymentTypeChange={handlePaymentTypeChange}
+        cardDetails={mappedCardDetails}
+        backupCardDetails={mappedBackupCardDetails}
+        achDetails={achDetails}
+        handleCardDetailsChange={handleCardNameChange}
+        handleBackupCardDetailsChange={handleBackupCardDetailsChange}
+        handleACHDetailsChange={handleACHDetailsChange}
+        isLoading={false}
+        cardMakeDefault={cardMakeDefault}
+        achMakeDefault={achMakeDefault}
+        onCardMakeDefaultChange={handleCardMakeDefaultChange}
+        onAchMakeDefaultChange={handleAchMakeDefaultChange}
+      />
 
-        {/* Billing Details Section */}
-        <CompanyInformationSection 
-          companyInfo={companyInfo}
-          isLoading={false}
-          handleCompanyInfoChange={handleCompanyInfoChange}
-          title="Billing Details"
-          showEmailFirst={true}
-        />
+      {/* Billing Details Section */}
+      <CompanyInformationSection 
+        companyInfo={companyInfo}
+        isLoading={false}
+        handleCompanyInfoChange={handleCompanyInfoChange}
+        title="Billing Details"
+        showEmailFirst={true}
+      />
 
-        {/* Billing Address Section */}
-        <BillingAddressSection 
-          useSameAddress={useSameAddress}
-          handleUseSameAddressChange={handleUseSameAddressChange}
-          billingAddress={billingAddress}
-          handleBillingAddressChange={handleBillingAddressChange}
-          isLoading={false}
-          hideTitle={true}
-          hideCheckbox={true}
-        />
-      </CardContent>
-    </Card>
+      {/* Billing Address Section */}
+      <BillingAddressSection 
+        useSameAddress={useSameAddress}
+        handleUseSameAddressChange={handleUseSameAddressChange}
+        billingAddress={billingAddress}
+        handleBillingAddressChange={handleBillingAddressChange}
+        isLoading={false}
+        hideTitle={true}
+        hideCheckbox={true}
+      />
+    </div>
   );
 };
