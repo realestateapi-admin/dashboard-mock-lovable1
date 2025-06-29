@@ -239,6 +239,7 @@ export function WizardContent({
               onSubmit={onSubmit}
               billingCycle={billingCycle}
               showSubmitButton={false}
+              paymentMethodType={paymentMethodType}
             />
           </div>
         </div>

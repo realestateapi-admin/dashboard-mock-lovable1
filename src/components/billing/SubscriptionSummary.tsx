@@ -19,6 +19,7 @@ interface SubscriptionSummaryProps {
   onSubmit?: () => void;
   billingCycle?: 'monthly' | 'annual';
   showSubmitButton?: boolean;
+  paymentMethodType?: 'card' | 'ach';
 }
 
 export function SubscriptionSummary({
@@ -31,7 +32,8 @@ export function SubscriptionSummary({
   isLoading,
   onSubmit,
   billingCycle = 'monthly',
-  showSubmitButton = false
+  showSubmitButton = false,
+  paymentMethodType = 'card'
 }: SubscriptionSummaryProps) {
   const plan = plans.find(p => p.id === selectedPlan);
 
@@ -73,6 +75,11 @@ export function SubscriptionSummary({
   const meteredAddOns = selectedAddOns.filter(addon => 
     addon.billingType === 'metered'
   );
+
+  // Calculate credit card fee (3% of subtotal)
+  const subtotal = parseInt(costs.total.replace(/\$|,/g, ''));
+  const creditCardFee = paymentMethodType === 'card' ? Math.round(subtotal * 0.03) : 0;
+  const totalWithFee = subtotal + creditCardFee;
 
   if (isLoading) {
     return (
@@ -118,16 +125,23 @@ export function SubscriptionSummary({
           </div>
           
           {activeAddOns.length > 0 && (
-            <div className="flex justify-between">
+            <div className="flex justify-between mb-2">
               <span className="text-sm">Add-ons</span>
               <span className="font-medium">{costs.totalAddOns}</span>
+            </div>
+          )}
+
+          {paymentMethodType === 'card' && creditCardFee > 0 && (
+            <div className="flex justify-between mb-2">
+              <span className="text-sm">Credit Card Fee (3%)</span>
+              <span className="font-medium">${creditCardFee.toLocaleString()}</span>
             </div>
           )}
         </div>
         
         <div className="flex justify-between">
           <span className="font-semibold">Monthly Total</span>
-          <span className="font-semibold">{costs.total}</span>
+          <span className="font-semibold">${totalWithFee.toLocaleString()}</span>
         </div>
         
         {/* Show metered add-ons if any are selected */}
@@ -173,6 +187,12 @@ export function SubscriptionSummary({
             </p>
           )}
         </div>
+        
+        {paymentMethodType === 'card' && (
+          <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded-md border border-amber-100">
+            3% transaction fee applies to credit card payments. Switch to ACH to avoid this fee.
+          </div>
+        )}
       </CardContent>
       
       {/* We've removed the CardFooter with the "Confirm Selection" button */}
