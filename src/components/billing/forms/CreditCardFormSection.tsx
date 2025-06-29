@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -133,23 +132,9 @@ export const CreditCardFormSection = ({
               placeholder="1234 5678 9012 3456" 
               value={cardNumber}
               onChange={(e) => {
-                // Only allow digits and spaces, remove any other characters immediately
-                const value = e.target.value.replace(/[^\d\s]/g, '');
+                // Only allow digits and let formatting handle spacing
+                const value = e.target.value.replace(/[^\d]/g, '');
                 handleCardNumberChange(value);
-              }}
-              onKeyDown={(e) => {
-                // Allow: backspace, delete, tab, escape, enter, home, end, left, right arrows
-                if ([8, 9, 27, 13, 46, 35, 36, 37, 39].indexOf(e.keyCode) !== -1 ||
-                    // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+Z
-                    (e.ctrlKey && [65, 67, 86, 88, 90].includes(e.keyCode))) {
-                  return;
-                }
-                // Only allow numbers (0-9) and space
-                if (!((e.keyCode >= 48 && e.keyCode <= 57) || 
-                      (e.keyCode >= 96 && e.keyCode <= 105) || 
-                      e.keyCode === 32)) {
-                  e.preventDefault();
-                }
               }}
               required
               disabled={isLoading}
