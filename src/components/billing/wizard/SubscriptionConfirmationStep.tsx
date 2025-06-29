@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Check, CreditCard, Building, ChevronDown } from "lucide-react";
@@ -97,10 +98,7 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
     <>
       <div ref={contentRef} className="space-y-8">
         <Card>
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">Confirm Your Subscription</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 pt-6">
             <div className="space-y-2">
               <h3 className="text-lg font-medium">Plan Details</h3>
               <div className="flex items-center space-x-2">
