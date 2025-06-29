@@ -219,7 +219,7 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
 
   return (
     <>
-      <div ref={contentRef} className="space-y-8">
+      <div ref={contentRef} className="space-y-6">
         {/* Payment Details Section (First) */}
         <PaymentDetailsSection 
           paymentMethodType={paymentMethodType}
