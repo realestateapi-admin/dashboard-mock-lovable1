@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Lock } from "lucide-react";
@@ -18,26 +18,6 @@ export const CardNumberField = ({
   isLoading = false,
 }: CardNumberFieldProps) => {
   const [cardNumberError, setCardNumberError] = useState<string>("");
-  const [displayCardNumber, setDisplayCardNumber] = useState<string>(cardNumber);
-  const [cardNumberMasked, setCardNumberMasked] = useState<boolean>(false);
-  const [isCardNumberFocused, setIsCardNumberFocused] = useState<boolean>(false);
-
-  // Sync display values with prop changes
-  useEffect(() => {
-    setDisplayCardNumber(cardNumber);
-  }, [cardNumber]);
-
-  // Helper function to mask card number - show only last 4 digits
-  const maskCardNumber = (cardNumber: string): string => {
-    if (!cardNumber) return '';
-    const digits = cardNumber.replace(/\s/g, '');
-    if (digits.length >= 4) {
-      const lastFour = digits.slice(-4);
-      const maskedPortion = "•".repeat(Math.max(0, digits.length - 4));
-      return (maskedPortion + lastFour).replace(/(.{4})/g, "$1 ").trim();
-    }
-    return cardNumber;
-  };
 
   // Handle card number input with validation
   const handleCardNumberChange = (value: string) => {
@@ -46,8 +26,6 @@ export const CardNumberField = ({
     // Format the digits
     const formattedValue = formatCardNumber(digitsOnly);
     setCardNumber(formattedValue);
-    setDisplayCardNumber(formattedValue);
-    setCardNumberMasked(false);
     
     // Luhn validation - only validate if we have enough digits for a complete card number
     const digitCount = digitsOnly.length;
@@ -69,43 +47,6 @@ export const CardNumberField = ({
     }
   };
 
-  // Handle card number focus
-  const handleCardNumberFocus = () => {
-    setIsCardNumberFocused(true);
-    // If card number is masked, show the actual value for editing
-    if (cardNumberMasked) {
-      setDisplayCardNumber(cardNumber);
-      setCardNumberMasked(false);
-    }
-  };
-
-  // Handle card number blur
-  const handleCardNumberBlur = () => {
-    setIsCardNumberFocused(false);
-    // If there's a value and it's complete, mask it after a short delay
-    const digitCount = cardNumber.replace(/\s/g, '').length;
-    if (cardNumber && digitCount >= 13 && digitCount <= 19 && !cardNumberError) {
-      setTimeout(() => {
-        if (!isCardNumberFocused) {
-          setDisplayCardNumber(maskCardNumber(cardNumber));
-          setCardNumberMasked(true);
-        }
-      }, 1000);
-    }
-  };
-
-  // Initialize display values when component mounts or when props change
-  useEffect(() => {
-    const digitCount = cardNumber.replace(/\s/g, '').length;
-    if (cardNumber && digitCount >= 13 && digitCount <= 19) {
-      setDisplayCardNumber(maskCardNumber(cardNumber));
-      setCardNumberMasked(true);
-    } else {
-      setDisplayCardNumber(cardNumber);
-      setCardNumberMasked(false);
-    }
-  }, []);
-
   return (
     <div className="space-y-2">
       <Label htmlFor="cardNumber">Card Number</Label>
@@ -113,10 +54,8 @@ export const CardNumberField = ({
         <Input 
           id="cardNumber" 
           placeholder="1234 5678 9012 3456" 
-          value={displayCardNumber}
+          value={cardNumber}
           onChange={(e) => handleCardNumberChange(e.target.value)}
-          onFocus={handleCardNumberFocus}
-          onBlur={handleCardNumberBlur}
           required
           disabled={isLoading}
           className={cardNumberError ? "border-red-500 focus-visible:ring-red-500" : ""}
