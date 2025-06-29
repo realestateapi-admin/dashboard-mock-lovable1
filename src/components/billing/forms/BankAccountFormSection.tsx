@@ -6,7 +6,6 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { BackupCreditCardSection } from "./BackupCreditCardSection";
 
 interface BankAccountFormSectionProps {
   // Bank account fields
@@ -107,27 +106,6 @@ export const BankAccountFormSection = ({
           By providing your bank account information, you authorize us to debit the above account for subscription charges.
         </p>
       </div>
-      
-      {/* Credit card backup fields for bank account option */}
-      <Alert className="mt-6 bg-amber-50 border-amber-200">
-        <AlertCircle className="h-4 w-4 text-amber-600" />
-        <AlertDescription className="text-amber-800">
-          A credit card is required as a backup payment method when using bank account
-        </AlertDescription>
-      </Alert>
-      
-      <BackupCreditCardSection
-        cardName={cardName}
-        setCardName={setCardName}
-        cardNumber={cardNumber}
-        setCardNumber={setCardNumber}
-        expiry={expiry}
-        setExpiry={setExpiry}
-        cvc={cvc}
-        setCvc={setCvc}
-        zipCode={zipCode}
-        setZipCode={setZipCode}
-      />
     </div>
   );
 };
