@@ -13,6 +13,7 @@ interface WizardFooterProps {
   isLoading?: boolean;
   canContinue?: boolean;
   validationError?: string;
+  showValidationError?: boolean;
 }
 
 export const WizardFooter = ({ 
@@ -23,12 +24,13 @@ export const WizardFooter = ({
   handleSubmit,
   isLoading = false,
   canContinue = true,
-  validationError
+  validationError,
+  showValidationError = false
 }: WizardFooterProps) => {
   return (
     <div className="space-y-4">
-      {/* Show validation error message when user cannot continue */}
-      {!canContinue && validationError && (
+      {/* Show validation error message only when showValidationError is true */}
+      {showValidationError && !canContinue && validationError && (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>

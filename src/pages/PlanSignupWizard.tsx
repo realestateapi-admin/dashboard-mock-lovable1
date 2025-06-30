@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 
@@ -15,6 +14,7 @@ import { useState } from "react";
 const PlanSignupWizard = () => {
   const [isPaymentFormValid, setIsPaymentFormValid] = useState(false);
   const [hasDefaultPaymentMethod, setHasDefaultPaymentMethod] = useState(true);
+  const [showValidationError, setShowValidationError] = useState(false);
   
   const {
     currentStep,
@@ -34,7 +34,7 @@ const PlanSignupWizard = () => {
     termsAccepted,
     handleTermsAccepted,
     handleSelectEnterprise,
-    handleNext,
+    handleNext: wizardHandleNext,
     handleBack,
     handleBillingCycleChange,
     handlePlanChange,
@@ -64,6 +64,21 @@ const PlanSignupWizard = () => {
     }
     return "";
   };
+
+  // Custom handleNext that shows validation errors when user tries to continue
+  const handleNext = () => {
+    if (canContinue()) {
+      setShowValidationError(false);
+      wizardHandleNext();
+    } else {
+      setShowValidationError(true);
+    }
+  };
+
+  // Reset validation error when step changes
+  React.useEffect(() => {
+    setShowValidationError(false);
+  }, [currentStep]);
 
   return (
     <div className="h-screen bg-background p-4 flex justify-center py-0 overflow-hidden">
@@ -115,6 +130,7 @@ const PlanSignupWizard = () => {
               isLoading={currentStep === steps.length - 1 ? isSubmitting : isLoading}
               canContinue={canContinue()}
               validationError={getValidationError()}
+              showValidationError={showValidationError}
             />
           </CardFooter>
         </Card>
