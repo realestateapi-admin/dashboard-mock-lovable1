@@ -51,6 +51,20 @@ const PlanSignupWizard = () => {
     return true;
   };
 
+  // Get validation error message based on current step
+  const getValidationError = () => {
+    if (currentStep === 3) {
+      if (!isPaymentFormValid && !hasDefaultPaymentMethod) {
+        return "Please complete your payment information and select a default payment method to continue.";
+      } else if (!isPaymentFormValid) {
+        return "Please complete all required payment information fields to continue.";
+      } else if (!hasDefaultPaymentMethod) {
+        return "Please select a default payment method to continue.";
+      }
+    }
+    return "";
+  };
+
   return (
     <div className="h-screen bg-background p-4 flex justify-center py-0 overflow-hidden">
       <motion.div 
@@ -100,6 +114,7 @@ const PlanSignupWizard = () => {
               handleSubmit={handleSubmit} 
               isLoading={currentStep === steps.length - 1 ? isSubmitting : isLoading}
               canContinue={canContinue()}
+              validationError={getValidationError()}
             />
           </CardFooter>
         </Card>
