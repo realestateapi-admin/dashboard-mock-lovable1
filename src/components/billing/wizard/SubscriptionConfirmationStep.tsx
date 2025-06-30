@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -33,6 +32,23 @@ const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
       </div>
     </div>
   );
+};
+
+const formatOverageHandling = (value: string | null): string => {
+  if (!value) return 'Not specified';
+  
+  switch (value) {
+    case 'cut-off':
+      return 'API calls will be stopped when the plan limit is reached';
+    case 'allow-25':
+      return 'Overage up to 25% of the plan limit will be allowed, billed at the plan\'s unit rate';
+    case 'allow-100':
+      return 'Overage up to 100% of the plan limit will be allowed, billed at the plan\'s unit rate';
+    case 'unlimited':
+      return 'API key will never be cut off, with overages billed at the plan\'s unit rate';
+    default:
+      return 'Not specified';
+  }
 };
 
 export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStepProps> = ({
@@ -139,10 +155,7 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
             <div className="space-y-2">
               <h3 className="text-lg font-medium">Overage Handling</h3>
               <p className="text-sm">
-                {overageHandling === 'cut-off' && 'API calls will be stopped when the plan limit is reached.'}
-                {overageHandling === 'allow-25' && 'Overage up to 25% of the plan limit will be allowed, billed at the plan\'s unit rate.'}
-                {overageHandling === 'allow-100' && 'Overage up to 100% of the plan limit will be allowed, billed at the plan\'s unit rate.'}
-                {overageHandling === 'unlimited' && 'API key will never be cut off, with overages billed at the plan\'s unit rate.'}
+                {formatOverageHandling(overageHandling)}
               </p>
             </div>
             

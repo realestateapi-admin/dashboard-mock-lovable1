@@ -1,4 +1,3 @@
-
 import React from "react";
 import { format, addYears } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,21 @@ interface BillingDetailsProps {
   onManageSubscription: () => void;
 }
 
+const formatOverageHandling = (value: string): string => {
+  switch (value) {
+    case 'cut-off':
+      return 'Stop API calls when plan limit is reached';
+    case 'allow-25':
+      return 'Allow 25% overage billed at plan\'s unit rate';
+    case 'allow-100':
+      return 'Allow 100% overage billed at plan\'s unit rate';
+    case 'unlimited':
+      return 'Never cut off API key (mission critical)';
+    default:
+      return 'Not specified';
+  }
+};
+
 export const BillingDetails = ({
   billingCycle,
   overageHandling,
@@ -18,6 +32,7 @@ export const BillingDetails = ({
   onManageSubscription
 }: BillingDetailsProps) => {
   // Calculate renewal date based on subscription start date or current date
+  
   const calculateRenewalDate = () => {
     // If we have subscription data with a contract end date, use that
     if (subscription?.contract_end_date) {
@@ -65,7 +80,7 @@ export const BillingDetails = ({
       )}
       
       <h4 className="font-medium mb-1">Overage Handling:</h4>
-      <p className="text-muted-foreground mb-6">{overageHandling}</p>
+      <p className="text-muted-foreground mb-6">{formatOverageHandling(overageHandling)}</p>
       
       <Button 
         onClick={onManageSubscription} 
