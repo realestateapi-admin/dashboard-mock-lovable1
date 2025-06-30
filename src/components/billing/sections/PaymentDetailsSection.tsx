@@ -1,3 +1,4 @@
+
 import React from "react";
 import { CreditCard, Building, AlertTriangle, ChevronDown } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -91,16 +92,6 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
           Pay for your subscription either by credit card or ACH
         </p>
       </div>
-      
-      {/* Warning message when ACH is set as default */}
-      {achMakeDefault && (
-        <Alert className="bg-amber-50 border-amber-200">
-          <AlertTriangle className="h-4 w-4 text-amber-600" />
-          <AlertDescription className="text-amber-800">
-            A credit card is required as a backup payment method when using bank account. Please fill out the Credit Card section as well.
-          </AlertDescription>
-        </Alert>
-      )}
 
       <div className="space-y-4">
         {/* Credit Card Section */}
@@ -188,7 +179,17 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
             </CollapsibleTrigger>
             
             <CollapsibleContent>
-              <div className="p-4 pt-0">
+              <div className="p-4 pt-0 space-y-4">
+                {/* Warning message when ACH is set as default - moved inside ACH section */}
+                {achMakeDefault && (
+                  <Alert className="bg-amber-50 border-amber-200">
+                    <AlertTriangle className="h-4 w-4 text-amber-600" />
+                    <AlertDescription className="text-amber-800">
+                      A credit card is required as a backup payment method when using bank account. Please fill out the Credit Card section as well.
+                    </AlertDescription>
+                  </Alert>
+                )}
+                
                 <BankAccountFormSection
                   makeDefault={achMakeDefault}
                   onMakeDefaultChange={handleAchMakeDefaultChange}
