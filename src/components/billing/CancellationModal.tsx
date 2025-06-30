@@ -14,7 +14,6 @@ import {
 
 // Import our cancellation components
 import { CancellationInitial } from './cancellation/CancellationInitial';
-import { CancellationConfirmation } from './cancellation/CancellationConfirmation';
 import { CancellationQuestionnaire } from './cancellation/CancellationQuestionnaire';
 import { CancellationSummary } from './cancellation/CancellationSummary';
 import { CancellationCompleted } from './cancellation/CancellationCompleted';
@@ -46,33 +45,22 @@ export const CancellationModal = ({
     reason,
     setReason,
     handleProceedToCancel,
-    handleConfirmCancel,
-    handleDontCancel,
     handleSubmitQuestionnaire,
     handleBackToInitial,
     handleCancellationComplete
   } = useCancellationState(planName, isEnterprise, isAnnual);
 
-  // When step is 'initial' or 'confirmation', show the AlertDialog
-  if (step === 'initial' || step === 'confirmation') {
+  // When step is 'initial', show the AlertDialog
+  if (step === 'initial') {
     return (
       <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
         <AlertDialogContent>
-          {step === 'initial' && (
-            <CancellationInitial
-              planName={planName}
-              isAnnual={isAnnual}
-              isEnterprise={isEnterprise}
-              onProceed={handleProceedToCancel}
-            />
-          )}
-          
-          {step === 'confirmation' && (
-            <CancellationConfirmation
-              onDontCancel={handleDontCancel}
-              onConfirmCancel={handleConfirmCancel}
-            />
-          )}
+          <CancellationInitial
+            planName={planName}
+            isAnnual={isAnnual}
+            isEnterprise={isEnterprise}
+            onProceed={handleProceedToCancel}
+          />
         </AlertDialogContent>
       </AlertDialog>
     );
