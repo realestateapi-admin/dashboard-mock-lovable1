@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
-type CancellationStep = 'initial' | 'questionnaire' | 'summary' | 'completed';
+type CancellationStep = 'initial' | 'confirmation' | 'questionnaire' | 'summary' | 'completed';
 
 export const useCancellationState = (planName: string, isEnterprise: boolean, isAnnual: boolean) => {
   const [step, setStep] = useState<CancellationStep>('initial');
@@ -16,12 +16,21 @@ export const useCancellationState = (planName: string, isEnterprise: boolean, is
       return;
     }
     
+    // Show confirmation modal for all other plans
+    setStep('confirmation');
+  };
+
+  const handleConfirmCancel = () => {
     // If annual contract, no questionnaire is shown
     if (isAnnual) {
       setStep('summary');
     } else {
       setStep('questionnaire');
     }
+  };
+
+  const handleDontCancel = () => {
+    setStep('initial');
   };
 
   const handleSubmitQuestionnaire = () => {
@@ -52,6 +61,8 @@ export const useCancellationState = (planName: string, isEnterprise: boolean, is
     reason,
     setReason,
     handleProceedToCancel,
+    handleConfirmCancel,
+    handleDontCancel,
     handleSubmitQuestionnaire,
     handleBackToInitial,
     handleCancellationComplete
