@@ -1,8 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface WizardFooterProps {
   currentStep: number;
@@ -27,54 +26,56 @@ export const WizardFooter = ({
   validationError,
   showValidationError = false
 }: WizardFooterProps) => {
+  const { toast } = useToast();
+
+  const handleNextClick = () => {
+    if (!canContinue && showValidationError && validationError) {
+      toast({
+        title: "Missing information",
+        description: validationError,
+        variant: "destructive",
+      });
+      return;
+    }
+    handleNext();
+  };
+
   return (
-    <div className="space-y-4">
-      {/* Show validation error message only when showValidationError is true */}
-      {showValidationError && !canContinue && validationError && (
-        <Alert variant="destructive">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            {validationError}
-          </AlertDescription>
-        </Alert>
-      )}
+    <div className="flex justify-between gap-4">
+      <Button
+        variant="outline"
+        onClick={handleBack}
+        disabled={currentStep === 0 || isLoading}
+      >
+        Back
+      </Button>
       
-      <div className="flex justify-between gap-4">
-        <Button
-          variant="outline"
-          onClick={handleBack}
-          disabled={currentStep === 0 || isLoading}
+      {currentStep < totalSteps - 1 ? (
+        <Button 
+          onClick={handleNextClick} 
+          disabled={isLoading}
         >
-          Back
+          {isLoading ? (
+            <>
+              <Loader className="h-4 w-4 mr-2 animate-spin" />
+              Loading...
+            </>
+          ) : (
+            "Continue"
+          )}
         </Button>
-        
-        {currentStep < totalSteps - 1 ? (
-          <Button 
-            onClick={handleNext} 
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader className="h-4 w-4 mr-2 animate-spin" />
-                Loading...
-              </>
-            ) : (
-              "Continue"
-            )}
-          </Button>
-        ) : (
-          <Button onClick={handleSubmit} disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <Loader className="h-4 w-4 mr-2 animate-spin" />
-                Processing...
-              </>
-            ) : (
-              "Complete Subscription"
-            )}
-          </Button>
-        )}
-      </div>
+      ) : (
+        <Button onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Loader className="h-4 w-4 mr-2 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            "Complete Subscription"
+          )}
+        </Button>
+      )}
     </div>
   );
 };
