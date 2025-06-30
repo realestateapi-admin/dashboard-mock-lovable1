@@ -1,4 +1,3 @@
-
 import { PaymentDetailsSection } from "./sections/PaymentDetailsSection";
 import { CompanyInformationSection } from "./sections/CompanyInformationSection";
 import { BillingAddressSection } from "./sections/BillingAddressSection";
@@ -158,11 +157,12 @@ export const PaymentMethods = () => {
         />
 
         {/* Update Button */}
-        <div className="flex justify-end pt-6 border-t">
+        <div className="pt-6 border-t">
           <Button 
             onClick={handleUpdate}
             disabled={!hasUnsavedChanges}
-            className="min-w-32"
+            className="w-full"
+            size="lg"
           >
             Update Payment Methods
           </Button>
