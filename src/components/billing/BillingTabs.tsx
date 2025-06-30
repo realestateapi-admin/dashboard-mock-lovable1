@@ -7,6 +7,7 @@ import { TermsOfServiceTab } from "@/components/billing/TermsOfServiceTab";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
 import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 import { CurrentPlanSummary } from "@/components/billing/CurrentPlanSummary";
+import { useState } from "react";
 
 interface BillingTabsProps {
   plans: PlanData[];
@@ -51,9 +52,10 @@ export const BillingTabs = ({
 }: BillingTabsProps) => {
   // Access the AccountExecutive context to show/hide the widget
   const { showWidget } = useAccountExecutive();
+  const [activeTab, setActiveTab] = useState("subscription");
   
   return (
-    <Tabs defaultValue="subscription" className="w-full">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsList className="mb-4 gap-1 h-auto p-1 bg-muted/50 border">
         <TabsTrigger value="subscription" className="flex items-center gap-2 px-3 py-2 border border-transparent data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:shadow-sm">
           <Wallet className="h-4 w-4" /> Subscription
