@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 
@@ -9,7 +10,6 @@ import { WizardContent } from "@/components/billing/wizard/WizardContent";
 // Import the refactored useWizardState hook
 import { useWizardState } from "@/hooks/useWizardState";
 import { plans, addOns } from "@/data/billingData";
-import { useState } from "react";
 
 const PlanSignupWizard = () => {
   const [isPaymentFormValid, setIsPaymentFormValid] = useState(false);
