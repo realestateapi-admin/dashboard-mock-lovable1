@@ -69,7 +69,7 @@ export const ManageSubscriptionStep = ({
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Always show the original plan on the left - this never changes during the session */}
+        {/* Left card: Always show the ORIGINAL plan (frozen state) */}
         <CurrentPlanCard
           plan={originalPlan}
           addOns={originalAddOns}
@@ -79,7 +79,7 @@ export const ManageSubscriptionStep = ({
           formatOverageHandling={formatOverageHandling}
         />
 
-        {/* Right card: Proposed Plan (modified subscription details) */}
+        {/* Right card: Show the PROPOSED plan (current user selections) */}
         <ModifiedPlanCard
           currentPlan={proposedPlan}
           activeAddOns={proposedAddOns}
