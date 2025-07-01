@@ -29,7 +29,7 @@ export const WizardFooter = ({
   const { toast } = useToast();
 
   const handleNextClick = () => {
-    if (!canContinue && showValidationError && validationError) {
+    if (!canContinue && validationError) {
       toast({
         title: "Missing information",
         description: validationError,

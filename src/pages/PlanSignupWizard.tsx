@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
@@ -15,7 +14,6 @@ import { plans, addOns } from "@/data/billingData";
 const PlanSignupWizard = () => {
   const [isPaymentFormValid, setIsPaymentFormValid] = useState(false);
   const [hasDefaultPaymentMethod, setHasDefaultPaymentMethod] = useState(true);
-  const [showValidationError, setShowValidationError] = useState(false);
   
   const {
     currentStep,
@@ -69,30 +67,12 @@ const PlanSignupWizard = () => {
   // Custom handleNext that shows validation errors when user tries to continue
   const handleNext = () => {
     if (canContinue()) {
-      setShowValidationError(false);
       wizardHandleNext();
     } else {
-      // Force trigger validation error immediately
-      setShowValidationError(true);
-      // Add a small delay to ensure the state update is processed
-      setTimeout(() => {
-        setShowValidationError(true);
-      }, 0);
+      // The WizardFooter will handle showing the toast with proper auto-dismiss
+      // We just need to pass the validation state
     }
   };
-
-  // Reset validation error when step changes
-  React.useEffect(() => {
-    setShowValidationError(false);
-  }, [currentStep]);
-
-  // Force show validation error when payment form becomes invalid
-  React.useEffect(() => {
-    if (currentStep === 3 && !canContinue() && showValidationError) {
-      // Ensure validation error is shown
-      setShowValidationError(true);
-    }
-  }, [currentStep, isPaymentFormValid, hasDefaultPaymentMethod, showValidationError]);
 
   return (
     <div className="h-screen bg-background p-4 flex justify-center py-0 overflow-hidden">
@@ -144,7 +124,7 @@ const PlanSignupWizard = () => {
               isLoading={currentStep === steps.length - 1 ? isSubmitting : isLoading}
               canContinue={canContinue()}
               validationError={getValidationError()}
-              showValidationError={showValidationError}
+              showValidationError={true}
             />
           </CardFooter>
         </Card>
