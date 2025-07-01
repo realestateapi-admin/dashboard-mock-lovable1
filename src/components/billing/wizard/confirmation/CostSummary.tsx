@@ -1,7 +1,7 @@
 
 import React from "react";
 import { AlertCircle } from "lucide-react";
-import { format } from "date-fns";
+import { format, getDaysInMonth } from "date-fns";
 
 interface CostSummaryProps {
   costs: {
@@ -28,6 +28,12 @@ export const CostSummary: React.FC<CostSummaryProps> = ({
   paymentMethodType,
   billingCycle
 }) => {
+  // Calculate prorated amount based on total with fees
+  const today = new Date();
+  const daysInMonth = getDaysInMonth(today);
+  const remainingDays = daysInMonth - today.getDate() + 1;
+  const proratedAmountWithFees = Math.round((financialInfo.totalWithFee / daysInMonth) * remainingDays);
+
   return (
     <div className="border-t pt-4 mt-4">
       <div className="flex justify-between py-1">
@@ -55,15 +61,15 @@ export const CostSummary: React.FC<CostSummaryProps> = ({
       )}
       
       <div className="flex justify-between py-2 font-medium border-t mt-1">
-        <span>Total {billingCycle === 'annual' ? 'Annual' : 'Monthly'} Payment:</span>
+        <span>Total Monthly Payment:</span>
         <span>{formatCurrency(financialInfo.totalWithFee)}</span>
       </div>
       
       <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
         <h4 className="text-sm font-medium text-blue-800">Your first payment</h4>
         <div className="flex justify-between py-1 text-sm text-blue-700">
-          <span>Prorated amount for current {billingCycle === 'annual' ? 'year' : 'month'} ({financialInfo.remainingDays} days):</span>
-          <span>{formatCurrency(financialInfo.proratedAmount)}</span>
+          <span>Prorated amount for current {billingCycle === 'annual' ? 'year' : 'month'} ({remainingDays} days):</span>
+          <span>{formatCurrency(proratedAmountWithFees)}</span>
         </div>
         <div className="text-xs text-blue-600 mt-1">
           Your first payment on {format(new Date(), 'MMMM d, yyyy')} will be prorated. Full billing begins on {format(financialInfo.firstPaymentDate, 'MMMM 1, yyyy')}.
