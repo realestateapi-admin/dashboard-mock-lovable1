@@ -49,8 +49,8 @@ export const ManageSubscriptionStep = ({
     overageHandling
   });
 
-  // Show loading state
-  if (isLoading) {
+  // Show loading state while initializing
+  if (isLoading || !originalPlan || !proposedPlan) {
     return <LoadingState />;
   }
 

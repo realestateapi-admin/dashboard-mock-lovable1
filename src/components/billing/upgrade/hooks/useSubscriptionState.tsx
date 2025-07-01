@@ -37,8 +37,8 @@ export const useSubscriptionState = ({
   
   // Initialize the original state ONCE on first mount only - this becomes the immutable baseline
   useEffect(() => {
-    // Only run once on initial mount
-    if (!originalStateRef.current.initialized && currentPlan) {
+    // Only run once on initial mount and when we have valid data
+    if (!originalStateRef.current.initialized && currentPlan && currentPlan.id) {
       // Store the original subscription state (immutable after initialization)
       // This represents what's already in the database, not changing during this session
       originalStateRef.current = {
@@ -47,6 +47,11 @@ export const useSubscriptionState = ({
         overageHandling: overageHandling,
         initialized: true
       };
+      
+      // Initialize proposed state with the same values
+      setProposedPlan(JSON.parse(JSON.stringify(currentPlan)));
+      setProposedAddOns(JSON.parse(JSON.stringify(activeAddOns)));
+      setProposedOverage(overageHandling);
       
       // Mark loading as complete
       setIsLoading(false);
@@ -61,7 +66,7 @@ export const useSubscriptionState = ({
 
   // Update ONLY the proposed state when props change - NEVER touch the original state
   useEffect(() => {
-    if (originalStateRef.current.initialized && !isLoading) {
+    if (originalStateRef.current.initialized && !isLoading && currentPlan && currentPlan.id) {
       // Always update the proposed state to reflect current user selections
       // The original state remains frozen as the baseline for comparison
       setProposedPlan(JSON.parse(JSON.stringify(currentPlan)));
