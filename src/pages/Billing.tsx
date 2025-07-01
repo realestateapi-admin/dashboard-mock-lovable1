@@ -4,11 +4,13 @@ import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useTrialAlert } from "@/contexts/TrialAlertContext";
 import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
+import { Printer } from "lucide-react";
 
 // Import components
 import { TrialAlert } from "@/components/billing/TrialAlert";
 import { BillingTabs } from "@/components/billing/BillingTabs";
 import { AccountExecutiveWidget } from "@/components/support/AccountExecutiveWidget";
+import { Button } from "@/components/ui/button";
 
 // Import data from the new modular files
 import { plans, addOns, invoices } from "@/data/billingData";
@@ -105,6 +107,14 @@ const Billing = () => {
     });
   };
 
+  const handlePrint = () => {
+    window.print();
+    toast({
+      title: "Print initiated",
+      description: "The print dialog has been opened.",
+    });
+  };
+
   // Determine if we should hide trial banners based on subscription
   const shouldHideTrialBanners = localIsOnPaidPlan || isOnPaidPlan;
 
@@ -124,6 +134,15 @@ const Billing = () => {
     >
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-semibold tracking-tight">Billing & Subscription</h1>
+        <Button
+          onClick={handlePrint}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2"
+        >
+          <Printer className="h-4 w-4" />
+          Print
+        </Button>
       </div>
       
       <TrialAlert 
