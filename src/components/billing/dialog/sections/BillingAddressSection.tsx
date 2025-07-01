@@ -98,9 +98,9 @@ export const BillingAddressSection: React.FC<BillingAddressSectionProps> = ({
               <Label htmlFor="country">Country</Label>
               <Input 
                 id="country" 
-                value={address.country}
-                onChange={(e) => handleAddressChange("country", e.target.value)}
-                placeholder="United States"
+                value="United States"
+                disabled={true}
+                className="bg-gray-100 text-gray-600 cursor-not-allowed"
               />
             </div>
           </div>

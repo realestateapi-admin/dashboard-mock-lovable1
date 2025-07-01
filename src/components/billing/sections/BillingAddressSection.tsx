@@ -142,13 +142,6 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
     return "";
   };
 
-  const validateCountry = (value: string) => {
-    if (!value.trim()) {
-      return "Country is required";
-    }
-    return "";
-  };
-
   // Generic validation handler
   const validateField = (field: string, value: string) => {
     let error = "";
@@ -166,9 +159,6 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
       case 'zipCode':
         error = validateZipCode(value, billingAddress.country);
         break;
-      case 'country':
-        error = validateCountry(value);
-        break;
       default:
         break;
     }
@@ -183,7 +173,7 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
   useEffect(() => {
     if (!useSameAddress || hideCheckbox) {
       Object.keys(billingAddress).forEach(field => {
-        if (field !== 'line2') { // line2 is optional
+        if (field !== 'line2' && field !== 'country') { // line2 and country are optional/read-only
           validateField(field, billingAddress[field as keyof typeof billingAddress]);
         }
       });
@@ -348,19 +338,13 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="billingCountry">Country *</Label>
-              <div className="relative">
-                <Input 
-                  id="billingCountry" 
-                  value={billingAddress.country}
-                  onChange={(e) => handleFieldChange("country", e.target.value)}
-                  placeholder="United States"
-                  disabled={isLoading}
-                  className={getFieldClassName('country')}
-                />
-                {renderFieldIcon('country', billingAddress.country)}
-              </div>
-              {renderFieldError('country')}
+              <Label htmlFor="billingCountry">Country</Label>
+              <Input 
+                id="billingCountry" 
+                value="United States"
+                disabled={true}
+                className="bg-gray-100 text-gray-600 cursor-not-allowed"
+              />
             </div>
           </div>
         </div>

@@ -69,7 +69,7 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
     city: "",
     state: "",
     zipCode: "",
-    country: "US",
+    country: "United States",
   });
 
   const [useSameAddress, setUseSameAddress] = useState(true);
@@ -114,7 +114,11 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
           setCompanyInfo(prev => ({ ...prev, ...parsedData.companyInfo }));
         }
         if (parsedData.billingAddress) {
-          setBillingAddress(prev => ({ ...prev, ...parsedData.billingAddress }));
+          setBillingAddress(prev => ({ 
+            ...prev, 
+            ...parsedData.billingAddress,
+            country: "United States" // Always default to United States
+          }));
         }
         if (parsedData.backupCardDetails) {
           setBackupCardDetails(prev => ({ ...prev, ...parsedData.backupCardDetails }));
@@ -171,6 +175,10 @@ export const usePaymentMethodFormV2 = (isLoading: boolean) => {
   };
 
   const handleBillingAddressChange = (field: keyof BillingAddress, value: string) => {
+    // Don't allow country field to be changed
+    if (field === 'country') {
+      return;
+    }
     setBillingAddress(prev => ({ ...prev, [field]: value }));
   };
 
