@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ interface SubscriptionConfirmationStepProps {
   billingCycle: 'monthly' | 'annual';
   isLoading: boolean;
   paymentMethodType: 'card' | 'ach';
+  showDashboardButton?: boolean;
 }
 
 export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStepProps> = ({
@@ -32,7 +34,8 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
   costs,
   billingCycle,
   isLoading,
-  paymentMethodType
+  paymentMethodType,
+  showDashboardButton = true
 }) => {
   const navigate = useNavigate();
   const plan = plans.find(p => p.id === selectedPlan);
@@ -186,16 +189,18 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
         </CardContent>
       </Card>
 
-      {/* Return to Dashboard Button */}
-      <div className="text-center pt-6">
-        <Button 
-          onClick={handleReturnToDashboard}
-          size="lg"
-          className="px-8"
-        >
-          Go to Dashboard
-        </Button>
-      </div>
+      {/* Return to Dashboard Button - Only show if showDashboardButton is true */}
+      {showDashboardButton && (
+        <div className="text-center pt-6">
+          <Button 
+            onClick={handleReturnToDashboard}
+            size="lg"
+            className="px-8"
+          >
+            Go to Dashboard
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
