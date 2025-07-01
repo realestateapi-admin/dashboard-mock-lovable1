@@ -241,7 +241,7 @@ export function WizardContent({
               billingCycle={billingCycle}
               isLoading={isLoading}
               paymentMethodType={defaultPaymentMethod}
-              showDashboardButton={true}
+              showDashboardButton={false}
             />
           </ScrollableSection>
         </div>
