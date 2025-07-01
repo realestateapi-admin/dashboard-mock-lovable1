@@ -56,7 +56,7 @@ export const useSubscriptionState = ({
       // Mark loading as complete
       setIsLoading(false);
       
-      console.log("✅ Original subscription state initialized:", {
+      console.log("✅ Original subscription state initialized (IMMUTABLE):", {
         plan: originalStateRef.current.plan?.name,
         addOns: originalStateRef.current.addOns.map(a => a.name),
         overageHandling: originalStateRef.current.overageHandling
@@ -64,18 +64,19 @@ export const useSubscriptionState = ({
     }
   }, [currentPlan, activeAddOns, overageHandling]);
 
-  // Update the proposed state when current props change
-  // Only run this after initialization
+  // Update ONLY the proposed state when current props change (after initialization)
+  // This ensures the original state remains truly immutable while proposed state reflects user changes
   useEffect(() => {
     if (originalStateRef.current.initialized && !isLoading) {
+      // Only update the proposed state, never touch the original state
       setProposedPlan(JSON.parse(JSON.stringify(currentPlan)));
       setProposedAddOns(JSON.parse(JSON.stringify(activeAddOns)));
       setProposedOverage(overageHandling);
       
-      console.log("📝 Updated proposed subscription:", {
-        plan: currentPlan?.name,
-        addOns: activeAddOns.map(a => a.name),
-        overageHandling
+      console.log("📝 Updated ONLY proposed subscription (original remains unchanged):", {
+        originalPlan: originalStateRef.current.plan?.name,
+        proposedPlan: currentPlan?.name,
+        planChanged: originalStateRef.current.plan?.id !== currentPlan?.id
       });
     }
   }, [currentPlan, activeAddOns, overageHandling, isLoading]);
@@ -100,12 +101,12 @@ export const useSubscriptionState = ({
     overageChangedFromOriginal;
 
   return {
-    // Original state (immutable)
+    // Original state (immutable after initialization)
     originalPlan,
     originalAddOns,
     originalOverage,
     
-    // Proposed state (mutable)
+    // Proposed state (mutable, reflects user changes)
     proposedPlan,
     proposedAddOns,
     proposedOverage,
