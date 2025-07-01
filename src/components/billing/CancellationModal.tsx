@@ -50,12 +50,21 @@ export const CancellationModal = ({
     handleCancellationComplete
   } = useCancellationState(planName, isEnterprise, isAnnual);
 
-  // Handle closing the modal - allow closing from any step but reset to initial
+  // Handle closing the modal - prevent closing during flow transitions
   const handleOpenChange = (open: boolean) => {
+    console.log('Modal handleOpenChange called:', { open, currentStep: step });
+    
     if (!open) {
-      // Reset to initial step when closing
-      handleBackToInitial();
-      onOpenChange(false);
+      // Only allow closing if we're on initial step or completed step
+      if (step === 'initial' || step === 'completed') {
+        console.log('Allowing modal close from step:', step);
+        handleBackToInitial();
+        onOpenChange(false);
+      } else {
+        console.log('Preventing modal close from step:', step);
+        // Prevent closing during the flow
+        return;
+      }
     } else {
       onOpenChange(true);
     }
@@ -70,16 +79,19 @@ export const CancellationModal = ({
             planName={planName}
             isAnnual={isAnnual}
             isEnterprise={isEnterprise}
-            onProceed={handleProceedToCancel}
+            onProceed={() => {
+              console.log('CancellationInitial onProceed called');
+              handleProceedToCancel();
+            }}
           />
         </AlertDialogContent>
       </AlertDialog>
     );
   }
 
-  // For other steps, show the regular Dialog
+  // For other steps, show the regular Dialog with forced open state
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={true} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         {step === 'questionnaire' && (
           <CancellationQuestionnaire
