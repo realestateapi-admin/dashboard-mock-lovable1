@@ -50,15 +50,12 @@ export const CancellationModal = ({
     handleCancellationComplete
   } = useCancellationState(planName, isEnterprise, isAnnual);
 
-  // Handle closing the modal - only allow closing if user explicitly cancels
+  // Handle closing the modal - allow closing from any step but reset to initial
   const handleOpenChange = (open: boolean) => {
     if (!open) {
-      // Only close if we're on initial step or completed step
-      if (step === 'initial' || step === 'completed') {
-        handleBackToInitial();
-        onOpenChange(false);
-      }
-      // For other steps, don't allow closing by clicking outside
+      // Reset to initial step when closing
+      handleBackToInitial();
+      onOpenChange(false);
     } else {
       onOpenChange(true);
     }
