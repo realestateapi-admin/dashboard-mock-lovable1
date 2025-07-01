@@ -1,4 +1,3 @@
-
 import React from "react";
 import { CompanyInformationSection } from "./sections/CompanyInformationSection";
 import { PaymentDetailsSection } from "./sections/PaymentDetailsSection";
@@ -122,12 +121,20 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
 
   // Validation logic for credit card
   const isCreditCardValid = () => {
-    return !!(
+    const isValid = !!(
       cardDetails.cardholderName?.trim() &&
       cardDetails.cardNumber?.trim() &&
       cardDetails.expiry?.trim() &&
       cardDetails.cvc?.trim()
     );
+    console.log('Credit card validation:', {
+      cardholderName: !!cardDetails.cardholderName?.trim(),
+      cardNumber: !!cardDetails.cardNumber?.trim(),
+      expiry: !!cardDetails.expiry?.trim(),
+      cvc: !!cardDetails.cvc?.trim(),
+      isValid
+    });
+    return isValid;
   };
 
   // Validation logic for ACH - requires both ACH details AND credit card details as backup
@@ -141,7 +148,14 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     // Also require credit card details as backup for ACH
     const backupCardValid = isCreditCardValid();
     
-    return achDetailsValid && backupCardValid;
+    const isValid = achDetailsValid && backupCardValid;
+    console.log('ACH validation:', {
+      achDetailsValid,
+      backupCardValid,
+      isValid,
+      achDetails
+    });
+    return isValid;
   };
 
   // Check overall validation - removed phone number requirement since it's not displayed
@@ -158,7 +172,18 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
       billingAddress.zipCode?.trim()
     );
     
-    return paymentValid && billingDetailsValid && addressValid;
+    const overallValid = paymentValid && billingDetailsValid && addressValid;
+    console.log('Form validation check:', {
+      paymentMethodType,
+      paymentValid,
+      billingDetailsValid,
+      addressValid,
+      overallValid,
+      companyInfo,
+      billingAddress
+    });
+    
+    return overallValid;
   };
 
   React.useEffect(() => {
