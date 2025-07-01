@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
+
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Check, CreditCard, Building, ChevronDown, AlertCircle } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { PlanData, AddOnData } from "@/types/billing";
+import { ConfirmationHeader } from "./confirmation/ConfirmationHeader";
 
 interface SubscriptionConfirmationStepProps {
   selectedPlan: string;
@@ -22,35 +24,6 @@ interface SubscriptionConfirmationStepProps {
   paymentMethodType: 'card' | 'ach';
 }
 
-const ScrollIndicator = ({ isVisible }: { isVisible: boolean }) => {
-  if (!isVisible) return null;
-  
-  return (
-    <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none">
-      <div className="bg-white/80 text-gray-600 rounded-full p-2 shadow-md border border-gray-200">
-        <ChevronDown className="h-4 w-4" />
-      </div>
-    </div>
-  );
-};
-
-const formatOverageHandling = (value: string | null): string => {
-  if (!value) return 'Not specified';
-  
-  switch (value) {
-    case 'cut-off':
-      return 'API calls will be stopped when the plan limit is reached';
-    case 'allow-25':
-      return 'Overage up to 25% of the plan limit will be allowed, billed at the plan\'s unit rate';
-    case 'allow-100':
-      return 'Overage up to 100% of the plan limit will be allowed, billed at the plan\'s unit rate';
-    case 'unlimited':
-      return 'API key will never be cut off, with overages billed at the plan\'s unit rate';
-    default:
-      return 'Not specified';
-  }
-};
-
 export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStepProps> = ({
   selectedPlan,
   plans,
@@ -62,168 +35,136 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
   isLoading,
   paymentMethodType
 }) => {
-  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
-  
-  const checkScrollPosition = () => {
-    const scrollContainer = document.querySelector('[data-radix-scroll-area-viewport]');
-    if (scrollContainer && contentRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
-      const contentHeight = contentRef.current.scrollHeight;
-      
-      const hasMoreContent = contentHeight > clientHeight - 100;
-      const isNearBottom = scrollTop + clientHeight >= scrollHeight - 50;
-      
-      setShowScrollIndicator(hasMoreContent && !isNearBottom);
-    }
+  const navigate = useNavigate();
+  const plan = plans.find(p => p.id === selectedPlan);
+  const selectedAddOns = addOns.filter(addon => activeAddOns.includes(addon.id));
+
+  const handleReturnToDashboard = () => {
+    navigate('/dashboard');
   };
-  
-  useEffect(() => {
-    const scrollContainer = document.querySelector('[data-radix-scroll-area-viewport]');
-    if (scrollContainer) {
-      const timeouts = [100, 500, 1000, 2000].map(delay => 
-        setTimeout(checkScrollPosition, delay)
-      );
-      
-      scrollContainer.addEventListener('scroll', checkScrollPosition);
-      return () => {
-        timeouts.forEach(clearTimeout);
-        scrollContainer.removeEventListener('scroll', checkScrollPosition);
-      };
-    }
-  }, []);
-  
-  useEffect(() => {
-    const handleResize = () => {
-      setTimeout(checkScrollPosition, 100);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    checkScrollPosition();
-    
-    return () => window.removeEventListener('resize', handleResize);
-  }, [selectedPlan, activeAddOns]);
-
-  // Find the selected plan
-  const selectedPlanData = plans.find(plan => plan.id === selectedPlan);
-  
-  // Filter active add-ons to get their full data
-  const activeAddOnsData = addOns.filter(addOn => activeAddOns.includes(addOn.id));
-
-  // Calculate financial details
-  const subtotal = parseFloat(costs.total.replace(/[$,]/g, ''));
-  const creditCardFee = paymentMethodType === 'card' ? subtotal * 0.03 : 0;
-  const totalWithFee = subtotal + creditCardFee;
-
-  const formatCurrency = (amount: number) => `$${amount.toLocaleString()}`;
-  const cleanCurrency = (price: string) => price.replace(/^\$+/, '$');
 
   return (
-    <>
-      <div ref={contentRef} className="space-y-8">
+    <div className="space-y-6">
+      <div className="text-center">
+        <h1 className="text-3xl font-semibold tracking-tight">Subscription Changes Confirmed</h1>
+        <p className="text-muted-foreground mt-2">
+          Your plan modifications have been successfully processed
+        </p>
+      </div>
+
+      <ConfirmationHeader billingCycle={billingCycle} />
+
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Plan Details */}
         <Card>
-          <CardContent className="space-y-4 pt-6">
-            <div className="space-y-2">
-              <h3 className="text-lg font-medium">Plan Details</h3>
-              <div className="flex items-center space-x-2">
-                <span>Plan:</span>
-                <Badge variant="secondary">{selectedPlanData?.name}</Badge>
-                <span>{billingCycle === 'monthly' ? 'Monthly' : 'Annual'}</span>
-              </div>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-green-500" />
+              Plan Details
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="font-medium">{plan?.name} Plan</p>
               <p className="text-sm text-muted-foreground">
-                {selectedPlanData?.description}
+                {billingCycle === 'annual' ? 'Annual' : 'Monthly'} billing
               </p>
             </div>
             
-            <Separator />
+            <div>
+              <p className="text-sm font-medium">Base Price</p>
+              <p className="text-lg font-semibold">{costs.basePrice}</p>
+            </div>
             
-            <div className="space-y-2">
-              <h3 className="text-lg font-medium">Add-Ons</h3>
-              {activeAddOnsData.length > 0 ? (
-                <ul className="list-disc pl-5 space-y-1">
-                  {activeAddOnsData.map(addOn => (
-                    <li key={addOn.id}>{addOn.name}</li>
+            {overageHandling && (
+              <div>
+                <p className="text-sm font-medium">Overage Handling</p>
+                <Badge variant="outline" className="mt-1">
+                  {overageHandling.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </Badge>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Add-ons & Payment */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-green-500" />
+              Add-ons & Payment
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="text-sm font-medium">Active Add-ons</p>
+              {selectedAddOns.length > 0 ? (
+                <div className="mt-2 space-y-1">
+                  {selectedAddOns.map(addon => (
+                    <p key={addon.id} className="text-sm">{addon.name}</p>
                   ))}
-                </ul>
+                </div>
               ) : (
-                <p className="text-sm text-muted-foreground">No add-ons selected.</p>
+                <p className="text-sm text-muted-foreground mt-1">No add-ons selected</p>
               )}
             </div>
             
-            <Separator />
-            
-            <div className="space-y-2">
-              <h3 className="text-lg font-medium">Overage Handling</h3>
-              <p className="text-sm">
-                {formatOverageHandling(overageHandling)}
+            <div>
+              <p className="text-sm font-medium">Payment Method</p>
+              <p className="text-sm text-muted-foreground">
+                {paymentMethodType === 'card' ? 'Credit Card' : 'Bank Account (ACH)'}
               </p>
             </div>
             
-            <Separator />
-            
-            <div className="space-y-2">
-              <h3 className="text-lg font-medium">Payment Method</h3>
-              <div className="flex items-center space-x-2">
-                {paymentMethodType === 'card' ? (
-                  <>
-                    <CreditCard className="h-4 w-4" />
-                    <span>Credit Card</span>
-                  </>
-                ) : (
-                  <>
-                    <Building className="h-4 w-4" />
-                    <span>Bank Account (ACH)</span>
-                  </>
-                )}
-              </div>
-            </div>
-            
-            <Separator />
-            
-            <div className="space-y-2">
-              <h3 className="text-lg font-medium">Cost Summary</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-sm">Base Plan:</span>
-                  <span className="text-sm">{cleanCurrency(costs.basePrice)} / {billingCycle === 'monthly' ? 'month' : 'year'}</span>
-                </div>
-                
-                {parseFloat(costs.totalAddOns.replace(/[$,]/g, '')) > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-sm">Add-Ons:</span>
-                    <span className="text-sm">{cleanCurrency(costs.totalAddOns)} / {billingCycle === 'monthly' ? 'month' : 'year'}</span>
-                  </div>
-                )}
-                
-                <div className="flex justify-between">
-                  <span className="text-sm">Subtotal:</span>
-                  <span className="text-sm">{cleanCurrency(costs.total)} / {billingCycle === 'monthly' ? 'month' : 'year'}</span>
-                </div>
-                
-                {paymentMethodType === 'card' && creditCardFee > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-sm">Transaction Fee (3%):</span>
-                    <span className="text-sm">{formatCurrency(creditCardFee)} / {billingCycle === 'monthly' ? 'month' : 'year'}</span>
-                  </div>
-                )}
-                
-                <div className="flex justify-between pt-2 border-t font-medium">
-                  <span>Total:</span>
-                  <span>{formatCurrency(totalWithFee)} / {billingCycle === 'monthly' ? 'month' : 'year'}</span>
-                </div>
-              </div>
-              
-              {paymentMethodType === 'card' && creditCardFee > 0 && (
-                <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md border border-amber-100 flex items-start gap-2 mt-4">
-                  <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                  <span>A 3% transaction fee applies to all credit card payments. Switch to ACH (bank account) payments to avoid this fee.</span>
-                </div>
-              )}
+            <div>
+              <p className="text-sm font-medium">Total Cost</p>
+              <p className="text-lg font-semibold">{costs.total}</p>
             </div>
           </CardContent>
         </Card>
       </div>
-      <ScrollIndicator isVisible={showScrollIndicator} />
-    </>
+
+      {/* Next Steps */}
+      <Card>
+        <CardHeader>
+          <CardTitle>What happens next?</CardTitle>
+          <CardDescription>Here's what you can expect after your subscription changes</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+            <div>
+              <p className="font-medium">Changes take effect immediately</p>
+              <p className="text-sm text-muted-foreground">Your new plan limits and add-ons are now active</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+            <div>
+              <p className="font-medium">Billing updates on next cycle</p>
+              <p className="text-sm text-muted-foreground">Your next invoice will reflect the new pricing</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+            <div>
+              <p className="font-medium">API access updated</p>
+              <p className="text-sm text-muted-foreground">New endpoints and limits are available in your dashboard</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Return to Dashboard Button */}
+      <div className="flex justify-center pt-4">
+        <Button 
+          onClick={handleReturnToDashboard}
+          size="lg"
+          className="px-8"
+        >
+          Return to Dashboard
+        </Button>
+      </div>
+    </div>
   );
 };
