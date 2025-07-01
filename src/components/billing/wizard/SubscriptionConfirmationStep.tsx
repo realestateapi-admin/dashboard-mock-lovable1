@@ -112,7 +112,7 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="font-medium text-gray-500">Plan:</span>
+              <span className="font-medium text-gray-500">Selected Plan:</span>
               <p className="text-gray-900">{plan?.name}</p>
             </div>
             <div>
