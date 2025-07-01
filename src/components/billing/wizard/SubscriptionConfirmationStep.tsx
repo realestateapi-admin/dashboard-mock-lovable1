@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -38,6 +37,22 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
   const navigate = useNavigate();
   const plan = plans.find(p => p.id === selectedPlan);
   const selectedAddOns = addOns.filter(addon => activeAddOns.includes(addon.id));
+
+  // Format overage handling for display
+  const formatOverageHandling = (value: string | null): string => {
+    switch (value) {
+      case 'cut-off':
+        return 'Stop API calls when limit is reached';
+      case 'allow-25':
+        return 'Allow 25% overage';
+      case 'allow-100':
+        return 'Allow 100% overage';
+      case 'unlimited':
+        return 'Never cut off API key (mission critical)';
+      default:
+        return 'Not specified';
+    }
+  };
 
   // Calculate financial information for prorated billing
   const calculateFinancialInfo = () => {
@@ -116,7 +131,7 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
             </div>
             <div>
               <span className="font-medium text-gray-500">Overage Handling:</span>
-              <p className="text-gray-900 capitalize">{overageHandling || 'Not specified'}</p>
+              <p className="text-gray-900">{formatOverageHandling(overageHandling)}</p>
             </div>
           </div>
 
