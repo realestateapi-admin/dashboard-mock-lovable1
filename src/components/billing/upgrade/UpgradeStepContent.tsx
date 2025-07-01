@@ -1,5 +1,6 @@
-
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { UpgradeStep } from "@/hooks/useUpgradeFlowState";
 import { PlanData, AddOnData } from "@/types/billing";
 
@@ -42,6 +43,61 @@ interface UpgradeStepContentProps {
   onToggleAddOn: (addOnId: string) => void;
   onOverageChange: (value: string) => void;
 }
+
+const UpgradeConfirmationWrapper: React.FC<{
+  selectedPlan: string;
+  plans: PlanData[];
+  activeAddOns: string[];
+  addOns: AddOnData[];
+  overageHandling: string;
+  costs: {
+    basePrice: string;
+    totalAddOns: string;
+    total: string;
+  };
+  billingCycle: 'monthly' | 'annual';
+}> = ({
+  selectedPlan,
+  plans,
+  activeAddOns,
+  addOns,
+  overageHandling,
+  costs,
+  billingCycle
+}) => {
+  const navigate = useNavigate();
+
+  const handleReturnToDashboard = () => {
+    navigate('/dashboard');
+  };
+
+  return (
+    <div className="space-y-8">
+      <SubscriptionConfirmationStep
+        selectedPlan={selectedPlan}
+        plans={plans}
+        activeAddOns={activeAddOns}
+        addOns={addOns}
+        overageHandling={overageHandling}
+        costs={costs}
+        billingCycle={billingCycle}
+        isLoading={false}
+        paymentMethodType="card"
+        showDashboardButton={false}
+      />
+      
+      <div className="text-center pt-6">
+        <Button 
+          onClick={handleReturnToDashboard}
+          size="lg"
+          className="px-8"
+        >
+          Go to Dashboard
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 export const UpgradeStepContent: React.FC<UpgradeStepContentProps> = ({
   currentStep,
@@ -159,7 +215,7 @@ export const UpgradeStepContent: React.FC<UpgradeStepContentProps> = ({
       
     case 'confirmation':
       return (
-        <SubscriptionConfirmationStep
+        <UpgradeConfirmationWrapper
           selectedPlan={selectedPlan}
           plans={plans}
           activeAddOns={activeAddOns}
@@ -167,8 +223,6 @@ export const UpgradeStepContent: React.FC<UpgradeStepContentProps> = ({
           overageHandling={overageHandling}
           costs={costs}
           billingCycle={billingCycle}
-          isLoading={false}
-          paymentMethodType="card"
         />
       );
       
