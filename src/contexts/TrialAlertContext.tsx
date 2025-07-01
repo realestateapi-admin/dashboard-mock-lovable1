@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import { isPaidPlan } from '@/services/subscriptionService';
@@ -30,11 +31,11 @@ interface TrialAlertProviderProps {
 }
 
 export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
-  // DEMO: Set to paid plan state (no trial, user is on paid subscription)
-  const [trialDaysLeft, setTrialDaysLeft] = useState<number>(0);
+  // DEMO: Set to active trial state
+  const [trialDaysLeft, setTrialDaysLeft] = useState<number>(7); // 7 days left in trial
   const [trialStartDate, setTrialStartDate] = useState<Date | null>(null);
-  const [isFreeUser, setIsFreeUser] = useState<boolean>(false); // Not a free user
-  const [isOnPaidPlan, setIsOnPaidPlan] = useState<boolean>(true); // On a paid plan
+  const [isFreeUser, setIsFreeUser] = useState<boolean>(true); // User is on free trial
+  const [isOnPaidPlan, setIsOnPaidPlan] = useState<boolean>(false); // Not on paid plan
   const { toast } = useToast();
 
   // Mock loading trial data
@@ -47,36 +48,36 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
     if (savedTrialStartDate) {
       const startDate = new Date(savedTrialStartDate);
       setTrialStartDate(startDate);
-      // DEMO: Force 0 days left for demonstration (no active trial)
-      setTrialDaysLeft(0);
+      // Calculate days left based on saved start date
+      const now = new Date();
+      const diffTime = now.getTime() - startDate.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const daysLeft = Math.max(0, 14 - diffDays); // 14 day trial
+      setTrialDaysLeft(daysLeft);
+    } else {
+      // Set up fresh trial - 7 days ago so we have 7 days left
+      const mockStartDate = new Date();
+      mockStartDate.setDate(mockStartDate.getDate() - 7); // Started 7 days ago
+      
+      setTrialStartDate(mockStartDate);
+      setTrialDaysLeft(7); // 7 days remaining
+      
+      // Save to localStorage
+      localStorage.setItem('trialStartDate', mockStartDate.toISOString());
     }
     
     if (savedIsFreeUser) {
       setIsFreeUser(savedIsFreeUser === 'true');
+    } else {
+      setIsFreeUser(true);
+      localStorage.setItem('isFreeUser', 'true');
     }
     
     if (savedIsOnPaidPlan) {
       setIsOnPaidPlan(savedIsOnPaidPlan === 'true');
-    }
-    
-    // If no saved data, use the mock data for paid plan
-    if (!savedTrialStartDate && !savedIsFreeUser && !savedIsOnPaidPlan) {
-      // Mock data - user is on a paid plan
-      const mockStartDate = new Date();
-      mockStartDate.setDate(mockStartDate.getDate() - 30); // 30 days ago (past trial)
-      
-      setTrialStartDate(mockStartDate);
-      // DEMO: Force 0 days left (no active trial)
-      setTrialDaysLeft(0);
-      
-      // For demo purposes, set the user to be on a paid plan
-      setIsFreeUser(false);
-      setIsOnPaidPlan(true);
-      
-      // Save to localStorage
-      localStorage.setItem('trialStartDate', mockStartDate.toISOString());
-      localStorage.setItem('isFreeUser', 'false');
-      localStorage.setItem('isOnPaidPlan', 'true');
+    } else {
+      setIsOnPaidPlan(false);
+      localStorage.setItem('isOnPaidPlan', 'false');
     }
   }, []);
 
@@ -144,8 +145,8 @@ export const TrialAlertProvider = ({ children }: TrialAlertProviderProps) => {
 
   const value = {
     trialDaysLeft,
-    isTrialActive: trialDaysLeft >= 0, // Changed from > 0 to >= 0 to show expired banners
-    isPastTrial: trialDaysLeft < 0, // This would be for truly past trials
+    isTrialActive: trialDaysLeft > 0, // Trial is active if days left > 0
+    isPastTrial: trialDaysLeft <= 0, // Past trial if no days left
     requestTrialExtension,
     trialStartDate,
     isFreeUser,
