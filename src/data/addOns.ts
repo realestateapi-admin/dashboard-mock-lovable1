@@ -1,4 +1,5 @@
 
+
 import { AddOnData } from "@/types/billing";
 
 export const addOns: AddOnData[] = [
@@ -47,12 +48,13 @@ export const addOns: AddOnData[] = [
     name: "Skip Tracing",
     description: "Locate contact information for property owners",
     prices: {
-      starter: "$0.08 each",
-      growth: "$0.08 each",
-      pro: "$0.08 each",
-      enterprise: "$0.08 each",
+      starter: "$0.05 each",
+      growth: "$0.05 each",
+      pro: "$0.05 each",
+      enterprise: "$0.05 each",
     },
     billingType: 'metered',
     category: 'Demographic Data'
   }
 ];
+
