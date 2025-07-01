@@ -1,3 +1,4 @@
+
 import React from "react";
 import { CompanyInformationSection } from "./sections/CompanyInformationSection";
 import { PaymentDetailsSection } from "./sections/PaymentDetailsSection";
@@ -143,12 +144,26 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     return achDetailsValid && backupCardValid;
   };
 
-  // Check overall validation and notify parent
-  const isFormValid = paymentMethodType === 'card' ? isCreditCardValid() : isACHValid();
+  // Check overall validation - removed phone number requirement since it's not displayed
+  const isFormValid = () => {
+    const paymentValid = paymentMethodType === 'card' ? isCreditCardValid() : isACHValid();
+    const billingDetailsValid = !!(
+      companyInfo.companyName?.trim() &&
+      companyInfo.billingEmail?.trim()
+    );
+    const addressValid = !!(
+      billingAddress.line1?.trim() &&
+      billingAddress.city?.trim() &&
+      billingAddress.state?.trim() &&
+      billingAddress.zipCode?.trim()
+    );
+    
+    return paymentValid && billingDetailsValid && addressValid;
+  };
 
   React.useEffect(() => {
     if (onValidationChange) {
-      onValidationChange(isFormValid);
+      onValidationChange(isFormValid());
     }
   }, [isFormValid, onValidationChange]);
 
