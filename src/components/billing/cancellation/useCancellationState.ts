@@ -30,6 +30,7 @@ export const useCancellationState = (planName: string, isEnterprise: boolean, is
 
   const handleBackToInitial = () => {
     setStep('initial');
+    setReason(''); // Reset reason when going back to initial
   };
 
   const handleCancellationComplete = () => {

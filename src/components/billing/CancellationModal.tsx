@@ -50,10 +50,18 @@ export const CancellationModal = ({
     handleCancellationComplete
   } = useCancellationState(planName, isEnterprise, isAnnual);
 
+  // Handle closing the modal - reset to initial step when closed
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      handleBackToInitial();
+    }
+    onOpenChange(open);
+  };
+
   // When step is 'initial', show the AlertDialog
   if (step === 'initial') {
     return (
-      <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
+      <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
         <AlertDialogContent>
           <CancellationInitial
             planName={planName}
@@ -68,7 +76,7 @@ export const CancellationModal = ({
 
   // For other steps, show the regular Dialog
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent>
         {step === 'questionnaire' && (
           <CancellationQuestionnaire
