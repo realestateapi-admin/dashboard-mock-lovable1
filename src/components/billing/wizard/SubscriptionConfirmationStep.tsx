@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
 import { PlanData, AddOnData } from "@/types/billing";
+import { CostSummary } from "./confirmation/CostSummary";
+import { addDays, addMonths, getDaysInMonth } from "date-fns";
 
 interface SubscriptionConfirmationStepProps {
   selectedPlan: string;
@@ -36,6 +38,40 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
   const navigate = useNavigate();
   const plan = plans.find(p => p.id === selectedPlan);
   const selectedAddOns = addOns.filter(addon => activeAddOns.includes(addon.id));
+
+  // Calculate financial information for prorated billing
+  const calculateFinancialInfo = () => {
+    const today = new Date();
+    const totalAmount = Number(costs.total.replace(/[$,]/g, ''));
+    
+    // Calculate first payment date (first of next month)
+    const firstPaymentDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+    
+    // Calculate remaining days in current month
+    const daysInMonth = getDaysInMonth(today);
+    const remainingDays = daysInMonth - today.getDate() + 1;
+    
+    // Calculate prorated amount
+    const proratedAmount = Math.round((totalAmount / daysInMonth) * remainingDays);
+    
+    // Calculate transaction fee (3% for card payments)
+    const transactionFee = paymentMethodType === 'card' ? Math.round(totalAmount * 0.03) : 0;
+    const totalWithFee = totalAmount + transactionFee;
+
+    return {
+      transactionFee,
+      totalWithFee,
+      firstPaymentDate,
+      remainingDays,
+      proratedAmount
+    };
+  };
+
+  const financialInfo = calculateFinancialInfo();
+
+  const formatCurrency = (amount: number) => {
+    return `$${amount.toLocaleString()}`;
+  };
 
   const handleReturnToDashboard = () => {
     navigate('/dashboard');
@@ -75,12 +111,12 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
               <p className="text-gray-900">{billingCycle === 'annual' ? 'Annual' : 'Monthly'}</p>
             </div>
             <div>
-              <span className="font-medium text-gray-500">Monthly Cost:</span>
-              <p className="text-gray-900 font-semibold">{costs.total}</p>
-            </div>
-            <div>
               <span className="font-medium text-gray-500">Payment Method:</span>
               <p className="text-gray-900">{paymentMethodType === 'card' ? 'Credit Card' : 'Bank Account'}</p>
+            </div>
+            <div>
+              <span className="font-medium text-gray-500">Overage Handling:</span>
+              <p className="text-gray-900 capitalize">{overageHandling || 'Not specified'}</p>
             </div>
           </div>
 
@@ -96,6 +132,15 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
               </ul>
             </div>
           )}
+
+          {/* Cost Summary */}
+          <CostSummary
+            costs={costs}
+            financialInfo={financialInfo}
+            formatCurrency={formatCurrency}
+            paymentMethodType={paymentMethodType}
+            billingCycle={billingCycle}
+          />
         </CardContent>
       </Card>
 
