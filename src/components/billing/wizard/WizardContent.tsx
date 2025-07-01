@@ -231,24 +231,17 @@ export function WizardContent({
       ) : currentStep === 5 ? (
         <div className="w-full mx-auto max-w-4xl h-full">
           <ScrollableSection className="h-full">
-            <div className="space-y-6">
-              <SubscriptionConfirmationStep
-                selectedPlan={selectedPlan}
-                plans={plans}
-                activeAddOns={activeAddOns}
-                addOns={addOns}
-                overageHandling={overageHandling}
-                costs={costs}
-                billingCycle={billingCycle}
-                isLoading={isLoading}
-                paymentMethodType={defaultPaymentMethod}
-              />
-              <div className="text-center pt-6">
-                <Button onClick={() => window.location.href = '/dashboard'} size="lg" className="px-8">
-                  Go to Dashboard
-                </Button>
-              </div>
-            </div>
+            <SubscriptionConfirmationStep
+              selectedPlan={selectedPlan}
+              plans={plans}
+              activeAddOns={activeAddOns}
+              addOns={addOns}
+              overageHandling={overageHandling}
+              costs={costs}
+              billingCycle={billingCycle}
+              isLoading={isLoading}
+              paymentMethodType={defaultPaymentMethod}
+            />
           </ScrollableSection>
         </div>
       ) : (

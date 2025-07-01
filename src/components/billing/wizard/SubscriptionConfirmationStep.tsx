@@ -1,5 +1,7 @@
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
 import { PlanData, AddOnData } from "@/types/billing";
@@ -20,6 +22,7 @@ interface SubscriptionConfirmationStepProps {
   billingCycle: 'monthly' | 'annual';
   isLoading: boolean;
   paymentMethodType: 'card' | 'ach';
+  showDashboardButton?: boolean;
 }
 
 export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStepProps> = ({
@@ -31,8 +34,10 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
   costs,
   billingCycle,
   isLoading,
-  paymentMethodType
+  paymentMethodType,
+  showDashboardButton = true
 }) => {
+  const navigate = useNavigate();
   const plan = plans.find(p => p.id === selectedPlan);
   const selectedAddOns = addOns.filter(addon => activeAddOns.includes(addon.id));
 
@@ -56,17 +61,17 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
   const calculateFinancialInfo = () => {
     const today = new Date();
     const totalAmount = Number(costs.total.replace(/[$,]/g, ''));
-
+    
     // Calculate first payment date (first of next month)
     const firstPaymentDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-
+    
     // Calculate remaining days in current month
     const daysInMonth = getDaysInMonth(today);
     const remainingDays = daysInMonth - today.getDate() + 1;
-
+    
     // Calculate prorated amount
-    const proratedAmount = Math.round(totalAmount / daysInMonth * remainingDays);
-
+    const proratedAmount = Math.round((totalAmount / daysInMonth) * remainingDays);
+    
     // Calculate transaction fee (3% for card payments)
     const transactionFee = paymentMethodType === 'card' ? Math.round(totalAmount * 0.03) : 0;
     const totalWithFee = totalAmount + transactionFee;
@@ -84,6 +89,10 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
 
   const formatCurrency = (amount: number) => {
     return `$${amount.toLocaleString()}`;
+  };
+
+  const handleReturnToDashboard = () => {
+    navigate('/dashboard');
   };
 
   return (
@@ -112,11 +121,11 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="font-medium text-gray-500">Selected Plan:</span>
+              <span className="font-medium text-gray-500">Plan:</span>
               <p className="text-gray-900">{plan?.name}</p>
             </div>
             <div>
-              <span className="font-medium text-gray-500">Billing Cycle:</span>
+              <span className="font-medium text-gray-500">Billing:</span>
               <p className="text-gray-900">{billingCycle === 'annual' ? 'Annual' : 'Monthly'}</p>
             </div>
             <div>
@@ -143,12 +152,12 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
           )}
 
           {/* Cost Summary */}
-          <CostSummary 
-            costs={costs} 
-            financialInfo={financialInfo} 
-            formatCurrency={formatCurrency} 
-            paymentMethodType={paymentMethodType} 
-            billingCycle={billingCycle} 
+          <CostSummary
+            costs={costs}
+            financialInfo={financialInfo}
+            formatCurrency={formatCurrency}
+            paymentMethodType={paymentMethodType}
+            billingCycle={billingCycle}
           />
         </CardContent>
       </Card>
@@ -179,6 +188,19 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
           </ul>
         </CardContent>
       </Card>
+
+      {/* Return to Dashboard Button - Only show if showDashboardButton is true */}
+      {showDashboardButton && (
+        <div className="text-center pt-6">
+          <Button 
+            onClick={handleReturnToDashboard}
+            size="lg"
+            className="px-8"
+          >
+            Go to Dashboard
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
