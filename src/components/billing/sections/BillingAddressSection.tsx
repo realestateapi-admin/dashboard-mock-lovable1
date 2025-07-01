@@ -90,8 +90,12 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [validFields, setValidFields] = useState<Record<string, boolean>>({});
 
+  // Determine if validation should be enabled (disabled when billing address is optional)
+  const isValidationEnabled = !hideCheckbox || !useSameAddress;
+
   // Validation functions
   const validateAddressLine1 = (value: string) => {
+    if (!isValidationEnabled) return "";
     if (!value.trim()) {
       return "Address line 1 is required";
     }
@@ -105,6 +109,7 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
   };
 
   const validateCity = (value: string) => {
+    if (!isValidationEnabled) return "";
     if (!value.trim()) {
       return "City is required";
     }
@@ -121,6 +126,7 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
   };
 
   const validateState = (value: string) => {
+    if (!isValidationEnabled) return "";
     if (!value.trim()) {
       return "State is required";
     }
@@ -128,6 +134,7 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
   };
 
   const validateZipCode = (value: string, country: string) => {
+    if (!isValidationEnabled) return "";
     if (!value.trim()) {
       return "ZIP code is required";
     }
@@ -171,25 +178,31 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
 
   // Validate fields on change
   useEffect(() => {
-    if (!useSameAddress || hideCheckbox) {
+    if ((!useSameAddress || hideCheckbox) && isValidationEnabled) {
       Object.keys(billingAddress).forEach(field => {
         if (field !== 'line2' && field !== 'country') { // line2 and country are optional/read-only
           validateField(field, billingAddress[field as keyof typeof billingAddress]);
         }
       });
+    } else {
+      // Clear all validation errors when validation is disabled
+      setErrors({});
+      setValidFields({});
     }
-  }, [billingAddress, useSameAddress, hideCheckbox]);
+  }, [billingAddress, useSameAddress, hideCheckbox, isValidationEnabled]);
 
   const handleFieldChange = (field: string, value: string) => {
     handleBillingAddressChange(field, value);
     
-    // Validate immediately on change
-    if (!useSameAddress || hideCheckbox) {
+    // Validate immediately on change only if validation is enabled
+    if ((!useSameAddress || hideCheckbox) && isValidationEnabled) {
       validateField(field, value);
     }
   };
 
   const getFieldClassName = (field: string) => {
+    if (!isValidationEnabled) return "pr-10";
+    
     const hasError = errors[field];
     const isValid = validFields[field];
     
@@ -203,7 +216,7 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
   };
 
   const renderFieldIcon = (field: string, value: string) => {
-    if (!value) return null;
+    if (!value || !isValidationEnabled) return null;
     
     const hasError = errors[field];
     const isValid = validFields[field];
@@ -220,6 +233,8 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
   };
 
   const renderFieldError = (field: string) => {
+    if (!isValidationEnabled) return null;
+    
     const error = errors[field];
     if (!error) return null;
     
@@ -252,7 +267,7 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
       {(!useSameAddress || hideCheckbox) && (
         <div className="grid gap-4">
           <div className="space-y-2">
-            <Label htmlFor="billingLine1">Address Line 1 *</Label>
+            <Label htmlFor="billingLine1">Address Line 1{isValidationEnabled ? ' *' : ''}</Label>
             <div className="relative">
               <Input 
                 id="billingLine1" 
@@ -280,7 +295,7 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="billingCity">City *</Label>
+              <Label htmlFor="billingCity">City{isValidationEnabled ? ' *' : ''}</Label>
               <div className="relative">
                 <Input 
                   id="billingCity" 
@@ -296,7 +311,7 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="billingState">State *</Label>
+              <Label htmlFor="billingState">State{isValidationEnabled ? ' *' : ''}</Label>
               <div className="relative">
                 <Select 
                   value={billingAddress.state} 
@@ -322,7 +337,7 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="billingZipCode">ZIP Code *</Label>
+              <Label htmlFor="billingZipCode">ZIP Code{isValidationEnabled ? ' *' : ''}</Label>
               <div className="relative">
                 <Input 
                   id="billingZipCode" 
