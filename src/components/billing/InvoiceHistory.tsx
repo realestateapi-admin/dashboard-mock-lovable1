@@ -3,7 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Download } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Download, Info } from "lucide-react";
 import { InvoiceData } from "@/types/billing";
 
 interface InvoiceHistoryProps {
@@ -21,6 +22,13 @@ export const InvoiceHistory = ({ invoices, onDownloadInvoice }: InvoiceHistoryPr
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <Alert className="mb-6 bg-green-50 border-green-200 text-green-800">
+          <Info className="h-4 w-4 text-green-600" />
+          <AlertDescription>
+            Your invoice is being generated on or around the first of every month. Your payment method is automatically debited 5 business days later.
+          </AlertDescription>
+        </Alert>
+        
         <Table>
           <TableHeader>
             <TableRow>
