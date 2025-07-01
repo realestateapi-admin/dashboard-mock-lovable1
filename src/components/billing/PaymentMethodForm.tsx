@@ -164,26 +164,16 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     return isValid;
   };
 
-  // Check overall validation - billing address should be optional
+  // Simplified validation - only payment method is required, billing details are optional
   const isFormValid = () => {
-    const paymentValid = paymentMethodType === 'card' ? isCreditCardValid() : isACHValid();
-    const billingDetailsValid = !!(
-      companyInfo.companyName?.trim() &&
-      companyInfo.billingEmail?.trim()
-    );
+    const paymentValid = cardMakeDefault ? isCreditCardValid() : isACHValid();
     
-    // Billing address is optional - no validation required
-    const addressValid = true;
-    
-    const overallValid = paymentValid && billingDetailsValid && addressValid;
+    const overallValid = paymentValid;
     console.log('Form validation check:', {
-      paymentMethodType,
+      cardMakeDefault,
+      achMakeDefault,
       paymentValid,
-      billingDetailsValid,
-      addressValid,
-      overallValid,
-      companyInfo,
-      billingAddress
+      overallValid
     });
     
     return overallValid;
@@ -194,8 +184,9 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
       onValidationChange(isFormValid());
     }
   }, [
-    // Dependencies for validation check - removed billing address dependencies since it's optional
-    paymentMethodType,
+    // Dependencies for validation check - only payment method fields
+    cardMakeDefault,
+    achMakeDefault,
     cardDetails.cardholderName,
     cardDetails.cardNumber,
     cardDetails.expiry,
@@ -207,8 +198,6 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     backupCardDetails.backupCardNumber,
     backupCardDetails.backupExpiry,
     backupCardDetails.backupCvc,
-    companyInfo.companyName,
-    companyInfo.billingEmail,
     onValidationChange
   ]);
 

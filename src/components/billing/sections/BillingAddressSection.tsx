@@ -86,165 +86,8 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
   hideTitle = false,
   hideCheckbox = false,
 }) => {
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [validFields, setValidFields] = useState<Record<string, boolean>>({});
-
-  // Disable validation completely in plan signup flow (when hideCheckbox is true)
-  const isValidationEnabled = !hideCheckbox && !useSameAddress;
-
-  // Validation functions
-  const validateAddressLine1 = (value: string) => {
-    if (!isValidationEnabled) return "";
-    if (!value.trim()) {
-      return "Address line 1 is required";
-    }
-    if (value.length < 3) {
-      return "Address must be at least 3 characters";
-    }
-    if (value.length > 100) {
-      return "Address must be less than 100 characters";
-    }
-    return "";
-  };
-
-  const validateCity = (value: string) => {
-    if (!isValidationEnabled) return "";
-    if (!value.trim()) {
-      return "City is required";
-    }
-    if (value.length < 2) {
-      return "City must be at least 2 characters";
-    }
-    if (value.length > 50) {
-      return "City must be less than 50 characters";
-    }
-    if (!/^[a-zA-Z\s\-'\.]+$/.test(value)) {
-      return "City contains invalid characters";
-    }
-    return "";
-  };
-
-  const validateState = (value: string) => {
-    if (!isValidationEnabled) return "";
-    if (!value.trim()) {
-      return "State is required";
-    }
-    return "";
-  };
-
-  const validateZipCode = (value: string, country: string) => {
-    if (!isValidationEnabled) return "";
-    if (!value.trim()) {
-      return "ZIP code is required";
-    }
-    
-    // Only validate format for US addresses
-    if (country === 'US' || country === 'United States') {
-      const zipRegex = /^\d{5}(-\d{4})?$/;
-      if (!zipRegex.test(value)) {
-        return "Please enter a valid US ZIP code (12345 or 12345-6789)";
-      }
-    }
-    return "";
-  };
-
-  // Generic validation handler
-  const validateField = (field: string, value: string) => {
-    let error = "";
-    
-    switch (field) {
-      case 'line1':
-        error = validateAddressLine1(value);
-        break;
-      case 'city':
-        error = validateCity(value);
-        break;
-      case 'state':
-        error = validateState(value);
-        break;
-      case 'zipCode':
-        error = validateZipCode(value, billingAddress.country);
-        break;
-      default:
-        break;
-    }
-
-    setErrors(prev => ({ ...prev, [field]: error }));
-    setValidFields(prev => ({ ...prev, [field]: !error && value.trim() !== '' }));
-    
-    return !error;
-  };
-
-  // Validate fields on change - only when validation is enabled
-  useEffect(() => {
-    if (isValidationEnabled) {
-      Object.keys(billingAddress).forEach(field => {
-        if (field !== 'line2' && field !== 'country') { // line2 and country are optional/read-only
-          validateField(field, billingAddress[field as keyof typeof billingAddress]);
-        }
-      });
-    } else {
-      // Clear all validation errors when validation is disabled
-      setErrors({});
-      setValidFields({});
-    }
-  }, [billingAddress, useSameAddress, hideCheckbox, isValidationEnabled]);
-
-  const handleFieldChange = (field: string, value: string) => {
-    handleBillingAddressChange(field, value);
-    
-    // Validate immediately on change only if validation is enabled
-    if (isValidationEnabled) {
-      validateField(field, value);
-    }
-  };
-
-  const getFieldClassName = (field: string) => {
-    if (!isValidationEnabled) return "pr-10";
-    
-    const hasError = errors[field];
-    const isValid = validFields[field];
-    
-    let className = "pr-10";
-    if (hasError) {
-      className += " border-red-500 focus-visible:ring-red-500";
-    } else if (isValid) {
-      className += " border-green-500 focus-visible:ring-green-500";
-    }
-    return className;
-  };
-
-  const renderFieldIcon = (field: string, value: string) => {
-    if (!value || !isValidationEnabled) return null;
-    
-    const hasError = errors[field];
-    const isValid = validFields[field];
-    
-    return (
-      <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-        {isValid ? (
-          <CheckCircle className="h-4 w-4 text-green-500" />
-        ) : hasError ? (
-          <AlertCircle className="h-4 w-4 text-red-500" />
-        ) : null}
-      </div>
-    );
-  };
-
-  const renderFieldError = (field: string) => {
-    if (!isValidationEnabled) return null;
-    
-    const error = errors[field];
-    if (!error) return null;
-    
-    return (
-      <p className="text-sm text-red-600 flex items-center gap-1 mt-1">
-        <AlertCircle className="h-3 w-3" />
-        {error}
-      </p>
-    );
-  };
-
+  // Billing address is always optional - no validation needed
+  
   return (
     <div className="space-y-4">
       {!hideTitle && <h3 className="text-lg font-semibold">Billing Address</h3>}
@@ -266,19 +109,14 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
       {(!useSameAddress || hideCheckbox) && (
         <div className="grid gap-4">
           <div className="space-y-2">
-            <Label htmlFor="billingLine1">Address Line 1{isValidationEnabled ? ' *' : ''}</Label>
-            <div className="relative">
-              <Input 
-                id="billingLine1" 
-                value={billingAddress.line1}
-                onChange={(e) => handleFieldChange("line1", e.target.value)}
-                placeholder="123 Main St"
-                disabled={isLoading}
-                className={getFieldClassName('line1')}
-              />
-              {renderFieldIcon('line1', billingAddress.line1)}
-            </div>
-            {renderFieldError('line1')}
+            <Label htmlFor="billingLine1">Address Line 1 (Optional)</Label>
+            <Input 
+              id="billingLine1" 
+              value={billingAddress.line1}
+              onChange={(e) => handleBillingAddressChange("line1", e.target.value)}
+              placeholder="123 Main St"
+              disabled={isLoading}
+            />
           </div>
           
           <div className="space-y-2">
@@ -294,61 +132,47 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="billingCity">City{isValidationEnabled ? ' *' : ''}</Label>
-              <div className="relative">
-                <Input 
-                  id="billingCity" 
-                  value={billingAddress.city}
-                  onChange={(e) => handleFieldChange("city", e.target.value)}
-                  placeholder="San Francisco"
-                  disabled={isLoading}
-                  className={getFieldClassName('city')}
-                />
-                {renderFieldIcon('city', billingAddress.city)}
-              </div>
-              {renderFieldError('city')}
+              <Label htmlFor="billingCity">City (Optional)</Label>
+              <Input 
+                id="billingCity" 
+                value={billingAddress.city}
+                onChange={(e) => handleBillingAddressChange("city", e.target.value)}
+                placeholder="San Francisco"
+                disabled={isLoading}
+              />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="billingState">State{isValidationEnabled ? ' *' : ''}</Label>
-              <div className="relative">
-                <Select 
-                  value={billingAddress.state} 
-                  onValueChange={(value) => handleFieldChange("state", value)}
-                  disabled={isLoading}
-                >
-                  <SelectTrigger className={getFieldClassName('state')}>
-                    <SelectValue placeholder="Select state" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white max-h-60 overflow-y-auto z-50">
-                    {US_STATES.map((state) => (
-                      <SelectItem key={state.value} value={state.value}>
-                        {state.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {renderFieldIcon('state', billingAddress.state)}
-              </div>
-              {renderFieldError('state')}
+              <Label htmlFor="billingState">State (Optional)</Label>
+              <Select 
+                value={billingAddress.state} 
+                onValueChange={(value) => handleBillingAddressChange("state", value)}
+                disabled={isLoading}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select state" />
+                </SelectTrigger>
+                <SelectContent className="bg-white max-h-60 overflow-y-auto z-50">
+                  {US_STATES.map((state) => (
+                    <SelectItem key={state.value} value={state.value}>
+                      {state.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="billingZipCode">ZIP Code{isValidationEnabled ? ' *' : ''}</Label>
-              <div className="relative">
-                <Input 
-                  id="billingZipCode" 
-                  value={billingAddress.zipCode}
-                  onChange={(e) => handleFieldChange("zipCode", e.target.value)}
-                  placeholder="94103"
-                  disabled={isLoading}
-                  className={getFieldClassName('zipCode')}
-                />
-                {renderFieldIcon('zipCode', billingAddress.zipCode)}
-              </div>
-              {renderFieldError('zipCode')}
+              <Label htmlFor="billingZipCode">ZIP Code (Optional)</Label>
+              <Input 
+                id="billingZipCode" 
+                value={billingAddress.zipCode}
+                onChange={(e) => handleBillingAddressChange("zipCode", e.target.value)}
+                placeholder="94103"
+                disabled={isLoading}
+              />
             </div>
             
             <div className="space-y-2">
