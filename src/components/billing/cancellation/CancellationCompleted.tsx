@@ -28,13 +28,6 @@ export const CancellationCompleted = ({
           until the end of the current billing period.
         </DialogDescription>
       </DialogHeader>
-      <div className="py-6 text-center">
-        {ae && (
-          <div className="mt-4 text-sm text-muted-foreground">
-            Your account executive {ae.name} has been notified and will reach out shortly.
-          </div>
-        )}
-      </div>
       <DialogFooter>
         <Button onClick={() => navigate('/dashboard')}>
           Return to Dashboard
