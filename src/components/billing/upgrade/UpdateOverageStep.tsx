@@ -25,21 +25,21 @@ export const UpdateOverageStep = ({
 }: UpdateOverageStepProps) => {
   const { toast } = useToast();
   const [localOverageHandling, setLocalOverageHandling] = React.useState(overageHandling);
-  const isStarterPlan = selectedPlan === "starter";
+  const isStarterOrGrowthPlan = selectedPlan === "starter" || selectedPlan === "growth";
 
-  // Reset to a valid option if current selection is "unlimited" and we're on a Starter plan
+  // Reset to a valid option if current selection is "unlimited" and we're on a Starter or Growth plan
   React.useEffect(() => {
-    if (isStarterPlan && localOverageHandling === "unlimited") {
+    if (isStarterOrGrowthPlan && localOverageHandling === "unlimited") {
       setLocalOverageHandling("allow-100");
     }
-  }, [isStarterPlan, localOverageHandling]);
+  }, [isStarterOrGrowthPlan, localOverageHandling]);
 
   const handleSaveChanges = () => {
-    // Ensure we don't save "unlimited" for Starter plans
-    if (isStarterPlan && localOverageHandling === "unlimited") {
+    // Ensure we don't save "unlimited" for Starter or Growth plans
+    if (isStarterOrGrowthPlan && localOverageHandling === "unlimited") {
       toast({
         title: "Invalid selection",
-        description: "Unlimited overage is not available for Starter plans.",
+        description: "Unlimited overage is not available for Starter and Growth plans.",
         variant: "destructive"
       });
       return;
@@ -121,22 +121,22 @@ export const UpdateOverageStep = ({
               </div>
             </div>
             
-            <div className={`flex items-start space-x-4 rounded-md border p-4 ${isStarterPlan ? 'opacity-50' : ''}`}>
+            <div className={`flex items-start space-x-4 rounded-md border p-4 ${isStarterOrGrowthPlan ? 'opacity-50' : ''}`}>
               <RadioGroupItem 
                 value="unlimited" 
                 id="unlimited" 
                 className="mt-1" 
-                disabled={isStarterPlan}
+                disabled={isStarterOrGrowthPlan}
               />
               <div className="space-y-2">
-                <Label htmlFor="unlimited" className={`text-base font-medium ${isStarterPlan ? 'text-muted-foreground' : ''}`}>
+                <Label htmlFor="unlimited" className={`text-base font-medium ${isStarterOrGrowthPlan ? 'text-muted-foreground' : ''}`}>
                   Never cut off API key because application is mission critical
                 </Label>
                 <p className="text-sm text-muted-foreground">
                   Always process requests regardless of usage, with overages billed at your standard unit rate.
-                  {isStarterPlan && (
+                  {isStarterOrGrowthPlan && (
                     <span className="block mt-1 text-amber-600 font-medium">
-                      This option is only available for Growth plan and above.
+                      This option is only available for Pro plan and above.
                     </span>
                   )}
                 </p>
