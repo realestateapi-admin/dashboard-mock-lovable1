@@ -43,19 +43,6 @@ export const addOns: AddOnData[] = [
     requiresApproval: true
   },
   {
-    id: "tech-support",
-    name: "Tech Support",
-    description: "Premium technical support package",
-    prices: {
-      starter: "Included",
-      growth: "Included",
-      pro: "Included",
-      enterprise: "Included",
-    },
-    billingType: 'subscription',
-    category: 'Support'
-  },
-  {
     id: "skip-tracing",
     name: "Skip Tracing",
     description: "Locate contact information for property owners",
