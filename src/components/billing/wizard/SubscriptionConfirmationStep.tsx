@@ -1,11 +1,11 @@
+
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
 import { PlanData, AddOnData } from "@/types/billing";
 import { CostSummary } from "./confirmation/CostSummary";
 import { addDays, addMonths, getDaysInMonth } from "date-fns";
+
 interface SubscriptionConfirmationStepProps {
   selectedPlan: string;
   plans: PlanData[];
@@ -20,8 +20,8 @@ interface SubscriptionConfirmationStepProps {
   billingCycle: 'monthly' | 'annual';
   isLoading: boolean;
   paymentMethodType: 'card' | 'ach';
-  showDashboardButton?: boolean;
 }
+
 export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStepProps> = ({
   selectedPlan,
   plans,
@@ -31,10 +31,8 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
   costs,
   billingCycle,
   isLoading,
-  paymentMethodType,
-  showDashboardButton = true
+  paymentMethodType
 }) => {
-  const navigate = useNavigate();
   const plan = plans.find(p => p.id === selectedPlan);
   const selectedAddOns = addOns.filter(addon => activeAddOns.includes(addon.id));
 
@@ -72,6 +70,7 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
     // Calculate transaction fee (3% for card payments)
     const transactionFee = paymentMethodType === 'card' ? Math.round(totalAmount * 0.03) : 0;
     const totalWithFee = totalAmount + transactionFee;
+
     return {
       transactionFee,
       totalWithFee,
@@ -80,14 +79,15 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
       proratedAmount
     };
   };
+
   const financialInfo = calculateFinancialInfo();
+
   const formatCurrency = (amount: number) => {
     return `$${amount.toLocaleString()}`;
   };
-  const handleReturnToDashboard = () => {
-    navigate('/dashboard');
-  };
-  return <div className="max-w-2xl mx-auto space-y-6">
+
+  return (
+    <div className="max-w-2xl mx-auto space-y-6">
       {/* Success Header */}
       <div className="text-center space-y-4">
         <div className="flex justify-center">
@@ -129,17 +129,27 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
             </div>
           </div>
 
-          {selectedAddOns.length > 0 && <div className="border-t pt-4">
+          {selectedAddOns.length > 0 && (
+            <div className="border-t pt-4">
               <span className="font-medium text-gray-500 block mb-2">Add-ons:</span>
               <ul className="space-y-1">
-                {selectedAddOns.map(addon => <li key={addon.id} className="text-sm text-gray-700">
+                {selectedAddOns.map(addon => (
+                  <li key={addon.id} className="text-sm text-gray-700">
                     • {addon.name}
-                  </li>)}
+                  </li>
+                ))}
               </ul>
-            </div>}
+            </div>
+          )}
 
           {/* Cost Summary */}
-          <CostSummary costs={costs} financialInfo={financialInfo} formatCurrency={formatCurrency} paymentMethodType={paymentMethodType} billingCycle={billingCycle} />
+          <CostSummary 
+            costs={costs} 
+            financialInfo={financialInfo} 
+            formatCurrency={formatCurrency} 
+            paymentMethodType={paymentMethodType} 
+            billingCycle={billingCycle} 
+          />
         </CardContent>
       </Card>
 
@@ -169,12 +179,6 @@ export const SubscriptionConfirmationStep: React.FC<SubscriptionConfirmationStep
           </ul>
         </CardContent>
       </Card>
-
-      {/* Return to Dashboard Button - Only show if showDashboardButton is true */}
-      {showDashboardButton && <div className="text-center pt-6">
-          <Button onClick={handleReturnToDashboard} size="lg" className="px-8">
-            Go to Dashboard
-          </Button>
-        </div>}
-    </div>;
+    </div>
+  );
 };
