@@ -3,11 +3,6 @@ import React from 'react';
 import { useAccountExecutive } from '@/contexts/AccountExecutiveContext';
 
 import {
-  AlertDialog,
-  AlertDialogContent,
-} from '@/components/ui/alert-dialog';
-
-import {
   Dialog,
   DialogContent,
 } from '@/components/ui/dialog';
@@ -50,7 +45,7 @@ export const CancellationModal = ({
     handleCancellationComplete
   } = useCancellationState(planName, isEnterprise, isAnnual);
 
-  // Handle closing the modal - prevent closing during flow transitions
+  // Handle closing the modal - allow closing from initial or completed steps
   const handleOpenChange = (open: boolean) => {
     console.log('Modal handleOpenChange called:', { open, currentStep: step });
     
@@ -70,11 +65,11 @@ export const CancellationModal = ({
     }
   };
 
-  // When step is 'initial', show the AlertDialog
-  if (step === 'initial') {
-    return (
-      <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
-        <AlertDialogContent>
+  // Use Dialog component for all steps
+  return (
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className={step === 'initial' ? "sm:max-w-lg" : "sm:max-w-md"}>
+        {step === 'initial' && (
           <CancellationInitial
             planName={planName}
             isAnnual={isAnnual}
@@ -84,15 +79,8 @@ export const CancellationModal = ({
               handleProceedToCancel();
             }}
           />
-        </AlertDialogContent>
-      </AlertDialog>
-    );
-  }
-
-  // For other steps, show the regular Dialog with forced open state
-  return (
-    <Dialog open={true} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md">
+        )}
+        
         {step === 'questionnaire' && (
           <CancellationQuestionnaire
             reason={reason}

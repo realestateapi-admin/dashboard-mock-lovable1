@@ -2,13 +2,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from '@/components/ui/alert-dialog';
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 interface CancellationInitialProps {
   planName: string;
@@ -29,43 +28,43 @@ export const CancellationInitial = ({
   if (isEnterprise) {
     return (
       <>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Enterprise Partnership</AlertDialogTitle>
-          <AlertDialogDescription>
+        <DialogHeader>
+          <DialogTitle>Enterprise Partnership</DialogTitle>
+          <DialogDescription>
             We greatly value our partnership with you and we want to find a way to keep supporting your project. 
             Your dedicated Solutions Engineer will reach out shortly to offer some options--including closing your account. 
             Rest assured, we'll do whatever your feel is best for your business.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => navigate('/dashboard')}>
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => navigate('/dashboard')}>
             Keep My Subscription
-          </AlertDialogCancel>
-          <AlertDialogAction onClick={onProceed}>
+          </Button>
+          <Button onClick={onProceed}>
             Submit Request
-          </AlertDialogAction>
-        </AlertDialogFooter>
+          </Button>
+        </DialogFooter>
       </>
     );
   } else if (isAnnual) {
     return (
       <>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Annual Contract Obligation</AlertDialogTitle>
-          <AlertDialogDescription>
+        <DialogHeader>
+          <DialogTitle>Annual Contract Obligation</DialogTitle>
+          <DialogDescription>
             You are currently on an annual contract for the {planName} plan. 
             Your subscription will continue until the end of the billing period.
             No refunds will be issued for the remainder of your annual term.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => navigate('/dashboard')}>
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => navigate('/dashboard')}>
             Keep My Subscription
-          </AlertDialogCancel>
-          <AlertDialogAction onClick={onProceed}>
+          </Button>
+          <Button onClick={onProceed}>
             Cancel Anyway
-          </AlertDialogAction>
-        </AlertDialogFooter>
+          </Button>
+        </DialogFooter>
       </>
     );
   } else {
@@ -76,21 +75,21 @@ export const CancellationInitial = ({
     
     return (
       <>
-        <AlertDialogHeader>
-          <AlertDialogTitle>We're sorry to see you go</AlertDialogTitle>
-          <AlertDialogDescription>
+        <DialogHeader>
+          <DialogTitle>We're sorry to see you go</DialogTitle>
+          <DialogDescription>
             Before you cancel, would you consider an exclusive offer?
             {' '}{discountText}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => navigate('/dashboard')}>
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => navigate('/dashboard')}>
             Accept Offer
-          </AlertDialogCancel>
-          <AlertDialogAction onClick={onProceed}>
+          </Button>
+          <Button onClick={onProceed}>
             Proceed to Cancel
-          </AlertDialogAction>
-        </AlertDialogFooter>
+          </Button>
+        </DialogFooter>
       </>
     );
   }
