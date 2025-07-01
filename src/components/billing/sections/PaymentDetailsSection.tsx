@@ -5,20 +5,12 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { CreditCardFormSection } from "../forms/CreditCardFormSection";
 import { BankAccountFormSection } from "../forms/BankAccountFormSection";
-import { BackupCreditCardSection } from "../forms/BackupCreditCardSection";
 import { useState } from "react";
 
 interface PaymentDetailsProps {
   paymentMethodType: "card" | "ach";
   handlePaymentTypeChange: (value: string) => void;
   cardDetails: {
-    cardName: string;
-    cardNumber: string;
-    expiry: string;
-    cvc: string;
-    zipCode: string;
-  };
-  backupCardDetails: {
     cardName: string;
     cardNumber: string;
     expiry: string;
@@ -32,7 +24,6 @@ interface PaymentDetailsProps {
     accountNumber: string;
   };
   handleCardDetailsChange: (field: string, value: string) => void;
-  handleBackupCardDetailsChange: (field: string, value: string) => void;
   handleACHDetailsChange?: (field: string, value: string) => void;
   isLoading: boolean;
   cardMakeDefault?: boolean;
@@ -45,10 +36,8 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
   paymentMethodType,
   handlePaymentTypeChange,
   cardDetails,
-  backupCardDetails,
   achDetails,
   handleCardDetailsChange,
-  handleBackupCardDetailsChange,
   handleACHDetailsChange,
   isLoading,
   cardMakeDefault = true,
@@ -106,11 +95,15 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
                 <div className="text-left">
                   <div className="font-medium flex items-center gap-2">
                     Credit Card
-                    {cardMakeDefault && (
+                    {cardMakeDefault ? (
                       <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
                         Default
                       </span>
-                    )}
+                    ) : achMakeDefault ? (
+                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                        Backup
+                      </span>
+                    ) : null}
                   </div>
                   <div className="text-sm text-muted-foreground">
                     {getMaskedCardNumber(cardDetails.cardNumber)}
@@ -127,6 +120,13 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
                 {cardMakeDefault && (
                   <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md border border-amber-100">
                     Please note: A 3% transaction fee will be added to all credit card payments.
+                  </div>
+                )}
+                
+                {/* Show backup notice when ACH is default */}
+                {achMakeDefault && (
+                  <div className="text-sm text-blue-600 bg-blue-50 p-3 rounded-md border border-blue-100">
+                    This credit card will be used as backup payment method for your bank account.
                   </div>
                 )}
                 
@@ -181,12 +181,12 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
             
             <CollapsibleContent>
               <div className="p-4 pt-0 space-y-4">
-                {/* Warning message when ACH is set as default - moved inside ACH section */}
+                {/* Warning message when ACH is set as default */}
                 {achMakeDefault && (
                   <Alert className="bg-amber-50 border-amber-200">
                     <AlertTriangle className="h-4 w-4 text-amber-600" />
                     <AlertDescription className="text-amber-800">
-                      A credit card is required as a backup payment method when using bank account. Please fill out the backup credit card information below.
+                      A credit card is required as a backup payment method when using bank account. Please fill out the credit card information above.
                     </AlertDescription>
                   </Alert>
                 )}
@@ -203,22 +203,6 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
                   accountNumber={achDetails?.accountNumber}
                   onAccountNumberChange={(value) => handleACHDetailsChange?.("accountNumber", value)}
                 />
-
-                {/* Show backup credit card section when ACH is default */}
-                {achMakeDefault && (
-                  <BackupCreditCardSection
-                    cardName={backupCardDetails.cardName}
-                    setCardName={(value) => handleBackupCardDetailsChange("cardName", value)}
-                    cardNumber={backupCardDetails.cardNumber}
-                    setCardNumber={(value) => handleBackupCardDetailsChange("cardNumber", value)}
-                    expiry={backupCardDetails.expiry}
-                    setExpiry={(value) => handleBackupCardDetailsChange("expiry", value)}
-                    cvc={backupCardDetails.cvc}
-                    setCvc={(value) => handleBackupCardDetailsChange("cvc", value)}
-                    zipCode={backupCardDetails.zipCode}
-                    setZipCode={(value) => handleBackupCardDetailsChange("zipCode", value)}
-                  />
-                )}
               </div>
             </CollapsibleContent>
           </Collapsible>

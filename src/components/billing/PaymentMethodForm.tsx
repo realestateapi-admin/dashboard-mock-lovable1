@@ -40,7 +40,6 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     billingAddress,
     useSameAddress,
     cardDetails,
-    backupCardDetails,
     achDetails,
     cardMakeDefault,
     achMakeDefault,
@@ -48,7 +47,6 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     handleBillingAddressChange,
     handleUseSameAddressChange,
     handleCardDetailsChange,
-    handleBackupCardDetailsChange,
     handleACHDetailsChange,
     handlePaymentTypeChange,
     handleCardMakeDefaultChange,
@@ -145,12 +143,12 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
       achDetails.accountNumber?.trim()
     );
     
-    // Also require credit card details as backup for ACH
+    // Use regular credit card details as backup for ACH
     const backupCardValid = !!(
-      backupCardDetails.backupCardholderName?.trim() &&
-      backupCardDetails.backupCardNumber?.trim() &&
-      backupCardDetails.backupExpiry?.trim() &&
-      backupCardDetails.backupCvc?.trim()
+      cardDetails.cardholderName?.trim() &&
+      cardDetails.cardNumber?.trim() &&
+      cardDetails.expiry?.trim() &&
+      cardDetails.cvc?.trim()
     );
     
     const isValid = achDetailsValid && backupCardValid;
@@ -159,7 +157,7 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
       backupCardValid,
       isValid,
       achDetails,
-      backupCardDetails
+      cardDetails
     });
     return isValid;
   };
@@ -194,10 +192,6 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     achDetails.accountName,
     achDetails.routingNumber,
     achDetails.accountNumber,
-    backupCardDetails.backupCardholderName,
-    backupCardDetails.backupCardNumber,
-    backupCardDetails.backupExpiry,
-    backupCardDetails.backupCvc,
     onValidationChange
   ]);
 
@@ -241,15 +235,6 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     zipCode: cardDetails.zipCode || ''
   };
 
-  // Map backup card details to the expected format (fixed property names)
-  const mappedBackupCardDetails = {
-    cardName: backupCardDetails.backupCardholderName || '',
-    cardNumber: backupCardDetails.backupCardNumber || '',
-    expiry: backupCardDetails.backupExpiry || '',
-    cvc: backupCardDetails.backupCvc || '',
-    zipCode: backupCardDetails.backupZipCode || ''
-  };
-
   return (
     <>
       <div ref={contentRef} className="space-y-6">
@@ -258,10 +243,8 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
           paymentMethodType={paymentMethodType}
           handlePaymentTypeChange={handlePaymentMethodChange}
           cardDetails={mappedCardDetails}
-          backupCardDetails={mappedBackupCardDetails}
           achDetails={achDetails}
           handleCardDetailsChange={handleCardNameChange}
-          handleBackupCardDetailsChange={handleBackupCardDetailsChange}
           handleACHDetailsChange={handleACHDetailsChange}
           isLoading={isLoading}
           cardMakeDefault={cardMakeDefault}
