@@ -8,7 +8,6 @@ import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 // Import components
 import { TrialAlert } from "@/components/billing/TrialAlert";
 import { BillingTabs } from "@/components/billing/BillingTabs";
-import { CancellationLink } from "@/components/billing/CancellationLink";
 import { AccountExecutiveWidget } from "@/components/support/AccountExecutiveWidget";
 
 // Import data from the new modular files
@@ -113,6 +112,9 @@ const Billing = () => {
   const currentPlanName = subscription?.plan_name || 
     plans.find(p => p.id === selectedPlan)?.name || "Starter";
 
+  // Determine if user is on a paid plan for cancellation link
+  const showCancellationLink = localIsOnPaidPlan || isOnPaidPlan;
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -148,15 +150,9 @@ const Billing = () => {
         onBillingCycleChange={handleBillingCycleChange}
         onSaveBillingPreferences={handleSaveBillingPreferences}
         onDownloadInvoice={handleDownloadInvoice}
+        planName={currentPlanName}
+        isOnPaidPlan={showCancellationLink}
       />
-      
-      {/* Only show cancellation link if user is on a paid plan */}
-      {(localIsOnPaidPlan || isOnPaidPlan) && (
-        <CancellationLink 
-          planName={currentPlanName} 
-          isAnnual={billingCycle === 'annual'} 
-        />
-      )}
       
       {/* Always render the AccountExecutiveWidget - it has internal visibility control */}
       <AccountExecutiveWidget />

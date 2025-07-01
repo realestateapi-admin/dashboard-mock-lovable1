@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PaymentMethods } from "@/components/billing/PaymentMethods";
 import { InvoiceHistory } from "@/components/billing/InvoiceHistory";
 import { TermsOfServiceTab } from "@/components/billing/TermsOfServiceTab";
+import { CancellationLink } from "@/components/billing/CancellationLink";
 import { PlanData, AddOnData, InvoiceData, SubscriptionData } from "@/types/billing";
 import { useAccountExecutive } from "@/contexts/AccountExecutiveContext";
 import { CurrentPlanSummary } from "@/components/billing/CurrentPlanSummary";
@@ -30,6 +31,9 @@ interface BillingTabsProps {
   onBillingCycleChange: (cycle: 'monthly' | 'annual') => void;
   onSaveBillingPreferences: () => void;
   onDownloadInvoice: (invoiceId: string) => void;
+  // Add props for cancellation link
+  planName: string;
+  isOnPaidPlan: boolean;
 }
 
 export const BillingTabs = ({
@@ -48,7 +52,9 @@ export const BillingTabs = ({
   onOverageHandlingChange,
   onBillingCycleChange,
   onSaveBillingPreferences,
-  onDownloadInvoice
+  onDownloadInvoice,
+  planName,
+  isOnPaidPlan
 }: BillingTabsProps) => {
   // Access the AccountExecutive context to show/hide the widget
   const { showWidget } = useAccountExecutive();
@@ -83,6 +89,14 @@ export const BillingTabs = ({
             billingCycle={billingCycle}
             isLoading={isLoadingSubscription}
           />
+          
+          {/* Only show cancellation link on subscription tab if user is on a paid plan */}
+          {isOnPaidPlan && (
+            <CancellationLink 
+              planName={planName} 
+              isAnnual={billingCycle === 'annual'} 
+            />
+          )}
         </div>
       </TabsContent>
       
