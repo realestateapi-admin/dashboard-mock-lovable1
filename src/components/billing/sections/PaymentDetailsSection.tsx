@@ -5,6 +5,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { CreditCardFormSection } from "../forms/CreditCardFormSection";
 import { BankAccountFormSection } from "../forms/BankAccountFormSection";
+import { BackupCreditCardSection } from "../forms/BackupCreditCardSection";
 import { useState } from "react";
 
 interface PaymentDetailsProps {
@@ -185,7 +186,7 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
                   <Alert className="bg-amber-50 border-amber-200">
                     <AlertTriangle className="h-4 w-4 text-amber-600" />
                     <AlertDescription className="text-amber-800">
-                      A credit card is required as a backup payment method when using bank account. Please fill out the Credit Card section as well.
+                      A credit card is required as a backup payment method when using bank account. Please fill out the backup credit card information below.
                     </AlertDescription>
                   </Alert>
                 )}
@@ -202,6 +203,22 @@ export const PaymentDetailsSection: React.FC<PaymentDetailsProps> = ({
                   accountNumber={achDetails?.accountNumber}
                   onAccountNumberChange={(value) => handleACHDetailsChange?.("accountNumber", value)}
                 />
+
+                {/* Show backup credit card section when ACH is default */}
+                {achMakeDefault && (
+                  <BackupCreditCardSection
+                    cardName={backupCardDetails.cardName}
+                    setCardName={(value) => handleBackupCardDetailsChange("cardName", value)}
+                    cardNumber={backupCardDetails.cardNumber}
+                    setCardNumber={(value) => handleBackupCardDetailsChange("cardNumber", value)}
+                    expiry={backupCardDetails.expiry}
+                    setExpiry={(value) => handleBackupCardDetailsChange("expiry", value)}
+                    cvc={backupCardDetails.cvc}
+                    setCvc={(value) => handleBackupCardDetailsChange("cvc", value)}
+                    zipCode={backupCardDetails.zipCode}
+                    setZipCode={(value) => handleBackupCardDetailsChange("zipCode", value)}
+                  />
+                )}
               </div>
             </CollapsibleContent>
           </Collapsible>
