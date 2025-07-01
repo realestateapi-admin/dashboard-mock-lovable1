@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -90,7 +89,7 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [validFields, setValidFields] = useState<Record<string, boolean>>({});
 
-  // Determine if validation should be enabled - disable when hideCheckbox is true (plan signup flow)
+  // Disable validation completely in plan signup flow (when hideCheckbox is true)
   const isValidationEnabled = !hideCheckbox && !useSameAddress;
 
   // Validation functions
@@ -176,9 +175,9 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
     return !error;
   };
 
-  // Validate fields on change
+  // Validate fields on change - only when validation is enabled
   useEffect(() => {
-    if (isValidationEnabled && (!useSameAddress || hideCheckbox)) {
+    if (isValidationEnabled) {
       Object.keys(billingAddress).forEach(field => {
         if (field !== 'line2' && field !== 'country') { // line2 and country are optional/read-only
           validateField(field, billingAddress[field as keyof typeof billingAddress]);
@@ -195,7 +194,7 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
     handleBillingAddressChange(field, value);
     
     // Validate immediately on change only if validation is enabled
-    if (isValidationEnabled && (!useSameAddress || hideCheckbox)) {
+    if (isValidationEnabled) {
       validateField(field, value);
     }
   };
