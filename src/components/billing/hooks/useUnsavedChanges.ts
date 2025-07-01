@@ -12,6 +12,10 @@ export const useUnsavedChanges = (initialData: any) => {
     initialDataRef.current = initialData;
   }, [initialData]);
 
+  const setInitialData = (data: any) => {
+    initialDataRef.current = data;
+  };
+
   const checkForUnsavedChanges = (currentData: any) => {
     const hasChanges = JSON.stringify(currentData) !== JSON.stringify(initialDataRef.current);
     setHasUnsavedChanges(hasChanges);
@@ -54,5 +58,6 @@ export const useUnsavedChanges = (initialData: any) => {
     confirmNavigation,
     cancelNavigation,
     markAsSaved,
+    setInitialData,
   };
 };

@@ -1,3 +1,4 @@
+
 import { PaymentDetailsSection } from "./sections/PaymentDetailsSection";
 import { CompanyInformationSection } from "./sections/CompanyInformationSection";
 import { BillingAddressSection } from "./sections/BillingAddressSection";
@@ -6,11 +7,12 @@ import { usePaymentMethodFormV2 } from "./hooks/usePaymentMethodForm.v2";
 import { useUnsavedChanges } from "./hooks/useUnsavedChanges";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export const PaymentMethods = () => {
   const [paymentMethodType, setPaymentMethodType] = useState<'card' | 'ach'>('card');
   const { toast } = useToast();
+  const initialDataCaptured = useRef(false);
   
   const {
     companyInfo,
@@ -31,19 +33,7 @@ export const PaymentMethods = () => {
     handleAchMakeDefaultChange,
   } = usePaymentMethodFormV2(false);
 
-  // Get initial data for unsaved changes tracking
-  const initialData = {
-    companyInfo,
-    billingAddress,
-    useSameAddress,
-    cardDetails,
-    backupCardDetails,
-    achDetails,
-    cardMakeDefault,
-    achMakeDefault,
-    paymentMethodType,
-  };
-
+  // Initialize with empty data first
   const {
     hasUnsavedChanges,
     showUnsavedDialog,
@@ -53,22 +43,49 @@ export const PaymentMethods = () => {
     confirmNavigation,
     cancelNavigation,
     markAsSaved,
-  } = useUnsavedChanges(initialData);
+    setInitialData,
+  } = useUnsavedChanges({});
+
+  // Set initial data after form data is loaded from localStorage
+  useEffect(() => {
+    // Only capture initial data once, after a short delay to ensure localStorage data is loaded
+    if (!initialDataCaptured.current) {
+      const timer = setTimeout(() => {
+        const initialData = {
+          companyInfo,
+          billingAddress,
+          useSameAddress,
+          cardDetails,
+          backupCardDetails,
+          achDetails,
+          cardMakeDefault,
+          achMakeDefault,
+          paymentMethodType,
+        };
+        setInitialData(initialData);
+        initialDataCaptured.current = true;
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [companyInfo, billingAddress, useSameAddress, cardDetails, backupCardDetails, achDetails, cardMakeDefault, achMakeDefault, paymentMethodType, setInitialData]);
 
   // Check for changes whenever form data updates
   useEffect(() => {
-    const currentData = {
-      companyInfo,
-      billingAddress,
-      useSameAddress,
-      cardDetails,
-      backupCardDetails,
-      achDetails,
-      cardMakeDefault,
-      achMakeDefault,
-      paymentMethodType,
-    };
-    checkForUnsavedChanges(currentData);
+    if (initialDataCaptured.current) {
+      const currentData = {
+        companyInfo,
+        billingAddress,
+        useSameAddress,
+        cardDetails,
+        backupCardDetails,
+        achDetails,
+        cardMakeDefault,
+        achMakeDefault,
+        paymentMethodType,
+      };
+      checkForUnsavedChanges(currentData);
+    }
   }, [companyInfo, billingAddress, useSameAddress, cardDetails, backupCardDetails, achDetails, cardMakeDefault, achMakeDefault, paymentMethodType, checkForUnsavedChanges]);
 
   // Create proper handlers for card details that map to the correct field names
@@ -109,6 +126,20 @@ export const PaymentMethods = () => {
       description: "Your payment information has been successfully updated.",
     });
     markAsSaved();
+    
+    // Update the initial data to the current state after saving
+    const newInitialData = {
+      companyInfo,
+      billingAddress,
+      useSameAddress,
+      cardDetails,
+      backupCardDetails,
+      achDetails,
+      cardMakeDefault,
+      achMakeDefault,
+      paymentMethodType,
+    };
+    setInitialData(newInitialData);
   };
 
   // Intercept tab navigation
