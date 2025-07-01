@@ -1,4 +1,3 @@
-
 import React from "react";
 import { CompanyInformationSection } from "./sections/CompanyInformationSection";
 import { PaymentDetailsSection } from "./sections/PaymentDetailsSection";
@@ -165,19 +164,16 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     return isValid;
   };
 
-  // Check overall validation - only validate fields that are actually displayed
+  // Check overall validation - billing address should be optional
   const isFormValid = () => {
     const paymentValid = paymentMethodType === 'card' ? isCreditCardValid() : isACHValid();
     const billingDetailsValid = !!(
       companyInfo.companyName?.trim() &&
       companyInfo.billingEmail?.trim()
     );
-    const addressValid = !!(
-      billingAddress.line1?.trim() &&
-      billingAddress.city?.trim() &&
-      billingAddress.state?.trim() &&
-      billingAddress.zipCode?.trim()
-    );
+    
+    // Billing address is optional - no validation required
+    const addressValid = true;
     
     const overallValid = paymentValid && billingDetailsValid && addressValid;
     console.log('Form validation check:', {
@@ -198,7 +194,7 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
       onValidationChange(isFormValid());
     }
   }, [
-    // Dependencies for validation check
+    // Dependencies for validation check - removed billing address dependencies since it's optional
     paymentMethodType,
     cardDetails.cardholderName,
     cardDetails.cardNumber,
@@ -213,10 +209,6 @@ export const PaymentMethodForm: React.FC<PaymentMethodFormProps> = ({
     backupCardDetails.backupCvc,
     companyInfo.companyName,
     companyInfo.billingEmail,
-    billingAddress.line1,
-    billingAddress.city,
-    billingAddress.state,
-    billingAddress.zipCode,
     onValidationChange
   ]);
 
