@@ -19,7 +19,6 @@ export const PaymentMethods = () => {
     billingAddress,
     useSameAddress,
     cardDetails,
-    backupCardDetails,
     achDetails,
     cardMakeDefault,
     achMakeDefault,
@@ -27,7 +26,6 @@ export const PaymentMethods = () => {
     handleBillingAddressChange,
     handleUseSameAddressChange,
     handleCardDetailsChange,
-    handleBackupCardDetailsChange,
     handleACHDetailsChange,
     handleCardMakeDefaultChange,
     handleAchMakeDefaultChange,
@@ -56,7 +54,6 @@ export const PaymentMethods = () => {
           billingAddress,
           useSameAddress,
           cardDetails,
-          backupCardDetails,
           achDetails,
           cardMakeDefault,
           achMakeDefault,
@@ -68,7 +65,7 @@ export const PaymentMethods = () => {
       
       return () => clearTimeout(timer);
     }
-  }, [companyInfo, billingAddress, useSameAddress, cardDetails, backupCardDetails, achDetails, cardMakeDefault, achMakeDefault, paymentMethodType, setInitialData]);
+  }, [companyInfo, billingAddress, useSameAddress, cardDetails, achDetails, cardMakeDefault, achMakeDefault, paymentMethodType, setInitialData]);
 
   // Check for changes whenever form data updates
   useEffect(() => {
@@ -78,7 +75,6 @@ export const PaymentMethods = () => {
         billingAddress,
         useSameAddress,
         cardDetails,
-        backupCardDetails,
         achDetails,
         cardMakeDefault,
         achMakeDefault,
@@ -86,7 +82,7 @@ export const PaymentMethods = () => {
       };
       checkForUnsavedChanges(currentData);
     }
-  }, [companyInfo, billingAddress, useSameAddress, cardDetails, backupCardDetails, achDetails, cardMakeDefault, achMakeDefault, paymentMethodType, checkForUnsavedChanges]);
+  }, [companyInfo, billingAddress, useSameAddress, cardDetails, achDetails, cardMakeDefault, achMakeDefault, paymentMethodType, checkForUnsavedChanges]);
 
   // Create proper handlers for card details that map to the correct field names
   const handleCardNameChange = (field: string, value: string) => {
@@ -104,15 +100,6 @@ export const PaymentMethods = () => {
     expiry: cardDetails.expiry || '',
     cvc: cardDetails.cvc || '',
     zipCode: cardDetails.zipCode || ''
-  };
-
-  // Map backup card details to the expected format
-  const mappedBackupCardDetails = {
-    cardName: backupCardDetails.backupCardholderName || '',
-    cardNumber: backupCardDetails.backupCardNumber || '',
-    expiry: backupCardDetails.backupExpiry || '',
-    cvc: backupCardDetails.backupCvc || '',
-    zipCode: backupCardDetails.backupZipCode || ''
   };
 
   const handlePaymentTypeChange = (value: string) => {
@@ -133,7 +120,6 @@ export const PaymentMethods = () => {
       billingAddress,
       useSameAddress,
       cardDetails,
-      backupCardDetails,
       achDetails,
       cardMakeDefault,
       achMakeDefault,
@@ -155,10 +141,8 @@ export const PaymentMethods = () => {
           paymentMethodType={paymentMethodType}
           handlePaymentTypeChange={handlePaymentTypeChange}
           cardDetails={mappedCardDetails}
-          backupCardDetails={mappedBackupCardDetails}
           achDetails={achDetails}
           handleCardDetailsChange={handleCardNameChange}
-          handleBackupCardDetailsChange={handleBackupCardDetailsChange}
           handleACHDetailsChange={handleACHDetailsChange}
           isLoading={false}
           cardMakeDefault={cardMakeDefault}
