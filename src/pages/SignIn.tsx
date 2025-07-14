@@ -86,95 +86,144 @@ const SignIn = () => {
   };
 
   return (
-    <AuthLayout>
-      <div className="space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Sign in to your account</h1>
-          <p className="text-sm text-muted-foreground">
-            Enter your email and password to access your dashboard
-          </p>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <div className="relative">
+    <div className="min-h-screen flex">
+      {/* Left Side - Sign In Form */}
+      <div className="flex-1 flex items-center justify-center p-8 bg-background">
+        <div className="w-full max-w-sm space-y-6">
+          <div className="text-center space-y-2">
+            <h1 className="text-2xl font-bold tracking-tight">Sign In</h1>
+          </div>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={handleEmailChange}
-                placeholder="you@example.com"
+                placeholder=""
                 required
-                className={`input-with-focus-ring pr-10 ${
-                  emailError ? 'border-red-500 focus-visible:ring-red-500' : 
-                  isEmailValid ? 'border-green-500 focus-visible:ring-green-500' : ''
-                }`}
+                className="h-10"
                 autoComplete="email"
               />
-              {email && (
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  {isEmailValid ? (
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                  ) : emailError ? (
-                    <AlertCircle className="h-4 w-4 text-red-500" />
-                  ) : null}
-                </div>
+              {emailError && (
+                <p className="text-sm text-red-600">{emailError}</p>
               )}
             </div>
-            {emailError && (
-              <p className="text-sm text-red-600 flex items-center gap-1">
-                <AlertCircle className="h-3 w-3" />
-                {emailError}
-              </p>
-            )}
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-              className="input-with-focus-ring"
-              autoComplete="current-password"
-            />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <Link 
-              to="/forgot-password" 
-              className="text-sm text-primary hover:underline underline-offset-4"
+            
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                <Link 
+                  to="/forgot-password" 
+                  className="text-sm text-primary hover:underline"
+                >
+                  Forgot Password ?
+                </Link>
+              </div>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder=""
+                required
+                className="h-10"
+                autoComplete="current-password"
+              />
+            </div>
+            
+            <Button 
+              type="submit" 
+              className="w-full h-10 bg-teal-500 hover:bg-teal-600 text-white" 
+              disabled={isLoading || !isEmailValid}
             >
-              Forgot your password?
-            </Link>
-          </div>
-          
-          <Button 
-            type="submit" 
-            className="w-full" 
-            disabled={isLoading || !isEmailValid}
-          >
-            {isLoading ? "Signing in..." : "Sign in"}
-          </Button>
-        </form>
-        
-        <div className="text-center text-sm">
-          <p className="text-muted-foreground">
-            Don't have an account?{" "}
-            <Link 
-              to="/sign-up" 
-              className="text-primary hover:underline underline-offset-4"
-            >
-              Sign up
-            </Link>
-          </p>
+              {isLoading ? "Please wait..." : "Continue"}
+            </Button>
+          </form>
         </div>
       </div>
-    </AuthLayout>
+
+      {/* Right Side - Property Data Visualization */}
+      <div className="flex-1 bg-gradient-to-br from-teal-50 to-blue-50 relative overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          {/* Property Cards */}
+          <div className="relative">
+            {/* Top Property Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="absolute -top-20 -left-10 bg-white rounded-lg shadow-lg p-4 w-64 border"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <div className="w-4 h-4 bg-blue-500 rounded"></div>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">2520 Washita Ave Ne</p>
+                  <p className="text-sm text-gray-500">Atlanta GA 30307</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Bottom Property Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="absolute top-20 left-10 bg-white rounded-lg shadow-lg p-4 w-64 border"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
+                  <div className="w-4 h-4 bg-teal-500 rounded"></div>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">87541 Mineral Ave</p>
+                  <p className="text-sm text-gray-500">Aurora CO 80045</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Central Geometric Pattern */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1, duration: 0.8 }}
+              className="relative"
+            >
+              {/* Large geometric shapes */}
+              <div className="w-48 h-48 relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-teal-200 to-teal-300 rounded-2xl transform rotate-12 opacity-80"></div>
+                <div className="absolute inset-2 bg-gradient-to-br from-blue-200 to-blue-300 rounded-2xl transform -rotate-6 opacity-70"></div>
+                <div className="absolute inset-4 bg-gradient-to-br from-cyan-200 to-cyan-300 rounded-2xl transform rotate-3 opacity-60"></div>
+                
+                {/* Small dots pattern */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="grid grid-cols-4 gap-2">
+                    {Array.from({ length: 16 }).map((_, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 + i * 0.05, duration: 0.3 }}
+                        className="w-2 h-2 bg-white rounded-full opacity-80"
+                      ></motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="absolute bottom-6 left-8 text-sm text-muted-foreground">
+        <p>2023© <Link to="/" className="hover:underline">RealEstateAPI</Link></p>
+      </div>
+    </div>
   );
 };
 
