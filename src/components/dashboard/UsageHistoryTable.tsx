@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { UsageHistoryEntry } from "@/types/usage";
+import { RequestDetailsModal } from "./RequestDetailsModal";
 
 interface UsageHistoryTableProps {
   data: UsageHistoryEntry[];
@@ -32,7 +33,19 @@ interface UsageHistoryTableProps {
 export const UsageHistoryTable = ({ data }: UsageHistoryTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedEntry, setSelectedEntry] = useState<UsageHistoryEntry | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const itemsPerPage = 10;
+
+  const handleRowClick = (entry: UsageHistoryEntry) => {
+    setSelectedEntry(entry);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEntry(null);
+  };
 
   // Filter data based on search query
   const filteredData = data.filter(entry =>
@@ -131,7 +144,11 @@ export const UsageHistoryTable = ({ data }: UsageHistoryTableProps) => {
           <TableBody>
             {paginatedData.length > 0 ? (
               paginatedData.map((entry, index) => (
-                <TableRow key={index}>
+                <TableRow 
+                  key={index} 
+                  className="cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => handleRowClick(entry)}
+                >
                   <TableCell className="font-medium">
                     {format(new Date(entry.timestamp), 'MMM d, yyyy HH:mm:ss')}
                   </TableCell>
@@ -195,6 +212,12 @@ export const UsageHistoryTable = ({ data }: UsageHistoryTableProps) => {
           </Pagination>
         </div>
       )}
+
+      <RequestDetailsModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        entry={selectedEntry}
+      />
     </div>
   );
 };
