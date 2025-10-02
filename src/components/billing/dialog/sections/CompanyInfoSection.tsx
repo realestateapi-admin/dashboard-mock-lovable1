@@ -104,7 +104,7 @@ export const CompanyInfoSection: React.FC<CompanyInfoSectionProps> = ({
               maxLength={20}
             />
             <p className="text-xs text-muted-foreground">
-              EIN, SSN, or other tax identification number
+              EIN or other business tax identification number
             </p>
           </div>
         )}
