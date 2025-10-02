@@ -22,6 +22,27 @@ interface BillingAddressProps {
   hideCheckbox?: boolean;
 }
 
+const validatePhysicalAddress = (address: string): { isValid: boolean; error?: string } => {
+  const poBoxPatterns = [
+    /\bP\.?\s*O\.?\s*BOX\b/i,
+    /\bPOST\s*OFFICE\s*BOX\b/i,
+    /\bPO\s*BOX\b/i,
+    /\bP\.?\s*O\.?\s*B\b/i,
+    /\bBOX\s*\d+\b/i
+  ];
+  
+  for (const pattern of poBoxPatterns) {
+    if (pattern.test(address)) {
+      return { 
+        isValid: false, 
+        error: "PO Boxes are not accepted. Please provide a physical address." 
+      };
+    }
+  }
+  
+  return { isValid: true };
+};
+
 // US States list
 const US_STATES = [
   { value: 'AL', label: 'Alabama' },
@@ -86,7 +107,22 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
   hideTitle = false,
   hideCheckbox = false,
 }) => {
-  // Billing address is always optional - no validation needed
+  const [addressError, setAddressError] = useState("");
+
+  const handleAddressLine1Change = (value: string) => {
+    handleBillingAddressChange("line1", value);
+    
+    if (value.trim()) {
+      const validation = validatePhysicalAddress(value);
+      if (!validation.isValid) {
+        setAddressError(validation.error || "Invalid address");
+      } else {
+        setAddressError("");
+      }
+    } else {
+      setAddressError("");
+    }
+  };
   
   return (
     <div className="space-y-4">
@@ -109,45 +145,61 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
       {(!useSameAddress || hideCheckbox) && (
         <div className="grid gap-4">
           <div className="space-y-2">
-            <Label htmlFor="billingLine1">Address Line 1 (Optional)</Label>
+            <Label htmlFor="billingLine1">
+              Address Line 1 <span className="text-red-500">*</span>
+            </Label>
             <Input 
               id="billingLine1" 
               value={billingAddress.line1}
-              onChange={(e) => handleBillingAddressChange("line1", e.target.value)}
-              placeholder="123 Main St"
+              onChange={(e) => handleAddressLine1Change(e.target.value)}
+              placeholder="123 Main St (No PO Boxes)"
               disabled={isLoading}
+              required
+              className={addressError ? 'border-red-500' : ''}
             />
+            {addressError && (
+              <p className="text-sm text-red-600 flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                {addressError}
+              </p>
+            )}
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="billingLine2">Address Line 2 (Optional)</Label>
+            <Label htmlFor="billingLine2">Address Line 2</Label>
             <Input 
               id="billingLine2" 
               value={billingAddress.line2}
               onChange={(e) => handleBillingAddressChange("line2", e.target.value)}
-              placeholder="Suite 100"
+              placeholder="Suite 100 (optional)"
               disabled={isLoading}
             />
           </div>
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="billingCity">City (Optional)</Label>
+              <Label htmlFor="billingCity">
+                City <span className="text-red-500">*</span>
+              </Label>
               <Input 
                 id="billingCity" 
                 value={billingAddress.city}
                 onChange={(e) => handleBillingAddressChange("city", e.target.value)}
                 placeholder="San Francisco"
                 disabled={isLoading}
+                required
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="billingState">State (Optional)</Label>
+              <Label htmlFor="billingState">
+                State <span className="text-red-500">*</span>
+              </Label>
               <Select 
                 value={billingAddress.state} 
                 onValueChange={(value) => handleBillingAddressChange("state", value)}
                 disabled={isLoading}
+                required
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select state" />
@@ -165,13 +217,16 @@ export const BillingAddressSection: React.FC<BillingAddressProps> = ({
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="billingZipCode">ZIP Code (Optional)</Label>
+              <Label htmlFor="billingZipCode">
+                ZIP Code <span className="text-red-500">*</span>
+              </Label>
               <Input 
                 id="billingZipCode" 
                 value={billingAddress.zipCode}
                 onChange={(e) => handleBillingAddressChange("zipCode", e.target.value)}
                 placeholder="94103"
                 disabled={isLoading}
+                required
               />
             </div>
             

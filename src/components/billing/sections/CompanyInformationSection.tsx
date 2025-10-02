@@ -3,12 +3,14 @@ import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Briefcase, AlertCircle, CheckCircle, Mail } from 'lucide-react';
+import { Briefcase, AlertCircle, CheckCircle, Mail, User, Building2 } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface CompanyInformationProps {
   companyInfo: {
     companyName: string;
     billingEmail: string;
+    customerType?: 'business' | 'individual';
   };
   isLoading: boolean;
   handleCompanyInfoChange: (field: string, value: string) => void;
@@ -25,6 +27,9 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
 }) => {
   const [billingEmailError, setBillingEmailError] = useState("");
   const [isBillingEmailValid, setIsBillingEmailValid] = useState(false);
+  const [customerType, setCustomerType] = useState<'business' | 'individual'>(
+    companyInfo.customerType || 'business'
+  );
 
   // Get company name from localStorage (from profile section)
   const getInitialCompanyName = () => {
@@ -134,6 +139,11 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
     validateBillingEmail(newBillingEmail);
   };
 
+  const handleCustomerTypeChange = (value: 'business' | 'individual') => {
+    setCustomerType(value);
+    handleCompanyInfoChange("customerType", value);
+  };
+
   // Field components for reordering
   const BillingEmailField = (
     <div className="space-y-2">
@@ -176,22 +186,28 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
     </div>
   );
 
-  const CompanyNameField = (
+  const LegalNameField = (
     <div className="space-y-2">
       <Label htmlFor="companyName" className="flex items-center gap-1">
-        <Briefcase className="h-4 w-4" />
-        Company Name (Optional)
+        {customerType === 'business' ? (
+          <><Building2 className="h-4 w-4" /> Legal Company Name <span className="text-red-500">*</span></>
+        ) : (
+          <><User className="h-4 w-4" /> Legal Name <span className="text-red-500">*</span></>
+        )}
       </Label>
       <Input 
         id="companyName" 
         value={companyInfo.companyName}
         onChange={handleCompanyNameChange}
-        placeholder="Your company name"
+        placeholder={customerType === 'business' ? "Acme Corporation Inc." : "John Doe"}
         disabled={isLoading}
-        maxLength={50}
+        maxLength={100}
+        required
       />
       <p className="text-xs text-muted-foreground">
-        Up to 50 characters
+        {customerType === 'business' 
+          ? 'Full legal name as registered with your state or country' 
+          : 'Your full legal name as it appears on government documents'}
       </p>
     </div>
   );
@@ -201,15 +217,46 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
       <div className="space-y-4 pb-6">
         <h3 className="text-lg font-semibold">{title}</h3>
         
+        <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4">
+          <p className="text-sm text-blue-900">
+            The following information is required for tax compliance reasons. If your state of residence assesses a sales tax on services, we might need to charge and remit it on your behalf. If you believe you are exempt please contact your Solutions Engineer.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Customer Type <span className="text-red-500">*</span></Label>
+          <RadioGroup 
+            value={customerType} 
+            onValueChange={handleCustomerTypeChange}
+            className="flex gap-4"
+            disabled={isLoading}
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="business" id="business" />
+              <Label htmlFor="business" className="font-normal cursor-pointer flex items-center gap-1">
+                <Building2 className="h-4 w-4" />
+                Business
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="individual" id="individual" />
+              <Label htmlFor="individual" className="font-normal cursor-pointer flex items-center gap-1">
+                <User className="h-4 w-4" />
+                Individual
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+        
         <div className="grid gap-4">
           {showEmailFirst ? (
             <>
               {BillingEmailField}
-              {CompanyNameField}
+              {LegalNameField}
             </>
           ) : (
             <>
-              {CompanyNameField}
+              {LegalNameField}
               {BillingEmailField}
             </>
           )}
