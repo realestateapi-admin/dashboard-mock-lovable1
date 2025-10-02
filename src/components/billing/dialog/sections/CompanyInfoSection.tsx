@@ -3,12 +3,13 @@ import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Building2, User } from "lucide-react";
+import { Building2, User, FileText } from "lucide-react";
 
 interface CompanyInfoSectionProps {
   companyName: string;
   billingEmail: string;
   customerType?: 'business' | 'individual';
+  taxId?: string;
   handleCompanyInfoChange: (field: string, value: string) => void;
 }
 
@@ -16,6 +17,7 @@ export const CompanyInfoSection: React.FC<CompanyInfoSectionProps> = ({
   companyName,
   billingEmail,
   customerType = 'business',
+  taxId = '',
   handleCompanyInfoChange,
 }) => {
   const [localCustomerType, setLocalCustomerType] = useState<'business' | 'individual'>(customerType);
@@ -87,6 +89,25 @@ export const CompanyInfoSection: React.FC<CompanyInfoSectionProps> = ({
               : 'Your full legal name as it appears on government documents'}
           </p>
         </div>
+        
+        {localCustomerType === 'business' && (
+          <div className="space-y-2">
+            <Label htmlFor="taxId" className="flex items-center gap-1">
+              <FileText className="h-4 w-4" />
+              Tax Identification Number (Optional)
+            </Label>
+            <Input 
+              id="taxId" 
+              value={taxId}
+              onChange={(e) => handleCompanyInfoChange("taxId", e.target.value)}
+              placeholder="XX-XXXXXXX"
+              maxLength={20}
+            />
+            <p className="text-xs text-muted-foreground">
+              EIN, SSN, or other tax identification number
+            </p>
+          </div>
+        )}
         
         <div className="space-y-2">
           <Label htmlFor="billingEmail">Billing Email</Label>

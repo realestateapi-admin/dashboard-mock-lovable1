@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Briefcase, AlertCircle, CheckCircle, Mail, User, Building2 } from 'lucide-react';
+import { Briefcase, AlertCircle, CheckCircle, Mail, User, Building2, FileText } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface CompanyInformationProps {
@@ -11,6 +11,7 @@ interface CompanyInformationProps {
     companyName: string;
     billingEmail: string;
     customerType?: 'business' | 'individual';
+    taxId?: string;
   };
   isLoading: boolean;
   handleCompanyInfoChange: (field: string, value: string) => void;
@@ -212,6 +213,26 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
     </div>
   );
 
+  const TaxIdField = customerType === 'business' ? (
+    <div className="space-y-2">
+      <Label htmlFor="taxId" className="flex items-center gap-1">
+        <FileText className="h-4 w-4" />
+        Tax Identification Number (Optional)
+      </Label>
+      <Input 
+        id="taxId" 
+        value={companyInfo.taxId || ''}
+        onChange={(e) => handleCompanyInfoChange("taxId", e.target.value)}
+        placeholder="XX-XXXXXXX"
+        disabled={isLoading}
+        maxLength={20}
+      />
+      <p className="text-xs text-muted-foreground">
+        EIN, SSN, or other tax identification number
+      </p>
+    </div>
+  ) : null;
+
   return (
     <TooltipProvider>
       <div className="space-y-4 pb-6">
@@ -253,10 +274,12 @@ export const CompanyInformationSection: React.FC<CompanyInformationProps> = ({
             <>
               {BillingEmailField}
               {LegalNameField}
+              {TaxIdField}
             </>
           ) : (
             <>
               {LegalNameField}
+              {TaxIdField}
               {BillingEmailField}
             </>
           )}
